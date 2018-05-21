@@ -42,6 +42,8 @@ var app = {
         var push = PushNotification.init({
             "android": {
                 //"senderID": "264121929701"
+                ///
+                // saa
             },
             "browser": {
                 pushServiceURL: 'http://push.api.phonegap.com/v1/push'
