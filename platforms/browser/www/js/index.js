@@ -76,16 +76,7 @@ var app = {
 
             var input = document.getElementById('input');
             input.setAttribute('value', data.registrationId);
-            navigator.notification.alert(
-                /*data.message,         // message
-                null,                 // callback
-                data.title,           // title
-                'Ok'                  // buttonName*/
-                'data.message',         // message
-                null,                 // callback
-                'data.title',           // title
-                'Ok'                  // buttonName
-            );
+            
             
         });
 
