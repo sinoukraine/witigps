@@ -41,9 +41,11 @@ var app = {
         console.log('calling push init');
         var push = PushNotification.init({
             "android": {
-                "senderID": "264121929701"
+                //"senderID": "264121929701"
             },
-            "browser": {},
+            "browser": {
+                pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+            },            
             "ios": {
                 "sound": true,
                 "vibration": true,
@@ -55,7 +57,7 @@ var app = {
 
         push.on('registration', function(data) {
             console.log('registration event: ' + data.registrationId);
-            //$('#textarea').val(data.registrationId);
+
             var oldRegId = localStorage.getItem('registrationId');
             if (oldRegId !== data.registrationId) {
                 // Save new registration ID
@@ -70,8 +72,19 @@ var app = {
             listeningElement.setAttribute('style', 'display:none;');
             receivedElement.setAttribute('style', 'display:block;');
 
-             var input = document.getElementById('textarea');
-             input.setAttribute('value', data.registrationId);
+            var input = document.getElementById('input');
+            input.setAttribute('value', data.registrationId);
+            navigator.notification.alert(
+                /*data.message,         // message
+                null,                 // callback
+                data.title,           // title
+                'Ok'                  // buttonName*/
+                'data.message',         // message
+                null,                 // callback
+                'data.title',           // title
+                'Ok'                  // buttonName
+            );
+            
         });
 
         push.on('error', function(e) {
