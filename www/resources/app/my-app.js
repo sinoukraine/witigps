@@ -4557,7 +4557,7 @@ function getImage(source){
                 mainView.router.load({
                     url: 'resources/templates/asset.edit.photo.html',
                     context: {
-                        imgSrc: imgData
+                        imgSrc: "data:image/jpeg;base64,"+imgData
                     }
                 });
             

@@ -25,6 +25,9 @@
         },
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.sinopacific.quiktrak"
+        },
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.sinopacific.quiktrak"
         }
     },
     "dependent_plugins": {}
