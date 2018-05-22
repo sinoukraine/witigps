@@ -1,3 +1,28 @@
+JSON.request = function(url,success,error){
+    /*if(url.indexOf("&callback=?")<0){
+        if(url.indexOf("?")>0){
+            url+="&callback=?"
+        }else{
+            url+="?callback=?"
+        }
+    }*/
+    $.ajax({
+        async:true,
+        url:url,
+        type:"get",
+        //dataType:"jsonp",
+        //jsonp:"callback",
+        success:function(result){
+            if(typeof(success)=='function'){
+                success(typeof(result)=='string'?eval(result):result)
+            }
+        },
+        error:function(){
+            if(typeof(error)=='function'){error()}
+        }
+    })
+};
+
 $hub = null;
 window.NULL = null;
 window.COM_TIMEFORMAT = 'YYYY-MM-DD HH:mm:ss';
@@ -123,7 +148,7 @@ function setupPush(){
 
             var input = document.getElementById('input');
             input.setAttribute('value', data.registrationId);*/
-            alert('push reg id: '+data.registrationId)ж
+            alert('push reg id: '+data.registrationId);
             
             
         });
