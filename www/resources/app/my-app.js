@@ -2420,8 +2420,7 @@ function login(){
                                      mobileToken, 
                                      deviceToken, 
                                      deviceType);                                
-    JSONrequest(urlLogin, function(result){
-        console.log('here');
+    JSONrequest(urlLogin, function(result){        
            console.log(result);
             if(result.MajorCode == '000') {
             	//var info = plus.push.getClientInfo();
