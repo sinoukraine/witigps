@@ -82,6 +82,8 @@ function onPlusReady(){
     plus.push.addEventListener("receive", onPushRecieve, false );
     plus.push.addEventListener("click", onPushClick, false );*/
 
+    document.addEventListener("backbutton", backFix, false); 
+
     setupPush();
 }
 
@@ -123,7 +125,7 @@ function setupPush(){
 
             var input = document.getElementById('input');
             input.setAttribute('value', data.registrationId);*/
-            alert('push reg id: '+data.registrationId);
+            //alert('push reg id: '+data.registrationId);
             
             
         });
@@ -272,12 +274,23 @@ function onAppNewintent() {
 }
  
 
-function backFix(event){
+/*function backFix(event){
     var page=App.getCurrentView().activePage;        
     if(page.name=="index"){           
         var ws=plus.webview.currentWebview();
         App.confirm(LANGUAGE.PROMPT_MSG015, function () {        
             ws.close();
+        });
+    }else{
+        mainView.router.back();
+    } 
+}*/
+function backFix(event){
+    var page=App.getCurrentView().activePage;        
+    if(page.name=="index"){           
+        //var ws=plus.webview.currentWebview();
+        App.confirm(LANGUAGE.PROMPT_MSG015, function () {        
+            navigator.app.exitApp();
         });
     }else{
         mainView.router.back();
