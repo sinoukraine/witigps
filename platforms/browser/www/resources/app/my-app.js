@@ -1,28 +1,3 @@
-JSON.request = function(url,success,error){
-    /*if(url.indexOf("&callback=?")<0){
-        if(url.indexOf("?")>0){
-            url+="&callback=?"
-        }else{
-            url+="?callback=?"
-        }
-    }*/
-    $.ajax({
-        async:true,
-        url:url,
-        type:"get",
-        //dataType:"jsonp",
-        //jsonp:"callback",
-        success:function(result){
-            if(typeof(success)=='function'){
-                success(typeof(result)=='string'?eval(result):result)
-            }
-        },
-        error:function(){
-            if(typeof(error)=='function'){error()}
-        }
-    })
-};
-
 $hub = null;
 window.NULL = null;
 window.COM_TIMEFORMAT = 'YYYY-MM-DD HH:mm:ss';
@@ -946,7 +921,7 @@ App.onPageInit('forgotPwd', function(page) {
         }else{
             var url = API_URL.URL_VERIFY_BY_EMAIL.format(email);             
             App.showPreloader();
-            JSON.request(url, function(result){                 
+            JSONrequest(url, function(result){                 
                     console.log(result);     
 
                     if (result.MajorCode == '000' && result.MinorCode == '0000') {
@@ -1000,7 +975,7 @@ App.onPageInit('forgotPwdNew', function(page) {
             }else{
                 var url = API_URL.URL_FORGOT_PASSWORD.format(email,encodeURIComponent(newPassword),verifyCheck.CheckCode);             
                 App.showPreloader();
-                JSON.request(url, function(result){ 
+                JSONrequest(url, function(result){ 
                         if (result.MajorCode == '000' && result.MinorCode == '0000') {
                             App.alert(LANGUAGE.PASSWORD_FORGOT_MSG12);
                             $$('#account').val(email);
@@ -1214,7 +1189,7 @@ App.onPageInit('asset.edit', function (page) {
     	console.log(url);
 
         App.showPreloader();
-        JSON.request(url, function(result){ 
+        JSONrequest(url, function(result){ 
                 console.log(result);                  
                 if (result.MajorCode == '000') {
                     TargetAsset.ASSET_IMG = '';
@@ -1271,7 +1246,7 @@ App.onPageInit('profile', function (page) {
                 user.EMail
             ); 
         App.showPreloader();
-        JSON.request(url, function(result){ 
+        JSONrequest(url, function(result){ 
                 console.log(result);                  
                 if (result.MajorCode == '000') {                    
                     userInfo.User = {
@@ -1451,7 +1426,7 @@ App.onPageInit('alarms.select', function (page) {
             );                    
         
         App.showPreloader();
-        JSON.request(url, function(result){ 
+        JSONrequest(url, function(result){ 
                 console.log(result);                  
                 if (result.MajorCode == '000') {                    
                     //setAlarmList(alarmOptions);
@@ -1770,7 +1745,7 @@ App.onPageInit('resetPwd', function (page) {
                     ); 
                 //console.log(url);
                 App.showPreloader();
-                JSON.request(url, function(result){ 
+                JSONrequest(url, function(result){ 
                         //console.log(result);                  
                         if (result.MajorCode == '000') { 
                             App.alert(LANGUAGE.PROMPT_MSG003, function(){
@@ -1841,7 +1816,7 @@ App.onPageInit('asset.alarm', function (page) {
             );                    
 
         App.showPreloader();
-        JSON.request(url, function(result){ 
+        JSONrequest(url, function(result){ 
                 console.log(result);                  
                 if (result.MajorCode == '000') {                    
                     //setAlarmList(alarmOptions);
@@ -2203,7 +2178,7 @@ App.onPageInit('asset.track', function (page) {
            
         var url = API_URL.URL_GET_POSITION_GPRS.format(MinorToken,TargetAsset.ASSET_ID); 
         // console.log(url);  
-        JSON.request(url, function(result) {           
+        JSONrequest(url, function(result) {           
                 console.log(result);
                 if(result.MajorCode == '000') {
                     setTimeout(updateAssetDataByGPRS,10000);
@@ -2413,10 +2388,10 @@ function clearUserInfo(){
     
     /*if(MinorToken){      
         console.log(API_URL.URL_GET_LOGOUT2.format(MajorToken, MinorToken, userName, mobileToken));
-        JSON.request(API_URL.URL_GET_LOGOUT2.format(MajorToken, MinorToken, userName, mobileToken), function(result){ console.log(result); });         
+        JSONrequest(API_URL.URL_GET_LOGOUT2.format(MajorToken, MinorToken, userName, mobileToken), function(result){ console.log(result); });         
     }   */
     	//console.log(API_URL.URL_GET_LOGOUT.format(mobileToken));
-        JSON.request(API_URL.URL_GET_LOGOUT.format(mobileToken), function(result){ console.log(result); });         
+        JSONrequest(API_URL.URL_GET_LOGOUT.format(mobileToken), function(result){ console.log(result); });         
     
     $$("input[name='account']").val(userName);
 }
@@ -2445,7 +2420,8 @@ function login(){
                                      mobileToken, 
                                      deviceToken, 
                                      deviceType);                                
-    JSON.request(urlLogin, function(result){
+    JSONrequest(urlLogin, function(result){
+        console.log('here');
            console.log(result);
             if(result.MajorCode == '000') {
             	//var info = plus.push.getClientInfo();
@@ -3381,7 +3357,7 @@ function updateAssetData(parameters){
     if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
     App.showProgressbar(container);
 
-    JSON.request(url, function(result){ 
+    JSONrequest(url, function(result){ 
                                
             if (result.MajorCode == '000' ) {               
                 if (result.Data) {
@@ -3421,7 +3397,7 @@ function updateAssetDataByGPRS(){
     if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
     App.showProgressbar(container);
 
-    JSON.request(url, function(result){ 
+    JSONrequest(url, function(result){ 
             //console.log(result);                     
             if (result.MajorCode == '000' ) {               
                 if (result.Data) {                    
@@ -3490,7 +3466,7 @@ function getHisPosArray(from, to){
     
     App.showPreloader();
    
-	JSON.request(url, function(result) {	       
+	JSONrequest(url, function(result) {	       
 	                      // console.log(result);
 	        if(result.MajorCode == '000') {
 	        	var hisArray = result.Data.HisArry;  
@@ -3588,7 +3564,7 @@ function getHisPosArray(from, to){
     };
 
     App.showPreloader();   
-    JSON.requestPost(API_URL.URL_GET_POSITION_ARR2,data,function(result) {           
+    JSONrequestPost(API_URL.URL_GET_POSITION_ARR2,data,function(result) {           
             console.log(result);
             if (result.data && result.data.waypoints && result.data.waypoints.original.length === 0) {
                 App.addNotification({
@@ -3781,8 +3757,8 @@ function updateAssetsPosInfo(){
         'codes': codes,
     };
     //console.log(data);
-    //JSON.request(url, function(result){ 
-    JSON.requestPost(url,data, function(result){    
+    //JSONrequest(url, function(result){ 
+    JSONrequestPost(url,data, function(result){    
     
             //console.log(result);                     
             if (result.MajorCode == '000') {
@@ -3993,7 +3969,7 @@ function setAssetListPosInfo(listObj){
     };
     //console.log(data);
     loginDone = 0;
-    JSON.requestPost(url,data, function(result){   
+    JSONrequestPost(url,data, function(result){   
             console.log(result);                       
             if (result.MajorCode == '000') {
                 var data = result.Data;    
@@ -4068,7 +4044,7 @@ function getNewNotifications(params){
         var url = API_URL.URL_GET_NEW_NOTIFICATIONS.format(MinorToken,deviceToken); 
         notificationChecked = 0;
 
-        JSON.request(url, function(result){
+        JSONrequest(url, function(result){
                 App.hideProgressbar();            
                 notificationChecked = 1;
                 if (params && params.ptr === true) {
