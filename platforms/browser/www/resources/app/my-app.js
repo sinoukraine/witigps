@@ -87,7 +87,11 @@ function onPlusReady(){
 function setupPush(){
         var push = PushNotification.init({
             "android": {
-                //"senderID": "264121929701"               
+                //"senderID": "264121929701"
+                //asdasdas
+                //asdasdsd
+                //asdasd
+                //asdasdas               
             },
             "browser": {
                 pushServiceURL: 'http://push.api.phonegap.com/v1/push'
