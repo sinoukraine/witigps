@@ -52,11 +52,7 @@ if( navigator.userAgent.match(/Windows/i) ){
 document.addEventListener("deviceready", onPlusReady, false ); 
 
 function onPlusReady(){   
-	/*if ( navigator.userAgent.match(/Android/i) ) { 
-        var pushManager = plus.android.importClass("com.igexin.sdk.PushManager");
-        var context = plus.android.runtimeMainActivity();
-        pushManager.getInstance().turnOnPush(context);
-    }  */
+	
     getPlusInfo();
 
    /* if　(!localStorage.ACCOUNT){
@@ -75,14 +71,15 @@ function onPlusReady(){
     /*plus.key.addEventListener("backbutton", backFix, false);      
     document.addEventListener("background", onAppBackground, false);
     document.addEventListener("foreground", onAppForeground, false);    
-    document.addEventListener("resume", onAppReume, false);
-    document.addEventListener("pause", onAppPause, false);
+    
     document.addEventListener("newintent", onAppNewintent, false);  
 
     plus.push.addEventListener("receive", onPushRecieve, false );
     plus.push.addEventListener("click", onPushClick, false );*/
 
     document.addEventListener("backbutton", backFix, false); 
+    document.addEventListener("resume", onAppReume, false);
+    document.addEventListener("pause", onAppPause, false);
 
     setupPush();
 }
@@ -143,6 +140,10 @@ function setupPush(){
                 'Ok'                  // buttonName
             );
        });
+
+        if　(!localStorage.ACCOUNT){
+            push.clearAllNotifications();
+        }
 }
 
 function onPushClick (msg){     // will work in iOS
@@ -439,13 +440,14 @@ var cameraButtons = [
     {
         text: 'Take picture',
         onClick: function () {
-            getImage();
+            getImage(1);
         }
     },
     {
         text: 'From gallery',
         onClick: function () {
-            galleryImgs();
+            //galleryImgs();
+            getImage(0);
         }
     },
     {
@@ -4510,7 +4512,7 @@ function saveImg(){
 }   
 
 //Take pictures
-function getImage() {
+/*function getImage() {
     if(window.plus){
         var cmr = plus.camera.getCamera();
         cmr.captureImage( function (p) {
@@ -4536,9 +4538,43 @@ function galleryImgs(){
         console.log('Plus not found');
     }
         
+}*/
+
+function getImage(source){
+    
+    if (!navigator.camera) {
+        alert("Camera API not supported", "Error");
+        
+    }else{
+        var options = { quality: 50,
+                        destinationType: Camera.DestinationType.DATA_URL,
+                        sourceType: source,      // 0:Photo Library, 1=Camera, 2=Saved Album
+                        encodingType: 0     // 0=JPG 1=PNG
+                      };
+        navigator.camera.getPicture(
+            function(imgData) {
+              //$('.media-object', this.$el).attr('src', "data:image/jpeg;base64,"+imgData);
+                mainView.router.load({
+                    url: 'resources/templates/asset.edit.photo.html',
+                    context: {
+                        imgSrc: imgData
+                    }
+                });
+            
+            },
+            function() {
+                alert('Error taking picture', 'Error');
+            },
+            options);
+    }
+        
+
+        
+
+     
 }
 
-function GetBase64Code(path) //image path
+/*function GetBase64Code(path) //image path
 {
     var bitmap = new plus.nativeObj.Bitmap("test");
     // load image
@@ -4557,4 +4593,4 @@ function GetBase64Code(path) //image path
         //alert('ERRORЈє'+JSON.stringify(e));
     });
 }
-
+*/
