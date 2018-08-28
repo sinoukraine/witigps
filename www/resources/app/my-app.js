@@ -333,7 +333,7 @@ function webSockConnect(){
                 }else if(deviceType == "web"){
                     showNotification(all_msg);
                 }*/
-                showMsgNotification(all_msg);
+               // showMsgNotification(all_msg);
             }
                 
         }
@@ -4988,7 +4988,9 @@ function showMsgNotification(arrMsgJ){
                         App.closeNotification('.notifications');
                         $$('.notification_button').removeClass('new_not'); 
                         
-                        mainView.router.loadPage('resources/templates/notification.html');
+                        //mainView.router.loadPage('resources/templates/notification.html');
+                        processClickOnPushNotification([msg]);
+
                     },                          
                 });                
             }
