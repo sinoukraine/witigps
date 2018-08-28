@@ -290,7 +290,7 @@ function backFix(event){
 
 function webSockConnect(){    
     var MinorToken = getUserinfo().MinorToken;
-    var deviceToken = !localStorage["PUSH_DEVICE_TOKEN"]? '123' : localStorage["PUSH_DEVICE_TOKEN"];
+    var deviceToken = !localStorage.PUSH_REGISTRATION_ID? '123' : localStorage.PUSH_REGISTRATION_ID;
     $hub = hubHelper({ url :"http://api.Quikdata.co:8088/",
                            qs: {
                                 MinorToken : MinorToken,
@@ -2632,10 +2632,10 @@ function login(){
     getPlusInfo();
     //hideKeyboard();
 
-    var mobileToken = !localStorage.PUSH_MOBILE_TOKEN? '123' : localStorage.PUSH_MOBILE_TOKEN;
-    var appKey = !localStorage.PUSH_APP_KEY? '123' : localStorage.PUSH_APP_KEY;
-    //var deviceToken = !localStorage.PUSH_DEVICE_TOKEN? '123' : localStorage.PUSH_DEVICE_TOKEN;
-    var deviceToken = !localStorage.PUSH_REGISTRATION_ID ? '123' : localStorage.PUSH_REGISTRATION_ID;
+    var mobileToken = !localStorage.PUSH_MOBILE_TOKEN? '111' : localStorage.PUSH_MOBILE_TOKEN;
+    var appKey = !localStorage.PUSH_APP_KEY? '111' : localStorage.PUSH_APP_KEY;
+    //var deviceToken = !localStorage.PUSH_DEVICE_TOKEN? '111' : localStorage.PUSH_DEVICE_TOKEN;
+    var deviceToken = !localStorage.PUSH_REGISTRATION_ID ? '111' : localStorage.PUSH_REGISTRATION_ID;
     var deviceType = !localStorage.DEVICE_TYPE? 'web' : localStorage.DEVICE_TYPE;
     var account = $$("input[name='account']");
     var password = $$("input[name='password']");  
