@@ -102,7 +102,7 @@ function setupPush(){
         push.on('registration', function(data) {
             console.log('registration event: ' + data.registrationId);  
             //alert( JSON.stringify(data) );         
-            App.alert(data.registrationId);
+            //App.alert(data.registrationId);
             localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
         });
 
@@ -119,17 +119,16 @@ function setupPush(){
                 data.title,           // title
                 'Ok'                  // buttonName
             );*/
-            alert( JSON.stringify(data) );
+            //alert( JSON.stringify(data) );
 
             //if user using app and push notification comes
             if (data && data.additionalData && data.additionalData.foreground) {
-               // if application open, show popup
-               var all_msg = [];
-               all_msg.push(data.additionalData);
-               showMsgNotification(all_msg);
+               // if application open, show popup               
+               showMsgNotification([data.additionalData]);
             }
-            else{
+            else if (data && data.additionalData && data.additionalData.payload){
                //if user NOT using app and push notification comes
+               processClickOnPushNotification([data.additionalData.payload]);
             }
        });
 
