@@ -103,7 +103,7 @@ function setupPush(){
             console.log('registration event: ' + data.registrationId);  
             //alert( JSON.stringify(data) );         
             App.alert(data.registrationId);
-            localStorage.PUSH_REGISTRATION_ID = data.registrationId;
+            localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
         });
 
         push.on('error', function(e) {
@@ -290,7 +290,7 @@ function backFix(event){
 
 function webSockConnect(){    
     var MinorToken = getUserinfo().MinorToken;
-    var deviceToken = !localStorage.PUSH_REGISTRATION_ID? '123' : localStorage.PUSH_REGISTRATION_ID;
+    var deviceToken = !localStorage.PUSH_DEVICE_TOKEN? '123' : localStorage.PUSH_DEVICE_TOKEN;
     $hub = hubHelper({ url :"http://api.Quikdata.co:8088/",
                            qs: {
                                 MinorToken : MinorToken,
@@ -306,7 +306,7 @@ function webSockConnect(){
             /*if (!inBrowser) {                
                 plus.push.clear();
             }  */          
-            alert('websocket msg received');
+            //alert('websocket msg received');
             console.log(msg);
             var objMsg = isJsonString(msg);      
             if ( objMsg ) {
@@ -2602,7 +2602,7 @@ function preLogin(){
     hideKeyboard();
     //getPlusInfo();
     App.showPreloader();
-    if  (localStorage.PUSH_REGISTRATION_ID){             
+    if  (localStorage.PUSH_DEVICE_TOKEN){             
         login();
     }else{              
         loginInterval = setInterval( reGetPushDetails, 500);                
@@ -2614,7 +2614,7 @@ function reGetPushDetails(){
     //getPlusInfo();
     if  (pushConfigRetry <= pushConfigRetryMax){
         pushConfigRetry++;
-        if  (localStorage.PUSH_REGISTRATION_ID){                 
+        if  (localStorage.PUSH_DEVICE_TOKEN){                 
             clearInterval(loginInterval);
             login();
         }               
@@ -2635,7 +2635,7 @@ function login(){
     var mobileToken = !localStorage.PUSH_MOBILE_TOKEN? '111' : localStorage.PUSH_MOBILE_TOKEN;
     var appKey = !localStorage.PUSH_APP_KEY? '111' : localStorage.PUSH_APP_KEY;
     //var deviceToken = !localStorage.PUSH_DEVICE_TOKEN? '111' : localStorage.PUSH_DEVICE_TOKEN;
-    var deviceToken = !localStorage.PUSH_REGISTRATION_ID ? '111' : localStorage.PUSH_REGISTRATION_ID;
+    var deviceToken = !localStorage.PUSH_DEVICE_TOKEN ? '111' : localStorage.PUSH_DEVICE_TOKEN;
     var deviceType = !localStorage.DEVICE_TYPE? 'web' : localStorage.DEVICE_TYPE;
     var account = $$("input[name='account']");
     var password = $$("input[name='password']");  
