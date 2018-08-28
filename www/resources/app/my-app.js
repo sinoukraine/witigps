@@ -448,13 +448,13 @@ var cameraButtons = [
     {
         text: 'Take picture',
         onClick: function () {
-            getImage();
+            getImage(1);
         }
     },
     {
         text: 'From gallery',
         onClick: function () {
-            galleryImgs();
+            getImage(0);
         }
     },
     {
@@ -5288,6 +5288,7 @@ function getImage(source){
                         sourceType: source,      // 0:Photo Library, 1=Camera, 2=Saved Album
                         encodingType: 0     // 0=JPG 1=PNG
                       };
+                      
         navigator.camera.getPicture(
             function(imgData) {
               //$('.media-object', this.$el).attr('src', "data:image/jpeg;base64,"+imgData);
@@ -5304,11 +5305,7 @@ function getImage(source){
             },
             options);
     }
-        
-
-        
-
-     
+           
 }
 
 /*function GetBase64Code(path) //image path
