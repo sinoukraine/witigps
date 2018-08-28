@@ -128,8 +128,11 @@ function setupPush(){
             }
             else if (data && data.additionalData && data.additionalData.payload){
                //if user NOT using app and push notification comes
+                var container = $$('body');
+                if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
+                App.showProgressbar(container); 
                
-               loginTimer = setInterval(function() {
+                loginTimer = setInterval(function() {
                     //alert(loginDone);
                     if (loginDone) {
                         clearInterval(loginTimer);
