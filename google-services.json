@@ -1,27 +1,58 @@
 {
   "project_info": {
-    "project_number": "264121929701",
-    "firebase_url": "https://test-quiktrak.firebaseio.com",
-    "project_id": "test-quiktrak",
-    "storage_bucket": "test-quiktrak.appspot.com"
+    "project_number": "106187216531",
+    "firebase_url": "https://gps-installer.firebaseio.com",
+    "project_id": "gps-installer",
+    "storage_bucket": "gps-installer.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:264121929701:android:8af9ccc877a0f426",
+        "mobilesdk_app_id": "1:106187216531:android:2caca56ee96938e8",
+        "android_client_info": {
+          "package_name": "com.sinopacific.installergps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "106187216531-hgd16s9tq2a3tr8hmbpct64qbqpjcdbc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBT7Gq31LoSrZcHwggzPYgVR8Wv--Y4oMM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106187216531:android:8af9ccc877a0f426",
         "android_client_info": {
           "package_name": "com.sinopacific.quiktrak"
         }
       },
       "oauth_client": [
         {
-          "client_id": "264121929701-oemgla5uiki5p6v6ana5acqauttn34rh.apps.googleusercontent.com",
+          "client_id": "106187216531-hgd16s9tq2a3tr8hmbpct64qbqpjcdbc.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCY4lCSkHSNFfyWx71K8n6HY0u1eSnwQvY"
+          "current_key": "AIzaSyBT7Gq31LoSrZcHwggzPYgVR8Wv--Y4oMM"
         }
       ],
       "services": {
