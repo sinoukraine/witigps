@@ -76,7 +76,7 @@ function onDeviceReady(){
     }
 
     document.addEventListener("backbutton", backFix, false); 
-    document.addEventListener("resume", onAppReume, false);
+    document.addEventListener("resume", onAppResume, false);
     document.addEventListener("pause", onAppPause, false);
 
     setupPush();
@@ -257,7 +257,7 @@ function onAppPause(){
         $hub.stop();
     }
 } 
-function onAppReume(){ 
+function onAppResume(){ 
     getNewNotifications(); 
     if (localStorage.ACCOUNT && localStorage.PASSWORD) {
         getNewData();
@@ -4690,6 +4690,7 @@ function updateAlarmOptVal(alarmOptions) {
 }
 
 function getNewData(){
+    alert('here');
     getPlusInfo();
     //hideKeyboard();    
     
@@ -4704,7 +4705,7 @@ function getNewData(){
                                      encodeURIComponent(localStorage.PASSWORD), 
                                      appKey, 
                                      mobileToken, 
-                                     deviceToken, 
+                                     encodeURIComponent(deviceToken), 
                                      deviceType);   
     //console.log(urlLogin);                             
     JSON.request(urlLogin, function(result){
