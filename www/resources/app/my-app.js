@@ -122,8 +122,11 @@ function setupPush(){
             alert( JSON.stringify(data) );
 
             //if user using app and push notification comes
-            if (data.additionalData.foreground) {
+            if (data && data.additionalData && data.additionalData.foreground) {
                // if application open, show popup
+               var all_msg = [];
+               all_msg.push(data.additionalData);
+               showMsgNotification(all_msg);
             }
             else{
                //if user NOT using app and push notification comes
