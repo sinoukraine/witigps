@@ -128,7 +128,18 @@ function setupPush(){
             }
             else if (data && data.additionalData && data.additionalData.payload){
                //if user NOT using app and push notification comes
-               processClickOnPushNotification([data.additionalData.payload]);
+               
+               loginTimer = setInterval(function() {
+                    //alert(loginDone);
+                    if (loginDone) {
+                        clearInterval(loginTimer);
+                        setTimeout(function(){
+                            //alert('before processClickOnPushNotification');
+                            processClickOnPushNotification([data.additionalData.payload]);
+                            App.hideProgressbar(container);               
+                        },1000); 
+                    }
+                }, 1000); 
             }
        });
 
@@ -2582,6 +2593,10 @@ function clearUserInfo(){
         
     if (pushList) {
         localStorage.setItem("COM.QUIKTRAK.LIVE.NOTIFICATIONLIST.BW", JSON.stringify(pushList));
+    }
+
+    if (deviceToken) {
+        localStorage.PUSH_DEVICE_TOKEN = deviceToken; 
     }
     
     /*if(MinorToken){      
