@@ -422,7 +422,7 @@ var API_DOMIAN4 = "http://api.m2mglobaltech.com/Quikloc8/V1/";
 var API_URL = {};
 API_URL.URL_GET_LOGIN = API_DOMIAN1 + "User/Auth?username={0}&password={1}&appKey={2}&mobileToken={3}&deviceToken={4}&deviceType={5}";
 //API_URL.URL_GET_LOGOUT2 = API_DOMIAN1 + "User/Logoff2?MajorToken={0}&MinorToken={1}&username={2}&mobileToken={3}";
-API_URL.URL_GET_LOGOUT = API_DOMIAN1 + "User/Logoff2?mobileToken={0}";
+API_URL.URL_GET_LOGOUT = API_DOMIAN1 + "User/Logoff2?mobileToken={0}&deviceToken={1}";
 API_URL.URL_EDIT_ACCOUNT = API_DOMIAN1 + "User/Edit?MajorToken={0}&MinorToken={1}&FirstName={2}&SubName={3}&Mobile={4}&Phone={5}&EMail={6}";
 API_URL.URL_EDIT_DEVICE = API_DOMIAN1 + "Device/Edit?MinorToken={0}&Code={1}&name={2}&speedUnit={3}&initMileage={4}&initAccHours={5}&attr1={6}&attr2={7}&attr3={8}&attr4={9}&tag={10}&icon={11}&MajorToken={12}";
 
@@ -2607,7 +2607,7 @@ function clearUserInfo(){
         JSON.request(API_URL.URL_GET_LOGOUT2.format(MajorToken, MinorToken, userName, mobileToken), function(result){ console.log(result); });         
     }   */
     	//console.log(API_URL.URL_GET_LOGOUT.format(mobileToken));
-        JSON.request(API_URL.URL_GET_LOGOUT.format(mobileToken), function(result){ console.log(result); });         
+        JSON.request(API_URL.URL_GET_LOGOUT.format(mobileToken, deviceToken), function(result){ console.log(result); });         
     
     $$("input[name='account']").val(userName);
 }
