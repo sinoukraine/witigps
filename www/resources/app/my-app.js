@@ -119,7 +119,7 @@ function setupPush(){
                 data.title,           // title
                 'Ok'                  // buttonName
             );*/
-            alert( JSON.stringify(data) );
+            //alert( JSON.stringify(data) );
 
             //if user using app and push notification comes
             if (data && data.additionalData && data.additionalData.foreground) {
@@ -2668,7 +2668,7 @@ function login(){
                                      mobileToken, 
                                      encodeURIComponent(deviceToken), 
                                      deviceType);   
-    alert(urlLogin);
+    //alert(urlLogin);
     //console.log(urlLogin);                             
     JSON.request(urlLogin, function(result){
            console.log(result);
@@ -4690,7 +4690,7 @@ function updateAlarmOptVal(alarmOptions) {
 }
 
 function getNewData(){
-    alert('here');
+    //alert('here');
     getPlusInfo();
     //hideKeyboard();    
     
