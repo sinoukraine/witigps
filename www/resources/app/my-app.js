@@ -2651,6 +2651,7 @@ function login(){
                                      mobileToken, 
                                      encodeURIComponent(deviceToken), 
                                      deviceType);   
+    alert(urlLogin);
     //console.log(urlLogin);                             
     JSON.request(urlLogin, function(result){
            console.log(result);
