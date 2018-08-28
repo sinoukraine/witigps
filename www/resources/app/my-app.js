@@ -102,7 +102,7 @@ function setupPush(){
         push.on('registration', function(data) {
             console.log('registration event: ' + data.registrationId);  
             //alert( JSON.stringify(data) );         
-            //App.alert(data.registrationId);
+            App.alert(data.registrationId);
             localStorage.PUSH_REGISTRATION_ID = data.registrationId;
         });
 
@@ -5288,7 +5288,7 @@ function getImage(source){
                         sourceType: source,      // 0:Photo Library, 1=Camera, 2=Saved Album
                         encodingType: 0     // 0=JPG 1=PNG
                       };
-                      
+
         navigator.camera.getPicture(
             function(imgData) {
               //$('.media-object', this.$el).attr('src', "data:image/jpeg;base64,"+imgData);
