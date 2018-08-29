@@ -5368,7 +5368,7 @@ function getImage(source){
             
             },
             function() {
-                alert('Error taking picture', 'Error');
+                //alert('Error taking picture', 'Error');
             },
             options);
     }
