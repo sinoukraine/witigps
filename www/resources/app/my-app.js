@@ -2652,6 +2652,8 @@ function login(){
     getPlusInfo();
     //hideKeyboard();
 
+
+
     var mobileToken = !localStorage.PUSH_MOBILE_TOKEN? '111' : localStorage.PUSH_MOBILE_TOKEN;
     var appKey = !localStorage.PUSH_APP_KEY? '111' : localStorage.PUSH_APP_KEY;
     //var deviceToken = !localStorage.PUSH_DEVICE_TOKEN? '111' : localStorage.PUSH_DEVICE_TOKEN;
@@ -2668,7 +2670,7 @@ function login(){
                                      mobileToken, 
                                      encodeURIComponent(deviceToken), 
                                      deviceType);   
-    //alert(urlLogin);
+    App.alert(urlLogin);
     //console.log(urlLogin);                             
     JSON.request(urlLogin, function(result){
            console.log(result);
