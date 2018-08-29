@@ -1,9 +1,9 @@
 String.prototype.format = function (e) { var t = this; if (arguments.length > 0) if (arguments.length == 1 && typeof e == "object") { for (var n in e) if (e[n] != undefined) { var r = new RegExp("({" + n + "})", "g"); t = t.replace(r, e[n]) } } else for (var i = 0; i < arguments.length; i++) if (arguments[i] != undefined) { var r = new RegExp("({)" + i + "(})", "g"); t = t.replace(r, arguments[i]) } return t };
 String.prototype.subStrEx = function (e) { return this.length + 3 > e ? this.substr(0, e) + "..." : this };
 function isUndefined(e) { return "undefined" == typeof e };
-function JSONrequest(url,success,error){if(url.indexOf("&callback=?")<0){if(url.indexOf("?")>0){url+="&callback=?"}else{url+="?callback=?"}}$.ajax({async:true,url:url,type:"get",dataType:"jsonp",jsonp:"callback",success:function(result){if(typeof(success)=='function'){success(typeof(result)=='string'?eval(result):result)}},error:function(){if(typeof(error)=='function'){error()}}})};
-function JSONjsonp(url,funcCallback){window.parseLocation=function(results){var response=$.parseJSON(results);document.body.removeChild(document.getElementById('getJsonP'));delete window.parseLocation;if(funcCallback){funcCallback(response)}};function getJsonP(url){url=url+'&callback=parseLocation';var script=document.createElement('script');script.id='getJsonP';script.src=url;script.async=true;document.body.appendChild(script)}if(XMLHttpRequest){var xhr=new XMLHttpRequest();if('withCredentials'in xhr){var xhr=new XMLHttpRequest();xhr.onreadystatechange=function(){if(xhr.readyState==4){if(xhr.status==200){var response=$.parseJSON(xhr.responseText);if(funcCallback){funcCallback(response)}}else if(xhr.status==0||xhr.status==400){getJsonP(url)}else{}}};xhr.open('GET',url,true);xhr.send()}else if(XDomainRequest){var xdr=new XDomainRequest();xdr.onerror=function(err){};xdr.onload=function(){var response=JSON.parse(xdr.responseText);if(funcCallback){funcCallback(response)}};xdr.open('GET',url);xdr.send()}else{getJsonP(url)}}};
-function JSONrequestPost(url,data,success,error){$.ajax({async:true,url:url,data:data,type:"POST",dataType:"json",success:function(result){if(typeof(success)=='function'){success(typeof(result)=='string'?eval(result):result)}},error:function(){if(typeof(error)=='function'){error()}}})};
+JSON.request=function(url,success,error){if(url.indexOf("&callback=?")<0){if(url.indexOf("?")>0){url+="&callback=?"}else{url+="?callback=?"}}$.ajax({async:true,url:url,type:"get",dataType:"jsonp",jsonp:"callback",success:function(result){if(typeof(success)=='function'){success(typeof(result)=='string'?eval(result):result)}},error:function(){if(typeof(error)=='function'){error()}}})};
+JSON.jsonp=function(url,funcCallback){window.parseLocation=function(results){var response=$.parseJSON(results);document.body.removeChild(document.getElementById('getJsonP'));delete window.parseLocation;if(funcCallback){funcCallback(response)}};function getJsonP(url){url=url+'&callback=parseLocation';var script=document.createElement('script');script.id='getJsonP';script.src=url;script.async=true;document.body.appendChild(script)}if(XMLHttpRequest){var xhr=new XMLHttpRequest();if('withCredentials'in xhr){var xhr=new XMLHttpRequest();xhr.onreadystatechange=function(){if(xhr.readyState==4){if(xhr.status==200){var response=$.parseJSON(xhr.responseText);if(funcCallback){funcCallback(response)}}else if(xhr.status==0||xhr.status==400){getJsonP(url)}else{}}};xhr.open('GET',url,true);xhr.send()}else if(XDomainRequest){var xdr=new XDomainRequest();xdr.onerror=function(err){};xdr.onload=function(){var response=JSON.parse(xdr.responseText);if(funcCallback){funcCallback(response)}};xdr.open('GET',url);xdr.send()}else{getJsonP(url)}}};
+JSON.requestPost=function(url,data,success,error){$.ajax({async:true,url:url,data:data,type:"POST",dataType:"json",success:function(result){if(typeof(success)=='function'){success(typeof(result)=='string'?eval(result):result)}},error:function(){if(typeof(error)=='function'){error()}}})};
 
 CustomerInfo = {};
 CustomerInfo.TimeZone = moment().utcOffset() / 60;
@@ -112,6 +112,10 @@ Protocol = {
         "Alt":2,
         "Speed":8,
         "Voltage":512
+    },
+    StatusNewEnum:{
+        "Geolock" : 1,
+        "Immobilise": 2,
     },
     Helper: {
         getSpeedValue: function (speedUnit, speed) {
@@ -277,10 +281,25 @@ Protocol = {
             }
             return ret;
         },
+        getGeoImmobState: function(val){            
+            var ret = {
+                Geolock : false,
+                Immobilise : false
+            };
+            if (val) {
+                if ((parseInt(val) & 1) > 0) {        
+                    ret.Geolock = true; 
+                }
+                if ((parseInt(val) & 2) > 0) {        
+                    ret.Immobilise = true; 
+                }
+            }            
+            return ret;
+        },
         getAddressByGeocoder: function(latlng,replyFunc){
             /*var url = "http://map.quiktrak.co/reverse.php?format=json&lat={0}&lon={1}&zoom=18&addressdetails=1".format(latlng.lat, latlng.lng);
             JSON.request(url, function(result){ replyFunc(result.display_name);});*/
-            var coords = LANGUAGE.COM_MSG09 + ': ' + latlng.lat + ', ' + LANGUAGE.COM_MSG10 + ': ' + latlng.lng;
+            var coords = latlng.lat + ', ' + latlng.lng;
             $.ajax({
                    type: "GET",                    
                     url: "https://nominatim.sinopacific.com.ua/reverse.php?format=json&lat={0}&lon={1}&zoom=18&addressdetails=1".format(latlng.lat, latlng.lng),
@@ -376,21 +395,44 @@ Protocol = {
             var googleSatelitte = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
                 maxZoom: 20,
                 subdomains:['mt0','mt1','mt2','mt3']
-            });              
-            
+            });  
+         
+
             var map = L.map(option.target, { zoomControl: false, center: option.latLng, zoom: option.zoom, layers: [googleStreets] }); 
                         
             var layers = {
                 "<span class='mapSwitcherWrapper googleSwitcherWrapper'><img class='layer-icon' src='resources/images/googleRoad.png' alt='' /> <p>Map</p></span>": googleStreets,
                 "<span class='mapSwitcherWrapper satelliteSwitcherWrapper'><img class='layer-icon' src='resources/images/googleSatellite.png' alt='' />  <p>Satellite</p></span>": googleSatelitte,
-                "<span class='mapSwitcherWrapper openstreetSwitcherWrapper'><img class='layer-icon' src='resources/images/openStreet.png' alt='' /> <p>OpenStreet</p></span>": osm,
+                "<span class='mapSwitcherWrapper openstreetSwitcherWrapper'><img class='layer-icon' src='resources/images/openStreet.png' alt='' /> <p>OpenStreet</p></span>": osm,                 
             };
+           
+            
+            L.control.layers(layers).addTo(map);         
 
-            L.control.layers(layers).addTo(map);            
+            /*map.on('zoomend', function() {
+               console.log(map.getZoom());
+            });  */ 
 
             return map;
         },
-       
+        toDegreesMinutesAndSeconds: function (coordinate) {
+            var absolute = Math.abs(coordinate);
+            var degrees = Math.floor(absolute);
+            var minutesNotTruncated = (absolute - degrees) * 60;
+            var minutes = Math.floor(minutesNotTruncated);
+            var seconds = Math.floor((minutesNotTruncated - minutes) * 60);
+
+            return degrees + " " + minutes + " " + seconds;
+        },
+        convertDMS: function (lat, lng) {
+            var latitude = Protocol.Helper.toDegreesMinutesAndSeconds(lat);
+            var latitudeCardinal = Math.sign(lat) >= 0 ? "N" : "S";
+
+            var longitude = Protocol.Helper.toDegreesMinutesAndSeconds(lng);
+            var longitudeCardinal = Math.sign(lng) >= 0 ? "E" : "W";
+
+            return latitude + " " + latitudeCardinal + "\n" + longitude + " " + longitudeCardinal;
+        },
         getAssetStateInfo: function(asset){
             /*
                 state-0  -- gray
@@ -453,20 +495,21 @@ Protocol = {
                     }
                     if(asset.haveFeature("FuelSensor")){
                         ret.fuel = {};
-                        if(typeof asset.posInfo.fuel == "undefined"){
+                        if(typeof asset.posInfo.fuel == "undefined" || asset.posInfo.fuel == 0){
                             ret.fuel.value = LANGUAGE.COM_MSG11;
                         }else{
-                            ret.fuel.value = parseInt(((parseFloat(asset.posInfo.fuel) - asset._FIELD_FLOAT2) / (asset._FIELD_FLOAT1 - asset._FIELD_FLOAT2)) * 100) + '&nbsp;%';
+                            ret.fuel.value = parseInt(((parseFloat(asset.posInfo.fuel) - asset._FIELD_FLOAT2) / (asset._FIELD_FLOAT1 - asset._FIELD_FLOAT2)) * 100) + '&nbsp;%';                            
                         }                      
                     }
                     if(asset.haveFeature("Voltage")){
                         ret.voltage = {};
+                        //console.log(asset.posInfo.alt);
                         if(typeof asset.posInfo.alt == "undefined"){
                             ret.voltage.value = LANGUAGE.COM_MSG11;
-                        }else{
-                            ret.voltage.value = Math.round(asset.posInfo.alt*10)/10 + '&nbsp;V';
-                        } 
-                    }
+                        }else{                            
+                            ret.voltage.value = (asset.posInfo.alt > 50? LANGUAGE.COM_MSG11 : ""+ Math.round(asset.posInfo.alt*10)/10 + '&nbsp;V');
+                        }                         
+                    } 
                     if(asset.haveFeature("Mileage")) {                    
                         ret.mileage = {};
                         ret.mileage.value = (Protocol.Helper.getMileageValue(asset.Unit, asset.posInfo.mileage) + parseInt(asset.InitMileage) + parseInt(asset._FIELD_FLOAT7)) + '&nbsp;' + Protocol.Helper.getMileageUnit(asset.Unit);     
@@ -615,6 +658,26 @@ Protocol = {
                     }else if(asset.posInfo.speed === 0){
                         ret.GPS.state = 'state-1';
                     }
+
+                    ret.geolock = {
+                        value: false,
+                        state: 'state-0',
+                    };
+                    ret.immob = {
+                        value: false,
+                        state: 'state-0',
+                    };
+                    if (asset.StatusNew) {                       
+                        var geolockImmobSate = Protocol.Helper.getGeoImmobState(asset.StatusNew);
+                        if (geolockImmobSate.Geolock) {
+                            ret.geolock.value = geolockImmobSate.Geolock;
+                            ret.geolock.state = 'state-1';
+                        }
+                        if (geolockImmobSate.Immobilise) {
+                            ret.immob.value = geolockImmobSate.Immobilise;
+                            ret.immob.state = 'state-3'; 
+                        }
+                    }                   
                     
                 }  
             }
@@ -634,6 +697,7 @@ Protocol.Common = JClass({
         this.posInfo = {};
     },
     initDeviceInfo: function (arg) {
+        //console.log(arg);
         /*this.id = arg.ID;
         this.imei = arg.IMEI;
         this.protocolClass = arg.ProtocolClass;
@@ -677,7 +741,9 @@ Protocol.Common = JClass({
         this._FIELD_FLOAT2 = arg._FIELD_FLOAT2;
         this._FIELD_FLOAT7 = arg._FIELD_FLOAT7;
         this.AlarmOptions = arg.AlarmOptions;
-        this._FIELD_FLOAT8 = arg._FIELD_FLOAT8;       
+        this._FIELD_FLOAT8 = arg._FIELD_FLOAT8;
+        this.StatusNew = arg.StatusNew;    
+        this._FIELD_INT2 = arg._FIELD_INT2;   
     
     },
     initDeviceInfoEx:function(){},
@@ -723,6 +789,8 @@ Protocol.Common = JClass({
         posInfo.status = ary[20];
         posInfo.originalAlerts = ary[21];
         posInfo.originalStatus = ary[22];
+        //posInfo.Status = ary[22];
+
         this.initPosInfoEx(ary, posInfo);
         this.posInfo = posInfo;
         

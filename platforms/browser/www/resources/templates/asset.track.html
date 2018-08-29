@@ -15,26 +15,27 @@
 
     	<div class="position_map "> 
             <div class="float_button_wrapper pano_button_wrapper bg-blue">
-                <a href="#" class="link color-white pano_button" data-lat="{{Lat}}" data-lng="{{Lng}}">
+                <a href="#" class="link color-white pano_button" data-lat="{{Lat}}" data-lng="{{Lng}}" >
                     <i class="pano_preview_img"></i>                                   
                 </a>
             </div>
             <div class="float_button_wrapper gprs_button_wrapper bg-color-page">
-                <a href="#" class="link external color-white sendPing">
+                <a href="#" class="link color-white sendPing">
                     <i class="f7-icons icon-header-track color-white"></i>
                     <span>{{@global.LANGUAGE.ASSET_TRACK_MSG15}}</span>                    
+                </a>
+            </div>
+            <div class="float_button_wrapper route_button_wrapper bg-color-page">
+                <a href="#" class="link color-white routeButton" data-lat="{{Lat}}" data-lng="{{Lng}}" >
+                    <i class="f7-icons icon-other-route color-white"></i>
+                    <span>{{@global.LANGUAGE.ASSET_TRACK_MSG16}}</span>                    
                 </a>
             </div>
             <div class="map" id="map"></div>
     	</div>
         <div class="position_bottom">
             
-            <div class="row no-gutter">
-                <div class="col-100 color-white address">
-                    <!-- <img src="resources/images/svg_address.svg" alt=""> -->
-                    <i class="f7-icons icon-data-address color-white"></i>
-                    <p class="display_address">{{Address}}</p>
-                </div>
+            <div class="row no-gutter">                
                 <div class="col-33 color-white">
                     <i class="f7-icons icon-other-data color-white"></i>
                     <p>{{@global.LANGUAGE.ASSET_TRACK_MSG00}}</p>  
@@ -51,6 +52,15 @@
                     <p class="position_data position_mileage">{{Mileage}}</p>
                 </div>
                 
+            </div>
+            <div class="divider"></div>
+            <div class="row no-gutter">
+                <div class="col-100 color-white address">  
+                    <div class="position_bottom_img_right">
+                        <p class="display_address">{{Address}}</p>
+                        <div class="item-subtext position_latlng">{{Coords}}</div>  
+                    </div>
+                </div>
             </div>
             
         </div>

@@ -37,6 +37,19 @@
 	            	</label>
 	            </li>
 	            <li >
+                    <label class="label-checkbox item-content no-fastclick " >
+                        <input type="checkbox" name="checkbox-geolock" value="1024" {{#if geolock}}checked="checked"{{/if}}>
+                        <div class="item-inner">
+                            <div class="item-title-row">
+                                <div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG05}}</div>
+                                <div class="item-after">
+                                    <i class="icon icon-form-checkbox"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                </li>
+	            <li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox"  name="checkbox-accOff" value="65536" {{#if accOff}}checked="checked"{{/if}}>
 	            		<div class="item-inner">

@@ -3,11 +3,7 @@
   <head>
     <!-- Required meta tags-->
     <meta charset="utf-8">
-    
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="msapplication-tap-highlight" content="no" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
-    <!-- <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <!-- Color theme for statusbar -->
     <!-- <meta name="theme-color" content="#2196f3"> -->
@@ -92,65 +88,77 @@
     <script id="template_Popover_Menu" type="text/template7">
       <!-- Left panel -->
       <div class="panel panel-left panel-reveal">
-        <div class="menu_header">
-          <img class="vertical-center" src="resources/images/logo.png" alt="">
-        </div>
-        <div class="list-block menu" id="menu">
-          <div class="list-group">
-            <ul>
-              <li class="item-content list-panel-all close-panel item-link" id="menuHome">
-                <div class="item-media">                
-                  <i class="f7-icons icon-menu-home"></i>
-                </div>
-                <div class="item-inner">
-                  <div class="item-title">{{@global.LANGUAGE.MENU_MSG00}}</div>
-                </div>
-              </li> 
-              <li class="item-content list-panel-all close-panel item-link" id="menuGeofence">
-                <div class="item-media">
-                  <i class="f7-icons icon-menu-geofence"></i>
-                </div>
-                <div class="item-inner">
-                  <div class="item-title">{{@global.LANGUAGE.MENU_MSG01}}</div>
-                </div>
-              </li>  
-              <li class="item-content list-panel-all close-panel item-link" id="menuAlarms">
-                  <div class="item-media">
-                      <i class="f7-icons icon-menu-alarms"></i>
+        <div class="menu_wrapper">
+          <div class="menu_header">
+            <img class="vertical-center" src="resources/images/logo.png" alt="">
+          </div>
+          <div class="list-block menu" id="menu">
+            <div class="list-group">
+              <ul>
+                <li class="item-content list-panel-all close-panel item-link" id="menuHome">
+                  <div class="item-media">                
+                    <i class="f7-icons icon-menu-home"></i>
                   </div>
                   <div class="item-inner">
-                      <div class="item-title">{{@global.LANGUAGE.ALARM_MSG06}}</div>
+                    <div class="item-title">{{@global.LANGUAGE.MENU_MSG00}}</div>
                   </div>
-              </li>       
-              <li class="item-content list-panel-all close-panel item-link" id="menuProfile">
-                <div class="item-media">
-                  <i class="f7-icons icon-menu-profile"></i>
-                </div>
-                <div class="item-inner">
-                  <div class="item-title">{{@global.LANGUAGE.MENU_MSG03}}</div>
-                </div>
-              </li>  
-              <li class="item-content list-panel-all close-panel item-link" id="menuSupport">
+                </li> 
+                <li class="item-content list-panel-all close-panel item-link" id="menuGeofence">
                   <div class="item-media">
-                      <i class="f7-icons icon-menu-support"></i>
+                    <i class="f7-icons icon-menu-geofence"></i>
                   </div>
                   <div class="item-inner">
-                      <div class="item-title">{{@global.LANGUAGE.MENU_MSG06}}</div>
+                    <div class="item-title">{{@global.LANGUAGE.MENU_MSG01}}</div>
                   </div>
-              </li>   
-                               
-              <li class="item-content list-panel-all close-panel" id="menuLogout"> 
-                <div class="item-media">
-                  <i class="f7-icons icon-menu-logout"></i>
-                </div>
-                <div class="item-inner">
-                  <div class="item-title">{{@global.LANGUAGE.MENU_MSG04}}</div>
-                </div> 
-              </li>            
-            </ul>
+                </li>  
+                <li class="item-content list-panel-all close-panel item-link" id="menuAlarms">
+                    <div class="item-media">
+                        <i class="f7-icons icon-menu-alarms"></i>
+                    </div>
+                    <div class="item-inner">
+                        <div class="item-title">{{@global.LANGUAGE.ALARM_MSG06}}</div>
+                    </div>
+                </li>  
+                <li class="item-content list-panel-all close-panel item-link" id="menuRecharge">
+                  <div class="item-media">
+                    <i class="f7-icons icon-menu-recharge"></i>
+                  </div>
+                  <div class="item-inner">
+                    <div class="item-title">{{@global.LANGUAGE.MENU_MSG02}}</div>
+                  </div>
+                </li>       
+                <li class="item-content list-panel-all close-panel item-link" id="menuProfile">
+                  <div class="item-media">
+                    <i class="f7-icons icon-menu-profile"></i>
+                  </div>
+                  <div class="item-inner">
+                    <div class="item-title">{{@global.LANGUAGE.MENU_MSG03}}</div>
+                  </div>
+                </li>  
+                <li class="item-content list-panel-all close-panel item-link" id="menuSupport">
+                    <div class="item-media">
+                        <i class="f7-icons icon-menu-support"></i>
+                    </div>
+                    <div class="item-inner">
+                        <div class="item-title">{{@global.LANGUAGE.MENU_MSG06}}</div>
+                    </div>
+                </li>   
+                                 
+                <li class="item-content list-panel-all close-panel" id="menuLogout"> 
+                  <div class="item-media">
+                    <i class="f7-icons icon-menu-logout"></i>
+                  </div>
+                  <div class="item-inner">
+                    <div class="item-title">{{@global.LANGUAGE.MENU_MSG04}}</div>
+                  </div> 
+                </li>            
+              </ul>
+            </div>
+          </div>
+          <div class="menu_remainings">
+            {{@global.LANGUAGE.COM_MSG32}}: <span class="remaining_counter">---</span>
           </div>
         </div>
-        
       </div>
     </script>
  
@@ -225,6 +233,8 @@
     <script type="text/javascript" src="resources/plugins/cropper/js/cropper.min.js"></script>
     <!-- MarkerCluster --> 
     <script type="text/javascript" src="resources/plugins/leaflet.markercluster/js/leaflet.markercluster.js"></script>
+    <!-- Coordinates grid --> 
+    <script type="text/javascript" src="resources/plugins/leaflet.grid/leaflet.latlng-graticule.js"></script>
     <!-- google api for street view -->
     <script async="async" defer="defer" src="http://maps.google.com/maps/api/js?v=3.30&key=AIzaSyC6eQHreVzeV0sGqzKLcNKzp6HfVcNTutI"></script>
     <!-- jClass -->

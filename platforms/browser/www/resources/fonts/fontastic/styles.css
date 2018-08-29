@@ -140,9 +140,6 @@
 .icon-other-edit:before {
   content: "\48";
 }
-.icon-other-menu-geofence:before {
-  content: "\49";
-}
 .icon-other-pin-map:before {
   content: "\4a";
 }
@@ -178,4 +175,28 @@
 }
 .icon-engine-hours:before {
   content: "\55";
+}
+.icon-other-geolock:before {
+  content: "\56";
+}
+.icon-other-input:before {
+  content: "\58";
+}
+.icon-other-menu-geofence:before {
+  content: "\57";
+}
+.icon-other-lock:before {
+  content: "\59";
+}
+.icon-other-satellite-1:before {
+  content: "\49";
+}
+.icon-other-signal-1:before {
+  content: "\5a";
+}
+.icon-menu-recharge:before {
+  content: "\30";
+}
+.icon-other-route:before {
+  content: "\31";
 }

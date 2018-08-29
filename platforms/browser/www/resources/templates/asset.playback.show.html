@@ -22,19 +22,7 @@
             </div>
             <div class="map" id="map"></div>
     	</div>
-        <div class="position_bottom position_bottom_playback">
-            <div class="row no-gutter">
-                <div class="col-100 address color-white">
-                    <i class="f7-icons icon-data-address color-white"></i>
-                    <p class="display_address">{{Address}}</p>
-                </div>
-            </div>           
-            <div class="item-input playback_show_slider">
-                <div class="range-slider ">
-                    <input class="rangeInput" name="rangeInput" type="range" min="0" max="100" step="1" value="0">
-                </div>            
-            </div>
-            
+        <div class="position_bottom position_bottom_playback">            
             <div class="row no-gutter">                
                 <div class="col-33 color-white">
                     <i class="f7-icons icon-other-data color-white"></i>
@@ -51,8 +39,19 @@
                     <p >{{@global.LANGUAGE.ASSET_TRACK_MSG03}}</p>  
                     <p class="position_data position_mileage">{{Mileage}}</p>
                 </div>
-                
-                
+            </div>
+            <div class="item-input playback_show_slider">
+                <div class="range-slider ">
+                    <input class="rangeInput" name="rangeInput" type="range" min="0" max="100" step="1" value="0">
+                </div>            
+            </div>
+            <div class="row no-gutter">
+                <div class="col-100 color-white address">  
+                    <div class="position_bottom_img_right">
+                        <p class="display_address">{{Address}}</p>
+                        <div class="item-subtext position_latlng">{{Coords}}</div>  
+                    </div>
+                </div>
             </div>
             
         </div>

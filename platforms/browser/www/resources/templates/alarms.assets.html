@@ -22,24 +22,26 @@
     <div class="searchbar-overlay"></div>
 
     <div class="page-content">
-        <div class="list-block no-hairlines list-block-selectall">
-            <li class="bw-li-switch">
-                <div class="item-content">                               
-                    <div class="item-inner">
-                        <div class="item-title color-white">{{@global.LANGUAGE.COM_MSG30}}</div>                        
-                        <label class="label-switch">
-                            <input type="checkbox" name="select-all" >
-                            <div class="checkbox"></div>
-                        </label>                        
+        <div class="list-block list-block-selectall">
+            <ul>
+                <li class="bw-li-switch">
+                    <div class="item-content">                               
+                        <div class="item-inner">
+                            <div class="item-title color-white">{{@global.LANGUAGE.COM_MSG30}}</div>                        
+                            <label class="label-switch">
+                                <input type="checkbox" name="select-all" >
+                                <div class="checkbox"></div>
+                            </label>                        
+                        </div>
                     </div>
-                </div>
-            </li>
+                </li>
+            </ul>
         </div>
 
 		<div class="content-block alarms-assets-search-nothing-found searchbar-not-found color-white">                               
             {{@global.LANGUAGE.COM_MSG05}}
         </div>        
-        <div class="list-block media-list no-hairlines list-block-search-alarms-assets layout-dark alarmsAssetList">          
+        <div class="list-block media-list virtual-list no-hairlines list-block-search-alarms-assets layout-dark alarmsAssetList">          
             
         </div>
         
