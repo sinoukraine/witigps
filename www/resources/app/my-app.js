@@ -2676,7 +2676,7 @@ function login(){
                                      mobileToken, 
                                      encodeURIComponent(deviceToken), 
                                      deviceType);   
-    App.alert(urlLogin);
+    alert(urlLogin);
     //console.log(urlLogin);                             
     JSON.request(urlLogin, function(result){
            console.log(result);
@@ -4715,7 +4715,7 @@ function getNewData(){
                                      mobileToken, 
                                      encodeURIComponent(deviceToken), 
                                      deviceType);  
-    App.alert(urlLogin); 
+    alert(urlLogin); 
     //console.log(urlLogin);                             
     JSON.request(urlLogin, function(result){
            console.log(result);
