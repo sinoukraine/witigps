@@ -4814,19 +4814,21 @@ function processClickOnPushNotification(msgJ){
             var activePage = App.getCurrentView().activePage;  
            
             //if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {               
-                
-                if (parseFloat(msg.lat) && parseFloat(msg.lng)) {               
-                    TargetAsset.ASSET_IMEI = msg.imei;
-                    TargetAsset.ASSET_NAME = msg.name; 
-                    if (msg.time) {
-                        var localTime = moment.utc(msg.time).toDate();
-                        msg.time = moment(localTime).format(window.COM_TIMEFORMAT);                         
-                    }
-                    loadTrackPage(msg);
-                    
-                }else{
-                    App.alert(LANGUAGE.PROMPT_MSG023);
+            if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {
+                mainView.router.refreshPage();
+            }   
+
+            if (parseFloat(msg.lat) && parseFloat(msg.lng)) {               
+                TargetAsset.ASSET_IMEI = msg.imei;
+                TargetAsset.ASSET_NAME = msg.name; 
+                if (msg.time) {
+                    var localTime = moment.utc(msg.time).toDate();
+                    msg.time = moment(localTime).format(window.COM_TIMEFORMAT);                         
                 }
+                loadTrackPage(msg);                    
+            }else{
+                App.alert(LANGUAGE.PROMPT_MSG023);
+            }
             /*}else{                
                 mainView.router.refreshPage();
             }   */    
