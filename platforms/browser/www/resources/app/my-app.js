@@ -17,19 +17,10 @@ function guid() {
 
 function getPlusInfo(){
     var uid = guid();
-    if(window.device) {
-        /*window.uuid = plus.device.uuid;
-        var info = plus.push.getClientInfo();
-        localStorage.PUSH_MOBILE_TOKEN = info.token;
-        localStorage.PUSH_APPID_ID = info.appid;
-        localStorage.PUSH_APP_KEY = info.appkey;
-        localStorage.PUSH_DEVICE_TOKEN = info.clientid;
-        localStorage.DEVICE_TYPE = plus.os.name? plus.os.name : "web";*/         
-        
+    if(window.device) {                        
         if(!localStorage.PUSH_MOBILE_TOKEN){
         localStorage.PUSH_MOBILE_TOKEN = uid;
-        }
-        //localStorage.PUSH_MOBILE_TOKEN = BuildInfo.packageName;
+        }       
         localStorage.PUSH_APP_KEY = BuildInfo.packageName;
         localStorage.PUSH_APPID_ID = BuildInfo.packageName; 
         localStorage.DEVICE_TYPE = device.platform;   
@@ -59,8 +50,7 @@ var pushConfigRetry = 0;
 if( navigator.userAgent.match(/Windows/i) ){    
     inBrowser = 1;
 }
-//console.log(navigator.userAgent);
-//document.addEventListener( "plusready", onPlusReady, false ); 
+
 document.addEventListener("deviceready", onDeviceReady, false ); 
 
 //function onPlusReady(){   
@@ -157,7 +147,7 @@ function setupPush(){
         }
 }
 
-function onPushClick (msg){     // will work in iOS and in // ANDROID go ONLY here
+/*function onPushClick (msg){     // will work in iOS and in // ANDROID go ONLY here
     var all_msg = [];
     var message = '';
     //alert(msg.payload);
@@ -204,12 +194,7 @@ function onPushClick (msg){     // will work in iOS and in // ANDROID go ONLY he
 
 }
 
-function onPushRecieve( msg ){      //will work in android    and iOS - if in foreground
-    /*plus.push.clear();*/
-   /* alert('onPushRecieve');
-    alert(JSON.stringify(msg));*/
-   
-    
+function onPushRecieve( msg ){      //will work in android    and iOS - if in foreground    
     var osName = plus.os.name.toLowerCase();  
       
     switch ( osName ) {
@@ -256,7 +241,7 @@ function onPushRecieve( msg ){      //will work in android    and iOS - if in fo
         // other
         break;
     }       
-}
+}*/
 
 function onAppPause(){ 
     if ($hub) {
@@ -287,23 +272,14 @@ function onAppForeground() {
         $hub.start();
     }      
 }
-function onAppNewintent() {
-    getNewNotifications();
-    if (localStorage.ACCOUNT && localStorage.PASSWORD) {
-        getNewData();
-    }
-    if ($hub) {
-        $hub.start();
-    }        
-}
+
  
 
 function backFix(event){
     var page=App.getCurrentView().activePage;        
-    if(page.name=="index"){           
-        var ws=plus.webview.currentWebview();
+    if(page.name=="index"){ 
         App.confirm(LANGUAGE.PROMPT_MSG015, function () {        
-            ws.close();
+            navigator.app.exitApp();
         });
     }else{
         mainView.router.back();
@@ -704,12 +680,12 @@ $$('body').on('change keyup input click', '.only_numbers', function(){
 	}
 });
 
-$$('body').on('click', '.navbar_title, .navbar_title_index', function(){
-    /*var json = '{"title":"GEOLOCK WARNING","type":1024,"imei":"0000004700673137","name":"A16 WATCH","lat":43.895091666666666,"lng":125.29207,"speed":0,"direct":0,"time":"2018-08-23 16:56:36"}';
-    showMsgNotification([json]);*/
+/*$$('body').on('click', '.navbar_title, .navbar_title_index', function(){
+    //var json = '{"title":"GEOLOCK WARNING","type":1024,"imei":"0000004700673137","name":"A16 WATCH","lat":43.895091666666666,"lng":125.29207,"speed":0,"direct":0,"time":"2018-08-23 16:56:36"}';
+    //showMsgNotification([json]);
     //getNewData();
     //console.log($$('.status_page').length);
-});
+});*/
 
 $$('body').on('click', '.toggle-password', function(){
     var password = $(this).siblings("input[name='password']");
@@ -963,33 +939,7 @@ App.onPageInit('notification', function(page){
             }else{
                 App.alert(LANGUAGE.PROMPT_MSG023);
             }        
-            /*var data = {};
-            data.imei = $$(this).data('imei');
-            data.lat = $$(this).data('lat');
-            data.lng = $$(this).data('lng');          
             
-            if (parseFloat(data.lat) && parseFloat(data.lng)) {               
-                TargetAsset.ASSET_IMEI = $$(this).data('imei');
-                TargetAsset.ASSET_NAME = $$(this).data("name");                
-                if (typeof POSINFOASSETLIST[data.imei] === "undefined") {
-                    POSINFOASSETLIST[data.imei] = {};                   
-                }
-                if (typeof POSINFOASSETLIST[data.imei].posInfo === "undefined") {
-                    POSINFOASSETLIST[data.imei].posInfo = {};
-                }
-                POSINFOASSETLIST[data.imei].posInfo.lat = data.lat;
-                POSINFOASSETLIST[data.imei].posInfo.lng = data.lng;
-                POSINFOASSETLIST[data.imei].Name = $$(this).data('name');
-                POSINFOASSETLIST[data.imei].posInfo.speed = $$(this).data('speed');
-                POSINFOASSETLIST[data.imei].posInfo.positionTime = moment($$(this).data('time'));
-                POSINFOASSETLIST[data.imei].posInfo.direct = $$(this).data('direct');
-                POSINFOASSETLIST[data.imei].posInfo.mileage = $$(this).data('mileage');
-
-                loadTrackPage(true);
-                //loadPageNotificationMap(true);
-            }else{
-                App.alert(LANGUAGE.PROMPT_MSG023);
-            }*/
 
         }            
     });
@@ -4128,141 +4078,6 @@ function getHisPosArray(from, to){
 	); 
 }
 
-/*function getHisPosArray(from, to){    
-    var MinorToken = getUserinfo().MinorToken;
-     
-    var data = {
-        params: {
-            MinorToken: MinorToken,
-            Code: TargetAsset.ASSET_ID,
-            From: from,
-            To: to,
-        }        
-    };
-
-    App.showPreloader();   
-    JSON1.requestPost(API_URL.URL_GET_POSITION_ARR2,data,function(result) {           
-            console.log(result);
-            if (result.data && result.data.waypoints && result.data.waypoints.original.length === 0) {
-                App.addNotification({
-                    hold: 5000,
-                    message: LANGUAGE.COM_MSG05                                   
-                });
-            }else if(result.data && result.data.polylines && result.data.polylines.good && result.data.waypoints){
-                var asset = POSINFOASSETLIST[TargetAsset.ASSET_IMEI];
-                var firstPoint = result.data.polylines.good[0][0];
-                var latlng = {};
-                latlng.lat = firstPoint[0];
-                latlng.lng = firstPoint[1];
-                console.log(latlng);
-                    
-                var speed = Protocol.Helper.getSpeedValue(asset.Unit, result.data.waypoints.speeds[0]) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
-                var direct = result.data.waypoints.directions[0][0];
-                var mileage = (Protocol.Helper.getMileageValue(asset.Unit, result.data.waypoints.mileages[0]) + parseInt(asset.InitMileage) + parseInt(asset._FIELD_FLOAT7)) + '&nbsp;' + Protocol.Helper.getMileageUnit(asset.Unit);
-                var time = moment(result.data.waypoints.timestamps[0],'X').format(window.COM_TIMEFORMAT);                    
-
-                var MarkerIcon = L.icon({
-                    iconUrl: 'resources/images/marker.svg',                       
-                    iconSize:     [60, 60], // size of the icon                        
-                    iconAnchor:   [17, 55], // point of the icon which will correspond to marker's location                        
-                    popupAnchor:  [0, -60] // point from which the popup should open relative to the iconAnchor      
-                });
-                    
-                window.PosMarker[TargetAsset.ASSET_IMEI] = L.marker([latlng.lat, latlng.lng], {icon: MarkerIcon}); 
-                window.PosMarker[TargetAsset.ASSET_IMEI].setLatLng([latlng.lat, latlng.lng]);
-                POSINFOASSETLIST[TargetAsset.ASSET_IMEI].posInfo.lat = latlng.lat;
-                POSINFOASSETLIST[TargetAsset.ASSET_IMEI].posInfo.lng = latlng.lng;
-
-                mainView.router.load({
-                    url:'resources/templates/asset.playback.show.html',
-                        context:{
-                            Name: asset.Name,
-                            Time: time,
-                            Direction: direct,
-                            Mileage: mileage,
-                            Speed: speed,
-                            //Address: LANGUAGE.COM_MSG08   
-                            Address: result.data.waypoints.names[0] + ', ' + result.data.waypoints.addresses[result.data.waypoints.names[0]]          
-                        }
-                    });
-                setTimeout(function(){
-                    drawPlayBackRoute(result.data);
-                },500);
-                
-            }else{
-                App.alert(LANGUAGE.PROMPT_MSG013);
-            }
-            App.hidePreloader();
-        },
-        function(){ App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02); }
-    ); 
-}
-
-function drawPlayBackRoute(data){
-    var optimizedState = $$('body .playback_page').find('input[name="optimizedState"]');
-
-    var polylineCustomization = {
-        'mainBg':{
-            color: '#6199CC',            
-            weight: 6,
-            opacity: 1,
-        },
-        'main':{
-            color: '#00B1FC',            
-            weight: 3,
-            opacity: 1,
-        },
-        'droppedBg':{
-            //color: '#b50000',     //red
-            color: '#b47605',   //orange
-            weight: 6,
-            opacity: 0.7,
-        },
-        'dropped':{
-            //color: '#fc0405',
-            color: '#fd9a08',   //orange
-            weight: 3,
-            opacity: 0.7,
-        },
-        'supposedBg':{
-            color: '#6199CC',            
-            weight: 6,
-            opacity: 0.4,
-        },
-        'supposed':{
-            color: '#00B1FC',            
-            weight: 3,
-            opacity: 0.4,
-        },        
-    };
-    
-    var polylineBG = new L.Polyline(data.waypoints.original, polylineCustomization.mainBg);
-    var polyline = new L.Polyline(data.waypoints.original, polylineCustomization.main); 
-    playbackLayerGroup = L.featureGroup([polylineBG, polyline]); 
-
-    var polylineOptBg = new L.Polyline(data.polylines.good, polylineCustomization.mainBg);
-    var polylineOpt = new L.Polyline(data.polylines.good, polylineCustomization.main);             
-    playbackLayerGroupOpt = L.featureGroup([polylineOptBg,polylineOpt]);            
-    if (data.polylines.dropped && data.polylines.dropped.length !== 0) {         
-        var polylineOptDroppedBg = new L.Polyline(data.polylines.dropped, polylineCustomization.droppedBg);       
-        var polylineOptDropped = new L.Polyline(data.polylines.dropped, polylineCustomization.dropped);  
-        playbackLayerGroupOpt.addLayer(polylineOptDroppedBg).addLayer(polylineOptDropped);    
-    }
-    if (data.polylines.supposed && data.polylines.dropped.length !== 0) {   
-        var polylineOptSupposedBg = new L.Polyline(data.polylines.supposed, polylineCustomization.supposedBg);            
-        var polylineOptSupposed = new L.Polyline(data.polylines.supposed, polylineCustomization.supposed);
-        playbackLayerGroupOpt.addLayer(polylineOptSupposedBg).addLayer(polylineOptSupposed);              
-    }            
-
-    if (optimizedState.is(":checked")) {
-        playbackLayerGroupOpt.addTo(MapTrack);
-        MapTrack.fitBounds(playbackLayerGroupOpt.getBounds());     // zoom the map to the polyline
-    }else{
-        playbackLayerGroup.addTo(MapTrack);
-        MapTrack.fitBounds(playbackLayerGroup.getBounds());     // zoom the map to the polyline
-    }            
-}
-*/
 
 function setHistoryArray(array){
     //console.log(array);
@@ -5309,40 +5124,10 @@ function saveImg(){
         error: function(XMLHttpRequest, textStatus, errorThrown){ 
            App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02);
         }
-    });
-
-        
+    });       
     
 }   
 
-//Take pictures
-/*function getImage() {
-    if(window.plus){
-        var cmr = plus.camera.getCamera();
-        cmr.captureImage( function (p) {
-            plus.io.resolveLocalFileSystemURL( p, function ( entry ) {    
-                var localurl = entry.toLocalURL();//
-                GetBase64Code(localurl);
-            });
-        });
-    }else{
-        console.log('Plus not found');
-    }
-        
-}
-//Select from album
-function galleryImgs(){
-    if(window.plus){
-        plus.gallery.pick( function(e){
-            GetBase64Code(e.files[0]);
-        }, function ( e ) {
-            //outSet( "CANCEL SELECT" );
-        },{filter:"image",multiple:true, maximum:1});
-    }else{
-        console.log('Plus not found');
-    }
-        
-}*/
 
 function getImage(source){
     
@@ -5375,23 +5160,3 @@ function getImage(source){
            
 }
 
-/*function GetBase64Code(path) //image path
-{
-    var bitmap = new plus.nativeObj.Bitmap("test");
-    // load image
-    bitmap.load(path,function(){
-        var base4=bitmap.toBase64Data();        
-        
-        mainView.router.load({
-            url: 'resources/templates/asset.edit.photo.html',
-            context: {
-                imgSrc: base4
-            }
-        });
-       
-        //console.log('IMAGEЈє'+base4);
-    },function(e){
-        //alert('ERRORЈє'+JSON.stringify(e));
-    });
-}
-*/
