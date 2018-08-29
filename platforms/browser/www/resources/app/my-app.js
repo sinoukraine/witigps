@@ -65,8 +65,9 @@ document.addEventListener("deviceready", onDeviceReady, false );
 
 //function onPlusReady(){   
 function onDeviceReady(){ 
-	
-    getPlusInfo();
+    setupPush();
+
+	getPlusInfo();  
    
 
     if (!inBrowser) {
@@ -83,7 +84,7 @@ function onDeviceReady(){
     document.addEventListener("resume", onAppResume, false);
     document.addEventListener("pause", onAppPause, false);
 
-    setupPush();
+    
 }
 
 function setupPush(){
@@ -106,8 +107,16 @@ function setupPush(){
         push.on('registration', function(data) {
             console.log('registration event: ' + data.registrationId);  
             //alert( JSON.stringify(data) );         
-            //App.alert(data.registrationId);
-            localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
+
+            //localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
+           
+            var oldRegId = localStorage.PUSH_DEVICE_TOKEN;
+            if (localStorage.PUSH_DEVICE_TOKEN !== data.registrationId) {               
+                // Save new registration ID
+                localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
+                // Post registrationId to your app server as the value has changed
+                refreshToken(data.registrationId);
+            }
         });
 
         push.on('error', function(e) {
@@ -115,15 +124,8 @@ function setupPush(){
             alert("push error = " + e.message);
         });
 
-        push.on('notification', function(data) {
-            console.log('notification event');
-            /*navigator.notification.alert(
-                data.message,         // message
-                null,                 // callback
-                data.title,           // title
-                'Ok'                  // buttonName
-            );*/
-            alert( JSON.stringify(data) );
+        push.on('notification', function(data) {            
+            //alert( JSON.stringify(data) );
 
             //if user using app and push notification comes
             if (data && data.additionalData && data.additionalData.foreground) {
@@ -462,6 +464,7 @@ API_URL.URL_SET_IMMOBILISATION = API_DOMIAN4 + "asset/Relay?MajorToken={0}&Minor
 API_URL.URL_SET_GEOLOCK = API_DOMIAN4 + "asset/GeoLock?MajorToken={0}&MinorToken={1}&code={2}&state={3}";
 
 API_URL.URL_ROUTE = "https://www.google.com/maps/dir/?api=1&destination={0},{1}"; //&travelmode=walking
+API_URL.URL_REFRESH_TOKEN = API_DOMIAN1 + "User/RefreshToken";
 
 
 var cameraButtons = [
@@ -2713,6 +2716,34 @@ function login(){
         function(){ App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02);App.loginScreen();  }
     ); 
    
+}
+
+function refreshToken(newDeviceToken){
+    console.log('refreshToken() called');
+    var userInfo = getUserinfo();
+
+    if (localStorage.PUSH_MOBILE_TOKEN && userInfo.MajorToken && userInfo.MinorToken) {
+        var data = {
+            MajorToken: userInfo.MajorToken,
+            MinorToken: userInfo.MinorToken,
+            MobileToken: localStorage.PUSH_MOBILE_TOKEN,
+            DeviceToken: newDeviceToken,             
+        };
+      
+        //console.log(urlLogin);                             
+        JSON1.requestPost(API_URL.URL_REFRESH_TOKEN, data, function(result){                
+                if(result.MajorCode == '000') {
+                                    
+                }else{                
+                   
+                }                
+            },
+            function(){ console.log('error during refresh token');  }
+        ); 
+    }else{
+        console.log('not loggined');
+    }
+        
 }
 
 function hideKeyboard() {
