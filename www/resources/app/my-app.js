@@ -4814,9 +4814,9 @@ function processClickOnPushNotification(msgJ){
             var activePage = App.getCurrentView().activePage;  
            
             //if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {               
-            if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {
+           /* if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {
                 mainView.router.refreshPage();
-            }   
+            }   */
 
             if (parseFloat(msg.lat) && parseFloat(msg.lng)) {               
                 TargetAsset.ASSET_IMEI = msg.imei;
