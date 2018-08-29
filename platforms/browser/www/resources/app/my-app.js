@@ -55,10 +55,14 @@ document.addEventListener("deviceready", onDeviceReady, false );
 
 //function onPlusReady(){   
 function onDeviceReady(){ 
+    //fix app images and text size
+    if (window.MobileAccessibility) {
+        window.MobileAccessibility.usePreferredTextZoom(false);    
+    }
+
     setupPush();
 
-	getPlusInfo();  
-   
+	getPlusInfo(); 
 
     if (!inBrowser) {
         if(getUserinfo().MinorToken) {
