@@ -2604,8 +2604,10 @@ function clearUserInfo(){
 
     if (deviceToken) {
         localStorage.PUSH_DEVICE_TOKEN = deviceToken; 
+    }    
+    if (mobileToken) {
+        localStorage.PUSH_MOBILE_TOKEN = mobileToken;
     }
-    
     /*if(MinorToken){      
         console.log(API_URL.URL_GET_LOGOUT2.format(MajorToken, MinorToken, userName, mobileToken));
         JSON.request(API_URL.URL_GET_LOGOUT2.format(MajorToken, MinorToken, userName, mobileToken), function(result){ console.log(result); });         
@@ -4712,7 +4714,8 @@ function getNewData(){
                                      appKey, 
                                      mobileToken, 
                                      encodeURIComponent(deviceToken), 
-                                     deviceType);   
+                                     deviceType);  
+    App.alert(urlLogin); 
     //console.log(urlLogin);                             
     JSON.request(urlLogin, function(result){
            console.log(result);
