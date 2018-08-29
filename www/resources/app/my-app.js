@@ -16,20 +16,24 @@ function guid() {
 
 
 function getPlusInfo(){
+    var uid = guid();
     if(window.device) {
-       /* window.uuid = plus.device.uuid;
+        /*window.uuid = plus.device.uuid;
         var info = plus.push.getClientInfo();
         localStorage.PUSH_MOBILE_TOKEN = info.token;
         localStorage.PUSH_APPID_ID = info.appid;
         localStorage.PUSH_APP_KEY = info.appkey;
         localStorage.PUSH_DEVICE_TOKEN = info.clientid;
         localStorage.DEVICE_TYPE = plus.os.name? plus.os.name : "web";*/         
-        localStorage.PUSH_MOBILE_TOKEN = BuildInfo.packageName;
+        
+        if(!localStorage.PUSH_MOBILE_TOKEN){
+        localStorage.PUSH_MOBILE_TOKEN = uid;
+        }
+        //localStorage.PUSH_MOBILE_TOKEN = BuildInfo.packageName;
         localStorage.PUSH_APP_KEY = BuildInfo.packageName;
         localStorage.PUSH_APPID_ID = BuildInfo.packageName; 
         localStorage.DEVICE_TYPE = device.platform;   
-    }else{
-        var uid = guid();
+    }else{        
             if(!localStorage.PUSH_MOBILE_TOKEN)
             localStorage.PUSH_MOBILE_TOKEN = uid;
             if(!localStorage.PUSH_APP_KEY)
