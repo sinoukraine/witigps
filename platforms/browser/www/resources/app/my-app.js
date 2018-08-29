@@ -150,11 +150,11 @@ function setupPush(){
                     }
                 }, 1000); 
             }
-       });
+        });
 
-       /* if　(!localStorage.ACCOUNT){
+        if　(!localStorage.ACCOUNT){
             push.clearAllNotifications();
-        }*/
+        }
 }
 
 function onPushClick (msg){     // will work in iOS and in // ANDROID go ONLY here
@@ -688,8 +688,9 @@ $$('body').on('click', 'a.external', function(event) {
     event.preventDefault();
     var href = this.getAttribute('href');
     if (href) {
-        if (window.plus) {
-            plus.runtime.openURL(href);            
+        if (typeof navigator !== "undefined" && navigator.app) {
+            //plus.runtime.openURL(href);            
+            navigator.app.loadUrl(href, {openExternal: true}); 
         } else {
             window.open(href,'_blank');
         }
@@ -730,8 +731,9 @@ $$('body').on('click', '.routeButton', function(){
             encodeURIComponent(lng)
             ); 
         
-        if (window.plus) {
-            plus.runtime.openURL(href);            
+        if (typeof navigator !== "undefined" && navigator.app) {
+            //plus.runtime.openURL(href);  
+            navigator.app.loadUrl(href, {openExternal: true});           
         } else {
             window.open(href,'_blank');
         }
@@ -2983,8 +2985,9 @@ function loadPageSupport(){
   
     var href = API_URL.URL_SUPPORT.format(param.name,param.loginName,param.email,param.phone,param.service); 
     
-    if (window.plus) {
-        plus.runtime.openURL(href);            
+    if (typeof navigator !== "undefined" && navigator.app) {
+        //plus.runtime.openURL(href); 
+        navigator.app.loadUrl(href, {openExternal: true});           
     } else {
         window.open(href,'_blank');
     }
@@ -4991,7 +4994,7 @@ function processClickOnPushNotification(msgJ){
         if (msg && msg.time && msg.name && msg.title) {
             var activePage = App.getCurrentView().activePage;  
            
-            if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {               
+            //if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {               
                 
                 if (parseFloat(msg.lat) && parseFloat(msg.lng)) {               
                     TargetAsset.ASSET_IMEI = msg.imei;
@@ -5005,9 +5008,9 @@ function processClickOnPushNotification(msgJ){
                 }else{
                     App.alert(LANGUAGE.PROMPT_MSG023);
                 }
-            }else{                
+            /*}else{                
                 mainView.router.refreshPage();
-            }       
+            }   */    
         }  
     }          
 }
