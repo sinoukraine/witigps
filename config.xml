@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- <widget id="com.sinopacific.quiktrak" version="1.3.6" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0"> -->
-<widget xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.sinopacific.quiktrak" version="1.3.7" xmlns="http://www.w3.org/ns/widgets" defaultlocale="en-US" android-versionCode="111">
+<widget xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.sinopacific.quiktrak" version="1.3.8" xmlns="http://www.w3.org/ns/widgets" defaultlocale="en-US" android-versionCode="135">
     <name>QuikTrak</name>
     <description>
         QuikTrak GPS tracker
     </description>
-    <author email="support@phonegap.com" href="http://phonegap.com">
+    <author email="support@quiktrak.com.au" href="http://quiktrak.com.au">
         M2M Global Technology Limited
     </author>
     <content src="index.html" />
@@ -34,12 +34,14 @@
     <preference name="StatusBarStyle" value="blacktranslucent" />
     <preference name="phonegap-version" value="cli-7.1.0" />
     <plugin name="cordova-plugin-statusbar" source="npm" spec="2.1.3" />
+    
     <plugin name="phonegap-plugin-push" source="npm" spec="2.1.2">
         <variable name="SENDER_ID" value="106187216531" />
     </plugin>
     <platform name="android">
       <resource-file src="google-services.json" target="google-services.json" />
     </platform>
+
     <!-- <plugin name="cordova-plugin-console" source="npm" spec="1.0.7" /> -->
     <plugin name="cordova-plugin-device" source="npm" spec="2.0.2" />
     <plugin name="cordova-plugin-buildinfo" source="npm" spec="2.0.2" />    
@@ -49,7 +51,6 @@
     <plugin name="cordova-plugin-camera" source="npm" spec="4.0.3"  />
     <plugin spec="https://github.com/phonegap/phonegap-mobile-accessibility.git" source="git" />
 
-    https://github.com/phonegap/phonegap-mobile-accessibility
     <platform name="ios">
         <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
             <string>You can take a photo of your asset using camera and upload it into the app</string>
