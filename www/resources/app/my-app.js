@@ -262,20 +262,6 @@ function onAppResume(){
         $hub.start();
     } 
 }  
-function onAppBackground() {
-    if ($hub) {
-        $hub.stop();
-    }
-}
-function onAppForeground() {
-    getNewNotifications();  
-    if (localStorage.ACCOUNT && localStorage.PASSWORD) {
-        getNewData();
-    }
-    if ($hub) {
-        $hub.start();
-    }      
-}
 
  
 
@@ -320,7 +306,7 @@ function webSockConnect(){
                 
                 var deviceType = localStorage.DEVICE_TYPE; 
                 if (deviceType == "web") {
-                    //setNotificationList(all_msg);
+                    setNotificationList(all_msg);
                 }                
                 getNewNotifications();
 
@@ -651,6 +637,12 @@ $$('.login-form').on('submit', function (e) {
     //login();
     preLogin();
     return false;
+});
+
+$$('body').on('click', '#account, #password', function(e){  
+    setTimeout(function(){      
+        $('.login-screen-content').scrollTop(200);
+    },1000);    
 });
 
 $$('body').on('click', '.notification_button', function(e){ 
@@ -2678,7 +2670,7 @@ function refreshToken(newDeviceToken){
     console.log('refreshToken() called');
     var userInfo = getUserinfo();
 
-    if (localStorage.PUSH_MOBILE_TOKEN && userInfo.MajorToken && userInfo.MinorToken) {
+    if (localStorage.PUSH_MOBILE_TOKEN && userInfo.MajorToken && userInfo.MinorToken && newDeviceToken) {
         var data = {
             MajorToken: userInfo.MajorToken,
             MinorToken: userInfo.MinorToken,
