@@ -870,9 +870,9 @@ App.onPageInit('notification', function(page){
                                     '<div class="item-subtitle">'+item.name+'</div>' +                                        
                                 '</div>' +
                             '</div>' +                      
-                            '<div class="swipeout-actions-left">' +                             
+                            /*'<div class="swipeout-actions-left">' +                             
                                 '<a href="#" class="swipeout-delete swipeout-overswipe" data-confirm="'+LANGUAGE.PROMPT_MSG010+'" data-confirm-title="'+LANGUAGE.PROMPT_MSG014+'" data-close-on-cancel="true">Delete</a>' +
-                            '</div>' +
+                            '</div>' +*/
                             '<div class="swipeout-actions-right">' +                             
                                 '<a href="#" class="swipeout-delete swipeout-overswipe" data-confirm="'+LANGUAGE.PROMPT_MSG010+'" data-confirm-title="'+LANGUAGE.PROMPT_MSG014+'" data-close-on-cancel="true">Delete</a>' +
                             '</div>' +
