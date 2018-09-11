@@ -197,3 +197,6 @@
 .icon-menu-recharge:before {
   content: "\30";
 }
+.icon-other-route:before {
+  content: "\31";
+}

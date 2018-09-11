@@ -95,6 +95,7 @@ Protocol = {
     },
     ProductFeatures : {
         "Static":256,
+        "Charging":524288,
         "Holder":32768,
         "FuelSensor":2048,
         "Acc":128,
@@ -106,6 +107,7 @@ Protocol = {
         "Battery":1024,
         "DrivingTime":65536,
         "RFIDCard":16384,
+        "Heartrate":262144,
         "GsmSignal":32,
         "Mileage":16,
         "None":0,
@@ -435,6 +437,7 @@ Protocol = {
             return latitude + " " + latitudeCardinal + "\n" + longitude + " " + longitudeCardinal;
         },
         getAssetStateInfo: function(asset){
+            
             /*
                 state-0  -- gray
                 state-1  -- green
@@ -554,6 +557,21 @@ Protocol = {
                     if(asset.haveFeature("Alt")){
                         ret.altitude = {};
                         ret.altitude.value = asset.posInfo.alt + '&nbsp;ft';                   
+                    }
+                    if(asset.haveFeature("Heartrate"))
+                    {
+                        ret.heartrate = {};
+                        ret.heartrate.value = parseInt(asset.posInfo.Heartrate); 
+
+                        /*ret.steps = {};
+                        ret.steps.value = parseInt(asset.posInfo.Steps);*/
+
+                        /*ret.push('<div class="item-attribute-border55">'
+                            +'<div  class="iconfont2 item-attribute-icon" style="color:red">&#xe65b;</div>'
+                            +'<div class="item-attribute-value">'
+                            +  parseInt(this.posInfo.Heartrate)
+                            +'</div>'
+                            +'</div>');  */   
                     }
                     /*if(asset.haveFeature("RFIDCard")){
                         ret.driver = {};

@@ -252,9 +252,9 @@ function onAppPause(){
         $hub.stop();
     }
 } 
-function onAppResume(){ 
-    getNewNotifications(); 
+function onAppResume(){    
     if (localStorage.ACCOUNT && localStorage.PASSWORD) {
+        getNewNotifications(); 
         getNewData();
     }
    
@@ -532,7 +532,7 @@ var virtualAssetList = App.virtualList('.assets_list', {
 	        
 	        if (assetFeaturesStatus && assetFeaturesStatus.stats) {
 	        	
-                
+               
 	        	ret +=  '<li class="item-link item-content item_asset" data-imei="' + item.IMEI + '" data-id="' + item.Id + '">';                    
 	            ret +=      '<div class="item-media">'+assetImg+'</div>';
 	            ret +=      '<div class="item-inner">';
@@ -582,6 +582,13 @@ var virtualAssetList = App.virtualList('.assets_list', {
 	            ret +=                     '<span id="fuel-value'+item.IMEI+'" class="">'+assetFeaturesStatus.fuel.value+'</span>'; 
 	            ret +=                  '</div>';
 	                                }
+                                    if (assetFeaturesStatus.heartrate) {
+                                        console.log(assetFeaturesStatus);
+                ret +=                  '<div class="col-50">';
+                ret +=                     '<i class="f7-icons icon-other-hearth asset_list_icon"></i>';              
+                ret +=                     '<span id="heartrate-value'+item.IMEI+'" class="">'+assetFeaturesStatus.heartrate.value+'</span>'; 
+                ret +=                  '</div>';
+                                    }
 	                                /*if (assetFeaturesStatus.driver){
 	            ret +=                  '<div class="col-50">';
 	            ret +=                      '<img class="asset_list_icon" src="resources/images/svg_ico_driver.svg" alt="">';
@@ -1049,6 +1056,7 @@ App.onPageInit('asset.status', function (page) {
     var Direction = $$(page.container).find('.position_direction');
     var EngineHours = $$(page.container).find('.position_engineHours');
     var StoppedDuration = $$(page.container).find('.position_stoppedDuration');
+    var Heartrate = $$(page.container).find('.position_heartrate');
 
     var clickedLink = '';
     var popoverHTML = '';
@@ -1162,6 +1170,16 @@ App.onPageInit('asset.status', function (page) {
             clickedLink = this;            
             popoverHTML = '<div class="popover popover-status">'+                      
                           '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG39+' - '+StoppedDuration.text()+'</p>'+
+                          /*'<p>'+LANGUAGE.ASSET_STATUS_MSG37+'</p>'+   */                    
+                    '</div>';
+            App.popover(popoverHTML, clickedLink);            
+        });
+    }  
+    if (Heartrate.text()) {
+        $$(page.container).find('.open-heartrate').on('click', function () {
+            clickedLink = this;            
+            popoverHTML = '<div class="popover popover-status">'+                      
+                          '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG44+' - '+Heartrate.text()+'</p>'+
                           /*'<p>'+LANGUAGE.ASSET_STATUS_MSG37+'</p>'+   */                    
                     '</div>';
             App.popover(popoverHTML, clickedLink);            
@@ -3378,6 +3396,7 @@ function loadStatusPage(){
             stoppedDuration: false,
             geolock: false,
             immob: false,
+            heartrate: false,
 	    };
 
 	    
@@ -3412,7 +3431,10 @@ function loadStatusPage(){
         if (assetFeaturesStatus.immob) {
             assetStats.immob = assetFeaturesStatus.immob.value;
         } 
+        if (assetFeaturesStatus.heartrate ) {
+            assetStats.heartrate = assetFeaturesStatus.heartrate.value;
 
+        }
 
 
 	    mainView.router.load({
@@ -3435,6 +3457,7 @@ function loadStatusPage(){
                 ImmobState: assetStats.immob,   
                 GeolockState: assetStats.geolock,                
                 Coords: 'GPS: ' + Protocol.Helper.convertDMS(latlng.lat, latlng.lng),
+                Heartrate: assetStats.heartrate,
 	        }
 	    }); 
         
@@ -4282,7 +4305,9 @@ function updateAssetsListStats(){
                     }else if (stoppedDurationContainer.length > 0) {
                         stoppedDurationContainer.html('-');
                     }    
-
+                    if (assetFeaturesStatus.heartrate) {
+                        statusPageContainer.find('.position_heartrate').html(assetFeaturesStatus.heartrate.value); 
+                    } 
                    
                     statusPageContainer.find('.position_immob').removeClass('state-0 state-1 state-2 state-3').addClass(assetFeaturesStatus.immob.state);                
                     statusPageContainer.find('.position_geolock').removeClass('state-0 state-1 state-2 state-3').addClass(assetFeaturesStatus.geolock.state);            

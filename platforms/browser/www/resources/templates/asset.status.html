@@ -160,7 +160,19 @@
                         </div>
                     </li>
                 </div>
-                {{/if}}                  
+                {{/if}}         
+                {{#if Heartrate}}   
+                <div class="col-50">                 
+                    <li class="item-content open-heartrate">
+                        <div class="item-media"><i class="f7-icons icon-other-hearth color-gray"></i></div>
+                        <div class="item-inner">                        
+                            <div class="item-text position_heartrate">
+                                {{Heartrate}}                        
+                            </div>                                          
+                        </div>
+                    </li>
+                </div>
+                {{/if}}                       
                 {{#if Temperature}}      
                 <div class="col-50">              
                     <li class="item-content open-temperature">
