@@ -41,7 +41,10 @@
     <platform name="android">
       <resource-file src="google-services.json" target="google-services.json" />
     </platform>
-
+    <platform name="ios">
+      <resource-file src="GoogleService-Info.plist" />
+    </platform>
+    
     <!-- <plugin name="cordova-plugin-console" source="npm" spec="1.0.7" /> -->
     <plugin name="cordova-plugin-device" source="npm" spec="2.0.2" />
     <plugin name="cordova-plugin-buildinfo" source="npm" spec="2.0.2" />    
