@@ -155,18 +155,22 @@ function setupPush(){
                 }, 1000); 
             }
 
-            push.finish(
-			    () => {
-			      console.log('processing of push data is finished');
-			    },
-			    () => {
-			      console.log(
-			        'something went wrong with push.finish for ID =',
-			        data.additionalData.notId
-			      );
-			    },
-			    data.additionalData.notId
-			);
+            
+            if (device && device.platform && device.platform.toLowerCase() == 'ios') {
+            	push.finish(
+				    () => {
+				      console.log('processing of push data is finished');
+				    },
+				    () => {
+				      console.log(
+				        'something went wrong with push.finish for ID =',
+				        data.additionalData.notId
+				      );
+				    },
+				    data.additionalData.notId
+				);
+            }
+	            
         });
 
         if　(!localStorage.ACCOUNT){
