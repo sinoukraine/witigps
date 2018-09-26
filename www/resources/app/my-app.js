@@ -58,11 +58,16 @@ function onDeviceReady(){
         window.MobileAccessibility.usePreferredTextZoom(false);    
     }
 
-    /*if(window.device) { 
-        if (device.platform == 'iOS' && StatusBar) {
-            StatusBar.backgroundColorByHexString("#333");
-        }
-    }*/
+    
+    //if (device.platform == 'iOS' && StatusBar) {
+    if (StatusBar) {
+        StatusBar.styleDefault();
+    }   
+
+    if(window.device) {
+    	$$('.devType').html(device.platform);
+    }
+
     setupPush();
 
     getPlusInfo(); 
@@ -149,6 +154,19 @@ function setupPush(){
                     }
                 }, 1000); 
             }
+
+            push.finish(
+			    () => {
+			      console.log('processing of push data is finished');
+			    },
+			    () => {
+			      console.log(
+			        'something went wrong with push.finish for ID =',
+			        data.additionalData.notId
+			      );
+			    },
+			    data.additionalData.notId
+			);
         });
 
         if　(!localStorage.ACCOUNT){
@@ -480,6 +498,8 @@ $$('.login-form').on('submit', function (e) {
     preLogin(); 
     return false;
 });
+
+
 /*$$('.btnLogin').on('click', function(){
     //login();
     preLogin(); 
