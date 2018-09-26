@@ -65,7 +65,7 @@ function onDeviceReady(){
     }   
 
     if(window.device) {
-    	$$('.devType').html(device.platform);
+    	$$('.devType').val(device.platform);
     }
 
     setupPush();
@@ -108,7 +108,7 @@ function setupPush(){
 
         push.on('registration', function(data) {
             console.log('registration event: ' + data.registrationId);  
-            $$('.regToken').html(JSON.stringify(data));
+            $$('.regToken').val(JSON.stringify(data));
             //App.alert( JSON.stringify(data) );         
 
             //localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
