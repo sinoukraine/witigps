@@ -4668,53 +4668,47 @@ function showNotification(list){
     }       
 }
 
-function processClickOnPushNotification(msgJ){
-    
-    if (Array.isArray(msgJ)) {
+function processClickOnPushNotification(msgJ){    
+    if (Array.isArray(msgJ)) {      
         var msg = null;
-        if (msgJ[0].payload) {
-            msg = isJsonString(msgJ[0].payload);
-            if (!msg) {                  
-                msg = msgJ[0].payload;     
-            }
-        }else{
-            msg = isJsonString(msgJ[0]);
-            if (!msg) {                  
-                msg = msgJ[0];     
-            }
-        }       
+        msg = isJsonString(msgJ[0]);        
+
+        if (!msg) {                  
+            msg = msgJ[0];     
+        }
         
         if (msg && msg.time && msg.name && msg.title) {
-            var activePage = App.getCurrentView().activePage;    
-            if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) { 
-                /*$$('.notification_button').removeClass('new_not');      
-                mainView.router.loadPage('resources/templates/notification.html');  */
-                   
-                
-                if (parseFloat(msg.lat) && parseFloat(msg.lng)) {               
-                    TargetAsset.ASSET_IMEI = msg.imei;
-                    TargetAsset.ASSET_NAME = msg.name;              
-                   
-                    if (msg.time) {
-                        var localTime = moment.utc(msg.time).toDate();
-                        msg.time = moment(localTime).format(window.COM_TIMEFORMAT);                         
-                    }
-                    loadTrackPage(msg);
-                    //loadPageNotificationMap(true);
-                }else{
-                    App.alert(LANGUAGE.PROMPT_MSG023);
-                }
-            }else{
+            var activePage = App.getCurrentView().activePage;  
+           
+            //if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {               
+           /* if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {
                 mainView.router.refreshPage();
-            }       
+            }   */
+
+            if (parseFloat(msg.lat) && parseFloat(msg.lng)) {               
+                TargetAsset.ASSET_IMEI = msg.imei;
+                TargetAsset.ASSET_NAME = msg.name; 
+                if (msg.time) {
+                    var localTime = moment.utc(msg.time).toDate();
+                    msg.time = moment(localTime).format(window.COM_TIMEFORMAT);                         
+                }
+                loadTrackPage(msg);                    
+            }else{
+                App.alert(LANGUAGE.PROMPT_MSG023);
+            }
+            /*}else{                
+                mainView.router.refreshPage();
+            }   */    
         }  
     }          
 }
 
 
 function showMsgNotification(arrMsgJ){
+       
+                
     if (Array.isArray(arrMsgJ)) {
-        var page = App.getCurrentView().activePage;    
+        var page = App.getCurrentView().activePage;     
         var msg = null;
         if (arrMsgJ[0].payload) {
             msg = isJsonString(arrMsgJ[0].payload);
@@ -4743,10 +4737,13 @@ function showMsgNotification(arrMsgJ){
                         App.closeNotification('.notifications');
                         $$('.notification_button').removeClass('new_not'); 
                         
-                        mainView.router.loadPage('resources/templates/notification.html');
+                        //mainView.router.loadPage('resources/templates/notification.html');
+                        processClickOnPushNotification([msg]);
+
                     },                          
                 });                
             }
+                
 
             if (msg.imei && msg.type && parseInt(msg.type) == 1024 ) {  //geolock                
                 var params = {
@@ -4762,7 +4759,7 @@ function showMsgNotification(arrMsgJ){
                 });  
                 changeIconColor(params);
                 changeSwitcherState(params);
-            }         
+            }           
         }          
     }  
 }
