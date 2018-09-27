@@ -64,10 +64,7 @@ function onDeviceReady(){
         StatusBar.styleDefault();
     }   
 
-    if(window.device) {
-    	$$('.devType').val(device.platform);
-    }
-
+    
     setupPush();
 
     getPlusInfo(); 
@@ -108,7 +105,7 @@ function setupPush(){
 
         push.on('registration', function(data) {
             console.log('registration event: ' + data.registrationId);  
-            $$('.regToken').val(JSON.stringify(data));
+            //$$('.regToken').val(JSON.stringify(data));
             //App.alert( JSON.stringify(data) );         
 
             //localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
@@ -128,7 +125,7 @@ function setupPush(){
         });
 
         push.on('notification', function(data) {            
-            alert( JSON.stringify(data) );
+            //alert( JSON.stringify(data) );
 
 
             //if user using app and push notification comes
