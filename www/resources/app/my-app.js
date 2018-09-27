@@ -125,16 +125,18 @@ function setupPush(){
         });
 
         push.on('notification', function(data) {            
-            //alert( JSON.stringify(data) );
+            alert( JSON.stringify(data) );
 
 
             //if user using app and push notification comes
             if (data && data.additionalData && data.additionalData.foreground) {
-               // if application open, show popup               
+               // if application open, show popup    
+               alert( 'foreground');           
                showMsgNotification([data.additionalData]);
             }
             else if (data && data.additionalData && data.additionalData.payload){
                //if user NOT using app and push notification comes
+                alert( 'background'); 
                 var container = $$('body');
                 if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
                 App.showProgressbar(container); 
@@ -147,9 +149,11 @@ function setupPush(){
                             //alert('before processClickOnPushNotification');
                             processClickOnPushNotification([data.additionalData.payload]);
                             App.hideProgressbar();               
-                        },2000); 
+                        },1000); 
                     }
                 }, 1000); 
+            }else{
+               alert( 'nowhere');  
             }
 
             
