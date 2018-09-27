@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- <widget id="com.sinopacific.quiktrak" version="1.3.6" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0"> -->
-<widget xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.sinopacific.quiktrak" version="1.3.8" xmlns="http://www.w3.org/ns/widgets" defaultlocale="en-US" android-versionCode="139" ios-CFBundleVersion="145">
+<widget xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.sinopacific.quiktrak" version="1.3.8" xmlns="http://www.w3.org/ns/widgets" defaultlocale="en-US" android-versionCode="139" ios-CFBundleVersion="146">
     <name>QuikTrak</name>
     <description>
         QuikTrak GPS tracker

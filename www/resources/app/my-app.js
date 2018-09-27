@@ -136,17 +136,17 @@ function setupPush(){
             }
             else if (data && data.additionalData && data.additionalData.payload){
                //if user NOT using app and push notification comes
-               
-                var container = $$('body');
-                if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
-                App.showProgressbar(container); 
+                alert('background');
+                //var container = $$('body');
+                //if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
+                //App.showProgressbar(container); 
                
                 loginTimer = setInterval(function() {
                     alert(localStorage.loginDone);
                     if (localStorage.loginDone) {
                         clearInterval(loginTimer);
-                        setTimeout(function(){
-                            alert('before processClickOnPushNotification');
+                        setTimeout(function(){     
+                            alert('before processClickOnPushNotification');                       
                             processClickOnPushNotification([data.additionalData.payload]);
                             App.hideProgressbar();               
                         },1000); 
