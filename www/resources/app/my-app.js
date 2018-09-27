@@ -40,7 +40,7 @@ function getPlusInfo(){
 var inBrowser = 0;
 var notificationChecked = 0;
 var loginTimer = 0;
-var loginDone = 0;
+localStorage.loginDone = 0;
 //var appPaused = 0;
 
 var loginInterval = null;
@@ -125,35 +125,33 @@ function setupPush(){
         });
 
         push.on('notification', function(data) {            
-            alert( JSON.stringify(data) );
+            //alert( JSON.stringify(data) );
 
 
             //if user using app and push notification comes
             if (data && data.additionalData && data.additionalData.foreground) {
                // if application open, show popup    
-               alert( 'foreground');           
+               
                showMsgNotification([data.additionalData]);
             }
             else if (data && data.additionalData && data.additionalData.payload){
                //if user NOT using app and push notification comes
-                alert( 'background'); 
+               
                 var container = $$('body');
                 if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
                 App.showProgressbar(container); 
                
                 loginTimer = setInterval(function() {
-                    //alert(loginDone);
-                    if (loginDone) {
+                    alert(localStorage.loginDone);
+                    if (localStorage.loginDone) {
                         clearInterval(loginTimer);
                         setTimeout(function(){
-                            //alert('before processClickOnPushNotification');
+                            alert('before processClickOnPushNotification');
                             processClickOnPushNotification([data.additionalData.payload]);
                             App.hideProgressbar();               
                         },1000); 
                     }
                 }, 1000); 
-            }else{
-               alert( 'nowhere');  
             }
 
             
@@ -4333,7 +4331,7 @@ function setAssetListPosInfo(listObj){
     //console.log(data);
     JSON1.requestPost(url,data, function(result){   
             console.log(result);  
-            loginDone = 1;                     
+            localStorage.loginDone = 1;                     
             if (result.MajorCode == '000') {
                 var data = result.Data;    
                 if (result.Data) {
@@ -4359,7 +4357,7 @@ function setAssetListPosInfo(listObj){
             init_AssetList(); 
             initSearchbar(); 
         },
-        function(){loginDone = 1; }
+        function(){localStorage.loginDone = 1; }
     ); 
 }
 
