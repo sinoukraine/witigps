@@ -146,8 +146,8 @@ function setupPush(){
                         setTimeout(function(){
                             //alert('before processClickOnPushNotification');
                             processClickOnPushNotification([data.additionalData.payload]);
-                            App.hideProgressbar(container);               
-                        },1000); 
+                            App.hideProgressbar();               
+                        },2000); 
                     }
                 }, 1000); 
             }
@@ -4472,12 +4472,8 @@ function getNewNotifications(params){
                 notificationChecked = 1;
                 if (params && params.ptr === true) {
                     App.pullToRefreshDone();
-                }
-                if(window.plus) {
-                    /*//plus.push.clear();*/
-                }
-                
-                console.log(result);                       
+                }  
+                           
                 if (result.MajorCode == '000') {
                     var data = result.Data;  
                     if (Array.isArray(data) && data.length > 0) {
