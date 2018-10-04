@@ -135,11 +135,7 @@ function setupPush(){
                showMsgNotification([data.additionalData]);
             }
             else if (data && data.additionalData && data.additionalData.payload){
-               //if user NOT using app and push notification comes
-                //alert('background');
-                //var container = $$('body');
-                //if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
-                //App.showProgressbar(container); 
+               //if user NOT using app and push notification comes                
                 App.showIndicator();
                 loginTimer = setInterval(function() {
                     //alert(localStorage.loginDone);
@@ -2341,11 +2337,7 @@ function clearUserInfo(){
     var pushList = getNotificationList();
     
     localStorage.clear(); 
-    
-    if(window.plus) {
-        plus.push.clear();
-    }
-    
+        
     if (updateAssetsPosInfoTimer) {
         clearInterval(updateAssetsPosInfoTimer);
     }
