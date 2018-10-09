@@ -129,6 +129,8 @@ window.LanguagePackages= {
 		"ALARM_MSG22": "Negative Input",
 		"ALARM_MSG23": "Speed Alert",
 		"ALARM_MSG24": "Turn on/Turn off all",
+		"ALARM_MSG25": "Harsh Accelerate",
+		"ALARM_MSG26": "Harsh Braking",
 		"ASSET_STATUS_MSG00": "Date, time",
 		"ASSET_STATUS_MSG01": "Direction",
 		"ASSET_STATUS_MSG02": "Speed",
@@ -156,7 +158,6 @@ window.LanguagePackages= {
 		"ASSET_STATUS_MSG24": "Geolock",
 		"ASSET_STATUS_MSG25": "Immobilisation",
 
-
 		"ASSET_STATUS_MSG29": "Ignition power - ON when engine is running and OFF when engine is off.",	
 		"ASSET_STATUS_MSG30": "Remote immobilisation - OFF is inactive, ON is active.",
 		"ASSET_STATUS_MSG31": "Charging voltage to back-up battery. Indicated charge consumption.",
@@ -172,6 +173,7 @@ window.LanguagePackages= {
 		"ASSET_STATUS_MSG41": "Constant power detected",
 		"ASSET_STATUS_MSG42": "Immobilisation - red icon, when asset is immobilized, grey icon when asset unimmobilized.",
 		"ASSET_STATUS_MSG43": "Geolock - green icon, when Geolock is turned on, grey icon when Geolock turned off.",
+		"ASSET_STATUS_MSG44": "Hearthrate",
 
 		
 
@@ -453,6 +455,7 @@ window.LanguagePackages= {
 		"ASSET_STATUS_MSG41": "Constant power detected",
 		"ASSET_STATUS_MSG42": "Immobilisation - red icon, when asset is immobilized, grey icon when asset unimmobilized.",
 		"ASSET_STATUS_MSG43": "Geolock - green icon, when Geolock is turned on, grey icon when Geolock turned off.",
+		"ASSET_STATUS_MSG44": "Ritmo cardiaco",
 		"ASSET_TRACK_MSG00":"Fecha y hora",
 		"ASSET_TRACK_MSG01":"Dirección",
 		"ASSET_TRACK_MSG02":"Velocidad",
@@ -738,6 +741,7 @@ window.LanguagePackages= {
 		"ASSET_STATUS_MSG41": "Constant power detected",
 		"ASSET_STATUS_MSG42": "Immobilisation - red icon, when asset is immobilized, grey icon when asset unimmobilized.",
 		"ASSET_STATUS_MSG43": "Geolock - green icon, when Geolock is turned on, grey icon when Geolock turned off.",
+		"ASSET_STATUS_MSG44": "Пульс",
 		"ASSET_TRACK_MSG00": "Дата, время",
 		"ASSET_TRACK_MSG01": "Направление",
 		"ASSET_TRACK_MSG02": "Скорость",
@@ -1024,6 +1028,7 @@ window.LanguagePackages= {
 		"ASSET_STATUS_MSG41": "Constant power detected",
 		"ASSET_STATUS_MSG42": "Immobilisation - red icon, when asset is immobilized, grey icon when asset unimmobilized.",
 		"ASSET_STATUS_MSG43": "Geolock - green icon, when Geolock is turned on, grey icon when Geolock turned off.",
+		"ASSET_STATUS_MSG44": "Пульс",
 		"ASSET_TRACK_MSG00": "Дата, час",
 		"ASSET_TRACK_MSG01": "Напряок",
 		"ASSET_TRACK_MSG02": "Швидкість",

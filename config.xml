@@ -53,23 +53,21 @@
     <plugin name="cordova-plugin-camera" source="npm" spec="4.0.3"  />
     <plugin spec="https://github.com/phonegap/phonegap-mobile-accessibility.git" source="git" />
 
-    <!-- <platform name="ios"> -->
-        <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
-            <string>You can take a photo of your asset using camera and upload it into the app</string>
-        </edit-config>
-        <edit-config target="NSPhotoLibraryUsageDescription" file="*-Info.plist" mode="merge">
-            <string>You can select photo of your asset in your photo library and upload it into the app</string>
-        </edit-config>
-        <!-- <edit-config platform="ios" target="NSLocationWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
-            <string>need location access to find things nearby</string>
-        </edit-config> -->
-        <edit-config target="NSPhotoLibraryAddUsageDescription" file="*-Info.plist" mode="merge">
-            <string>Need photo library access to save pictures there</string>
-        </edit-config>
-        <config-file platform="ios" target="*-Info.plist" parent="ITSAppUsesNonExemptEncryption">
-            <false/>
-        </config-file>
-    <!-- </platform> -->
+    <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
+        <string>You can take a photo of your asset using camera and upload it into the app</string>
+    </edit-config>
+    <edit-config target="NSPhotoLibraryUsageDescription" file="*-Info.plist" mode="merge">
+        <string>You can select photo of your asset in your photo library and upload it into the app</string>
+    </edit-config>
+    <!-- <edit-config platform="ios" target="NSLocationWhenInUseUsageDescription" file="*-Info.plist" mode="merge">
+        <string>need location access to find things nearby</string>
+    </edit-config> -->
+    <edit-config target="NSPhotoLibraryAddUsageDescription" file="*-Info.plist" mode="merge">
+        <string>Need photo library access to save pictures there</string>
+    </edit-config>
+    <config-file platform="ios" target="*-Info.plist" parent="ITSAppUsesNonExemptEncryption">
+        <false/>
+    </config-file>  
 
 
     <platform name="android">
@@ -115,9 +113,4 @@
       </platform>  
     <splash src="splash.png" />
     <icon src="icon.png" />
-
-
-    
-
-    
 </widget>

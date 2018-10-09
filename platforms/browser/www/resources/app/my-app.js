@@ -40,7 +40,7 @@ function getPlusInfo(){
 var inBrowser = 0;
 var notificationChecked = 0;
 var loginTimer = 0;
-var loginDone = 0;
+localStorage.loginDone = 0;
 //var appPaused = 0;
 
 var loginInterval = null;
@@ -57,17 +57,13 @@ function onDeviceReady(){
     if (window.MobileAccessibility) {
         window.MobileAccessibility.usePreferredTextZoom(false);    
     }
-
     
     //if (device.platform == 'iOS' && StatusBar) {
     if (StatusBar) {
         StatusBar.styleDefault();
     }   
 
-    if(window.device) {
-    	$$('.devType').val(device.platform);
-    }
-
+    
     setupPush();
 
     getPlusInfo(); 
@@ -108,7 +104,7 @@ function setupPush(){
 
         push.on('registration', function(data) {
             console.log('registration event: ' + data.registrationId);  
-            $$('.regToken').val(JSON.stringify(data));
+            //$$('.regToken').val(JSON.stringify(data));
             //App.alert( JSON.stringify(data) );         
 
             //localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
@@ -128,28 +124,26 @@ function setupPush(){
         });
 
         push.on('notification', function(data) {            
-            alert( JSON.stringify(data) );
+            //alert( JSON.stringify(data) );
 
 
             //if user using app and push notification comes
             if (data && data.additionalData && data.additionalData.foreground) {
-               // if application open, show popup               
+               // if application open, show popup    
+               
                showMsgNotification([data.additionalData]);
             }
             else if (data && data.additionalData && data.additionalData.payload){
-               //if user NOT using app and push notification comes
-                var container = $$('body');
-                if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
-                App.showProgressbar(container); 
-               
+               //if user NOT using app and push notification comes                
+                App.showIndicator();
                 loginTimer = setInterval(function() {
-                    //alert(loginDone);
-                    if (loginDone) {
+                    //alert(localStorage.loginDone);
+                    if (localStorage.loginDone) {
                         clearInterval(loginTimer);
-                        setTimeout(function(){
-                            //alert('before processClickOnPushNotification');
+                        setTimeout(function(){     
+                            //alert('before processClickOnPushNotification');                       
                             processClickOnPushNotification([data.additionalData.payload]);
-                            App.hideProgressbar(container);               
+                            App.hideIndicator();             
                         },1000); 
                     }
                 }, 1000); 
@@ -174,7 +168,14 @@ function setupPush(){
         });
 
         if　(!localStorage.ACCOUNT){
-            push.clearAllNotifications();
+            push.clearAllNotifications(
+                () => {
+                  console.log('success');
+                },
+                () => {
+                  console.log('error');
+                }
+            );
         }
 }
 
@@ -517,9 +518,9 @@ $$('body').on('click', '.deleteAllNotifications', function(){
     });
 });
 $$('body').on('change keyup input click', '.only_numbers', function(){
-    if (this.value.match(/[^0-9]/g)) {
-	     this.value = this.value.replace(/[^0-9]/g, '');
-	}
+    if (this.value.match(/[^0-9-]/g)) {
+         this.value = this.value.replace(/[^0-9-]/g, '');
+    }
 });
 $$('body').on('click', '.toggle-password', function(){
     var password = $(this).siblings("input[name='password']");
@@ -1297,7 +1298,7 @@ App.onPageInit('alarms.select', function (page) {
 
     var alarm = $$(page.container).find('input[name = "checkbox-alarm"]');    
 
-    var alarmFields = ['accOff','accOn','customAlarm','custom2LowAlarm','geolock','geofenceIn','geofenceOut','illegalIgnition','lowBattery','mainBatteryFail','sosAlarm','speeding','tilt'];  
+    var alarmFields = ['accOff','accOn','customAlarm','custom2LowAlarm','geolock','geofenceIn','geofenceOut','illegalIgnition','lowBattery','mainBatteryFail','sosAlarm','speeding','tilt', 'harshAcc', 'harshBrk'];  
    
     var allCheckboxesLabel = $$(page.container).find('label.item-content');
     var allCheckboxes = allCheckboxesLabel.find('input');
@@ -1709,7 +1710,7 @@ App.onPageInit('resetPwd', function (page) {
 App.onPageInit('asset.alarm', function (page) {
     var alarm = $$(page.container).find('input[name = "checkbox-alarm"]');      
 
-    var alarmFields = ['accOff','accOn','customAlarm','custom2LowAlarm','geolock','geofenceIn','geofenceOut','illegalIgnition','lowBattery','mainBatteryFail','sosAlarm','speeding','tilt'];  
+    var alarmFields = ['accOff','accOn','customAlarm','custom2LowAlarm','geolock','geofenceIn','geofenceOut','illegalIgnition','lowBattery','mainBatteryFail','sosAlarm','speeding','tilt', 'harshAcc', 'harshBrk'];
 
     var allCheckboxesLabel = $$(page.container).find('label.item-content');
     var allCheckboxes = allCheckboxesLabel.find('input');
@@ -2342,11 +2343,7 @@ function clearUserInfo(){
     var pushList = getNotificationList();
     
     localStorage.clear(); 
-    
-    if(window.plus) {
-        plus.push.clear();
-    }
-    
+        
     if (updateAssetsPosInfoTimer) {
         clearInterval(updateAssetsPosInfoTimer);
     }
@@ -3462,6 +3459,14 @@ function loadAlarmPage(){
             state: true,
             val: 256,
         },
+        harshAcc: {
+            state: true,
+            val: 33554432,
+        },
+        harshBrk: {
+            state: true,
+            val: 2097152,
+        },
         alarm: {
             state: true,
             //val: 0,
@@ -3475,7 +3480,7 @@ function loadAlarmPage(){
                 alarms[key].state = false;
             }            
         });
-        if (assetAlarmVal == 1279934) {
+        if (assetAlarmVal == 36931518) {
             alarms.alarm.state = false;
         }
         
@@ -3504,6 +3509,8 @@ function loadAlarmPage(){
             sosAlarm: alarms.sosAlarm.state,
             speeding: alarms.speeding.state,
             tilt: alarms.tilt.state,
+            harshAcc: alarms.harshAcc.state,
+            harshBrk: alarms.harshBrk.state,
         }
     });
 }
@@ -4332,7 +4339,7 @@ function setAssetListPosInfo(listObj){
     //console.log(data);
     JSON1.requestPost(url,data, function(result){   
             console.log(result);  
-            loginDone = 1;                     
+            localStorage.loginDone = 1;                     
             if (result.MajorCode == '000') {
                 var data = result.Data;    
                 if (result.Data) {
@@ -4358,7 +4365,7 @@ function setAssetListPosInfo(listObj){
             init_AssetList(); 
             initSearchbar(); 
         },
-        function(){loginDone = 1; }
+        function(){localStorage.loginDone = 1; }
     ); 
 }
 
@@ -4475,12 +4482,8 @@ function getNewNotifications(params){
                 notificationChecked = 1;
                 if (params && params.ptr === true) {
                     App.pullToRefreshDone();
-                }
-                if(window.plus) {
-                    /*//plus.push.clear();*/
-                }
-                
-                console.log(result);                       
+                }  
+                           
                 if (result.MajorCode == '000') {
                     var data = result.Data;  
                     if (Array.isArray(data) && data.length > 0) {
