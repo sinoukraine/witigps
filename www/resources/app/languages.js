@@ -950,6 +950,9 @@ window.LanguagePackages= {
 		"PROMPT_MSG050": "Access restricted",
 		"PROMPT_MSG051": "Demo accounts has restricted access",
 		"PROMPT_MSG052": "App can't get phone details for push notifications. Please, logout and login again.",
+		"PROMPT_MSG053": "If you enjoy using our App, whould you mind taking a moment to rate it? It won\'t take more than a minute.",
+
+
 		"LOGIN_MSG01": "Введено невірний логін (адреса електронної пошти) або пароль.",
 		"LOGIN_MSG02": "Ім'я користувача / E-mail",
 		"LOGIN_MSG03": "Пароль",
