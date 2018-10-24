@@ -133,7 +133,7 @@ function setupPush(){
                //if user NOT using app and push notification comes
                 var container = $$('body');
                 if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
-                App.showProgressbar(container); 
+                App.showIndicator();
                
                 loginTimer = setInterval(function() {
                     //alert(localStorage.loginDone);
@@ -142,7 +142,7 @@ function setupPush(){
                         setTimeout(function(){
                             //alert('before processClickOnPushNotification');
                             processClickOnPushNotification([data.additionalData.payload]);
-                            App.hideProgressbar(container);               
+                            App.hideIndicator();                
                         },1000); 
                     }
                 }, 1000); 
@@ -161,20 +161,7 @@ function setupPush(){
                     data.additionalData.notId
                 );
             }
-            if (device && device.platform && device.platform.toLowerCase() == 'ios') {
-                push.finish(
-                    () => {
-                      console.log('processing of push data is finished');
-                    },
-                    () => {
-                      console.log(
-                        'something went wrong with push.finish for ID =',
-                        data.additionalData.notId
-                      );
-                    },
-                    data.additionalData.notId
-                );
-            }
+            
                 
         });
 
@@ -4866,13 +4853,6 @@ function processClickOnPushNotification(msgJ){
         }
         
         if (msg && msg.time && msg.name && msg.title) {
-            var activePage = App.getCurrentView().activePage;  
-           
-            //if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {               
-           /* if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {
-                mainView.router.refreshPage();
-            }   */
-
             if (parseFloat(msg.lat) && parseFloat(msg.lng)) {               
                 TargetAsset.ASSET_IMEI = msg.imei;
                 TargetAsset.ASSET_NAME = msg.name; 
@@ -4884,9 +4864,7 @@ function processClickOnPushNotification(msgJ){
             }else{
                 App.alert(LANGUAGE.PROMPT_MSG023);
             }
-            /*}else{                
-                mainView.router.refreshPage();
-            }   */    
+            
         }  
     }          
 }
@@ -4910,7 +4888,7 @@ function showMsgNotification(arrMsgJ){
             }
         }    
         if (msg && msg.title && msg.name) {
-            if ( page.name != "notification" ) {
+            //if ( page.name != "notification" ) {
                 $$('.notification_button').addClass('new_not');
                 var message = msg.name+'</br>'+msg.title;        
                 App.addNotification({
@@ -4930,7 +4908,7 @@ function showMsgNotification(arrMsgJ){
 
                     },                          
                 });                
-            }
+            //}
                 
 
             if (msg.imei && msg.type && parseInt(msg.type) == 1024 ) {  //geolock                
