@@ -113,6 +113,14 @@ module.exports = [
         "clobbers": [
             "BuildInfo"
         ]
+    },
+    {
+        "file": "plugins/cordova-launch-review/www/launchreview.js",
+        "id": "cordova-launch-review.LaunchReview",
+        "pluginId": "cordova-launch-review",
+        "clobbers": [
+            "LaunchReview"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -126,7 +134,8 @@ module.exports.metadata =
     "cordova-plugin-splashscreen": "5.0.2",
     "cordova-plugin-camera": "4.0.3",
     "cordova-plugin-device": "2.0.2",
-    "cordova-plugin-buildinfo": "2.0.2"
+    "cordova-plugin-buildinfo": "2.0.2",
+    "cordova-launch-review": "3.1.1"
 }
 // BOTTOM OF METADATA
 });

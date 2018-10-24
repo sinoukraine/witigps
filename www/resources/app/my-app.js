@@ -46,6 +46,7 @@ localStorage.loginDone = 0;
 var loginInterval = null;
 var pushConfigRetryMax = 40;
 var pushConfigRetry = 0;
+var push = null;
 
 if( navigator.userAgent.match(/Windows/i) ){    
     inBrowser = 1;
@@ -62,7 +63,7 @@ function onDeviceReady(){
     if (StatusBar) {
         StatusBar.styleDefault();
     } 
-
+    alert(BuildInfo.packageName);
     setupPush();
 
 	getPlusInfo(); 
@@ -81,11 +82,33 @@ function onDeviceReady(){
     document.addEventListener("resume", onAppResume, false);
     document.addEventListener("pause", onAppPause, false);
 
-    
+    setTimeout(function(){
+        askForReview();
+    }, 5000);
+}
+
+function askForReview(){
+    var appId, platform = device.platform.toLowerCase();
+    //console.log('here!');
+
+    switch(platform){
+        case "ios":
+            appId = "1320821669";
+            break;
+        case "android":
+            appId = BuildInfo.packageName;
+            break;
+    }
+
+    LaunchReview.launch(function(){
+        console.log("Successfully launched store app");
+    },function(err){
+        console.log("Error launching store app: " + err);
+    }, appId);
 }
 
 function setupPush(){
-        var push = PushNotification.init({
+        push = PushNotification.init({
             "android": {
                 //"senderID": "264121929701"                             
             },
@@ -302,44 +325,6 @@ function backFix(event){
     } 
 }
 
-/*function webSockConnect(){    
-    var MinorToken = getUserinfo().MinorToken;
-    var deviceToken = !localStorage.PUSH_DEVICE_TOKEN? '111' : localStorage.PUSH_DEVICE_TOKEN;
-    $hub = hubHelper({ url :"http://api.Quikdata.co:8088/",
-                           qs: {
-                                MinorToken : MinorToken,
-                                DeviceToken : deviceToken
-                           },
-                           hub: "v1Hub"
-    },{
-        receiveMessage: function(from, msg){
-            
-        },
-        receiveNotice: function(msg){
-            
-            console.log(msg);
-            var objMsg = isJsonString(msg);      
-            if ( objMsg ) {
-                var message = {};
-                var all_msg = [];                
-                
-                message.payload = msg;
-                all_msg.push(message);
-                
-                var deviceType = localStorage.DEVICE_TYPE; 
-                if (deviceType == "web") {
-                    setNotificationList(all_msg);
-                }                
-                getNewNotifications();
-
-                
-            }
-                
-        }
-    });
-            
-    $hub.start();
-}*/
 
 // Initialize your app
 var App = new Framework7({
@@ -2566,8 +2551,15 @@ function clearUserInfo(){
     /*if ($hub) {
         $hub.stop();  
     }*/  
-    if(window.plus) {
-        plus.push.clear();
+    if(push) {
+        push.clearAllNotifications(
+            () => {
+              console.log('success');
+            },
+            () => {
+              console.log('error');
+            }
+        );
     }
 
     if (updateAssetsPosInfoTimer) {
@@ -2597,7 +2589,7 @@ function clearUserInfo(){
         JSON1.request(API_URL.URL_GET_LOGOUT2.format(MajorToken, MinorToken, userName, mobileToken), function(result){ console.log(result); });         
     }   */
     	//console.log(API_URL.URL_GET_LOGOUT.format(mobileToken));
-        JSON1.request(API_URL.URL_GET_LOGOUT.format(mobileToken, deviceToken), function(result){ console.log(result); });         
+    JSON1.request(API_URL.URL_GET_LOGOUT.format(mobileToken, deviceToken), function(result){ console.log(result); });         
     
     $$("input[name='account']").val(userName);
 }

@@ -34,6 +34,9 @@
         },
         "cordova-plugin-buildinfo": {
             "PACKAGE_NAME": "com.sinopacific.quiktrak"
+        },
+        "cordova-launch-review": {
+            "PACKAGE_NAME": "com.sinopacific.quiktrak"
         }
     },
     "dependent_plugins": {}

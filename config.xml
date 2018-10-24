@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.sinopacific.quiktrak" version="1.3.8" xmlns="http://www.w3.org/ns/widgets" defaultlocale="en-US" android-versionCode="139" ios-CFBundleVersion="147">
+<widget xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.sinopacific.quiktrak" version="1.3.8" xmlns="http://www.w3.org/ns/widgets" defaultlocale="en-US" android-versionCode="140" ios-CFBundleVersion="150">
     <name>QuikTrak</name>
     <description>
         QuikTrak GPS tracker
@@ -52,6 +52,7 @@
     <plugin name="cordova-plugin-splashscreen" source="npm" spec="5.0.2" />
     <plugin name="cordova-plugin-camera" source="npm" spec="4.0.3"  />
     <plugin spec="https://github.com/phonegap/phonegap-mobile-accessibility.git" source="git" />
+    <plugin name="cordova-launch-review" source="npm" spec="3.1.1" />
 
     <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
         <string>You can take a photo of your asset using camera and upload it into the app</string>
