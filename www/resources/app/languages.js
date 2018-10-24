@@ -39,6 +39,8 @@ window.LanguagePackages= {
 		"COM_MSG35": "No",	
 		"COM_MSG36": "Can't execute request. Please, try again later",	
 		"COM_MSG38": "OK",
+		"COM_MSG39": "Later",
+		"COM_MSG40": "Do not show again",
 
 		"PROMPT_MSG001": "Live tracking started",
 		"PROMPT_MSG002": "Live tracking stopped",
@@ -76,7 +78,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG050": "Access restricted",
 		"PROMPT_MSG051": "Demo accounts has restricted access",
 		"PROMPT_MSG052": "App can't get phone details for push notifications. Please, logout and login again.",
-
+		"PROMPT_MSG053": "If you enjoy using our App, whould you mind taking a moment to rate it? It won\'t take more than a minute.",
 
 		"LOGIN_MSG01": "The login(email) or password you entered is incorrect.",
 		"LOGIN_MSG02": "Login Name / Email",
@@ -325,6 +327,8 @@ window.LanguagePackages= {
 		"COM_MSG35": "No",	
 		"COM_MSG36": "Can't execute request. Please, try again later",
 		"COM_MSG38": "OK",
+		"COM_MSG39": "Later",
+		"COM_MSG40": "Do not show again",
 
 		"PROMPT_MSG001":"Inicio de seguimiento en vivo",
 		"PROMPT_MSG002":"Seguimiento en vivo detenido",
@@ -361,6 +365,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG050": "Access restricted",
 		"PROMPT_MSG051": "Demo accounts has restricted access",
 		"PROMPT_MSG052": "App can't get phone details for push notifications. Please, logout and login again.",
+		"PROMPT_MSG053": "If you enjoy using our App, whould you mind taking a moment to rate it? It won\'t take more than a minute.",
 
 		"LOGIN_MSG01":"El usuario (correo) o la contraseña ingresados son incorrectos",
 		"LOGIN_MSG02":"Nombre de usuario / Correo",
@@ -615,6 +620,8 @@ window.LanguagePackages= {
 		"COM_MSG35": "No",	
 		"COM_MSG36": "Can't execute request. Please, try again later",
 		"COM_MSG38": "OK",
+		"COM_MSG39": "Later",
+		"COM_MSG40": "Do not show again",
 
 		"PROMPT_MSG001": "Начало онлайн отслеживания",
 		"PROMPT_MSG002": "Онлайн отслеживание остановлено",
@@ -651,6 +658,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG050": "Access restricted",
 		"PROMPT_MSG051": "Demo accounts has restricted access",
 		"PROMPT_MSG052": "App can't get phone details for push notifications. Please, logout and login again.",
+		"PROMPT_MSG053": "If you enjoy using our App, whould you mind taking a moment to rate it? It won\'t take more than a minute.",
 		"LOGIN_MSG01": "Введен неверный логин (адрес электронной почты) или пароль.",
 		"LOGIN_MSG02": "Имя пользователя / E-mail",
 		"LOGIN_MSG03": "Пароль",
@@ -904,6 +912,8 @@ window.LanguagePackages= {
 		"COM_MSG35": "No",	
 		"COM_MSG36": "Can't execute request. Please, try again later",
 		"COM_MSG38": "OK",
+		"COM_MSG39": "Later",
+		"COM_MSG40": "Do not show again",
 		
 		"PROMPT_MSG001": "Початок онлайн відстеження",
 		"PROMPT_MSG002": "Онлайн відстеження зупинено",

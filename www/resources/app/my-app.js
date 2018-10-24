@@ -47,6 +47,7 @@ var loginInterval = null;
 var pushConfigRetryMax = 40;
 var pushConfigRetry = 0;
 var push = null;
+var AppDetails = {};
 
 if( navigator.userAgent.match(/Windows/i) ){    
     inBrowser = 1;
@@ -56,6 +57,15 @@ document.addEventListener("deviceready", onDeviceReady, false );
 
 //function onPlusReady(){   
 function onDeviceReady(){ 
+
+    AppDetails = {
+        name: 'QuikTrak-app',
+        code: 23,
+        supportCode: 3,
+        appId: BuildInfo.packageName,
+        appleId: '1320821669',
+    };
+
     //fix app images and text size
     if (window.MobileAccessibility) {
         window.MobileAccessibility.usePreferredTextZoom(false);    
@@ -63,7 +73,7 @@ function onDeviceReady(){
     if (StatusBar) {
         StatusBar.styleDefault();
     } 
-    alert(BuildInfo.packageName);
+    //alert(BuildInfo.packageName);
     setupPush();
 
 	getPlusInfo(); 
@@ -82,30 +92,10 @@ function onDeviceReady(){
     document.addEventListener("resume", onAppResume, false);
     document.addEventListener("pause", onAppPause, false);
 
-    setTimeout(function(){
-        askForReview();
-    }, 5000);
+    
 }
 
-function askForReview(){
-    var appId, platform = device.platform.toLowerCase();
-    //console.log('here!');
 
-    switch(platform){
-        case "ios":
-            appId = "1320821669";
-            break;
-        case "android":
-            appId = BuildInfo.packageName;
-            break;
-    }
-
-    LaunchReview.launch(function(){
-        console.log("Successfully launched store app");
-    },function(err){
-        console.log("Error launching store app: " + err);
-    }, appId);
-}
 
 function setupPush(){
         push = PushNotification.init({
@@ -354,11 +344,7 @@ var mainView = App.addView('.view-main', {
     swipeBackPage: false
 });
 
-var AppDetails = {
-    name: 'QuikTrak-app',
-    code: 23,
-    supportCode: 3,
-};
+
 
 window.PosMarker = {};
 var MapTrack = null;
@@ -2546,6 +2532,9 @@ function clearUserInfo(){
 	POSINFOASSETLIST = {}; 
     var alarmList = getAlarmList();    
     var pushList = getNotificationList();
+
+    var ModalReview = !localStorage.ModalReview ? '' : localStorage.ModalReview;
+    var FirstLoginDone = !localStorage.FirstLoginDone ? '' : localStorage.FirstLoginDone;
     
     localStorage.clear(); 
     /*if ($hub) {
@@ -2584,6 +2573,14 @@ function clearUserInfo(){
     if (mobileToken) {
         localStorage.PUSH_MOBILE_TOKEN = mobileToken;
     }
+
+    if (ModalReview) {
+        localStorage.ModalReview = ModalReview;
+    }
+    if (FirstLoginDone) {
+        localStorage.FirstLoginDone = FirstLoginDone;
+    }
+
     /*if(MinorToken){      
         console.log(API_URL.URL_GET_LOGOUT2.format(MajorToken, MinorToken, userName, mobileToken));
         JSON1.request(API_URL.URL_GET_LOGOUT2.format(MajorToken, MinorToken, userName, mobileToken), function(result){ console.log(result); });         
@@ -2643,8 +2640,6 @@ function login(){
     var deviceType = !localStorage.DEVICE_TYPE? 'web' : localStorage.DEVICE_TYPE;
     var account = $$("input[name='account']");
     var password = $$("input[name='password']");  
-
-   // alert('logged in');
     
     var urlLogin = API_URL.URL_GET_LOGIN.format(!account.val()? localStorage.ACCOUNT: account.val(), 
                                      encodeURIComponent(!password.val()? localStorage.PASSWORD: password.val()), 
@@ -2652,17 +2647,10 @@ function login(){
                                      mobileToken, 
                                      encodeURIComponent(deviceToken), 
                                      deviceType);   
-    //alert(urlLogin);
-    //console.log(urlLogin);                             
+                       
     JSON1.request(urlLogin, function(result){
            console.log(result);
-            if(result.MajorCode == '000') {
-            	//var info = plus.push.getClientInfo();
-            	/*setTimeout(function(){
-					App.alert(" plus.push.getClientInfo() = "+JSON.stringify(info));
-            	},5000);*/
-            	//alert(" plus.push.getClientInfo() =: "+JSON.stringify(info));
-            	//alert("deviceToken: "+deviceToken+" mobileToken: "+deviceToken+" appKey: "+appKey);
+            if(result.MajorCode == '000') {            	
                 if(!!account.val()) {
                     localStorage.ACCOUNT = account.val();
                     localStorage.PASSWORD = password.val();
@@ -2671,12 +2659,8 @@ function login(){
                 password.val(null);
                 setUserinfo(result.Data);
                 setAssetList(result.Data.Devices); 
-                updateUserCredits(result.Data.User.Credits);      
-                        
-               
-                //init_AssetList(); 
-                //initSearchbar();
-                //webSockConnect();  
+                updateUserCredits(result.Data.User.Credits);                  
+                
                 getNewNotifications();
                 
                 App.closeModal();                
@@ -3593,6 +3577,67 @@ function showNoCreditMessage(){
             },
         ]
     });             
+}
+
+function showAskForReviewMessage(){
+
+    var appId, platform = device.platform.toLowerCase();
+
+    switch(platform){
+        case "ios":
+            appId = AppDetails.appleId;
+            break;
+        case "android":
+            appId = AppDetails.appId;
+            break;
+    }
+
+    var modal = App.modal({
+        title: '<div class="custom-modal-logo-wrapper"><img class="custom-modal-logo" src="resources/images/logo.png" alt=""/></div>',
+        text: '<div class="custom-modal-text">' + LANGUAGE.PROMPT_MSG053 +'</div>',
+        afterText:  '<div class="list-block no-hairlines modal-checkbox">' +
+                        '<ul>' +
+                            '<li>' +
+                                '<label class="label-checkbox item-content">' +
+                                    '<input type="checkbox" name="checkbox-not-show-modal-review" value="">' +
+                                    '<div class="item-media">' +
+                                        '<i class="icon icon-form-checkbox"></i>' +
+                                    '</div>' +
+                                    '<div class="item-inner">' +
+                                        '<div class="item-title">' + LANGUAGE.COM_MSG40 + '</div>' +
+                                    '</div>' +
+                                '</label>' +
+                            '</li>' +
+                        '</ul>' +
+                    '</div>', 
+        buttons: [
+            {
+                text: LANGUAGE.COM_MSG39,
+                onClick: function () {
+                    var checkboxState = $$('body input[name="checkbox-not-show-modal-review"]').is(":checked");
+                    if (checkboxState) {
+                        localStorage.ModalReview = checkboxState;
+                    }
+                }
+            },
+            {
+                text: LANGUAGE.COM_MSG38,
+                bold: true,
+                onClick: function () {
+                    var checkboxState = $$('body input[name="checkbox-not-show-modal-review"]').is(":checked");
+                    if (checkboxState) {
+                        localStorage.ModalReview = checkboxState;
+                    }
+
+                    LaunchReview.launch(function(){
+                        console.log("Successfully launched store app");
+                    },function(err){
+                        console.log("Error launching store app: " + err);
+                    }, appId);
+                }
+            },
+        ]
+    });
 }
 
 function showCustomMessage(params){
@@ -4517,6 +4562,15 @@ function setAssetListPosInfo(listObj){
             }
             init_AssetList(); 
             initSearchbar(); 
+            setTimeout(function(){        
+                if (!localStorage.ModalReview && localStorage.FirstLoginDone ) {
+                    showAskForReviewMessage();
+                }     
+
+                if (!localStorage.FirstLoginDone) {
+                    localStorage.FirstLoginDone = true;
+                }   
+            }, 5000);
             localStorage.loginDone = 1;
         },
         function(){ localStorage.loginDone = 1; }

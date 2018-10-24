@@ -1757,3 +1757,14 @@ tossing
     	background: transparent;
     	padding: 12px 0 0;
 	}
+	.modal-checkbox{
+		margin-top: 8px;
+		margin-bottom: 0;
+	}
+	.modal-checkbox.list-block .item-content{
+		padding-left: 0;
+	}
+	.modal-checkbox.list-block .item-inner{
+		padding-right: 0;
+		margin-left: 0;
+	}
