@@ -33,7 +33,7 @@ function getPlusInfo(){
             localStorage.PUSH_DEVICE_TOKEN = uid;
             //localStorage.PUSH_DEVICE_TOKEN = "75ba1639-92ae-0c4c-d423-4fad1e48a49d"
         localStorage.PUSH_APPID_ID = 'webapp';
-        localStorage.DEVICE_TYPE = "web";        
+        localStorage.DEVICE_TYPE = "webapp";        
     }
 }
 
@@ -47,15 +47,6 @@ var loginInterval = null;
 var pushConfigRetryMax = 40;
 var pushConfigRetry = 0;
 
-var push = null;
-var AppDetails = {
-    name: 'QuikTrak-app',
-    code: 23,
-    supportCode: 3,
-    appId: '',
-    appleId: '1320821669',
-};
-
 if( navigator.userAgent.match(/Windows/i) ){    
     inBrowser = 1;
 }
@@ -64,9 +55,6 @@ document.addEventListener("deviceready", onDeviceReady, false );
 
 //function onPlusReady(){   
 function onDeviceReady(){ 
-
-    AppDetails.appId = BuildInfo.packageName;
-
     //fix app images and text size
     if (window.MobileAccessibility) {
         window.MobileAccessibility.usePreferredTextZoom(false);    
@@ -96,10 +84,8 @@ function onDeviceReady(){
     
 }
 
-
-
 function setupPush(){
-        push = PushNotification.init({
+        var push = PushNotification.init({
             "android": {
                 //"senderID": "264121929701"                             
             },
@@ -147,7 +133,7 @@ function setupPush(){
                //if user NOT using app and push notification comes
                 var container = $$('body');
                 if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
-                App.showIndicator();
+                App.showProgressbar(container); 
                
                 loginTimer = setInterval(function() {
                     //alert(localStorage.loginDone);
@@ -156,7 +142,7 @@ function setupPush(){
                         setTimeout(function(){
                             //alert('before processClickOnPushNotification');
                             processClickOnPushNotification([data.additionalData.payload]);
-                            App.hideIndicator();                
+                            App.hideProgressbar(container);               
                         },1000); 
                     }
                 }, 1000); 
@@ -191,116 +177,17 @@ function setupPush(){
         }
 }
 
-/*function onPushClick (msg){     // will work in iOS and in // ANDROID go ONLY here
-    var all_msg = [];
-    var message = '';
-    //alert(msg.payload);
-    if (msg && msg.payload) {
-        var parsedPayload = isJsonString(msg.payload);
-        
-        if (parsedPayload) {
-            message = parsedPayload;
-        }else{
-            message = msg.payload;
-        }
-        //alert(typeof(message));
-        if(typeof(message)=='string'){
-            var testArr = message.split("payload");
-            //alert(testArr);
-            //alert(JSON.stringify(testArr));
-            //alert(testArr[1]);
-            if (testArr && testArr[1]) {
-                message = testArr[1].slice(2).slice(0, -1);
-                message = isJsonString(message);
-            }            
-        } 
-        if (message) {
-            all_msg.push(message);
-        }
-    }
-    if (all_msg.length > 0) {
-        var container = $$('body');
-        if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
-        App.showProgressbar(container); 
 
-        loginTimer = setInterval(function() {
-                //alert(localStorage.loginDone);
-                if (localStorage.loginDone) {
-                    clearInterval(loginTimer);
-                    setTimeout(function(){
-                        //alert('before processClickOnPushNotification');
-                         processClickOnPushNotification(all_msg); 
-                         App.hideProgressbar(container);               
-                    },1000); 
-                }
-            }, 1000);   
-    }
-
-}
-
-function onPushRecieve( msg ){      //will work in android    and iOS - if in foreground    
-    var osName = plus.os.name.toLowerCase();  
-      
-    switch ( osName ) {
-        case "android":
-            var all_msg = plus.push.getAllMessage();
-            if (all_msg === null || all_msg.length === 0) {
-                var message = {};
-                all_msg = [];
-                message.payload = msg.payload;                     
-                all_msg.push(message);
-            }
-            if (all_msg) {
-                var popped = all_msg.pop();
-                all_msg = [];                
-                all_msg.push(popped);
-                
-                //setNotificationList(all_msg); 
-
-                loginTimer = setInterval(function() {
-                        if (localStorage.loginDone) {
-                            clearInterval(loginTimer);                                    
-                            setTimeout(function(){
-                                processClickOnPushNotification(all_msg);
-                            },1000);
-                        }
-                    }, 1000); 
-            }
-        break;
-
-        case "ios":
-            //if (appPaused) {
-                if (!isJsonString(msg)) {                
-                    if (msg.aps) {
-                        var payload = JSON.stringify(msg.payload); 
-                        if (localPushLastPayload != payload) {
-                            localPushLastPayload = payload;
-                            plus.push.createMessage(msg.content, payload, {cover:false} );
-                        } 
-                    }                    
-                }
-            //}      
-        break;
-        default:
-        // other
-        break;
-    }       
-}*/
 
 function onAppPause(){ 
-    /*if ($hub) {
-        $hub.stop();
-    }*/
+    
 } 
 function onAppResume(){    
     if (localStorage.ACCOUNT && localStorage.PASSWORD) {
         getNewNotifications(); 
         getNewData();
     }
-   
-    /*if ($hub) {
-        $hub.start();
-    }*/ 
+    
 }  
 
  
@@ -345,7 +232,11 @@ var mainView = App.addView('.view-main', {
     swipeBackPage: false
 });
 
-
+var AppDetails = {
+    name: 'QuikTrak-app',
+    code: 23,
+    supportCode: 3,
+};
 
 window.PosMarker = {};
 var MapTrack = null;
@@ -417,6 +308,8 @@ API_URL.URL_SET_GEOLOCK = API_DOMIAN4 + "asset/GeoLock?MajorToken={0}&MinorToken
 
 API_URL.URL_ROUTE = "https://www.google.com/maps/dir/?api=1&destination={0},{1}"; //&travelmode=walking
 API_URL.URL_REFRESH_TOKEN = API_DOMIAN1 + "User/RefreshToken";
+
+API_URL.URL_USERGUIDE = "https://quiktrakglobal.com/pdf/qt-app.pdf";
 
 
 var cameraButtons = [
@@ -740,10 +633,16 @@ $$('#menu li').on('click', function () {
                 loadAlarmsAssetsPage();      
             }
             break;
+
+        case 'menuUserGuide':                    
+            loadPageUserGuide(); 
+            break; 
             
         case 'menuSupport':                    
             loadPageSupport(); 
-            break;   
+            break;  
+
+
 
                     
         case 'menuLogout':
@@ -2533,24 +2432,12 @@ function clearUserInfo(){
 	POSINFOASSETLIST = {}; 
     var alarmList = getAlarmList();    
     var pushList = getNotificationList();
-
-    var ModalReview = !localStorage.ModalReview ? '' : localStorage.ModalReview;
-    var FirstLoginDone = !localStorage.FirstLoginDone ? '' : localStorage.FirstLoginDone;
     
     localStorage.clear(); 
     /*if ($hub) {
         $hub.stop();  
     }*/  
-    if(push) {
-        push.clearAllNotifications(
-            () => {
-              console.log('success');
-            },
-            () => {
-              console.log('error');
-            }
-        );
-    }
+  
 
     if (updateAssetsPosInfoTimer) {
         clearInterval(updateAssetsPosInfoTimer);
@@ -2574,19 +2461,7 @@ function clearUserInfo(){
     if (mobileToken) {
         localStorage.PUSH_MOBILE_TOKEN = mobileToken;
     }
-
-    if (ModalReview) {
-        localStorage.ModalReview = ModalReview;
-    }
-    if (FirstLoginDone) {
-        localStorage.FirstLoginDone = FirstLoginDone;
-    }
-
-    /*if(MinorToken){      
-        console.log(API_URL.URL_GET_LOGOUT2.format(MajorToken, MinorToken, userName, mobileToken));
-        JSON1.request(API_URL.URL_GET_LOGOUT2.format(MajorToken, MinorToken, userName, mobileToken), function(result){ console.log(result); });         
-    }   */
-    	//console.log(API_URL.URL_GET_LOGOUT.format(mobileToken));
+   
     JSON1.request(API_URL.URL_GET_LOGOUT.format(mobileToken, deviceToken), function(result){ console.log(result); });         
     
     $$("input[name='account']").val(userName);
@@ -2638,9 +2513,11 @@ function login(){
     var appKey = !localStorage.PUSH_APP_KEY? '111' : localStorage.PUSH_APP_KEY;
     //var deviceToken = !localStorage.PUSH_DEVICE_TOKEN? '111' : localStorage.PUSH_DEVICE_TOKEN;
     var deviceToken = !localStorage.PUSH_DEVICE_TOKEN ? '111' : localStorage.PUSH_DEVICE_TOKEN;
-    var deviceType = !localStorage.DEVICE_TYPE? 'web' : localStorage.DEVICE_TYPE;
+    var deviceType = !localStorage.DEVICE_TYPE? 'webapp' : localStorage.DEVICE_TYPE;
     var account = $$("input[name='account']");
     var password = $$("input[name='password']");  
+
+   // alert('logged in');
     
     var urlLogin = API_URL.URL_GET_LOGIN.format(!account.val()? localStorage.ACCOUNT: account.val(), 
                                      encodeURIComponent(!password.val()? localStorage.PASSWORD: password.val()), 
@@ -2648,10 +2525,17 @@ function login(){
                                      mobileToken, 
                                      encodeURIComponent(deviceToken), 
                                      deviceType);   
-                       
+    //alert(urlLogin);
+    //console.log(urlLogin);                             
     JSON1.request(urlLogin, function(result){
            console.log(result);
-            if(result.MajorCode == '000') {            	
+            if(result.MajorCode == '000') {
+            	//var info = plus.push.getClientInfo();
+            	/*setTimeout(function(){
+					App.alert(" plus.push.getClientInfo() = "+JSON.stringify(info));
+            	},5000);*/
+            	//alert(" plus.push.getClientInfo() =: "+JSON.stringify(info));
+            	//alert("deviceToken: "+deviceToken+" mobileToken: "+deviceToken+" appKey: "+appKey);
                 if(!!account.val()) {
                     localStorage.ACCOUNT = account.val();
                     localStorage.PASSWORD = password.val();
@@ -2660,8 +2544,12 @@ function login(){
                 password.val(null);
                 setUserinfo(result.Data);
                 setAssetList(result.Data.Devices); 
-                updateUserCredits(result.Data.User.Credits);                  
-                
+                updateUserCredits(result.Data.User.Credits);      
+                        
+               
+                //init_AssetList(); 
+                //initSearchbar();
+                //webSockConnect();  
                 getNewNotifications();
                 
                 App.closeModal();                
@@ -2903,6 +2791,15 @@ function loadAlarmsAssetsPage(){
                                   
                     }
                 });
+}
+
+function loadPageUserGuide(){
+    var href = API_URL.URL_USERGUIDE;
+    if (typeof navigator !== "undefined" && navigator.app) {        
+        navigator.app.loadUrl(href, {openExternal: true});           
+    } else {
+        window.open(href,'_blank');
+    }
 }
 
 function loadPageSupport(){
@@ -3425,7 +3322,6 @@ function loadStatusPage(){
         } 
         if (assetFeaturesStatus.heartrate ) {
             assetStats.heartrate = assetFeaturesStatus.heartrate.value;
-
         }
 
 
@@ -3578,72 +3474,6 @@ function showNoCreditMessage(){
             },
         ]
     });             
-}
-
-function showAskForReviewMessage(){
-
-    var appId = ''; 
-    if(window.device) {
-        var platform = device.platform.toLowerCase();
-        switch(platform){
-            case "ios":
-                appId = AppDetails.appleId;
-                break;
-            case "android":
-                appId = AppDetails.appId;
-                break;
-        }
-    }
-        
-
-    var modal = App.modal({
-        title: '<div class="custom-modal-logo-wrapper"><img class="custom-modal-logo" src="resources/images/logo.png" alt=""/></div>',
-        text: '<div class="custom-modal-text">' + LANGUAGE.PROMPT_MSG053 +'</div>',
-        afterText:  '<div class="list-block no-hairlines modal-checkbox">' +
-                        '<ul>' +
-                            '<li>' +
-                                '<label class="label-checkbox item-content">' +
-                                    '<input type="checkbox" name="checkbox-not-show-modal-review" value="">' +
-                                    '<div class="item-media">' +
-                                        '<i class="icon icon-form-checkbox"></i>' +
-                                    '</div>' +
-                                    '<div class="item-inner">' +
-                                        '<div class="item-title">' + LANGUAGE.COM_MSG40 + '</div>' +
-                                    '</div>' +
-                                '</label>' +
-                            '</li>' +
-                        '</ul>' +
-                    '</div>', 
-        buttons: [
-            {
-                text: LANGUAGE.COM_MSG39,
-                onClick: function () {
-                    var checkboxState = $$('body input[name="checkbox-not-show-modal-review"]').is(":checked");
-                    if (checkboxState) {
-                        localStorage.ModalReview = checkboxState;
-                    }
-                }
-            },
-            {
-                text: LANGUAGE.COM_MSG38,
-                bold: true,
-                onClick: function () {
-                    var checkboxState = $$('body input[name="checkbox-not-show-modal-review"]').is(":checked");
-                    if (checkboxState) {
-                        localStorage.ModalReview = checkboxState;
-                    }
-
-                    if (LaunchReview) {
-                        LaunchReview.launch(function(){
-                            console.log("Successfully launched store app");
-                        },function(err){
-                            console.log("Error launching store app: " + err);
-                        }, appId);
-                    }                        
-                }
-            },
-        ]
-    });
 }
 
 function showCustomMessage(params){
@@ -4568,15 +4398,6 @@ function setAssetListPosInfo(listObj){
             }
             init_AssetList(); 
             initSearchbar(); 
-            setTimeout(function(){        
-                if (!localStorage.ModalReview && localStorage.FirstLoginDone ) {
-                    showAskForReviewMessage();
-                }     
-
-                if (!localStorage.FirstLoginDone) {
-                    localStorage.FirstLoginDone = true;
-                }   
-            }, 5000);
             localStorage.loginDone = 1;
         },
         function(){ localStorage.loginDone = 1; }
@@ -4652,7 +4473,7 @@ function getNewData(){
     var mobileToken = !localStorage.PUSH_MOBILE_TOKEN? '111' : localStorage.PUSH_MOBILE_TOKEN;
     var appKey = !localStorage.PUSH_APP_KEY? '111' : localStorage.PUSH_APP_KEY;
     var deviceToken = !localStorage.PUSH_DEVICE_TOKEN? '111' : localStorage.PUSH_DEVICE_TOKEN;
-    var deviceType = !localStorage.DEVICE_TYPE? 'android' : localStorage.DEVICE_TYPE;
+    var deviceType = !localStorage.DEVICE_TYPE? 'webapp' : localStorage.DEVICE_TYPE;
    
    // alert('logged in');
     
@@ -4905,6 +4726,13 @@ function processClickOnPushNotification(msgJ){
         }
         
         if (msg && msg.time && msg.name && msg.title) {
+            var activePage = App.getCurrentView().activePage;  
+           
+            //if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {               
+           /* if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {
+                mainView.router.refreshPage();
+            }   */
+
             if (parseFloat(msg.lat) && parseFloat(msg.lng)) {               
                 TargetAsset.ASSET_IMEI = msg.imei;
                 TargetAsset.ASSET_NAME = msg.name; 
@@ -4916,7 +4744,9 @@ function processClickOnPushNotification(msgJ){
             }else{
                 App.alert(LANGUAGE.PROMPT_MSG023);
             }
-            
+            /*}else{                
+                mainView.router.refreshPage();
+            }   */    
         }  
     }          
 }
@@ -4940,7 +4770,7 @@ function showMsgNotification(arrMsgJ){
             }
         }    
         if (msg && msg.title && msg.name) {
-            //if ( page.name != "notification" ) {
+            if ( page.name != "notification" ) {
                 $$('.notification_button').addClass('new_not');
                 var message = msg.name+'</br>'+msg.title;        
                 App.addNotification({
@@ -4960,7 +4790,7 @@ function showMsgNotification(arrMsgJ){
 
                     },                          
                 });                
-            //}
+            }
                 
 
             if (msg.imei && msg.type && parseInt(msg.type) == 1024 ) {  //geolock                
@@ -5150,7 +4980,7 @@ function formatArrAssetList(){
 }
 
 
-/* ASSET EDIT PHOTO */
+
 
 /* ASSET EDIT PHOTO */
 

@@ -39,8 +39,6 @@ window.LanguagePackages= {
 		"COM_MSG35": "No",	
 		"COM_MSG36": "Can't execute request. Please, try again later",	
 		"COM_MSG38": "OK",
-		"COM_MSG39": "Later",
-		"COM_MSG40": "Do not show again",
 
 		"PROMPT_MSG001": "Live tracking started",
 		"PROMPT_MSG002": "Live tracking stopped",
@@ -65,6 +63,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG021": "Sorry, we can't optimize your playback",
 		"PROMPT_MSG022": "Buy more credits to use Geolock and Immobilisation features",
 		"PROMPT_MSG023": "There is no position data or they are incorrect.",
+		
 		"PROMPT_MSG024": "Select at least one asset, please.",	
 		"PROMPT_MSG025": "Geofence Name should not be empty.",	
 		"PROMPT_MSG026": "Select Geofence Alarm Type, please.",
@@ -78,7 +77,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG050": "Access restricted",
 		"PROMPT_MSG051": "Demo accounts has restricted access",
 		"PROMPT_MSG052": "App can't get phone details for push notifications. Please, logout and login again.",
-		"PROMPT_MSG053": "If you enjoy using our App, whould you mind taking a moment to rate it? It won\'t take more than a minute.",
+
 
 		"LOGIN_MSG01": "The login(email) or password you entered is incorrect.",
 		"LOGIN_MSG02": "Login Name / Email",
@@ -92,6 +91,8 @@ window.LanguagePackages= {
 		"MENU_MSG04": "Logout",
 		"MENU_MSG05": "",
 		"MENU_MSG06": "Support",
+		"MENU_MSG07": "User Guide",
+		"MENU_MSG08": "QuikTrak – Open 24/7",
 		"PROFILE_MSG00": "USER",
 		"PROFILE_MSG01": "First Name",
 		"PROFILE_MSG02": "Last Name",
@@ -327,8 +328,6 @@ window.LanguagePackages= {
 		"COM_MSG35": "No",	
 		"COM_MSG36": "Can't execute request. Please, try again later",
 		"COM_MSG38": "OK",
-		"COM_MSG39": "Later",
-		"COM_MSG40": "Do not show again",
 
 		"PROMPT_MSG001":"Inicio de seguimiento en vivo",
 		"PROMPT_MSG002":"Seguimiento en vivo detenido",
@@ -365,7 +364,6 @@ window.LanguagePackages= {
 		"PROMPT_MSG050": "Access restricted",
 		"PROMPT_MSG051": "Demo accounts has restricted access",
 		"PROMPT_MSG052": "App can't get phone details for push notifications. Please, logout and login again.",
-		"PROMPT_MSG053": "If you enjoy using our App, whould you mind taking a moment to rate it? It won\'t take more than a minute.",
 
 		"LOGIN_MSG01":"El usuario (correo) o la contraseña ingresados son incorrectos",
 		"LOGIN_MSG02":"Nombre de usuario / Correo",
@@ -379,6 +377,8 @@ window.LanguagePackages= {
 		"MENU_MSG04":"Cerrar sesión",
 		"MENU_MSG05": "",
 		"MENU_MSG06": "Soporte",
+		"MENU_MSG07": "User Guide",
+		"MENU_MSG08": "QuikTrak – Open 24/7",
 		
 		"PROFILE_MSG00":"USUARIO ",
 		"PROFILE_MSG01":"Primer nombre",
@@ -620,8 +620,6 @@ window.LanguagePackages= {
 		"COM_MSG35": "No",	
 		"COM_MSG36": "Can't execute request. Please, try again later",
 		"COM_MSG38": "OK",
-		"COM_MSG39": "Later",
-		"COM_MSG40": "Do not show again",
 
 		"PROMPT_MSG001": "Начало онлайн отслеживания",
 		"PROMPT_MSG002": "Онлайн отслеживание остановлено",
@@ -658,7 +656,6 @@ window.LanguagePackages= {
 		"PROMPT_MSG050": "Access restricted",
 		"PROMPT_MSG051": "Demo accounts has restricted access",
 		"PROMPT_MSG052": "App can't get phone details for push notifications. Please, logout and login again.",
-		"PROMPT_MSG053": "If you enjoy using our App, whould you mind taking a moment to rate it? It won\'t take more than a minute.",
 		"LOGIN_MSG01": "Введен неверный логин (адрес электронной почты) или пароль.",
 		"LOGIN_MSG02": "Имя пользователя / E-mail",
 		"LOGIN_MSG03": "Пароль",
@@ -671,6 +668,9 @@ window.LanguagePackages= {
 		"MENU_MSG04": "Выход",
 		"MENU_MSG05": "",
 		"MENU_MSG06": "Поддержка",
+		"MENU_MSG07": "User Guide",
+		"MENU_MSG08": "QuikTrak – Open 24/7",
+
 		"PROFILE_MSG00": "Пользователь",
 		"PROFILE_MSG01": "Имя ",
 		"PROFILE_MSG02": "Фамилия",
@@ -912,8 +912,6 @@ window.LanguagePackages= {
 		"COM_MSG35": "No",	
 		"COM_MSG36": "Can't execute request. Please, try again later",
 		"COM_MSG38": "OK",
-		"COM_MSG39": "Later",
-		"COM_MSG40": "Do not show again",
 		
 		"PROMPT_MSG001": "Початок онлайн відстеження",
 		"PROMPT_MSG002": "Онлайн відстеження зупинено",
@@ -950,9 +948,6 @@ window.LanguagePackages= {
 		"PROMPT_MSG050": "Access restricted",
 		"PROMPT_MSG051": "Demo accounts has restricted access",
 		"PROMPT_MSG052": "App can't get phone details for push notifications. Please, logout and login again.",
-		"PROMPT_MSG053": "If you enjoy using our App, whould you mind taking a moment to rate it? It won\'t take more than a minute.",
-
-
 		"LOGIN_MSG01": "Введено невірний логін (адреса електронної пошти) або пароль.",
 		"LOGIN_MSG02": "Ім'я користувача / E-mail",
 		"LOGIN_MSG03": "Пароль",
@@ -965,6 +960,9 @@ window.LanguagePackages= {
 		"MENU_MSG04": "Вихід",
 		"MENU_MSG05": "",
 		"MENU_MSG06": "Підтримка",
+		"MENU_MSG07": "User Guide",
+		"MENU_MSG08": "QuikTrak – Open 24/7",
+		
 		"PROFILE_MSG00": "Користувач",
 		"PROFILE_MSG01": "Ім'я ",
 		"PROFILE_MSG02": "Прізвище",

@@ -46,8 +46,15 @@ localStorage.loginDone = 0;
 var loginInterval = null;
 var pushConfigRetryMax = 40;
 var pushConfigRetry = 0;
+
 var push = null;
-var AppDetails = {};
+var AppDetails = {
+    name: 'QuikTrak-app',
+    code: 23,
+    supportCode: 3,
+    appId: '',
+    appleId: '1320821669',
+};
 
 if( navigator.userAgent.match(/Windows/i) ){    
     inBrowser = 1;
@@ -58,13 +65,7 @@ document.addEventListener("deviceready", onDeviceReady, false );
 //function onPlusReady(){   
 function onDeviceReady(){ 
 
-    AppDetails = {
-        name: 'QuikTrak-app',
-        code: 23,
-        supportCode: 3,
-        appId: BuildInfo.packageName,
-        appleId: '1320821669',
-    };
+    AppDetails.appId = BuildInfo.packageName;
 
     //fix app images and text size
     if (window.MobileAccessibility) {
@@ -73,7 +74,7 @@ function onDeviceReady(){
     if (StatusBar) {
         StatusBar.styleDefault();
     } 
-    //alert(BuildInfo.packageName);
+
     setupPush();
 
 	getPlusInfo(); 
@@ -3581,16 +3582,19 @@ function showNoCreditMessage(){
 
 function showAskForReviewMessage(){
 
-    var appId, platform = device.platform.toLowerCase();
-
-    switch(platform){
-        case "ios":
-            appId = AppDetails.appleId;
-            break;
-        case "android":
-            appId = AppDetails.appId;
-            break;
+    var appId = ''; 
+    if(window.device) {
+        var platform = device.platform.toLowerCase();
+        switch(platform){
+            case "ios":
+                appId = AppDetails.appleId;
+                break;
+            case "android":
+                appId = AppDetails.appId;
+                break;
+        }
     }
+        
 
     var modal = App.modal({
         title: '<div class="custom-modal-logo-wrapper"><img class="custom-modal-logo" src="resources/images/logo.png" alt=""/></div>',
@@ -3629,11 +3633,13 @@ function showAskForReviewMessage(){
                         localStorage.ModalReview = checkboxState;
                     }
 
-                    LaunchReview.launch(function(){
-                        console.log("Successfully launched store app");
-                    },function(err){
-                        console.log("Error launching store app: " + err);
-                    }, appId);
+                    if (LaunchReview) {
+                        LaunchReview.launch(function(){
+                            console.log("Successfully launched store app");
+                        },function(err){
+                            console.log("Error launching store app: " + err);
+                        }, appId);
+                    }                        
                 }
             },
         ]

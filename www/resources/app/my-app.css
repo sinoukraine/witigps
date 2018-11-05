@@ -232,7 +232,7 @@ html:not(.watch-active-state) .button.btn_login.button-fill:active{
 .menu{
 	/* margin: 0; */	
 	margin-top: 16px;
-	padding-bottom: 60px;
+	padding-bottom: 128px;
 	margin-bottom: 0;
 }
 	.menu ul:before,
@@ -268,19 +268,31 @@ html:not(.watch-active-state) .button.btn_login.button-fill:active{
 			.menu .item-inner:after{
 				background-color: transparent !important;
 			}
-		.menu_remainings{
-			font-size: 16px;
-			text-align: center;
-			padding: 12px 4px;
-			color: #232323;
-			background: #E8EAF6;
-
+		.menu_bottom{
 			position: absolute;
     		bottom: 0;
     		left: 0;
     		width: 100%;
     		box-sizing: border-box;
 		}
+			.menu_call_button{
+				font-size: 14px;
+				    margin: 16px;
+			}
+				.menu_call_button i{
+					vertical-align: middle;
+					font-size: 20px;
+					margin-right: 8px;
+				}
+			.menu_remainings{
+				font-size: 16px;
+				text-align: center;
+				padding: 12px 4px;
+				color: #232323;
+				background: #E8EAF6;
+
+				
+			}
 
 /* .bw_top_shadow{
 	background: #fff !important;
@@ -1756,15 +1768,4 @@ tossing
     	position: relative;
     	background: transparent;
     	padding: 12px 0 0;
-	}
-	.modal-checkbox{
-		margin-top: 8px;
-		margin-bottom: 0;
-	}
-	.modal-checkbox.list-block .item-content{
-		padding-left: 0;
-	}
-	.modal-checkbox.list-block .item-inner{
-		padding-right: 0;
-		margin-left: 0;
 	}
