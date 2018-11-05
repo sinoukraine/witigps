@@ -47,6 +47,15 @@ var loginInterval = null;
 var pushConfigRetryMax = 40;
 var pushConfigRetry = 0;
 
+var push = null;
+var AppDetails = {
+    name: 'QuikTrak-app',
+    code: 23,
+    supportCode: 3,
+    appId: '',
+    appleId: '1320821669',
+};
+
 if( navigator.userAgent.match(/Windows/i) ){    
     inBrowser = 1;
 }
@@ -55,6 +64,8 @@ document.addEventListener("deviceready", onDeviceReady, false );
 
 //function onPlusReady(){   
 function onDeviceReady(){ 
+    AppDetails.appId = BuildInfo.packageName;
+
     //fix app images and text size
     if (window.MobileAccessibility) {
         window.MobileAccessibility.usePreferredTextZoom(false);    
@@ -85,7 +96,7 @@ function onDeviceReady(){
 }
 
 function setupPush(){
-        var push = PushNotification.init({
+        push = PushNotification.init({
             "android": {
                 //"senderID": "264121929701"                             
             },
@@ -232,11 +243,11 @@ var mainView = App.addView('.view-main', {
     swipeBackPage: false
 });
 
-var AppDetails = {
+/*var AppDetails = {
     name: 'QuikTrak-app',
     code: 23,
     supportCode: 3,
-};
+};*/
 
 window.PosMarker = {};
 var MapTrack = null;
@@ -2432,12 +2443,22 @@ function clearUserInfo(){
 	POSINFOASSETLIST = {}; 
     var alarmList = getAlarmList();    
     var pushList = getNotificationList();
+
+    var ModalReview = !localStorage.ModalReview ? '' : localStorage.ModalReview;
+    var FirstLoginDone = !localStorage.FirstLoginDone ? '' : localStorage.FirstLoginDone;
     
     localStorage.clear(); 
-    /*if ($hub) {
-        $hub.stop();  
-    }*/  
-  
+
+    if(push) {
+        push.clearAllNotifications(
+            () => {
+              console.log('success');
+            },
+            () => {
+              console.log('error');
+            }
+        );
+    }
 
     if (updateAssetsPosInfoTimer) {
         clearInterval(updateAssetsPosInfoTimer);
@@ -2460,6 +2481,13 @@ function clearUserInfo(){
     }    
     if (mobileToken) {
         localStorage.PUSH_MOBILE_TOKEN = mobileToken;
+    }
+
+    if (ModalReview) {
+        localStorage.ModalReview = ModalReview;
+    }
+    if (FirstLoginDone) {
+        localStorage.FirstLoginDone = FirstLoginDone;
     }
    
     JSON1.request(API_URL.URL_GET_LOGOUT.format(mobileToken, deviceToken), function(result){ console.log(result); });         
@@ -3476,6 +3504,72 @@ function showNoCreditMessage(){
     });             
 }
 
+function showAskForReviewMessage(){
+
+    var appId = ''; 
+    if(window.device) {
+        var platform = device.platform.toLowerCase();
+        switch(platform){
+            case "ios":
+                appId = AppDetails.appleId;
+                break;
+            case "android":
+                appId = AppDetails.appId;
+                break;
+        }
+    }
+        
+
+    var modal = App.modal({
+        title: '<div class="custom-modal-logo-wrapper"><img class="custom-modal-logo" src="resources/images/logo.png" alt=""/></div>',
+        text: '<div class="custom-modal-text">' + LANGUAGE.PROMPT_MSG053 +'</div>',
+        afterText:  '<div class="list-block no-hairlines modal-checkbox">' +
+                        '<ul>' +
+                            '<li>' +
+                                '<label class="label-checkbox item-content">' +
+                                    '<input type="checkbox" name="checkbox-not-show-modal-review" value="">' +
+                                    '<div class="item-media">' +
+                                        '<i class="icon icon-form-checkbox"></i>' +
+                                    '</div>' +
+                                    '<div class="item-inner">' +
+                                        '<div class="item-title">' + LANGUAGE.COM_MSG40 + '</div>' +
+                                    '</div>' +
+                                '</label>' +
+                            '</li>' +
+                        '</ul>' +
+                    '</div>', 
+        buttons: [
+            {
+                text: LANGUAGE.COM_MSG39,
+                onClick: function () {
+                    var checkboxState = $$('body input[name="checkbox-not-show-modal-review"]').is(":checked");
+                    if (checkboxState) {
+                        localStorage.ModalReview = checkboxState;
+                    }
+                }
+            },
+            {
+                text: LANGUAGE.COM_MSG38,
+                bold: true,
+                onClick: function () {
+                    var checkboxState = $$('body input[name="checkbox-not-show-modal-review"]').is(":checked");
+                    if (checkboxState) {
+                        localStorage.ModalReview = checkboxState;
+                    }
+
+                    if (LaunchReview) {
+                        LaunchReview.launch(function(){
+                            console.log("Successfully launched store app");
+                        },function(err){
+                            console.log("Error launching store app: " + err);
+                        }, appId);
+                    }                        
+                }
+            },
+        ]
+    });
+}
+
 function showCustomMessage(params){
     var modalTex = '';
     if (params.title) {
@@ -4397,7 +4491,17 @@ function setAssetListPosInfo(listObj){
                 //console.log(result);
             }
             init_AssetList(); 
-            initSearchbar(); 
+            initSearchbar();
+            setTimeout(function(){        
+                if (!localStorage.ModalReview && localStorage.FirstLoginDone ) {
+                    showAskForReviewMessage();
+                }     
+
+                if (!localStorage.FirstLoginDone) {
+                    localStorage.FirstLoginDone = true;
+                }   
+            }, 5000);
+
             localStorage.loginDone = 1;
         },
         function(){ localStorage.loginDone = 1; }

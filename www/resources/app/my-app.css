@@ -274,6 +274,7 @@ html:not(.watch-active-state) .button.btn_login.button-fill:active{
     		left: 0;
     		width: 100%;
     		box-sizing: border-box;
+    		background: #fff;
 		}
 			.menu_call_button{
 				font-size: 14px;
@@ -1768,4 +1769,16 @@ tossing
     	position: relative;
     	background: transparent;
     	padding: 12px 0 0;
+	}
+
+	.modal-checkbox{
+		margin-top: 8px;
+		margin-bottom: 0;
+	}
+	.modal-checkbox.list-block .item-content{
+		padding-left: 0;
+	}
+	.modal-checkbox.list-block .item-inner{
+		padding-right: 0;
+		margin-left: 0;
 	}
