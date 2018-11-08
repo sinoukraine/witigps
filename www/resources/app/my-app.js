@@ -2486,7 +2486,8 @@ function login(){
                     setAssetList(result.Data.Devices);               
                     updateUserCredits(result.Data.User.Credits); 
                     //alert('mobileToken: '+mobileToken+' appKey: '+appKey+' deviceToken: '+deviceToken+' deviceType: '+deviceType);
-                    
+                    afterLogin(result); 
+
                     //init_AssetList(); 
                     //initSearchbar();  
                     //webSockConnect();
@@ -2502,6 +2503,16 @@ function login(){
             function(){ App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02); App.loginScreen();}
         ); 
      
+}
+
+function afterLogin(result){
+    var CountryCode = result.Data.User.CountryCode;
+
+    if (CountryCode && CountryCode.toLowerCase() != 'aus') {
+        $$('.menu_call_button').hide();
+    }else{
+        $$('.menu_call_button').show();
+    }
 }
 
 function refreshToken(newDeviceToken){
