@@ -209,3 +209,6 @@
 .icon-other-call:before {
   content: "\34";
 }
+.icon-other-door:before {
+  content: "\35";
+}

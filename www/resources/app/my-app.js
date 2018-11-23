@@ -142,10 +142,8 @@ function setupPush(){
             }
             else if (data && data.additionalData && data.additionalData.payload){
                //if user NOT using app and push notification comes
-                var container = $$('body');
-                if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
-                App.showProgressbar(container); 
-               
+                
+                App.showIndicator();
                 loginTimer = setInterval(function() {
                     //alert(localStorage.loginDone);
                     if (localStorage.loginDone) {
@@ -153,7 +151,7 @@ function setupPush(){
                         setTimeout(function(){
                             //alert('before processClickOnPushNotification');
                             processClickOnPushNotification([data.additionalData.payload]);
-                            App.hideProgressbar(container);               
+                            App.hideIndicator();               
                         },1000); 
                     }
                 }, 1000); 
@@ -316,6 +314,7 @@ API_URL.URL_SUPPORT = "http://support.quiktrak.eu/?name={0}&loginName={1}&email=
 API_URL.URL_GET_BALANCE = API_DOMIAN3 + "Client/Balance?MajorToken={0}&MinorToken={1}";
 API_URL.URL_SET_IMMOBILISATION = API_DOMIAN4 + "asset/Relay?MajorToken={0}&MinorToken={1}&code={2}&state={3}";
 API_URL.URL_SET_GEOLOCK = API_DOMIAN4 + "asset/GeoLock?MajorToken={0}&MinorToken={1}&code={2}&state={3}";
+API_URL.URL_SET_DOOR = API_DOMIAN4 + "asset/door?MajorToken={0}&MinorToken={1}&code={2}&state={3}";
 
 API_URL.URL_ROUTE = "https://www.google.com/maps/dir/?api=1&destination={0},{1}"; //&travelmode=walking
 API_URL.URL_REFRESH_TOKEN = API_DOMIAN1 + "User/RefreshToken";
@@ -951,11 +950,10 @@ App.onPageInit('asset.status', function (page) {
     var EngineHours = $$(page.container).find('.position_engineHours');
     var StoppedDuration = $$(page.container).find('.position_stoppedDuration');
     var Heartrate = $$(page.container).find('.position_heartrate');
+    
 
     var clickedLink = '';
     var popoverHTML = '';
-
-
 
     
         $$(page.container).find('.open-geolock').on('click', function () {
@@ -965,14 +963,20 @@ App.onPageInit('asset.status', function (page) {
                           '<p>'+LANGUAGE.ASSET_STATUS_MSG43+'</p>'+                       
                     '</div>';
             App.popover(popoverHTML, clickedLink);            
-        });        
-    
-    
+        });   
         $$(page.container).find('.open-immob').on('click', function () {
             clickedLink = this;            
             popoverHTML = '<div class="popover popover-status">'+                      
                           '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG25+'</p>'+
                           '<p>'+LANGUAGE.ASSET_STATUS_MSG42+'</p>'+                       
+                    '</div>';
+            App.popover(popoverHTML, clickedLink);            
+        });  
+        $$(page.container).find('.open-lockdoor').on('click', function () {
+            clickedLink = this;            
+            popoverHTML = '<div class="popover popover-status">'+                      
+                          '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG26+'</p>'+
+                          '<p>'+LANGUAGE.ASSET_STATUS_MSG45+'</p>'+                       
                     '</div>';
             App.popover(popoverHTML, clickedLink);            
         });        
@@ -1116,11 +1120,21 @@ App.onPageInit('asset.status', function (page) {
     
     var geolock = $$(page.container).find('input[name="Geolock"]');
     var immob = $$(page.container).find('input[name="Immobilise"]');
+    var door = $$(page.container).find('input[name="LockDoor"]');
     geolock.on('change', function(){        
         changeGeolockImmobState({id: TargetAsset.ASSET_ID, imei: TargetAsset.ASSET_IMEI, state: this.checked, name: this.attributes.name.value});
     });
-    immob.on('change', function(){           
-        if (POSINFOASSETLIST[TargetAsset.ASSET_IMEI]._FIELD_INT2 != 0) { // check if asset support immobilise feature
+    immob.on('change', function(){     
+        if ((parseInt(POSINFOASSETLIST[TargetAsset.ASSET_IMEI]._FIELD_INT2) & 1) > 0) { // check if asset support immobilise feature
+        //if (POSINFOASSETLIST[TargetAsset.ASSET_IMEI]._FIELD_INT2 != 0) { 
+            changeGeolockImmobState({id: TargetAsset.ASSET_ID, imei: TargetAsset.ASSET_IMEI, state: this.checked, name: this.attributes.name.value});
+        } else{
+            changeSwitcherState({state: !this.checked, name: this.attributes.name.value});       
+            showCustomMessage({title: POSINFOASSETLIST[TargetAsset.ASSET_IMEI].Name, text: LANGUAGE.PROMPT_MSG033});
+        }         
+    });
+    door.on('change', function(){           
+        if ((parseInt(POSINFOASSETLIST[TargetAsset.ASSET_IMEI]._FIELD_INT2) & 512) > 0) { // check if asset support door lock feature
             changeGeolockImmobState({id: TargetAsset.ASSET_ID, imei: TargetAsset.ASSET_IMEI, state: this.checked, name: this.attributes.name.value});
         } else{
             changeSwitcherState({state: !this.checked, name: this.attributes.name.value});       
@@ -3325,6 +3339,7 @@ function loadStatusPage(){
             geolock: false,
             immob: false,
             heartrate: false,
+            lockdoor: false,
 	    };
 
 	    
@@ -3362,6 +3377,9 @@ function loadStatusPage(){
         if (assetFeaturesStatus.heartrate ) {
             assetStats.heartrate = assetFeaturesStatus.heartrate.value;
         }
+        if (assetFeaturesStatus.lockdoor) {
+            assetStats.lockdoor = assetFeaturesStatus.lockdoor.value;
+        }
 
 
 	    mainView.router.load({
@@ -3385,6 +3403,7 @@ function loadStatusPage(){
                 GeolockState: assetStats.geolock,                
                 Coords: 'GPS: ' + Protocol.Helper.convertDMS(latlng.lat, latlng.lng),
                 Heartrate: assetStats.heartrate,
+                LockDoorState: assetStats.lockdoor,   
 	        }
 	    }); 
         
@@ -3409,15 +3428,24 @@ function changeGeolockImmobState(params){
         var url = API_URL.URL_SET_GEOLOCK;
         if (params.name == 'Immobilise') {
             url = API_URL.URL_SET_IMMOBILISATION;               
+        }else if(params.name == 'LockDoor'){
+            url = API_URL.URL_SET_DOOR;     
         }
 
-        var linkState = 'off';
-
-        url = url.format(userInfo.MajorToken,
-            userInfo.MinorToken,
-            params.id,
-            params.state ? 'on' : 'off'
-        ); 
+        if (params.name == 'LockDoor') {
+            url = url.format(userInfo.MajorToken,
+                userInfo.MinorToken,
+                params.id,
+                params.state ? 'lock' : 'unlock'
+            ); 
+        }else{
+            url = url.format(userInfo.MajorToken,
+                userInfo.MinorToken,
+                params.id,
+                params.state ? 'on' : 'off'
+            ); 
+        }
+            
         console.log(url);
         App.showPreloader();
         JSON1.request(url, function(result){ 
@@ -3445,7 +3473,7 @@ function changeGeolockImmobState(params){
                     params.state = !params.state;
                     changeSwitcherState(params);
                 }
-                                App.hidePreloader();
+                App.hidePreloader();
             },
             function(){ App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02); }
         );                 
@@ -3470,6 +3498,8 @@ function changeIconColor(params){
                 if (params.name == 'Immobilise') {
                     $$(icon).removeClass('state-3 color-gray').addClass('state-3');
                     $('#immob-state'+params.imei).removeClass('state-3 state-0').addClass('state-3');
+                }else if(params.name == 'LockDoor'){
+                    $$(icon).removeClass('state-3 color-gray').addClass('state-3');                    
                 }else{
                     $$(icon).removeClass('state-1 color-gray').addClass('state-1');
                     $('#geolock-state'+params.imei).removeClass('state-1 state-0').addClass('state-1');
@@ -3478,6 +3508,8 @@ function changeIconColor(params){
                 if (params.name == 'Immobilise') {
                     $$(icon).removeClass('state-3 color-gray').addClass('color-gray');
                     $('#immob-state'+params.imei).removeClass('state-3 state-0').addClass('state-0');
+                }else if(params.name == 'LockDoor'){
+                    $$(icon).removeClass('state-3 color-gray').addClass('color-gray');  
                 }else{
                     $$(icon).removeClass('state-1 color-gray').addClass('color-gray');
                     $('#geolock-state'+params.imei).removeClass('state-1 state-0').addClass('state-0');
@@ -4313,7 +4345,8 @@ function updateAssetsListStats(){
                     } 
                    
                     statusPageContainer.find('.position_immob').removeClass('state-0 state-1 state-2 state-3').addClass(assetFeaturesStatus.immob.state);                
-                    statusPageContainer.find('.position_geolock').removeClass('state-0 state-1 state-2 state-3').addClass(assetFeaturesStatus.geolock.state);            
+                    statusPageContainer.find('.position_geolock').removeClass('state-0 state-1 state-2 state-3').addClass(assetFeaturesStatus.geolock.state); 
+                    statusPageContainer.find('.position_lockdoor').removeClass('state-0 state-1 state-2 state-3').addClass(assetFeaturesStatus.lockdoor.state);           
                     /*console.log(assetFeaturesStatus.immob.state);
                     console.log(assetFeaturesStatus.geolock.state);*/
                 }

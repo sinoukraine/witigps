@@ -80,7 +80,18 @@
                                 <div class="checkbox"></div>
                             </label>                        
                         </div>
-
+                    </div>
+                </li>
+                <li class="bw-li-switch ">
+                    <div class="item-content ">  
+                        <div class="item-media"><i class="f7-icons icon-other-door position_lockdoor {{#if LockDoorState}} state-3 {{else}} color-gray {{/if}}"></i></div>                             
+                        <div class="item-inner">
+                            <div class="item-title open-lockdoor color-white">{{@global.LANGUAGE.ASSET_STATUS_MSG26}}</div>                       
+                            <label class="label-switch no-fastclick">
+                                <input type="checkbox" name="LockDoor" {{#if LockDoorState}} checked="checked" {{/if}}>
+                                <div class="checkbox"></div>
+                            </label>                        
+                        </div>
                     </div>
                 </li>
                 

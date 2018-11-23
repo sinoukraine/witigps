@@ -203,3 +203,9 @@
 .icon-other-hearth:before {
   content: "\32";
 }
+.icon-other-user-manual:before {
+  content: "\33";
+}
+.icon-other-call:before {
+  content: "\34";
+}

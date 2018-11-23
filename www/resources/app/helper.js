@@ -119,6 +119,7 @@ Protocol = {
     StatusNewEnum:{
         "Geolock" : 1,
         "Immobilise": 2,
+        "LockDoor": 4,
     },
     Helper: {
         getSpeedValue: function (speedUnit, speed) {
@@ -286,8 +287,9 @@ Protocol = {
         },
         getGeoImmobState: function(val){            
             var ret = {
-                Geolock : false,
-                Immobilise : false
+                Geolock: false,
+                Immobilise: false,
+                LockDoor: false,
             };
             if (val) {
                 if ((parseInt(val) & 1) > 0) {        
@@ -295,6 +297,9 @@ Protocol = {
                 }
                 if ((parseInt(val) & 2) > 0) {        
                     ret.Immobilise = true; 
+                }
+                if ((parseInt(val) & 4) > 0) {        
+                    ret.LockDoor = true; 
                 }
             }            
             return ret;
@@ -686,6 +691,10 @@ Protocol = {
                         value: false,
                         state: 'state-0',
                     };
+                    ret.lockdoor = {
+                        value: false,
+                        state: 'state-0',
+                    };
                     if (asset.StatusNew) {                       
                         var geolockImmobSate = Protocol.Helper.getGeoImmobState(asset.StatusNew);
                         if (geolockImmobSate.Geolock) {
@@ -695,6 +704,10 @@ Protocol = {
                         if (geolockImmobSate.Immobilise) {
                             ret.immob.value = geolockImmobSate.Immobilise;
                             ret.immob.state = 'state-3'; 
+                        }
+                        if (geolockImmobSate.LockDoor) {
+                            ret.lockdoor.value = geolockImmobSate.LockDoor;
+                            ret.lockdoor.state = 'state-3'; 
                         }
                     }                   
                     
