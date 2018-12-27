@@ -41,6 +41,9 @@ window.LanguagePackages= {
 		"COM_MSG38": "OK",
 		"COM_MSG39": "Later",
 		"COM_MSG40": "Do not show again",
+		"COM_MSG41": "Sort List By",
+		"COM_MSG42": "Name",
+		"COM_MSG43": "Status",
 
 		"PROMPT_MSG001": "Live tracking started",
 		"PROMPT_MSG002": "Live tracking stopped",
@@ -335,6 +338,9 @@ window.LanguagePackages= {
 		"COM_MSG38": "OK",
 		"COM_MSG39": "Later",
 		"COM_MSG40": "Do not show again",
+		"COM_MSG41": "Ordenar lista por ",
+		"COM_MSG42": "Nombrer",
+		"COM_MSG43": "Estado",
 
 		"PROMPT_MSG001":"Inicio de seguimiento en vivo",
 		"PROMPT_MSG002":"Seguimiento en vivo detenido",
@@ -632,6 +638,9 @@ window.LanguagePackages= {
 		"COM_MSG38": "OK",
 		"COM_MSG39": "Later",
 		"COM_MSG40": "Do not show again",
+		"COM_MSG41": "Сортировать список по",
+		"COM_MSG42": "Имени",
+		"COM_MSG43": "Статусу",
 
 		"PROMPT_MSG001": "Начало онлайн отслеживания",
 		"PROMPT_MSG002": "Онлайн отслеживание остановлено",
@@ -929,6 +938,9 @@ window.LanguagePackages= {
 		"COM_MSG38": "OK",
 		"COM_MSG39": "Later",
 		"COM_MSG40": "Do not show again",
+		"COM_MSG41": "Сортувати список за",
+		"COM_MSG42": "Ім\'ям",
+		"COM_MSG43": "Статусом",
 		
 		"PROMPT_MSG001": "Початок онлайн відстеження",
 		"PROMPT_MSG002": "Онлайн відстеження зупинено",
