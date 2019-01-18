@@ -212,3 +212,6 @@
 .icon-other-door:before {
   content: "\35";
 }
+.icon-other-sort:before {
+  content: "\36";
+}
