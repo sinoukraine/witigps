@@ -310,6 +310,8 @@ API_URL.URL_GEOFENCE_DELETE = API_DOMIAN1 + "Device/FenceDelete";
 API_URL.URL_GET_GEOFENCE_ASSET_LIST = API_DOMIAN1 + "Device/GetFenceAssetList";
 API_URL.URL_PHOTO_UPLOAD = "http://upload.quiktrak.co/image/Upload";
 API_URL.URL_SUPPORT = "http://support.quiktrak.eu/?name={0}&loginName={1}&email={2}&phone={3}&s={4}";
+API_URL.URL_REPORT_THEFT = "https://forms.quiktrak.com.au/report-theft/?loginName={0}&imei={1}&make={2}&model={3}&rego={4}";
+
 
 API_URL.URL_GET_BALANCE = API_DOMIAN3 + "Client/Balance?MajorToken={0}&MinorToken={1}";
 API_URL.URL_SET_IMMOBILISATION = API_DOMIAN4 + "asset/Relay?MajorToken={0}&MinorToken={1}&code={2}&state={3}";
@@ -622,6 +624,14 @@ $$('body').on('click', '.routeButton', function(){
         }
     }
     
+});
+
+$$('body').on('click', '.reportTheft', function(){
+    event.preventDefault();
+    
+    loadPageTheftReport();
+    
+    return false;
 });
 
 
@@ -2868,6 +2878,45 @@ function loadAlarmsAssetsPage(){
 function loadPageUserGuide(){
     var href = API_URL.URL_USERGUIDE;
     if (typeof navigator !== "undefined" && navigator.app) {        
+        navigator.app.loadUrl(href, {openExternal: true});           
+    } else {
+        window.open(href,'_blank');
+    }
+}
+
+function loadPageTheftReport(){    
+    var assetList = getAssetList();
+    var asset = assetList[TargetAsset.ASSET_IMEI];
+    var param = {
+        loginName:'',
+        imei:'',
+        make:'',
+        model:'',
+        rego: ''
+    };
+
+    
+    if (localStorage.ACCOUNT) {
+        param.loginName = encodeURIComponent(localStorage.ACCOUNT.trim());
+    }
+    if (TargetAsset.ASSET_IMEI) {      
+        param.imei = encodeURIComponent(TargetAsset.ASSET_IMEI);
+    }
+   
+    if (asset.Describe1) {
+        param.make = encodeURIComponent(asset.Describe1.trim());       
+    }
+    if (asset.Describe2) {
+        param.model = encodeURIComponent(asset.Describe2.trim());       
+    }
+    if (asset.TagName) {
+        param.rego = encodeURIComponent(asset.TagName.trim());       
+    }
+     
+    var href = API_URL.URL_REPORT_THEFT.format(param.loginName,param.imei,param.make,param.model,param.rego); 
+    
+    if (typeof navigator !== "undefined" && navigator.app) {
+        //plus.runtime.openURL(href); 
         navigator.app.loadUrl(href, {openExternal: true});           
     } else {
         window.open(href,'_blank');
