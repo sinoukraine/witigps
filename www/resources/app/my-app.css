@@ -38,9 +38,6 @@ body.with-panel-left-reveal .panel-overlay{
 .m-0{
 	margin: 0 !important;
 }
-.mr-8{
-	margin-right: 8px;
-}
 .navbar_title{
 	display: inline-block !important;
 	width: calc(100% - 112px);
