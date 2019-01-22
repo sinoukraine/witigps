@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.sinopacific.quiktrak" version="1.4.1" xmlns="http://www.w3.org/ns/widgets" defaultlocale="en-US" android-versionCode="154" ios-CFBundleVersion="154">
+<widget xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.sinopacific.quiktrak" version="1.4.1" xmlns="http://www.w3.org/ns/widgets" defaultlocale="en-US" android-versionCode="155" ios-CFBundleVersion="155">
     <name>QuikTrak</name>
     <description>
         QuikTrak GPS tracker
