@@ -1665,8 +1665,8 @@ App.onPageInit('geofence.add', function (page) {
     var address =  $$(page.container).find('[name="geofenceAddress"]');
     var geofenceName = $$(page.container).find('input[name="geofenceName"]');
     var assets = $$(page.container).find('select[name="assets"]');
-    var geofencePreferenceList = $$(page.container).find('.list_geofence_preferences'); 
 
+    var geofencePreferenceList = $$(page.container).find('.list_geofence_preferences'); 
     var ignoreBetweenEl = $$(page.container).find('[name="ignoreBetween"]');
     var pickerWrapperEl = $$(page.container).find('.picker-el-wrapper');
     var ignoreOnEl = $$(page.container).find('.ignore-on-wrapper');
