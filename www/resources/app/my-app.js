@@ -2,6 +2,7 @@ $hub = null;
 window.NULL = null;
 window.COM_TIMEFORMAT = 'YYYY-MM-DD HH:mm:ss';
 window.COM_TIMEFORMAT2 = 'YYYY-MM-DDTHH:mm:ss';
+window.COM_TIMEFORMAT3 = 'YYYY-MM-DDTHH:MM';
 function setUserinfo(user){localStorage.setItem("COM.QUIKTRAK.LIVE.USERINFO", JSON.stringify(user));}
 function getUserinfo(){var ret = {};var str = localStorage.getItem("COM.QUIKTRAK.LIVE.USERINFO");if(str) {ret = JSON.parse(str);} return ret;}
 function isJsonString(str){try{var ret=JSON.parse(str);}catch(e){return false;}return ret;}
@@ -668,6 +669,12 @@ $$('#menu li').on('click', function () {
         case 'menuAlarms':
             if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "alarms.assets")) {           
                 loadAlarmsAssetsPage();      
+            }
+            break;
+
+        case 'menuReports':
+            if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "reports")) {           
+                loadReportsPage();      
             }
             break;
 
@@ -2605,6 +2612,29 @@ App.onPageInit('user.recharge.credit', function (page) {
 
 });
 
+App.onPageInit('reports', function (page) { 
+    var reportsListEl = $$(page.container).find('.reportsList');
+
+    reportsListEl.on('click', '.item-link', function(){
+        var type = $$(this).data('type');
+
+        switch (type){
+            case '1':
+                loadPageOverviewReport();
+                break;
+
+            case '2':
+                loadPageAlarmReport();
+                break;
+
+            case '4':
+                loadPageTripReport();
+                break;
+        }
+    });
+});
+
+
 
 
  
@@ -3022,6 +3052,53 @@ function loadPageUserGuide(){
     } else {
         window.open(href,'_blank');
     }
+}
+
+function loadReportsPage(){
+    mainView.router.load({
+        url:'resources/templates/reports.html',                     
+        
+    });
+}
+
+function loadPageOverviewReport(){
+	var userInfo = getUserinfo().User;
+	var assetList = formatArrAssetList();
+    mainView.router.load({
+        url:'resources/templates/reports.overview.html',                     
+        context: {
+        	Assets: assetList,
+        	Email: userInfo.EMail,
+        	StartDateTime: moment().subtract(1, 'days').format(window.COM_TIMEFORMAT3),
+        	EndDateTime: moment().format(window.COM_TIMEFORMAT3),
+        }
+    });
+}
+function loadPageAlarmReport(){
+	var userInfo = getUserinfo().User;
+	var assetList = formatArrAssetList();
+    mainView.router.load({
+        url:'resources/templates/reports.alarm.html',                     
+        context: {
+        	Assets: assetList,
+        	Email: userInfo.EMail,
+        	StartDateTime: moment().subtract(1, 'days').format(window.COM_TIMEFORMAT3),
+        	EndDateTime: moment().format(window.COM_TIMEFORMAT3),
+        }
+    });
+}
+function loadPageTripReport(){
+	var userInfo = getUserinfo().User;
+	var assetList = formatArrAssetList();
+    mainView.router.load({
+        url:'resources/templates/reports.trip.html',                     
+        context: {
+        	Assets: assetList,
+        	Email: userInfo.EMail,
+        	StartDateTime: moment().subtract(1, 'days').format(window.COM_TIMEFORMAT3),
+        	EndDateTime: moment().format(window.COM_TIMEFORMAT3),
+        }
+    });
 }
 
 function loadPageTheftReport(){    

@@ -65,9 +65,6 @@
 .icon-data-temperature:before {
   content: "\69";
 }
-.icon-data-voltage:before {
-  content: "\6a";
-}
 .icon-header-add:before {
   content: "\6b";
 }
@@ -209,9 +206,15 @@
 .icon-other-call:before {
   content: "\34";
 }
-.icon-other-door:before {
-  content: "\35";
-}
 .icon-other-sort:before {
   content: "\36";
+}
+.icon-other-report-theft:before {
+  content: "\35";
+}
+.icon-other-door:before {
+  content: "\37";
+}
+.icon-data-voltage:before {
+  content: "\6a";
 }
