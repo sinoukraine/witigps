@@ -636,6 +636,7 @@ $$('body').on('click', '.reportTheft', function(){
 });
 
 
+
 $$('#menu li').on('click', function () {
     var id = $$(this).attr('id');
     var activePage = mainView.activePage;                   
@@ -2809,8 +2810,10 @@ function afterLogin(result){
 
     if (CountryCode && CountryCode.toLowerCase() != 'aus') {
         $$('.menu_call_button').hide();
+        //$$('.menu_wrapper').addClass('without-call-button');
     }else{
         $$('.menu_call_button').show();
+        //$$('.menu_wrapper').removeClass('without-call-button');
     }
 }
 

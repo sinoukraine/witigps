@@ -53,6 +53,7 @@ window.LanguagePackages= {
 		"COM_MSG50": "Thu",
 		"COM_MSG51": "Fri",
 		"COM_MSG52": "Sat",
+		"COM_MSG53": "None Selected",
 
 		"PROMPT_MSG001": "Live tracking started",
 		"PROMPT_MSG002": "Live tracking stopped",
@@ -75,7 +76,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG019": "You have currently no notifications",	
 		"PROMPT_MSG020": "Time to refresh",
 		"PROMPT_MSG021": "Sorry, we can't optimize your playback",
-		"PROMPT_MSG022": "Buy more credits to use Geolock and Immobilisation features",
+		"PROMPT_MSG022": "Buy more credits to use Immobilisation feature",
 		"PROMPT_MSG023": "There is no position data or they are incorrect.",
 		
 		"PROMPT_MSG024": "Select at least one asset, please.",	
@@ -404,6 +405,7 @@ window.LanguagePackages= {
 		"COM_MSG50": "Thu",
 		"COM_MSG51": "Fri",
 		"COM_MSG52": "Sat",
+		"COM_MSG53": "Ninguna seleccionada",
 
 		"PROMPT_MSG001":"Inicio de seguimiento en vivo",
 		"PROMPT_MSG002":"Seguimiento en vivo detenido",
@@ -426,7 +428,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG019":"Actualmente no tiene notificaciones",
 		"PROMPT_MSG020": "Tiempo para actualizar",
 		"PROMPT_MSG021": "Lo sentimos, no podemos optimizar tu reproducción",
-		"PROMPT_MSG022": "Buy more credits to use Geolock and Immobilisation features",
+		"PROMPT_MSG022": "Buy more credits to use Immobilisation feature",
 		"PROMPT_MSG023": "There is no position data or they are incorrect.",
 		"PROMPT_MSG024": "Select at least one asset, please.",
 		"PROMPT_MSG025": "Geofence Name should not be empty.",	
@@ -758,6 +760,7 @@ window.LanguagePackages= {
 		"COM_MSG50": "Thu",
 		"COM_MSG51": "Fri",
 		"COM_MSG52": "Sat",
+		"COM_MSG53": "Ничего не Выбрано",
 
 		"PROMPT_MSG001": "Начало онлайн отслеживания",
 		"PROMPT_MSG002": "Онлайн отслеживание остановлено",
@@ -780,7 +783,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG019": "В настоящее время нет уведомлений",	
 		"PROMPT_MSG020": "Время до обновления",	
 		"PROMPT_MSG021": "К сожалению, мы не можем оптимизировать ваше воспроизведение",
-		"PROMPT_MSG022": "Buy more credits to use Geolock and Immobilisation features",
+		"PROMPT_MSG022": "Buy more credits to use Immobilisation feature",
 		"PROMPT_MSG023": "Данные позиции отсутствуют или они неверны.",
 		"PROMPT_MSG024": "Выберите хотя бы один актив, пожалуйста.",
 		"PROMPT_MSG025": "Имя Geofence не должно быть пустым.",	
@@ -1111,6 +1114,7 @@ window.LanguagePackages= {
 		"COM_MSG50": "Чт",
 		"COM_MSG51": "Пт",
 		"COM_MSG52": "Сб",
+		"COM_MSG53": "Нічого не Вибрано",
 		
 		"PROMPT_MSG001": "Початок онлайн відстеження",
 		"PROMPT_MSG002": "Онлайн відстеження зупинено",
@@ -1133,7 +1137,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG019": "У вас немає жодних сповіщень",		
 		"PROMPT_MSG020": "Час до оновлення",
 		"PROMPT_MSG021": "Вибачте, ми не можемо оптимізувати ваше відтворення",
-		"PROMPT_MSG022": "Buy more credits to use Geolock and Immobilisation features",
+		"PROMPT_MSG022": "Buy more credits to use Immobilisation feature",
 		"PROMPT_MSG023": "Немає даних про місцезнаходження або вони невірні.",
 		"PROMPT_MSG024": "Будь ласка, виберіть принаймні один актив.",
 		"PROMPT_MSG025": "Імя Geofence не повинно бути порожнім.",	

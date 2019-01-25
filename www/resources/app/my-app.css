@@ -343,6 +343,10 @@ label.label-checkbox .item-after i.icon-form-checkbox{
 				
 			}
 
+.menu_wrapper.without-call-button .menu{
+	padding-bottom: 64px;
+}
+
 /* .bw_top_shadow{
 	background: #fff !important;
 	-webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.25);
@@ -352,6 +356,18 @@ label.label-checkbox .item-after i.icon-form-checkbox{
 	.navbar a.link, .subnavbar a.link, .toolbar a.link{
 		color: #000;
 	}
+
+ 
+.list-block .smart-select.smart-select-custom .item-after{
+	max-width: 100%;
+    margin-left: 0;
+    font-size: 16px;
+    color: #fff;
+
+    padding: 6px 0;
+    box-sizing: border-box;
+    
+}
 
 .theme-dealer .actions-modal-label:after{
 	content: '';
