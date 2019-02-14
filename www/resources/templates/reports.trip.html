@@ -1,90 +1,97 @@
-<div class="navbar ">
-    <div class="navbar-inner">
-        <div class="left">
-            <a href="#" class="back link "> <i class="f7-icons icon-header-arrow-back"></i></a>
-        </div>
-        <div class="center sliding">{{@global.LANGUAGE.REPORTS_MSG_03}}</div>
-        <div class="right sliding">
-            <a href="#" class="link save"><i class="f7-icons">check</i></a>
+<div class="page bg-color-page reports_page" data-page="reports.overview">
+	<div class="navbar color-black">
+        <div class="navbar-inner">
+            <div class="left">
+                <a href="#" class="back link color-black"> <i class="f7-icons icon-header-arrow-back"></i></a>
+            </div>
+            <div class="left navbar_title">{{@global.LANGUAGE.REPORTS_MSG_03}}</div>     
+            <div class="right">
+                <a href="#" class="link getReport" ><i class="f7-icons icon-header-apply"></i></a>
+            </div>    
         </div>
     </div>
-</div>    
-
-<div class="pages">
-    <div class="page bg-color-page reports_page" data-page="reports">
-        <div class="page-content">
-           <!--  <div class="content-block-title ">{{@global.LANGUAGE.REPORTS_MSG_04}}</div>     -->
-            <div class="list-block reportPreverences layout-dark list-block-input " >          
-                <ul>         
-                    <li>
-                        <div class="item-content">
-                            <div class="item-inner">
-                                <div class="item-title label ">{{@global.LANGUAGE.REPORTS_MSG_04}}</div>
-                                <div class="item-input">
-                                    <input type="email" placeholder="{{@global.LANGUAGE.REPORTS_MSG_04}}" name="Email" value="{{Email}}" maxlength="200">
-                                </div>
+	<div class="page-content " >
+       
+        
+        <div class="list-block media-list no-hairlines layout-dark mt-0 reportPreverences">
+            <ul>
+                <li class="item-divider no-before">{{@global.LANGUAGE.REPORTS_MSG_04}}</li>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"></div>
+                        <div class="item-inner">
+                            <div class="item-title label ">{{@global.LANGUAGE.REPORTS_MSG_04}} ({{@global.LANGUAGE.REPORTS_MSG_30}})</div>
+                            <div class="item-input no-after">
+                                <input type="email" placeholder="{{@global.LANGUAGE.REPORTS_MSG_30}}" name="Email" value="{{Email}}" maxlength="200">
                             </div>
                         </div>
-                    </li>
-                </ul>
-                <div class="list-block-label">{{@global.LANGUAGE.REPORTS_MSG_30}}</div>
-            </div>
-            <div class="content-block-title ">{{@global.LANGUAGE.REPORTS_MSG_11}}</div>   
-            <div class="list-block reportPreverences layout-dark list-block-input " >          
-                <ul>                        
-                    <li>                        
-                        <a href="#" class="item-link smart-select " data-back-text=" " data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG06}}">                            
-                            <select name="assets"  multiple>                                
-                                {{#each Assets}}             
-                                    <option value="{{Id}}" data-imei="{{IMEI}}"  {{#if Selected}} selected {{/if}}>{{Name}}</option> 
-                                {{/each}} 
-                            </select>
-                            <div class="item-content">
-                                <div class="item-inner">                                    
-                                    <div class="item-title label">{{@global.LANGUAGE.REPORTS_MSG_05}}</div>                                        
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <div class="item-content">                           
-                            <div class="item-inner">
-                                <div class="item-title label">{{@global.LANGUAGE.REPORTS_MSG_07}}</div>
-                                <div class="item-input">
-                                    <input type="datetime-local" value="{{StartDateTime}}" >
-                                </div>
+                    </div>
+                </li> 
+                <li class="item-divider">{{@global.LANGUAGE.REPORTS_MSG_11}}</li>
+                <li>  
+                    <a href="#" class="item-link smart-select smart-select-custom item-with-arrow " data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG06}}">  
+                        <select name="assets" multiple>
+                            {{#each Assets}}             
+                            <option value="{{Id}}" data-imei="{{IMEI}}" {{#if Selected}} selected {{/if}}>{{Name}}</option> 
+                            {{/each}}                                        
+                        </select>                    
+                        <div class="item-content item-select-wrapper smart-select"> 
+                            <div class="item-media"></div>                          
+                            <div class="item-inner ">
+                                <div class="item-title label">{{@global.LANGUAGE.REPORTS_MSG_06}}</div> 
+                                <div class="item-after item-input"></div>                                  
                             </div>
                         </div>
-                    </li>
-                    <li>
-                        <div class="item-content">                           
-                            <div class="item-inner">
-                                <div class="item-title label">{{@global.LANGUAGE.REPORTS_MSG_10}}</div>
-                                <div class="item-input">
-                                    <input type="datetime-local" value="{{EndDateTime}}" >
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li>                        
-                        <a href="#" class="item-link smart-select " data-back-text=" ">                            
-                            <select name="report-type" >
-                                <option value="1"  >{{@global.LANGUAGE.REPORTS_MSG_31}}</option>
-                                <option value="2"  >{{@global.LANGUAGE.REPORTS_MSG_32}}</option>   
-                                <option value="4"  >{{@global.LANGUAGE.REPORTS_MSG_33}}</option>                                                                                            
-                            </select>
-                            <div class="item-content">
-                                <div class="item-inner">                                    
-                                    <div class="item-title label">{{@global.LANGUAGE.REPORTS_MSG_18}}</div>                                        
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+                    </a>
+                </li>
                 
-            
+                <li>
+                    <div class="item-content item-link item-with-arrow ">
+                        <div class="item-media"></div>                    
+                        <div class="item-inner">
+                            <div class="item-title label">{{@global.LANGUAGE.REPORTS_MSG_07}}</div>
+                            <div class="item-input no-after">
+                                <input type="datetime-local" value="{{StartDateTime}}" >
+                            </div>
+                        </div>
+                    </div>
+                </li>      
+                <li> 
+                    <div class="item-content item-link item-with-arrow ">
+                        <div class="item-media"></div>                    
+                        <div class="item-inner">
+                            <div class="item-title label">{{@global.LANGUAGE.REPORTS_MSG_10}}</div>
+                            <div class="item-input no-after">
+                                <input type="datetime-local" value="{{EndDateTime}}" >
+                            </div>
+                        </div>
+                    </div>                    
+                </li>             
+                <li>                        
+                    <div class="item-content item-with-arrow item-select-wrapper"> 
+                        <div class="item-media"></div>                          
+                        <div class="item-inner ">
+                            <div class="item-title label ">{{@global.LANGUAGE.REPORTS_MSG_18}}</div>
+                            <div class="item-input select_input">
+                                <select name="report-type" >
+                                    <option value="1"  >{{@global.LANGUAGE.REPORTS_MSG_31}}</option>
+                                    <option value="2"  >{{@global.LANGUAGE.REPORTS_MSG_32}}</option>   
+                                    <option value="4"  >{{@global.LANGUAGE.REPORTS_MSG_33}}</option>                                                                                            
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </li>  
+                
+                
+                    
+               
 
+                
+            </ul>
         </div>
+        
+        
     </div>
 </div>
+
