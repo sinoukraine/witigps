@@ -98,7 +98,8 @@ window.LanguagePackages= {
 		"PROMPT_MSG056": "2. Login to your account to monitor the live location of your asset, you can provide the police with the exact location of your asset to speed up the recovery process.",
 		"PROMPT_MSG057": "3. Click Create report to lodge report theft. This will formulate a complete report to be used for insurance, personal and/or police information.",	
 
-		"PROMPT_MSG058": "Select which type of report you want to receive, please",	
+		"PROMPT_MSG058": "Select which type of report you want to receive, please",
+		"PROMPT_MSG059": "Select prefered day(s) in Ignore on field or uncheck Ignore Between feature",	
 
 
 		"LOGIN_MSG01": "The login(email) or password you entered is incorrect.",
@@ -449,6 +450,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG057": "3. Click Create report to lodge report theft. This will formulate a complete report to be used for insurance, personal and/or police information.",
 
 		"PROMPT_MSG058": "Select which type of report you want to receive, please",	
+		"PROMPT_MSG059": "Select prefered day(s) in Ignore on field or uncheck Ignore Between feature",	
 
 		"LOGIN_MSG01":"El usuario (correo) o la contraseña ingresados son incorrectos",
 		"LOGIN_MSG02":"Nombre de usuario / Correo",
@@ -803,6 +805,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG056": "2. Login to your account to monitor the live location of your asset, you can provide the police with the exact location of your asset to speed up the recovery process.",
 		"PROMPT_MSG057": "3. Click Create report to lodge report theft. This will formulate a complete report to be used for insurance, personal and/or police information.",
 		"PROMPT_MSG058": "Select which type of report you want to receive, please",	
+		"PROMPT_MSG059": "Select prefered day(s) in Ignore on field or uncheck Ignore Between feature",	
 		"LOGIN_MSG01": "Введен неверный логин (адрес электронной почты) или пароль.",
 		"LOGIN_MSG02": "Имя пользователя / E-mail",
 		"LOGIN_MSG03": "Пароль",
@@ -1157,6 +1160,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG056": "2. Login to your account to monitor the live location of your asset, you can provide the police with the exact location of your asset to speed up the recovery process.",
 		"PROMPT_MSG057": "3. Click Create report to lodge report theft. This will formulate a complete report to be used for insurance, personal and/or police information.",
 		"PROMPT_MSG058": "Select which type of report you want to receive, please",	
+		"PROMPT_MSG059": "Select prefered day(s) in Ignore on field or uncheck Ignore Between feature",	
 		"LOGIN_MSG01": "Введено невірний логін (адреса електронної пошти) або пароль.",
 		"LOGIN_MSG02": "Ім'я користувача / E-mail",
 		"LOGIN_MSG03": "Пароль",
