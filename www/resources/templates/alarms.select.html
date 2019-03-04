@@ -7,12 +7,12 @@
             </div>
     		<div class="left navbar_title navbar_title_index">{{@global.LANGUAGE.ALARM_MSG06}}</div>
     		<div class="right">    			
-    			<div class="theme-bw alarm_switch_container">
+    			<!-- <div class="theme-bw alarm_switch_container">
     				<label class="label-switch no-fastclick ">
-    	    			<input type="checkbox" name="checkbox-alarm" >
-    	    			<div class="checkbox"></div>
-    	    		</label>
-    			</div>  
+    			    	    			<input type="checkbox" name="checkbox-alarm" >
+    			    	    			<div class="checkbox"></div>
+    			    	    		</label>
+    			</div>   -->
     			<a href="#" class="link  saveAlarm"><i class="f7-icons">check</i></a> 
     		</div>
     	</div>
@@ -52,7 +52,7 @@
                 <li class="picker-el-wrapper {{#unless IgnoreBetween}} disabled {{/unless}}">
                     <a href="#" class="item-content item-link item-with-arrow">
                         <div class="item-media"></div>
-                        <div class="item-inner no-after">
+                        <div class="item-inner">
                             <div class="item-title label">{{@global.LANGUAGE.GEOFENCE_MSG_17}}</div>
                             <div class="item-input  no-after">
                                 <input type="text" placeholder="{{@global.LANGUAGE.GEOFENCE_MSG_17}}" name="picker-to" class="picker-to" readonly value="{{EndTime}}">
@@ -63,7 +63,7 @@
                 <li class="ignore-on-wrapper {{#unless IgnoreBetween}} disabled {{/unless}}">                        
                     <div class="item-content item-with-arrow item-select-wrapper"> 
                         <div class="item-media"></div>                          
-                        <div class="item-inner no-after">
+                        <div class="item-inner ">
                             <div class="item-title label ">{{@global.LANGUAGE.GEOFENCE_MSG_31}}</div>
                             <div class="item-input select_input">
                                 <select name="ignore-days" multiple>                                        
@@ -84,7 +84,24 @@
                         </div>
                     </div>
                 </li>
-  				<li class="item-divider">{{@global.LANGUAGE.ALARM_MSG27}}</li>   
+  				<!-- <li class="item-divider">{{@global.LANGUAGE.ALARM_MSG27}}</li>    -->
+  				<li>
+                    <div class="item-content">                               
+                        <div class="item-inner">
+                        	<div class="item-title-row">
+                            	<div class="item-title color-white text-transform-uppercase mt-8">{{@global.LANGUAGE.ALARM_MSG24}}</div>  
+                            	<div class="item-after">   
+		                            <div class="item-input">                   
+			                            <label class="label-switch">
+			                                <input type="checkbox" name="checkbox-alarm" {{#if alarm}}checked="checked"{{/if}}>
+			                                <div class="checkbox"></div>
+			                            </label>       
+			                        </div> 
+			                    </div>       
+		                    </div>         
+                        </div>
+                    </div>
+                </li>
   				<li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox" class="input-checkbox-alarm" name="checkbox-geofenceIn" value="8" {{#if geofenceIn}}checked="checked"{{/if}}>
