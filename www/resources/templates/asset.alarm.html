@@ -41,8 +41,72 @@
   				
   			<ul>
   				<li >
+                    <label class="label-checkbox item-content no-fastclick">
+                        <input type="checkbox" name="ignoreBetween" value="" {{#if IgnoreBetween}} checked="checked" {{/if}} >
+                        <!-- <div class="item-media"></div> -->
+                        <div class="item-inner">
+                            <div class="item-title-row">
+                                <div class="item-title color-white text-transform-uppercase">{{@global.LANGUAGE.GEOFENCE_MSG_28}}</div>
+                                <div class="item-after">
+                                    <i class="icon icon-form-checkbox"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                </li>                      
+                        
+                <li class="picker-el-wrapper {{#unless IgnoreBetween}} disabled {{/unless}}">
+                    <a href="#" class="item-content item-link item-with-arrow">
+                        <div class="item-media"></div>
+                        <div class="item-inner">
+                            <div class="item-title label">{{@global.LANGUAGE.GEOFENCE_MSG_16}}</div>
+                            <div class="item-input">
+                                <input type="text" placeholder="{{@global.LANGUAGE.GEOFENCE_MSG_16}}" name="picker-from" class="picker-from" readonly value="{{BeginTime}}">
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li class="picker-el-wrapper {{#unless IgnoreBetween}} disabled {{/unless}}">
+                    <a href="#" class="item-content item-link item-with-arrow">
+                        <div class="item-media"></div>
+                        <div class="item-inner no-after">
+                            <div class="item-title label">{{@global.LANGUAGE.GEOFENCE_MSG_17}}</div>
+                            <div class="item-input  no-after">
+                                <input type="text" placeholder="{{@global.LANGUAGE.GEOFENCE_MSG_17}}" name="picker-to" class="picker-to" readonly value="{{EndTime}}">
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li class="ignore-on-wrapper {{#unless IgnoreBetween}} disabled {{/unless}}">                        
+                    <div class="item-content item-with-arrow item-select-wrapper"> 
+                        <div class="item-media"></div>                          
+                        <div class="item-inner no-after">
+                            <div class="item-title label ">{{@global.LANGUAGE.GEOFENCE_MSG_31}}</div>
+                            <div class="item-input select_input">
+                                <select name="ignore-days" multiple>                                        
+                                    {{#each DaysOfWeek}}             
+                                        <option value="{{val}}" {{#if selected}} selected {{/if}}>{{name}}</option> 
+                                        {{else}}
+                                        <option value="0" >{{@global.LANGUAGE.GEOFENCE_MSG_20}}</option>
+                                        <option value="1" >{{@global.LANGUAGE.GEOFENCE_MSG_21}}</option>  
+                                        <option value="5" >{{@global.LANGUAGE.GEOFENCE_MSG_22}}</option>
+                                        <option value="3" >{{@global.LANGUAGE.GEOFENCE_MSG_23}}</option>  
+                                        <option value="4" >{{@global.LANGUAGE.GEOFENCE_MSG_24}}</option>
+                                        <option value="5" >{{@global.LANGUAGE.GEOFENCE_MSG_25}}</option>  
+                                        <option value="6" >{{@global.LANGUAGE.GEOFENCE_MSG_26}}</option>
+                                    {{/each}}   
+                                    
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+				<li class="item-divider">{{@global.LANGUAGE.ALARM_MSG27}}</li>       
+               <!--  class="with-top-divider " -->
+  				<li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox" name="checkbox-geofenceIn" value="8" {{#if geofenceIn}}checked="checked"{{/if}}>
+	            		<div class="item-media"></div>
 	            		<div class="item-inner">
 	            	  		<div class="item-title-row">
 	            	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG12}}</div>
@@ -56,6 +120,7 @@
 	            <li >
                     <label class="label-checkbox item-content no-fastclick " >
                         <input type="checkbox" name="checkbox-geolock" value="1024" {{#if geolock}}checked="checked"{{/if}}>
+                        <div class="item-media"></div>
                         <div class="item-inner">
                             <div class="item-title-row">
                                 <div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG05}}</div>
@@ -69,6 +134,7 @@
                 <li >
                     <label class="label-checkbox item-content no-fastclick " >
                         <input type="checkbox" name="checkbox-harshAcc" value="33554432" {{#if harshAcc}}checked="checked"{{/if}}>
+                        <div class="item-media"></div>
                         <div class="item-inner">
                             <div class="item-title-row">
                                 <div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG25}}</div>
@@ -82,6 +148,7 @@
                 <li >
                     <label class="label-checkbox item-content no-fastclick " >
                         <input type="checkbox" name="checkbox-harshBrk" value="2097152" {{#if harshBrk}}checked="checked"{{/if}}>
+                        <div class="item-media"></div>
                         <div class="item-inner">
                             <div class="item-title-row">
                                 <div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG26}}</div>
@@ -95,6 +162,7 @@
 	            <li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox"  name="checkbox-accOff" value="65536" {{#if accOff}}checked="checked"{{/if}}>
+	            		<div class="item-media"></div>
 	            		<div class="item-inner">
 	            	  		<div class="item-title-row">
 	            	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG10}}</div>
@@ -108,6 +176,7 @@
 	            <li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox" name="checkbox-accOn" value="32768" {{#if accOn}}checked="checked"{{/if}}>
+	            		<div class="item-media"></div>
 	            		<div class="item-inner">
 	            	  		<div class="item-title-row">
 	            	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG11}}</div>
@@ -121,6 +190,7 @@
 	            <li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox" name="checkbox-geofenceOut" value="16" {{#if geofenceOut}}checked="checked"{{/if}}>
+	            		<div class="item-media"></div>
 	            		<div class="item-inner">
 	            	  		<div class="item-title-row">
 	            	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG13}}</div>
@@ -134,6 +204,7 @@
 	            <li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox" name="checkbox-lowBattery" value="512" {{#if lowBattery}}checked="checked"{{/if}}>
+	            		<div class="item-media"></div>
 	            		<div class="item-inner">
 	            	  		<div class="item-title-row">
 	            	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG17}}</div>
@@ -147,6 +218,7 @@
 	            <li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox" name="checkbox-mainBatteryFail" value="4" {{#if mainBatteryFail}}checked="checked"{{/if}}>
+	            		<div class="item-media"></div>
 	            		<div class="item-inner">
 	            	  		<div class="item-title-row">
 	            	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG18}}</div>
@@ -160,6 +232,7 @@
 	            <li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox" name="checkbox-custom2LowAlarm" value="1048576" {{#if custom2LowAlarm}}checked="checked"{{/if}}>
+	            		<div class="item-media"></div>
 	            		<div class="item-inner">
 	            	  		<div class="item-title-row">
 	            	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG22}}</div>
@@ -173,6 +246,7 @@
 	            <li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox" name="checkbox-illegalIgnition" value="128" {{#if illegalIgnition}}checked="checked"{{/if}}>
+	            		<div class="item-media"></div>
 	            		<div class="item-inner">
 	            	  		<div class="item-title-row">
 	            	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG14}}</div>
@@ -187,6 +261,7 @@
 	            <li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox" name="checkbox-customAlarm" value="131072" {{#if customAlarm}}checked="checked"{{/if}}>
+	            		<div class="item-media"></div>
 	            		<div class="item-inner">
 	            	  		<div class="item-title-row">
 	            	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG20}}</div>
@@ -200,6 +275,7 @@
 	            <!-- <li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox" name="checkbox-custom2Alarm" value="262144" {{#if custom2Alarm}}checked="checked"{{/if}}>
+	            		<div class="item-media"></div>
 	            		<div class="item-inner">
 	            	  		<div class="item-title-row">
 	            	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG21}}</div>
@@ -218,6 +294,7 @@
 	            <!-- <li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox" name="checkbox-input1Alarm" value="1" {{#if input1Alarm}}checked="checked"{{/if}}>
+	            		<div class="item-media"></div>
 	            		<div class="item-inner">
 	            	  		<div class="item-title-row">
 	            	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG15}}</div>
@@ -231,6 +308,7 @@
 	           <!--  <li >
 	           	<label class="label-checkbox item-content no-fastclick " >
 	           		<input type="checkbox" name="checkbox-input1LowAlarm" value="524288" {{#if input1LowAlarm}}checked="checked"{{/if}}>
+	           		<div class="item-media"></div>
 	           		<div class="item-inner">
 	           	  		<div class="item-title-row">
 	           	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG16}}</div>
@@ -246,6 +324,7 @@
 	            <li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox" name="checkbox-sosAlarm" value="2" {{#if sosAlarm}}checked="checked"{{/if}}>
+	            		<div class="item-media"></div>
 	            		<div class="item-inner">
 	            	  		<div class="item-title-row">
 	            	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG19}}</div>
@@ -259,6 +338,7 @@
 	            <li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox" name="checkbox-speeding" value="32" {{#if speeding}}checked="checked"{{/if}}>
+	            		<div class="item-media"></div>
 	            		<div class="item-inner">
 	            	  		<div class="item-title-row">
 	            	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG23}}</div>
@@ -272,6 +352,7 @@
 	            <li >
 	            	<label class="label-checkbox item-content no-fastclick " >
 	            		<input type="checkbox" name="checkbox-tilt" value="256" {{#if tilt}}checked="checked"{{/if}}>
+	            		<div class="item-media"></div>
 	            		<div class="item-inner">
 	            	  		<div class="item-title-row">
 	            	  	  		<div class="item-title color-white">{{@global.LANGUAGE.ALARM_MSG07}}</div>
@@ -281,7 +362,9 @@
 	            	  	  	</div>
 	            	  	</div>
 	            	</label>
-	            </li>	  
+	            </li>
+
+	                              	  
 	            
 	            
 	        </ul>

@@ -1410,6 +1410,56 @@ App.onPageInit('alarms.assets', function (page) {
             virtualAlarmsAssetsList.items[index].Selected = false;          
         }          
     });
+
+    var daysOfWeekArray = [
+        {
+            val: 0,
+            name: LANGUAGE.GEOFENCE_MSG_20,
+            selected: false,
+        },
+        {
+            val: 1,
+            name: LANGUAGE.GEOFENCE_MSG_21,
+            selected: false,
+        },
+        {
+            val: 2,
+            name: LANGUAGE.GEOFENCE_MSG_22,
+            selected: false,
+        },
+        {
+            val: 3,
+            name: LANGUAGE.GEOFENCE_MSG_23,
+            selected: false,
+        },
+        {
+            val: 4,
+            name: LANGUAGE.GEOFENCE_MSG_24,
+            selected: false,
+        },
+        {
+            val: 5,
+            name: LANGUAGE.GEOFENCE_MSG_25,
+            selected: false,
+        },
+        {
+            val: 6,
+            name: LANGUAGE.GEOFENCE_MSG_26,
+            selected: false,
+        },
+    ];
+
+    var BeginTime = '19:00';
+    var EndTime = '06:00';
+    /*if (geofence.Week && geofence.Week.length) {
+        $.each(geofence.Week, function(index, value){       
+            var dayIndex = daysOfWeekArray.findIndex(x => x.val === value.Week);
+            daysOfWeekArray[dayIndex].selected = true;
+        });
+        BeginTime = geofence.Week[0].BeginTime;
+        EndTime = geofence.Week[0].EndTime;
+    }*/
+            
     
     $('.saveAssets').on('click', function(){ 
         var assets = []; 
@@ -1423,7 +1473,11 @@ App.onPageInit('alarms.assets', function (page) {
             mainView.router.load({
                 url:'resources/templates/alarms.select.html',
                 context:{
-                    Assets: assets.toString()
+                    Assets: assets.toString(),
+                    DaysOfWeek: daysOfWeekArray,
+                    BeginTime: BeginTime,
+                    EndTime: EndTime,
+                    //IgnoreBetween: geofence.Inverse
                 }
             }); 
         }else{
@@ -1444,10 +1498,19 @@ App.onPageInit('alarms.select', function (page) {
     var alarmFields = ['accOff','accOn','customAlarm','custom2LowAlarm','geolock','geofenceIn','geofenceOut','illegalIgnition','lowBattery','mainBatteryFail','sosAlarm','speeding','tilt', 'harshAcc', 'harshBrk'];  
    
     var allCheckboxesLabel = $$(page.container).find('label.item-content');
-    var allCheckboxes = allCheckboxesLabel.find('input');
+    var allCheckboxes = allCheckboxesLabel.find('input.input-checkbox-alarm');
     var assets = $$(page.container).find('input[name="Assets"]').val();
     
+    var alarmPreferenceList = $$(page.container).find('.alarm_list'); 
+    var ignoreBetweenEl = $$(page.container).find('[name="ignoreBetween"]');
+    var pickerWrapperEl = $$(page.container).find('.picker-el-wrapper');
+    var ignoreOnEl = $$(page.container).find('.ignore-on-wrapper');
+    var BeginTimeInput = $$(page.container).find('[name="picker-from"]');
+    var EndTimeInput = $$(page.container).find('[name="picker-to"]');
+    var BeginTimeValArray = BeginTimeInput.val() ? BeginTimeInput.val().split(':') : [];      
+    var EndTimeInputArray = EndTimeInput.val() ? EndTimeInput.val().split(':') : [];   
 
+    
     alarm.on('change', function(e) { 
         if( $$(this).prop('checked') ){
             allCheckboxes.prop('checked', true);
@@ -1461,6 +1524,141 @@ App.onPageInit('alarms.select', function (page) {
             alarm.prop('checked', true);
         }
     });    
+
+    if (!BeginTimeValArray || !BeginTimeValArray.length) {
+        BeginTimeValArray = ['19', '00'];
+    }
+    if (!EndTimeInputArray || !EndTimeInputArray.length) {
+        EndTimeInputArray = ['06', '00'];
+    }
+    var pickerFrom = App.picker({
+        input: BeginTimeInput,
+        cssClass: 'custom-picker custom-time',
+        toolbarTemplate:'<div class="toolbar">'+
+                          '<div class="toolbar-inner">'+
+                            '<div class="left"><div class="text">'+LANGUAGE.GEOFENCE_MSG_29+'</div></div>'+
+                            '<div class="right">'+
+                              '<a href="#" class="link close-picker color-black">{{closeText}}</a>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>',
+        
+        value: BeginTimeValArray,
+     
+        onChange: function (picker, values, displayValues) {
+            /*var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
+            if (values[1] > daysInMonth) {
+                picker.cols[1].setValue(daysInMonth);
+            }*/
+        },
+     
+        formatValue: function (p, values, displayValues) {
+            return values[0] + ':' + values[1];
+        },
+     
+        cols: [            
+            // Hours
+            {
+                values: (function () {
+                    var arr = [];
+                    for (var i = 0; i <= 23; i++) { arr.push(i < 10 ? '0' + i : i); }
+                    return arr;
+                })(),
+            },
+            // Divider
+            /*{
+                divider: true,
+                content: ':'
+            },*/
+            // Minutes
+            {
+                values: (function () {
+                    var arr = [];
+                    for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
+                    return arr;
+                })(),
+            }
+        ]
+    });
+
+    var pickerTo = App.picker({
+        input: EndTimeInput,
+        cssClass: 'custom-picker custom-time',
+        toolbarTemplate:'<div class="toolbar">'+
+                          '<div class="toolbar-inner">'+
+                            '<div class="left"><div class="text">'+LANGUAGE.GEOFENCE_MSG_30+'</div></div>'+
+                            '<div class="right">'+
+                              '<a href="#" class="link close-picker color-black">{{closeText}}</a>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>',
+        
+        value: EndTimeInputArray,
+     
+        onChange: function (picker, values, displayValues) {
+            /*var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
+            if (values[1] > daysInMonth) {
+                picker.cols[1].setValue(daysInMonth);
+            }*/
+        },
+     
+        formatValue: function (p, values, displayValues) {
+            return values[0] + ':' + values[1];
+        },
+     
+        cols: [            
+            // Hours
+            {
+                values: (function () {
+                    var arr = [];
+                    for (var i = 0; i <= 23; i++) { arr.push(i < 10 ? '0' + i : i); }
+                    return arr;
+                })(),
+            },
+            // Divider
+            /*{
+                divider: true,
+                content: ':'
+            },*/
+            // Minutes
+            {
+                values: (function () {
+                    var arr = [];
+                    for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
+                    return arr;
+                })(),
+            }
+        ]
+    });
+
+    $$(alarmPreferenceList).on('click', 'li.picker-el-wrapper', function(event){
+        event.stopPropagation();
+        var input = $$(this).find('input');
+
+        if (input) {
+            var name = input.attr('name');            
+            switch(name){
+                case 'picker-from':
+                    pickerFrom.open();
+                    break;
+                case 'picker-to':
+                    pickerTo.open();
+                    break;                
+            }            
+        }
+    });  
+
+    ignoreBetweenEl.on('change', function(){
+        pickerWrapperEl.toggleClass('disabled');
+        ignoreOnEl.toggleClass('disabled');
+        /*if (this.checked) {
+            pickerWrapperEl.removeClass('disabled');
+            ignoreOnEl.removeClass('disabled');
+        }else{
+            pickerWrapperEl.addClass('disabled');
+            ignoreOnEl.addClass('disabled');
+        }*/
+    });
     
     $$('.saveAlarm').on('click', function(e){        
         var alarmOptions = {
@@ -1509,6 +1707,11 @@ App.onPageInit('alarms.select', function (page) {
 
 });
 
+App.onPageBeforeRemove('alarms.select', function(page){
+    // fix to close modal calendar if it was opened and default back button pressed
+    App.closeModal('.custom-picker');
+});
+
 App.onPageInit('geofence', function (page) {
     var geofenceListContainer = $$(page.container).find('.geofenceList');
     var geofenceSearchForm = $$(page.container).find('.searchbarGeofence');
@@ -1527,7 +1730,7 @@ App.onPageInit('geofence', function (page) {
         if(a.Name > b.Name) return 1;
         return 0;
     });    
-    console.log(arrGeofenceList);
+   // console.log(arrGeofenceList);
     if (virtualGeofenceList) {
         virtualGeofenceList.destroy();
     }
@@ -1971,7 +2174,7 @@ App.onPageInit('geofence.add', function (page) {
                 url = API_URL.URL_GEOFENCE_EDIT;
             }   
            
-            console.log(data);         
+            //console.log(data);         
             saveGeofence(url, data);            
             
     	}else{
@@ -2043,6 +2246,15 @@ App.onPageInit('asset.alarm', function (page) {
    
     var allCheckboxesLabel = $$(page.container).find('label.item-content');
     var allCheckboxes = allCheckboxesLabel.find('input');
+
+    var alarmPreferenceList = $$(page.container).find('.alarm_list'); 
+    var ignoreBetweenEl = $$(page.container).find('[name="ignoreBetween"]');
+    var pickerWrapperEl = $$(page.container).find('.picker-el-wrapper');
+    var ignoreOnEl = $$(page.container).find('.ignore-on-wrapper');
+    var BeginTimeInput = $$(page.container).find('[name="picker-from"]');
+    var EndTimeInput = $$(page.container).find('[name="picker-to"]');
+    var BeginTimeValArray = BeginTimeInput.val() ? BeginTimeInput.val().split(':') : [];      
+    var EndTimeInputArray = EndTimeInput.val() ? EndTimeInput.val().split(':') : [];   
     
 
     alarm.on('change', function(e) { 
@@ -2058,6 +2270,144 @@ App.onPageInit('asset.alarm', function (page) {
             alarm.prop('checked', true);
         }
     });    
+
+
+
+    if (!BeginTimeValArray || !BeginTimeValArray.length) {
+        BeginTimeValArray = ['19', '00'];
+    }
+    if (!EndTimeInputArray || !EndTimeInputArray.length) {
+        EndTimeInputArray = ['06', '00'];
+    }
+    var pickerFrom = App.picker({
+        input: BeginTimeInput,
+        cssClass: 'custom-picker custom-time',
+        toolbarTemplate:'<div class="toolbar">'+
+                          '<div class="toolbar-inner">'+
+                            '<div class="left"><div class="text">'+LANGUAGE.GEOFENCE_MSG_29+'</div></div>'+
+                            '<div class="right">'+
+                              '<a href="#" class="link close-picker color-black">{{closeText}}</a>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>',
+        
+        value: BeginTimeValArray,
+     
+        onChange: function (picker, values, displayValues) {
+            /*var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
+            if (values[1] > daysInMonth) {
+                picker.cols[1].setValue(daysInMonth);
+            }*/
+        },
+     
+        formatValue: function (p, values, displayValues) {
+            return values[0] + ':' + values[1];
+        },
+     
+        cols: [            
+            // Hours
+            {
+                values: (function () {
+                    var arr = [];
+                    for (var i = 0; i <= 23; i++) { arr.push(i < 10 ? '0' + i : i); }
+                    return arr;
+                })(),
+            },
+            // Divider
+            /*{
+                divider: true,
+                content: ':'
+            },*/
+            // Minutes
+            {
+                values: (function () {
+                    var arr = [];
+                    for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
+                    return arr;
+                })(),
+            }
+        ]
+    });
+
+    var pickerTo = App.picker({
+        input: EndTimeInput,
+        cssClass: 'custom-picker custom-time',
+        toolbarTemplate:'<div class="toolbar">'+
+                          '<div class="toolbar-inner">'+
+                            '<div class="left"><div class="text">'+LANGUAGE.GEOFENCE_MSG_30+'</div></div>'+
+                            '<div class="right">'+
+                              '<a href="#" class="link close-picker color-black">{{closeText}}</a>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>',
+        
+        value: EndTimeInputArray,
+     
+        onChange: function (picker, values, displayValues) {
+            /*var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
+            if (values[1] > daysInMonth) {
+                picker.cols[1].setValue(daysInMonth);
+            }*/
+        },
+     
+        formatValue: function (p, values, displayValues) {
+            return values[0] + ':' + values[1];
+        },
+     
+        cols: [            
+            // Hours
+            {
+                values: (function () {
+                    var arr = [];
+                    for (var i = 0; i <= 23; i++) { arr.push(i < 10 ? '0' + i : i); }
+                    return arr;
+                })(),
+            },
+            // Divider
+            /*{
+                divider: true,
+                content: ':'
+            },*/
+            // Minutes
+            {
+                values: (function () {
+                    var arr = [];
+                    for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
+                    return arr;
+                })(),
+            }
+        ]
+    });
+
+    $$(alarmPreferenceList).on('click', 'li.picker-el-wrapper', function(event){
+        event.stopPropagation();
+        var input = $$(this).find('input');
+
+        if (input) {
+            var name = input.attr('name');            
+            switch(name){
+                case 'picker-from':
+                    pickerFrom.open();
+                    break;
+                case 'picker-to':
+                    pickerTo.open();
+                    break;                
+            }            
+        }
+    });  
+
+    ignoreBetweenEl.on('change', function(){
+        pickerWrapperEl.toggleClass('disabled');
+        ignoreOnEl.toggleClass('disabled');
+        /*if (this.checked) {
+            pickerWrapperEl.removeClass('disabled');
+            ignoreOnEl.removeClass('disabled');
+        }else{
+            pickerWrapperEl.addClass('disabled');
+            ignoreOnEl.addClass('disabled');
+        }*/
+    });
+
     
     $$('.saveAlarm').on('click', function(e){        
         var alarmOptions = {
@@ -2106,6 +2456,10 @@ App.onPageInit('asset.alarm', function (page) {
 });
 
 
+App.onPageBeforeRemove('asset.alarm', function(page){
+    // fix to close modal calendar if it was opened and default back button pressed
+    App.closeModal('.custom-picker');
+});
 
 App.onPageInit('asset.playback', function (page) {     
 
@@ -4039,6 +4393,56 @@ function loadAlarmPage(){
         
     }
 
+    var daysOfWeekArray = [
+        {
+            val: 0,
+            name: LANGUAGE.GEOFENCE_MSG_20,
+            selected: false,
+        },
+        {
+            val: 1,
+            name: LANGUAGE.GEOFENCE_MSG_21,
+            selected: false,
+        },
+        {
+            val: 2,
+            name: LANGUAGE.GEOFENCE_MSG_22,
+            selected: false,
+        },
+        {
+            val: 3,
+            name: LANGUAGE.GEOFENCE_MSG_23,
+            selected: false,
+        },
+        {
+            val: 4,
+            name: LANGUAGE.GEOFENCE_MSG_24,
+            selected: false,
+        },
+        {
+            val: 5,
+            name: LANGUAGE.GEOFENCE_MSG_25,
+            selected: false,
+        },
+        {
+            val: 6,
+            name: LANGUAGE.GEOFENCE_MSG_26,
+            selected: false,
+        },
+    ];
+
+    var BeginTime = '19:00';
+    var EndTime = '06:00';
+    /*if (geofence.Week && geofence.Week.length) {
+        $.each(geofence.Week, function(index, value){       
+            var dayIndex = daysOfWeekArray.findIndex(x => x.val === value.Week);
+            daysOfWeekArray[dayIndex].selected = true;
+        });
+        BeginTime = geofence.Week[0].BeginTime;
+        EndTime = geofence.Week[0].EndTime;
+    }*/
+            
+
     
 
     mainView.router.load({
@@ -4064,6 +4468,11 @@ function loadAlarmPage(){
             tilt: alarms.tilt.state,
             harshAcc: alarms.harshAcc.state,
             harshBrk: alarms.harshBrk.state,
+
+            DaysOfWeek: daysOfWeekArray,
+            BeginTime: BeginTime,
+            EndTime: EndTime,
+            //IgnoreBetween: geofence.Inverse
         }
     });
 }
