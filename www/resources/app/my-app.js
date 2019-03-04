@@ -2245,7 +2245,7 @@ App.onPageInit('asset.alarm', function (page) {
     var alarmFields = ['accOff','accOn','customAlarm','custom2LowAlarm','geolock','geofenceIn','geofenceOut','illegalIgnition','lowBattery','mainBatteryFail','sosAlarm','speeding','tilt', 'harshAcc', 'harshBrk'];  
    
     var allCheckboxesLabel = $$(page.container).find('label.item-content');
-    var allCheckboxes = allCheckboxesLabel.find('input');
+    var allCheckboxes = allCheckboxesLabel.find('input.input-checkbox-alarm');
 
     var alarmPreferenceList = $$(page.container).find('.alarm_list'); 
     var ignoreBetweenEl = $$(page.container).find('[name="ignoreBetween"]');
