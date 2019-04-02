@@ -307,12 +307,16 @@ API_URL.URL_VERIFY_BY_EMAIL = API_DOMIAN3 + "Client/VerifyCodeByEmail?email={0}"
 API_URL.URL_FORGOT_PASSWORD = API_DOMIAN3 + "Client/ForgotPassword?account={0}&newPassword={1}&checkNum={2}";
 API_URL.URL_GET_NEW_NOTIFICATIONS = API_DOMIAN1 + "Device/Alarms?MinorToken={0}&deviceToken={1}";
 
+API_URL.URL_SET_ALERT_CONFIG = API_DOMIAN1 + "Device/AlertConfigureEdit";
+API_URL.URL_GET_ALERT_CONFIG = API_DOMIAN1 + "Device/GetAlertConfigure";
+
 API_URL.URL_GEOFENCE_ADD = API_DOMIAN1 + "Device/FenceAdd";
 API_URL.URL_GET_GEOFENCE_LIST = API_DOMIAN1 + "Device/GetFenceList";
 API_URL.URL_GEOFENCE_EDIT = API_DOMIAN1 + "Device/FenceEdit";
 API_URL.URL_GEOFENCE_DELETE = API_DOMIAN1 + "Device/FenceDelete";
 API_URL.URL_GET_GEOFENCE_ASSET_LIST = API_DOMIAN1 + "Device/GetFenceAssetList";
 API_URL.URL_PHOTO_UPLOAD = "http://upload.quiktrak.co/image/Upload";
+
 API_URL.URL_SUPPORT = "http://support.quiktrak.eu/?name={0}&loginName={1}&email={2}&phone={3}&s={4}";
 API_URL.URL_REPORT_THEFT = "https://forms.quiktrak.com.au/report-theft/?loginName={0}&imei={1}&make={2}&model={3}&rego={4}";
 
@@ -326,6 +330,9 @@ API_URL.URL_ROUTE = "https://www.google.com/maps/dir/?api=1&destination={0},{1}"
 API_URL.URL_REFRESH_TOKEN = API_DOMIAN1 + "User/RefreshToken";
 
 API_URL.URL_USERGUIDE = "https://quiktrakglobal.com/pdf/qt-app.pdf";
+
+//https://api.m2mglobaltech.com/Quiktrak/V1/Device/AlertConfigureEdit
+//https://api.m2mglobaltech.com/Quiktrak/V1/Device/GetAlertConfigure
 
 
 var cameraButtons = [{
@@ -716,7 +723,8 @@ $$(document).on('click', 'a.tab-link', function(e) {
                 loadTrackPage();
                 break;
             case 'asset.alarm':
-                loadAlarmPage();
+                //loadAlarmPage();
+                getAlertConfig();
                 break;
 
             case 'profile':
@@ -1655,17 +1663,70 @@ App.onPageInit('alarms.select', function(page) {
 
     ignoreBetweenEl.on('change', function() {
         pickerWrapperEl.toggleClass('disabled');
-        ignoreOnEl.toggleClass('disabled');
-        /*if (this.checked) {
-            pickerWrapperEl.removeClass('disabled');
-            ignoreOnEl.removeClass('disabled');
-        }else{
-            pickerWrapperEl.addClass('disabled');
-            ignoreOnEl.addClass('disabled');
-        }*/
+        ignoreOnEl.toggleClass('disabled');        
     });
 
     $$('.saveAlarm').on('click', function(e) {
+        var userInfo = getUserinfo();
+        var ignoreDaysArr = $(page.container).find('[name="ignore-days"]').val(); 
+
+        var data = {
+            MajorToken: userInfo.MajorToken,
+            MinorToken: userInfo.MinorToken,
+            IMEIS: assets,
+            DateFrom: moment(BeginTimeInput.val(), 'HH:mm').utc().format(window.COM_TIMEFORMAT),
+            DateTo: moment(EndTimeInput.val(), 'HH:mm').utc().format(window.COM_TIMEFORMAT),
+            AlertTypes: 0,
+            Weeks: '',
+            IsIgnore: 0,
+        };
+
+        if (ignoreBetweenEl.is(":checked")) {
+            data.IsIgnore = 1;
+        }
+        if (ignoreDaysArr && ignoreDaysArr.length) {
+            data.Weeks = ignoreDaysArr.toString();
+        }
+        if (allCheckboxes && allCheckboxes.length) {
+            for (var i = allCheckboxes.length - 1; i >= 0; i--) {
+                if (allCheckboxes[i].checked) {
+                    data.AlertTypes += parseInt(allCheckboxes[i].value, 10);
+                } 
+            }
+        }
+            
+            console.log(data);
+
+        App.showPreloader();
+        $.ajax({
+            type: "POST",
+            url: API_URL.URL_SET_ALERT_CONFIG,
+            data: data,
+            async: true,
+            cache: false,
+            crossDomain: true,
+            success: function(result) {
+                App.hidePreloader();
+                console.log(result);
+                if (result.MajorCode == '000') {
+                    mainView.router.back({
+                        pageName: 'index',
+                        force: true
+                    });
+
+                } else {
+                    App.alert('Something wrong');
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                App.hidePreloader();
+                App.alert(LANGUAGE.COM_MSG02);
+            }
+        });
+
+    });
+
+    /*$$('.saveAlarm').on('click', function(e) {
         var alarmOptions = {
             IMEI: assets,
             options: 0,
@@ -1711,7 +1772,7 @@ App.onPageInit('alarms.select', function(page) {
             }
         );
 
-    });
+    });*/
 
 });
 
@@ -2252,7 +2313,7 @@ App.onPageInit('resetPwd', function(page) {
 App.onPageInit('asset.alarm', function(page) {
     var alarm = $$(page.container).find('input[name = "checkbox-alarm"]');
 
-    var alarmFields = ['accOff', 'accOn', 'customAlarm', 'custom2LowAlarm', 'geolock', 'geofenceIn', 'geofenceOut', 'illegalIgnition', 'lowBattery', 'mainBatteryFail', 'sosAlarm', 'speeding', 'tilt', 'harshAcc', 'harshBrk'];
+    //var alarmFields = ['accOff', 'accOn', 'customAlarm', 'custom2LowAlarm', 'geolock', 'geofenceIn', 'geofenceOut', 'illegalIgnition', 'lowBattery', 'mainBatteryFail', 'sosAlarm', 'speeding', 'tilt', 'harshAcc', 'harshBrk'];
 
     var allCheckboxesLabel = $$(page.container).find('label.item-content');
     var allCheckboxes = allCheckboxesLabel.find('input.input-checkbox-alarm');
@@ -2275,11 +2336,11 @@ App.onPageInit('asset.alarm', function(page) {
         }
     });
 
-    allCheckboxes.on('change', function(e) {
+  /*  allCheckboxes.on('change', function(e) {
         if ($$(this).prop('checked')) {
             alarm.prop('checked', true);
         }
-    });
+    });*/
 
 
 
@@ -2408,18 +2469,68 @@ App.onPageInit('asset.alarm', function(page) {
 
     ignoreBetweenEl.on('change', function() {
         pickerWrapperEl.toggleClass('disabled');
-        ignoreOnEl.toggleClass('disabled');
-        /*if (this.checked) {
-            pickerWrapperEl.removeClass('disabled');
-            ignoreOnEl.removeClass('disabled');
-        }else{
-            pickerWrapperEl.addClass('disabled');
-            ignoreOnEl.addClass('disabled');
-        }*/
+        ignoreOnEl.toggleClass('disabled');        
+    });
+
+    $$('.saveAlarm').on('click', function(e) {
+        var userInfo = getUserinfo();
+        var ignoreDaysArr = $(page.container).find('[name="ignore-days"]').val(); 
+
+        var data = {
+            MajorToken: userInfo.MajorToken,
+            MinorToken: userInfo.MinorToken,
+            IMEIS: TargetAsset.ASSET_IMEI,
+            DateFrom: moment(BeginTimeInput.val(), 'HH:mm').utc().format(window.COM_TIMEFORMAT),
+            DateTo: moment(EndTimeInput.val(), 'HH:mm').utc().format(window.COM_TIMEFORMAT),
+            AlertTypes: 0,
+            Weeks: '',
+            IsIgnore: 0,
+        };
+
+        if (ignoreBetweenEl.is(":checked")) {
+            data.IsIgnore = 1;
+        }
+        if (ignoreDaysArr && ignoreDaysArr.length) {
+            data.Weeks = ignoreDaysArr.toString();
+        }
+        if (allCheckboxes && allCheckboxes.length) {
+            for (var i = allCheckboxes.length - 1; i >= 0; i--) {
+                if (allCheckboxes[i].checked) {
+                    data.AlertTypes += parseInt(allCheckboxes[i].value, 10);
+                } 
+            }
+        }
+            
+            console.log(data);
+
+        App.showPreloader();
+        $.ajax({
+            type: "POST",
+            url: API_URL.URL_SET_ALERT_CONFIG,
+            data: data,
+            async: true,
+            cache: false,
+            crossDomain: true,
+            success: function(result) {
+                App.hidePreloader();
+                console.log(result);
+                if (result.MajorCode == '000') {
+                    mainView.router.back();
+
+                } else {
+                    App.alert('Something wrong');
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                App.hidePreloader();
+                App.alert(LANGUAGE.COM_MSG02);
+            }
+        });
+
     });
 
 
-    $$('.saveAlarm').on('click', function(e) {
+    /*$$('.saveAlarm').on('click', function(e) {
         var alarmOptions = {
             IMEI: TargetAsset.ASSET_IMEI,
             options: 0,
@@ -2430,11 +2541,9 @@ App.onPageInit('asset.alarm', function(page) {
 
         $.each(alarmFields, function(index, value) {
             var field = $$(page.container).find('input[name = "checkbox-' + value + '"]');
-            if (!field.is(":checked")) {
-                //alarmOptions[value] = false;
+            if (!field.is(":checked")) {               
                 alarmOptions.options = alarmOptions.options + parseInt(field.val(), 10);
-            } else {
-                //alarmOptions[value] = true;
+            } else {              
             }
         });
 
@@ -2464,7 +2573,8 @@ App.onPageInit('asset.alarm', function(page) {
             }
         );
 
-    });
+    });*/
+
 
 });
 
@@ -4330,8 +4440,42 @@ function showCustomMessage(params) {
     });
 }
 
+function getAlertConfig(){
+    var userInfo = getUserinfo();
+    var data = {
+        MajorToken: userInfo.MajorToken,
+        MinorToken: userInfo.MinorToken,
+        IMEI: TargetAsset.ASSET_IMEI
+    };
+        
+        App.showPreloader();
+        $.ajax({
+            type: "POST",
+            url: API_URL.URL_GET_ALERT_CONFIG,
+            data: data,
+            async: true,
+            cache: false,
+            crossDomain: true,
+            success: function(result) {
+                App.hidePreloader();
+                console.log(result);
+                if (result.MajorCode == '000') {
+                    //if (!result.Data) {
+                        loadAlarmPage(result.Data);
+                    //}
 
-function loadAlarmPage() {
+                } else {
+                    //App.alert(LANGUAGE.PROMPT_MSG013);
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                App.hidePreloader();
+                App.alert(LANGUAGE.COM_MSG02);
+            }
+        });
+}
+
+function loadAlarmPage(params) {
 
     var assetList = getAssetList();
     var assetAlarmVal = assetList[TargetAsset.ASSET_IMEI].AlarmOptions;
@@ -4403,19 +4547,6 @@ function loadAlarmPage() {
         },
     };
 
-
-    if (assetAlarmVal) {
-        $.each(alarms, function(key, value) {
-            if (assetAlarmVal & value.val) {
-                alarms[key].state = false;
-            }
-        });
-        if (assetAlarmVal == 36931518) {
-            alarms.alarm.state = false;
-        }
-
-    }
-
     var daysOfWeekArray = [{
             val: 0,
             name: LANGUAGE.GEOFENCE_MSG_20,
@@ -4455,14 +4586,50 @@ function loadAlarmPage() {
 
     var BeginTime = '19:00';
     var EndTime = '06:00';
-    /*if (geofence.Week && geofence.Week.length) {
-        $.each(geofence.Week, function(index, value){       
-            var dayIndex = daysOfWeekArray.findIndex(x => x.val === value.Week);
-            daysOfWeekArray[dayIndex].selected = true;
-        });
-        BeginTime = geofence.Week[0].BeginTime;
-        EndTime = geofence.Week[0].EndTime;
-    }*/
+    var IsIgnore = 0;
+        
+
+    if (!params) {
+        if (assetAlarmVal) {
+            $.each(alarms, function(key, value) {
+                if (assetAlarmVal & value.val) {
+                    alarms[key].state = false;
+                }
+            });            
+        }
+    }else{  
+        
+        $.each(alarms, function(key, value) {
+            if (params.AlertTypes & value.val) {
+                alarms[key].state = true;
+            }else{
+                alarms[key].state = false;
+            }
+        });        
+        
+        if (params.Weeks) {
+            var selectedDays = params.Weeks.split(',');           
+            if (selectedDays && selectedDays.length) {
+                $.each(selectedDays, function(index, value){       
+                    var dayIndex = daysOfWeekArray.findIndex(x => x.val === parseInt(value,10));                   
+                    if (dayIndex != -1) {
+                        daysOfWeekArray[dayIndex].selected = true;
+                    }
+                    
+                });
+            }
+        }
+        if (params.BeginTime) {            
+            BeginTime = moment(params.BeginTime).format('HH:mm:ss');
+        }
+        if (params.EndTime) {
+            EndTime = moment(params.EndTime).format('HH:mm:ss');
+        }
+        if (params.IsIgnore) {
+            IsIgnore = params.IsIgnore;
+        }
+            
+    }
 
 
 
@@ -4494,7 +4661,8 @@ function loadAlarmPage() {
             DaysOfWeek: daysOfWeekArray,
             BeginTime: BeginTime,
             EndTime: EndTime,
-            //IgnoreBetween: geofence.Inverse
+            IgnoreBetween: IsIgnore,
+           
         }
     });
 }
