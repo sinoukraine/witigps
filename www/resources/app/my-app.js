@@ -1462,8 +1462,6 @@ App.onPageInit('alarms.assets', function(page) {
         },
     ];
 
-    var BeginTime = '19:00';
-    var EndTime = '06:00';
     /*if (geofence.Week && geofence.Week.length) {
         $.each(geofence.Week, function(index, value){       
             var dayIndex = daysOfWeekArray.findIndex(x => x.val === value.Week);
@@ -1488,8 +1486,8 @@ App.onPageInit('alarms.assets', function(page) {
                 context: {
                     Assets: assets.toString(),
                     DaysOfWeek: daysOfWeekArray,
-                    BeginTime: BeginTime,
-                    EndTime: EndTime,
+                    BeginTime: '07:00',
+                    EndTime: '18:00',
                     //IgnoreBetween: geofence.Inverse
                 }
             });
@@ -1539,10 +1537,10 @@ App.onPageInit('alarms.select', function(page) {
     });
 
     if (!BeginTimeValArray || !BeginTimeValArray.length) {
-        BeginTimeValArray = ['19', '00'];
+        BeginTimeValArray = ['07', '00'];
     }
     if (!EndTimeInputArray || !EndTimeInputArray.length) {
-        EndTimeInputArray = ['06', '00'];
+        EndTimeInputArray = ['18', '00'];
     }
     var pickerFrom = App.picker({
         input: BeginTimeInput,
@@ -1674,8 +1672,8 @@ App.onPageInit('alarms.select', function(page) {
             MajorToken: userInfo.MajorToken,
             MinorToken: userInfo.MinorToken,
             IMEIS: assets,
-            DateFrom: moment(BeginTimeInput.val(), 'HH:mm').utc().format(window.COM_TIMEFORMAT),
-            DateTo: moment(EndTimeInput.val(), 'HH:mm').utc().format(window.COM_TIMEFORMAT),
+            DateFrom: moment(BeginTimeInput.val(), 'HH:mm').utc().format('HH:mm'),
+            DateTo: moment(EndTimeInput.val(), 'HH:mm').utc().format('HH:mm'),
             AlertTypes: 0,
             Weeks: '',
             IsIgnore: 0,
@@ -2345,10 +2343,10 @@ App.onPageInit('asset.alarm', function(page) {
 
 
     if (!BeginTimeValArray || !BeginTimeValArray.length) {
-        BeginTimeValArray = ['19', '00'];
+        BeginTimeValArray = ['07', '00'];
     }
     if (!EndTimeInputArray || !EndTimeInputArray.length) {
-        EndTimeInputArray = ['06', '00'];
+        EndTimeInputArray = ['18', '00'];
     }
     var pickerFrom = App.picker({
         input: BeginTimeInput,
@@ -2480,8 +2478,8 @@ App.onPageInit('asset.alarm', function(page) {
             MajorToken: userInfo.MajorToken,
             MinorToken: userInfo.MinorToken,
             IMEIS: TargetAsset.ASSET_IMEI,
-            DateFrom: moment(BeginTimeInput.val(), 'HH:mm').utc().format(window.COM_TIMEFORMAT),
-            DateTo: moment(EndTimeInput.val(), 'HH:mm').utc().format(window.COM_TIMEFORMAT),
+            DateFrom: moment(BeginTimeInput.val(), 'HH:mm').utc().format('HH:mm'),
+            DateTo: moment(EndTimeInput.val(), 'HH:mm').utc().format('HH:mm'),
             AlertTypes: 0,
             Weeks: '',
             IsIgnore: 0,
@@ -4584,9 +4582,10 @@ function loadAlarmPage(params) {
         },
     ];
 
-    var BeginTime = '19:00';
-    var EndTime = '06:00';
+    var BeginTime = '07:00';
+    var EndTime = '18:00';
     var IsIgnore = 0;
+    var utcOffset = moment().utcOffset();
         
 
     if (!params) {
@@ -4619,11 +4618,11 @@ function loadAlarmPage(params) {
                 });
             }
         }
-        if (params.BeginTime) {            
-            BeginTime = moment(params.BeginTime).format('HH:mm:ss');
+        if (params.BeginTime) {           
+            BeginTime = moment(params.BeginTime,'HH:mm').add(utcOffset,'minutes').format('HH:mm'); 
         }
         if (params.EndTime) {
-            EndTime = moment(params.EndTime).format('HH:mm:ss');
+            EndTime = moment(params.EndTime,'HH:mm').add(utcOffset,'minutes').format('HH:mm'); 
         }
         if (params.IsIgnore) {
             IsIgnore = params.IsIgnore;
@@ -4631,7 +4630,8 @@ function loadAlarmPage(params) {
             
     }
 
-
+    console.log(BeginTime);
+    console.log(EndTime);
 
 
     mainView.router.load({
@@ -4666,6 +4666,8 @@ function loadAlarmPage(params) {
         }
     });
 }
+
+
 
 function loadPlaybackPage() {
     var asset = POSINFOASSETLIST[TargetAsset.ASSET_IMEI];
