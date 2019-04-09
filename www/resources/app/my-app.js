@@ -3,6 +3,7 @@ window.NULL = null;
 window.COM_TIMEFORMAT = 'YYYY-MM-DD HH:mm:ss';
 window.COM_TIMEFORMAT2 = 'YYYY-MM-DDTHH:mm:ss';
 window.COM_TIMEFORMAT3 = 'YYYY-MM-DDTHH:MM';
+UTCOFFSET = moment().utcOffset();
 
 function setUserinfo(user) { localStorage.setItem("COM.QUIKTRAK.LIVE.USERINFO", JSON.stringify(user)); }
 
@@ -288,8 +289,8 @@ API_URL.URL_GET_LOGOUT = API_DOMIAN1 + "User/Logoff2?mobileToken={0}&deviceToken
 API_URL.URL_EDIT_ACCOUNT = API_DOMIAN1 + "User/Edit?MajorToken={0}&MinorToken={1}&FirstName={2}&SubName={3}&Mobile={4}&Phone={5}&EMail={6}";
 API_URL.URL_EDIT_DEVICE = API_DOMIAN1 + "Device/Edit?MinorToken={0}&Code={1}&name={2}&speedUnit={3}&initMileage={4}&initAccHours={5}&attr1={6}&attr2={7}&attr3={8}&attr4={9}&tag={10}&icon={11}&MajorToken={12}";
 
-API_URL.URL_SET_ALARM = API_DOMIAN1 + "Device/AlarmOptions?MinorToken={0}&imei={1}&options={2}";
-API_URL.URL_SET_ALARM2 = API_DOMIAN1 + "Device/AlarmOptions2?MinorToken={0}&imei={1}&options={2}";
+/*API_URL.URL_SET_ALARM = API_DOMIAN1 + "Device/AlarmOptions?MinorToken={0}&imei={1}&options={2}";
+API_URL.URL_SET_ALARM2 = API_DOMIAN1 + "Device/AlarmOptions2?MinorToken={0}&imei={1}&options={2}";*/
 
 /*API_URL.URL_SET_GEOLOCK_ON = API_DOMIAN1 + "Device/Lock?MajorToken={0}&MinorToken={1}&code={2}&radius=100";
 API_URL.URL_SET_GEOLOCK_OFF = API_DOMIAN1 + "Device/Unlock?MajorToken={0}&MinorToken={1}&code={2}";*/
@@ -1687,13 +1688,14 @@ App.onPageInit('alarms.select', function(page) {
         }
         if (allCheckboxes && allCheckboxes.length) {
             for (var i = allCheckboxes.length - 1; i >= 0; i--) {
-                if (allCheckboxes[i].checked) {
+                /*if (allCheckboxes[i].checked) {*/
+                if (!allCheckboxes[i].checked) {
                     data.AlertTypes += parseInt(allCheckboxes[i].value, 10);
                 } 
             }
         }
             
-            console.log(data);
+            /*console.log(data);*/
 
         App.showPreloader();
         $.ajax({
@@ -2230,9 +2232,9 @@ App.onPageInit('geofence.add', function(page) {
             if (ignoreDaysArr && ignoreDaysArr.length) {
                 data.Days = ignoreDaysArr.toString();
             }
-            data.BeginTime = moment(ignoreTimeFrom.val(), 'HH:mm').format('HH:mm:ss');
-            data.EndTime = moment(ignoreTimeTo.val(), 'HH:mm').format('HH:mm:ss');
-
+            data.BeginTime = moment(ignoreTimeFrom.val(), 'HH:mm').utc().format('HH:mm:ss');
+            data.EndTime = moment(ignoreTimeTo.val(), 'HH:mm').utc().format('HH:mm:ss');
+            console.log(data);
             var url = API_URL.URL_GEOFENCE_ADD;
 
             if (valEdit) {
@@ -2493,7 +2495,8 @@ App.onPageInit('asset.alarm', function(page) {
         }
         if (allCheckboxes && allCheckboxes.length) {
             for (var i = allCheckboxes.length - 1; i >= 0; i--) {
-                if (allCheckboxes[i].checked) {
+                /*if (allCheckboxes[i].checked) {*/
+                if (!allCheckboxes[i].checked) {
                     data.AlertTypes += parseInt(allCheckboxes[i].value, 10);
                 } 
             }
@@ -4585,7 +4588,7 @@ function loadAlarmPage(params) {
     var BeginTime = '07:00';
     var EndTime = '18:00';
     var IsIgnore = 0;
-    var utcOffset = moment().utcOffset();
+    
         
 
     if (!params) {
@@ -4600,8 +4603,6 @@ function loadAlarmPage(params) {
         
         $.each(alarms, function(key, value) {
             if (params.AlertTypes & value.val) {
-                alarms[key].state = true;
-            }else{
                 alarms[key].state = false;
             }
         });        
@@ -4619,10 +4620,10 @@ function loadAlarmPage(params) {
             }
         }
         if (params.BeginTime) {           
-            BeginTime = moment(params.BeginTime,'HH:mm').add(utcOffset,'minutes').format('HH:mm'); 
+            BeginTime = moment(params.BeginTime,'HH:mm').add(UTCOFFSET,'minutes').format('HH:mm'); 
         }
         if (params.EndTime) {
-            EndTime = moment(params.EndTime,'HH:mm').add(utcOffset,'minutes').format('HH:mm'); 
+            EndTime = moment(params.EndTime,'HH:mm').add(UTCOFFSET,'minutes').format('HH:mm'); 
         }
         if (params.IsIgnore) {
             IsIgnore = params.IsIgnore;
@@ -4630,8 +4631,8 @@ function loadAlarmPage(params) {
             
     }
 
-    console.log(BeginTime);
-    console.log(EndTime);
+    /*console.log(BeginTime);
+    console.log(EndTime);*/
 
 
     mainView.router.load({
@@ -6027,8 +6028,8 @@ function editGeofence(code) {
             var dayIndex = daysOfWeekArray.findIndex(x => x.val === value.Week);
             daysOfWeekArray[dayIndex].selected = true;
         });
-        BeginTime = geofence.Week[0].BeginTime;
-        EndTime = geofence.Week[0].EndTime;
+        BeginTime = geofence.Week[0].BeginTime ? moment(geofence.Week[0].BeginTime,'HH:mm:ss').add(UTCOFFSET,'minutes').format('HH:mm:ss') : BeginTime;
+        EndTime = geofence.Week[0].EndTime ? moment(geofence.Week[0].EndTime,'HH:mm:ss').add(UTCOFFSET,'minutes').format('HH:mm:ss') : EndTime;
     }
 
 
