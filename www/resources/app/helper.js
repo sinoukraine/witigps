@@ -246,6 +246,7 @@ Protocol = {
         },
         getPositionType: function(type){
             var ret = "";
+            type ? type = parseInt(type,10) : '';
             switch (type){
                 case 0: case 1:
                     ret = "GPS";
@@ -271,6 +272,19 @@ Protocol = {
             }
             return ret;
            
+        },
+        getAlertNameByType: function(type){
+            var ret = "";
+            type ? type = parseInt(type,10) : '';
+            switch (type){ 
+                case 8:
+                    ret = LANGUAGE.ALARM_MSG12;    //InGeoFance
+                    break;
+                case 16:
+                    ret = LANGUAGE.ALARM_MSG13;     //OutGeoFance
+                    break;                    
+            }
+            return ret;  
         },
         getDifferenceBTtwoDates: function(date1, date2){
             var ret = "";
