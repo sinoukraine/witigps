@@ -1880,7 +1880,7 @@ App.onPageInit('geofence.add', function (page) {
                           '</div>'+
                         '</div>',
         
-        value: ['19', '00'],
+        value: BeginTimeValArray,
      
         onChange: function (picker, values, displayValues) {
             /*var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
@@ -1930,7 +1930,7 @@ App.onPageInit('geofence.add', function (page) {
                           '</div>'+
                         '</div>',
         
-        value: ['06', '00'],
+        value: EndTimeInputArray,
      
         onChange: function (picker, values, displayValues) {
             /*var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
