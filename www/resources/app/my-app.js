@@ -3532,7 +3532,7 @@ function loadPageTheftReport() {
         imei: '',
         make: '',
         model: '',
-        rego: ''
+        registration: ''
     };
 
 
@@ -3549,11 +3549,11 @@ function loadPageTheftReport() {
     if (asset.Describe2) {
         param.model = encodeURIComponent(asset.Describe2.trim());
     }
-    if (asset.TagName) {
-        param.rego = encodeURIComponent(asset.TagName.trim());
+    if (asset.Registration) {
+        param.registration = encodeURIComponent(asset.Registration.trim());
     }
 
-    var href = API_URL.URL_REPORT_THEFT.format(param.loginName, param.imei, param.make, param.model, param.rego);
+    var href = API_URL.URL_REPORT_THEFT.format(param.loginName, param.imei, param.make, param.model, param.registration);
 
     if (typeof navigator !== "undefined" && navigator.app) {
         //plus.runtime.openURL(href); 
