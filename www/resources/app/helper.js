@@ -791,6 +791,9 @@ Protocol.Common = JClass({
         this.StatusNew = arg.StatusNew;    
         this._FIELD_INT2 = arg._FIELD_INT2;
         this.GroupCode = arg.GroupCode;   
+        this.SolutionType = arg.SolutionType;
+        this.Registration = arg.Registration;
+        this.StockNumber = arg.StockNumber;
     
     },
     initDeviceInfoEx:function(){},

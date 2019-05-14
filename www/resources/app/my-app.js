@@ -287,7 +287,7 @@ API_URL.URL_GET_LOGIN = API_DOMIAN1 + "User/Auth?username={0}&password={1}&appKe
 //API_URL.URL_GET_LOGOUT2 = API_DOMIAN1 + "User/Logoff2?MajorToken={0}&MinorToken={1}&username={2}&mobileToken={3}";
 API_URL.URL_GET_LOGOUT = API_DOMIAN1 + "User/Logoff2?mobileToken={0}&deviceToken={1}";
 API_URL.URL_EDIT_ACCOUNT = API_DOMIAN1 + "User/Edit?MajorToken={0}&MinorToken={1}&FirstName={2}&SubName={3}&Mobile={4}&Phone={5}&EMail={6}";
-API_URL.URL_EDIT_DEVICE = API_DOMIAN1 + "Device/Edit?MinorToken={0}&Code={1}&name={2}&speedUnit={3}&initMileage={4}&initAccHours={5}&attr1={6}&attr2={7}&attr3={8}&attr4={9}&tag={10}&icon={11}&MajorToken={12}";
+API_URL.URL_EDIT_DEVICE = API_DOMIAN1 + "Device/Edit?MinorToken={0}&Code={1}&name={2}&speedUnit={3}&initMileage={4}&initAccHours={5}&attr1={6}&attr2={7}&attr3={8}&attr4={9}&tag={10}&icon={11}&MajorToken={12}&registration={13}&stockNumber=";
 
 /*API_URL.URL_SET_ALARM = API_DOMIAN1 + "Device/AlarmOptions?MinorToken={0}&imei={1}&options={2}";
 API_URL.URL_SET_ALARM2 = API_DOMIAN1 + "Device/AlarmOptions2?MinorToken={0}&imei={1}&options={2}";*/
@@ -1143,6 +1143,7 @@ App.onPageInit('asset.status', function(page) {
                 IMEI: asset.IMEI,
                 PRDTName: asset.PRDTName,
                 Name: asset.Name,
+                Registration: asset.Registration,
                 Tag: asset.TagName,
                 Unit: asset.Unit,
                 Mileage: asset.InitMileage,
@@ -1198,6 +1199,7 @@ App.onPageInit('asset.edit', function(page) {
         var device = {
             IMEI: $$(page.container).find('input[name="IMEI"]').val(),
             Name: $$(page.container).find('input[name="Name"]').val(),
+            Registration: $$(page.container).find('input[name="Registration"]').val(),
             Tag: $$(page.container).find('input[name="Tag"]').val(),
             Unit: $$(page.container).find('select[name="Unit"]').val(),
             Mileage: $$(page.container).find('input[name="Mileage"]').val(),
@@ -1223,7 +1225,8 @@ App.onPageInit('asset.edit', function(page) {
             encodeURIComponent(device.Describe4),
             encodeURIComponent(device.Tag),
             device.Icon,
-            userInfo.MajorToken
+            userInfo.MajorToken,
+            encodeURIComponent(device.Registration),
         );
 
         console.log(url);
@@ -2274,7 +2277,8 @@ App.onPageInit('asset.alarm', function(page) {
     var EndTimeInput = $$(page.container).find('[name="picker-to"]');
     var BeginTimeValArray = BeginTimeInput.val() ? BeginTimeInput.val().split(':') : [];
     var EndTimeInputArray = EndTimeInput.val() ? EndTimeInput.val().split(':') : [];
-
+    /*console.log(BeginTimeInput.val());
+    console.log(EndTimeInput.val());*/
 
     alarm.on('change', function(e) {
         if ($$(this).prop('checked')) {
@@ -4529,8 +4533,8 @@ function loadAlarmPage(params) {
         }
 
     }
-
-    /*console.log(BeginTime);
+    /*console.log(params);
+    console.log(BeginTime);
     console.log(EndTime);*/
 
 
@@ -5211,7 +5215,9 @@ function setAssetList(list) {
             _FIELD_FLOAT8: list[i][index++],
             StatusNew: list[i][index++],
             _FIELD_INT2: list[i][index++],
-            GroupCode: list[i][index++],
+            GroupCode: list[i][index++],           
+            Registration: list[i][index++],
+            StockNumber: list[i][index++],
         };
     }
     setAssetListPosInfo(ary);
@@ -5233,6 +5239,8 @@ function updateAssetList(asset) {
 
     POSINFOASSETLIST[asset.IMEI].IMEI = list[asset.IMEI].IMEI = asset.IMEI;
     POSINFOASSETLIST[asset.IMEI].Name = list[asset.IMEI].Name = asset.Name;
+    POSINFOASSETLIST[asset.IMEI].Registration = list[asset.IMEI].Registration = asset.Registration;
+    POSINFOASSETLIST[asset.IMEI].StockNumber = list[asset.IMEI].StockNumber = asset.StockNumber;
     POSINFOASSETLIST[asset.IMEI].TagName = list[asset.IMEI].TagName = asset.Tag;
     POSINFOASSETLIST[asset.IMEI].Unit = list[asset.IMEI].Unit = asset.Unit;
     POSINFOASSETLIST[asset.IMEI].InitMileage = list[asset.IMEI].InitMileage = asset.Mileage;
@@ -5279,6 +5287,9 @@ function updateAssetList2(list) {
             _FIELD_FLOAT8: list[i][index++],
             StatusNew: list[i][index++],
             _FIELD_INT2: list[i][index++],
+            GroupCode: list[i][index++],            
+            Registration: list[i][index++],
+            StockNumber: list[i][index++],
         };
         /*$.each(ary[list[i][1]], function(key,value){
             if (POSINFOASSETLIST[list[i][1]]) {

@@ -238,6 +238,7 @@ window.LanguagePackages= {
 		"ASSET_EDIT_MSG10": "Year",
 		"ASSET_EDIT_MSG11": "Edit photo",
 		"ASSET_EDIT_MSG12": "Edit",
+		"ASSET_EDIT_MSG13": "Registration",
 		"ASSET_PLAYBACK_MSG00": "Start date and time",
 		"ASSET_PLAYBACK_MSG01": "End date and time",
 		"ASSET_PLAYBACK_MSG02": "Starts",	
