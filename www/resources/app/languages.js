@@ -54,6 +54,7 @@ window.LanguagePackages= {
 		"COM_MSG51": "Fri",
 		"COM_MSG52": "Sat",
 		"COM_MSG53": "None Selected",
+		"COM_MSG54": "Speed Limit",
 
 		"PROMPT_MSG001": "Live tracking started",
 		"PROMPT_MSG002": "Live tracking stopped",
@@ -223,7 +224,8 @@ window.LanguagePackages= {
 		"ASSET_TRACK_MSG13": "Last Update",	
 		"ASSET_TRACK_MSG14": "sec",	
 		"ASSET_TRACK_MSG15": "GPRS",
-		"ASSET_TRACK_MSG16": "Go To",	
+		"ASSET_TRACK_MSG16": "Go To",
+
 
 		"ASSET_EDIT_MSG00": "Tag",
 		"ASSET_EDIT_MSG01": "Name",
@@ -409,6 +411,7 @@ window.LanguagePackages= {
 		"COM_MSG51": "Fri",
 		"COM_MSG52": "Sat",
 		"COM_MSG53": "Ninguna seleccionada",
+		"COM_MSG54": "Speed Limit",
 
 		"PROMPT_MSG001":"Inicio de seguimiento en vivo",
 		"PROMPT_MSG002":"Seguimiento en vivo detenido",
@@ -767,6 +770,7 @@ window.LanguagePackages= {
 		"COM_MSG51": "Fri",
 		"COM_MSG52": "Sat",
 		"COM_MSG53": "Ничего не Выбрано",
+		"COM_MSG54": "Speed Limit",
 
 		"PROMPT_MSG001": "Начало онлайн отслеживания",
 		"PROMPT_MSG002": "Онлайн отслеживание остановлено",
@@ -1124,6 +1128,7 @@ window.LanguagePackages= {
 		"COM_MSG51": "Пт",
 		"COM_MSG52": "Сб",
 		"COM_MSG53": "Нічого не Вибрано",
+		"COM_MSG54": "Speed Limit",
 		
 		"PROMPT_MSG001": "Початок онлайн відстеження",
 		"PROMPT_MSG002": "Онлайн відстеження зупинено",
