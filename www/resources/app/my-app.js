@@ -823,13 +823,15 @@ App.onPageInit('notification', function(page) {
                     '</div>' +
                     '</li>';
             }
+
+            //alert(item.type + ' ' + item.title);
             return ret;
         }
     });
 
     //console.log('here');
-    var json = '{"title":"Speed","type":32,"imei":"0000004209084060","name":"A16 WATCH","lat":50.249984,"lng":32.282368,"speed":35,"direct":0,"time":"2018-08-23 16:56:37"}';
-    setNotificationList([json]);
+    /*var json = '{"title":"Speed","type":32,"imei":"0000004209084060","name":"A16 WATCH","lat":50.249984,"lng":32.282368,"speed":35,"direct":0,"time":"2018-08-23 16:56:37"}';
+    setNotificationList([json]);*/
 
     var user = localStorage.ACCOUNT;
     var notList = getNotificationList();
@@ -4765,7 +4767,7 @@ function loadTrackPage(params) {
                 Coords: 'GPS: ' + Protocol.Helper.convertDMS(details.latlng.lat, details.latlng.lng),
                 AlertType: details.alertType,
                 ShowSpeedLimit: details.showSpeedLimit,
-                SpeedLimit: LANGUAGE.COM_MSG08,
+                Speedlimit: LANGUAGE.COM_MSG08,
             }
         });
 
