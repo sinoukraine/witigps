@@ -599,7 +599,7 @@ $$('body').on('click', '.sorting_button', function(e) {
     App.popover(popoverHTML, clickedLink);
 });
 
-$$('body').on('click', '.navbar_title, .navbar_title_index', function(){
+/*$$('body').on('click', '.navbar_title, .navbar_title_index', function(){
     //var json = '{"title":"GEOLOCK WARNING","type":1024,"imei":"0000004700673137","name":"A16 WATCH","lat":43.895091666666666,"lng":125.29207,"speed":0,"direct":0,"time":"2018-08-23 16:56:36"}';
     //showMsgNotification([json]);
     //getNewData();
@@ -607,7 +607,7 @@ $$('body').on('click', '.navbar_title, .navbar_title_index', function(){
 
     var json = '{"title":"Speed","type":32,"imei":"0000001683122697","name":"0000001683122697","lat":50.249984,"lng":32.282368,"speed":130,"direct":0,"time":"2018-08-23 16:56:37"}';
     setNotificationList([json]);
-});
+});*/
 
 $$('body').on('click', '.toggle-password', function() {
     var password = $(this).siblings("input[name='password']");
