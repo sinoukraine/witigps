@@ -599,15 +599,15 @@ $$('body').on('click', '.sorting_button', function(e) {
     App.popover(popoverHTML, clickedLink);
 });
 
-/*$$('body').on('click', '.navbar_title, .navbar_title_index', function(){
+$$('body').on('click', '.navbar_title, .navbar_title_index', function(){
     //var json = '{"title":"GEOLOCK WARNING","type":1024,"imei":"0000004700673137","name":"A16 WATCH","lat":43.895091666666666,"lng":125.29207,"speed":0,"direct":0,"time":"2018-08-23 16:56:36"}';
     //showMsgNotification([json]);
     //getNewData();
     //console.log($$('.status_page').length);
 
-    //var json = '{"title":"GEOLOCK WARNING","type":"16","imei":"0000004700673137","name":"A16 WATCH","lat":43.895091666666666,"lng":125.29207,"speed":0,"direct":0,"time":"2018-08-23 16:56:36"}';
-    //setNotificationList([json]);
-});*/
+    var json = '{"title":"Speed","type":32,"imei":"0000001683122697","name":"0000001683122697","lat":50.249984,"lng":32.282368,"speed":130,"direct":0,"time":"2018-08-23 16:56:37"}';
+    setNotificationList([json]);
+});
 
 $$('body').on('click', '.toggle-password', function() {
     var password = $(this).siblings("input[name='password']");
@@ -2770,6 +2770,8 @@ App.onPageInit('asset.location', function(page) {
     var lng = panoButton.data('lng');
     var latlng = new google.maps.LatLng(lat, lng);
     var alertType = page.context.AlertType;
+    var speed = page.context.Speed;
+    var speedUnitCode = page.context.SpeedUnitCode;
 
     showMap({ 'lat': lat, 'lng': lng });
 
@@ -2784,6 +2786,7 @@ App.onPageInit('asset.location', function(page) {
     });
 
     if (alertType == 32) {
+      
     	$.ajax({
 	        type: "GET",
 	        url: API_URL.URL_GET_SPEEDLIMIT.format(page.context.Lat, page.context.Lng),
@@ -2794,8 +2797,9 @@ App.onPageInit('asset.location', function(page) {
 	        success: function(result) {
 	           console.log(result);	
 	           	if (result && result.max) {
-	           		//max: 110
-	           		speedLimitEl.html(result.max + ' '+result.units);
+	           		var speed = Protocol.Helper.getSpeedValue(speedUnitCode, parseInt(result.max));
+                    var speedUnit = Protocol.Helper.getSpeedUnit(speedUnitCode);
+	           		speedLimitEl.html(parseInt(speed) + ' '+ speedUnit);
 	           	}
 
 	        },
@@ -4710,6 +4714,7 @@ function loadTrackPage(params) {
         time: '',
         alertType: '',
         showSpeedLimit: '',
+        speedUnitCode: '',
     };
     //{"title":"Acc off","type":65536,"imei":"0352544073967920","name":"Landcruiser Perth","lat":-32.032898333333335,"lng":115.86817722222216,"speed":0,"direct":0,"time":"2018-04-13 10:16:51"}
     if ((params && parseFloat(params.lat) !== 0 && parseFloat(params.lng) !== 0) || (parseFloat(asset.posInfo.lat) !== 0 && parseFloat(asset.posInfo.lng) !== 0)) {
@@ -4720,6 +4725,7 @@ function loadTrackPage(params) {
 
             if (asset && typeof asset.Unit !== "undefined" && typeof params.speed !== "undefined") {
                 details.speed = Protocol.Helper.getSpeedValue(asset.Unit, params.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
+                details.speedUnitCode = asset.Unit;
             }
 
             details.templateUrl = 'resources/templates/asset.location.html';
@@ -4740,6 +4746,7 @@ function loadTrackPage(params) {
             details.direct = asset.posInfo.direct;
             if (typeof asset.Unit !== "undefined" && typeof asset.posInfo.speed !== "undefined") {
                 details.speed = Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
+                details.speedUnitCode = asset.Unit;
             }
             if (typeof asset.Unit !== "undefined" && typeof asset.posInfo.mileage !== "undefined" && asset.posInfo.mileage != '-') {
                 details.mileage = (Protocol.Helper.getMileageValue(asset.Unit, asset.posInfo.mileage) + parseInt(asset.InitMileage) + parseInt(asset._FIELD_FLOAT7)) + '&nbsp;' + Protocol.Helper.getMileageUnit(asset.Unit);
@@ -4768,6 +4775,7 @@ function loadTrackPage(params) {
                 AlertType: details.alertType,
                 ShowSpeedLimit: details.showSpeedLimit,
                 Speedlimit: LANGUAGE.COM_MSG08,
+                SpeedUnitCode: details.speedUnitCode,
             }
         });
 
