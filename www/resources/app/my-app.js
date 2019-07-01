@@ -1577,7 +1577,7 @@ App.onPageInit('alarms.select', function(page) {
                             <div class="item-content pl-0">                                    
                                 <div class="item-inner pr-0">                                      
                                     <div class="item-input item-input-field">
-                                        <input type="text" placeholder="${ LANGUAGE.PROMPT_MSG060 }" name="Overspeed" value="${ overspeedVal}" class="only_numbers">
+                                        <input type="tel" placeholder="${ LANGUAGE.PROMPT_MSG060 }" name="Overspeed" value="${ overspeedVal}" class="only_numbers">
                                     </div>
                                 </div>
                             </div>
@@ -2413,7 +2413,7 @@ App.onPageInit('asset.alarm', function(page) {
                             <div class="item-content pl-0">                                    
                                 <div class="item-inner pr-0">                                      
                                     <div class="item-input item-input-field">
-                                        <input type="text" placeholder="${ LANGUAGE.PROMPT_MSG060 }" name="Overspeed" value="${ overspeedVal}" class="only_numbers">
+                                        <input type="tel" placeholder="${ LANGUAGE.PROMPT_MSG060 }" name="Overspeed" value="${ overspeedVal}" class="only_numbers">
                                     </div>
                                 </div>
                             </div>
