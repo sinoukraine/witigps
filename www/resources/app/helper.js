@@ -794,6 +794,9 @@ Protocol.Common = JClass({
         this.SolutionType = arg.SolutionType;
         this.Registration = arg.Registration;
         this.StockNumber = arg.StockNumber;
+        this.MaxSpeed = arg.MaxSpeed;
+
+        
     
     },
     initDeviceInfoEx:function(){},

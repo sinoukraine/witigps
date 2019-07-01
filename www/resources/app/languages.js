@@ -101,6 +101,7 @@ window.LanguagePackages= {
 
 		"PROMPT_MSG058": "Select which type of report you want to receive, please",
 		"PROMPT_MSG059": "Select prefered day(s) in Ignore on field or uncheck Ignore Between feature",	
+		"PROMPT_MSG060": "Set Overspeed Value(km/h)",	
 
 
 		"LOGIN_MSG01": "The login(email) or password you entered is incorrect.",
@@ -160,6 +161,9 @@ window.LanguagePackages= {
 		"ALARM_MSG25": "Harsh Accelerate",
 		"ALARM_MSG26": "Harsh Braking",
 		"ALARM_MSG27": "Select Alarms",
+		"ALARM_MSG28": "Over Set Speed",
+		"ALARM_MSG29": "Over Road Speed",
+
 		"ASSET_STATUS_MSG00": "Date, time",
 		"ASSET_STATUS_MSG01": "Direction",
 		"ASSET_STATUS_MSG02": "Speed",
@@ -241,6 +245,8 @@ window.LanguagePackages= {
 		"ASSET_EDIT_MSG11": "Edit photo",
 		"ASSET_EDIT_MSG12": "Edit",
 		"ASSET_EDIT_MSG13": "Registration",
+		"ASSET_EDIT_MSG14": "Overspeed Value",
+
 		"ASSET_PLAYBACK_MSG00": "Start date and time",
 		"ASSET_PLAYBACK_MSG01": "End date and time",
 		"ASSET_PLAYBACK_MSG02": "Starts",	
@@ -455,7 +461,8 @@ window.LanguagePackages= {
 		"PROMPT_MSG057": "3. Click Create report to lodge report theft. This will formulate a complete report to be used for insurance, personal and/or police information.",
 
 		"PROMPT_MSG058": "Select which type of report you want to receive, please",	
-		"PROMPT_MSG059": "Select prefered day(s) in Ignore on field or uncheck Ignore Between feature",	
+		"PROMPT_MSG059": "Select prefered day(s) in Ignore on field or uncheck Ignore Between feature",
+		"PROMPT_MSG060": "Set Overspeed Value(km/h)",		
 
 		"LOGIN_MSG01":"El usuario (correo) o la contraseña ingresados son incorrectos",
 		"LOGIN_MSG02":"Nombre de usuario / Correo",
@@ -515,6 +522,9 @@ window.LanguagePackages= {
 		"ALARM_MSG25": "Acelerado duro",
 		"ALARM_MSG26": "Frenado fuerte",
 		"ALARM_MSG27": "Select Alarms",
+		"ALARM_MSG28": "Over Set Speed",
+		"ALARM_MSG29": "Over Road Speed",
+
 		"ASSET_STATUS_MSG00":"Fecha y hora",
 		"ASSET_STATUS_MSG01":"Dirección",
 		"ASSET_STATUS_MSG02":"Velocidad",
@@ -590,6 +600,7 @@ window.LanguagePackages= {
 		"ASSET_EDIT_MSG11":"Editar foto",
 		"ASSET_EDIT_MSG12":"Editar",
 		"ASSET_EDIT_MSG13": "Registro",
+		"ASSET_EDIT_MSG14": "Overspeed Value",
 		"ASSET_PLAYBACK_MSG00":"Fecha y hora de inicio",
 		"ASSET_PLAYBACK_MSG01":"Fecha y hora de finalización",
 		"ASSET_PLAYBACK_MSG02":"Inicia",
@@ -813,7 +824,8 @@ window.LanguagePackages= {
 		"PROMPT_MSG056": "2. Login to your account to monitor the live location of your asset, you can provide the police with the exact location of your asset to speed up the recovery process.",
 		"PROMPT_MSG057": "3. Click Create report to lodge report theft. This will formulate a complete report to be used for insurance, personal and/or police information.",
 		"PROMPT_MSG058": "Select which type of report you want to receive, please",	
-		"PROMPT_MSG059": "Select prefered day(s) in Ignore on field or uncheck Ignore Between feature",	
+		"PROMPT_MSG059": "Select prefered day(s) in Ignore on field or uncheck Ignore Between feature",
+		"PROMPT_MSG060": "Set Overspeed Value(km/h)",		
 		"LOGIN_MSG01": "Введен неверный логин (адрес электронной почты) или пароль.",
 		"LOGIN_MSG02": "Имя пользователя / E-mail",
 		"LOGIN_MSG03": "Пароль",
@@ -872,6 +884,9 @@ window.LanguagePackages= {
 		"ALARM_MSG25": "Резкое ускорение",
 		"ALARM_MSG26": "Резкое торможение",
 		"ALARM_MSG27": "Select Alarms",
+		"ALARM_MSG28": "Over Set Speed",
+		"ALARM_MSG29": "Over Road Speed",
+
 		"ASSET_STATUS_MSG00": "Дата, время",
 		"ASSET_STATUS_MSG01": "Направление",
 		"ASSET_STATUS_MSG02": "Скорость",
@@ -947,6 +962,7 @@ window.LanguagePackages= {
 		"ASSET_EDIT_MSG11": "Изменить фотографию",
 		"ASSET_EDIT_MSG12": "Редактировать",
 		"ASSET_EDIT_MSG13": "Регистрация",
+		"ASSET_EDIT_MSG14": "Overspeed Value",
 		"ASSET_PLAYBACK_MSG00": "ВЫБЕРИТЕ ДАТУ И ВРЕМЯ",
 		"ASSET_PLAYBACK_MSG01": "ВЫБЕРИТЕ ДАТУ И ВРЕМЯ",
 		"ASSET_PLAYBACK_MSG02": "Запуск",
@@ -1172,6 +1188,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG057": "3. Click Create report to lodge report theft. This will formulate a complete report to be used for insurance, personal and/or police information.",
 		"PROMPT_MSG058": "Select which type of report you want to receive, please",	
 		"PROMPT_MSG059": "Select prefered day(s) in Ignore on field or uncheck Ignore Between feature",	
+		"PROMPT_MSG060": "Set Overspeed Value(km/h)",	
 		"LOGIN_MSG01": "Введено невірний логін (адреса електронної пошти) або пароль.",
 		"LOGIN_MSG02": "Ім'я користувача / E-mail",
 		"LOGIN_MSG03": "Пароль",
@@ -1230,6 +1247,9 @@ window.LanguagePackages= {
 		"ALARM_MSG25": "Різке прискорення",
 		"ALARM_MSG26": "Жорстке гальмування",
 		"ALARM_MSG27": "Select Alarms",
+		"ALARM_MSG28": "Over Set Speed",
+		"ALARM_MSG29": "Over Road Speed",
+
 		"ASSET_STATUS_MSG00": "Дата, час",
 		"ASSET_STATUS_MSG01": "Напрямок",
 		"ASSET_STATUS_MSG02": "Швидкість",
@@ -1305,6 +1325,7 @@ window.LanguagePackages= {
 		"ASSET_EDIT_MSG11": "Змінити фотографію",
 		"ASSET_EDIT_MSG12": "Редагувати",
 		"ASSET_EDIT_MSG13": "Реєстрація",
+		"ASSET_EDIT_MSG14": "Overspeed Value",
 		"ASSET_PLAYBACK_MSG00": "ВИБЕРІТЬ ДАТУ ТА ЧАС",
 		"ASSET_PLAYBACK_MSG01": "ВИБЕРIТЬ ДАТУ ТА ЧАС",
 		"ASSET_PLAYBACK_MSG02": "Запуск",
