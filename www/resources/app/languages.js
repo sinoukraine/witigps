@@ -101,7 +101,11 @@ window.LanguagePackages= {
 
 		"PROMPT_MSG058": "Select which type of report you want to receive, please",
 		"PROMPT_MSG059": "Select prefered day(s) in Ignore on field or uncheck Ignore Between feature",	
-		"PROMPT_MSG060": "Set Overspeed Value(km/h)",	
+		"PROMPT_MSG060": "Set Overspeed Value(km/h)",
+		"PROMPT_MSG061": "At least one option should be selected.",	
+		"PROMPT_MSG062": "Over Road Speed - App will receive notification, if asset exceed the allowed speed of the road.",
+		"PROMPT_MSG063": "Over Set Speed - App will receive notification, if asset exceed presetted speed.",	
+		"PROMPT_MSG064": "App will receive notification, if asset will be offline for selected period of time.",	
 
 
 		"LOGIN_MSG01": "The login(email) or password you entered is incorrect.",
@@ -163,6 +167,8 @@ window.LanguagePackages= {
 		"ALARM_MSG27": "Select Alarms",
 		"ALARM_MSG28": "Over Set Speed",
 		"ALARM_MSG29": "Over Road Speed",
+		"ALARM_MSG30": "Offline Alarm",
+		"ALARM_MSG31": "hours",
 
 		"ASSET_STATUS_MSG00": "Date, time",
 		"ASSET_STATUS_MSG01": "Direction",
@@ -524,6 +530,8 @@ window.LanguagePackages= {
 		"ALARM_MSG27": "Select Alarms",
 		"ALARM_MSG28": "Over Set Speed",
 		"ALARM_MSG29": "Over Road Speed",
+		"ALARM_MSG30": "Offline Alarm",
+		"ALARM_MSG31": "hours",
 
 		"ASSET_STATUS_MSG00":"Fecha y hora",
 		"ASSET_STATUS_MSG01":"Dirección",
@@ -886,6 +894,8 @@ window.LanguagePackages= {
 		"ALARM_MSG27": "Select Alarms",
 		"ALARM_MSG28": "Over Set Speed",
 		"ALARM_MSG29": "Over Road Speed",
+		"ALARM_MSG30": "Offline Alarm",
+		"ALARM_MSG31": "hours",
 
 		"ASSET_STATUS_MSG00": "Дата, время",
 		"ASSET_STATUS_MSG01": "Направление",
@@ -1249,6 +1259,8 @@ window.LanguagePackages= {
 		"ALARM_MSG27": "Select Alarms",
 		"ALARM_MSG28": "Over Set Speed",
 		"ALARM_MSG29": "Over Road Speed",
+		"ALARM_MSG30": "Offline Alarm",
+		"ALARM_MSG31": "hours",
 
 		"ASSET_STATUS_MSG00": "Дата, час",
 		"ASSET_STATUS_MSG01": "Напрямок",

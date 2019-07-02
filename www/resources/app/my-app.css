@@ -47,6 +47,9 @@ body.with-panel-left-reveal .panel-overlay{
 .mr-0{
 	margin-right: 0 !important;
 }
+.mb-0{
+	margin-bottom: 0 !important;
+}
 .mr-8{
 	margin-right: 8px;
 }

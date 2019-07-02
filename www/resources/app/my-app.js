@@ -1243,7 +1243,7 @@ App.onPageInit('asset.edit', function(page) {
             device.Icon,
             userInfo.MajorToken,
             encodeURIComponent(device.Registration),
-            encodeURIComponent(device.MaxSpeed),
+            encodeURIComponent(device.MaxSpeed)
         );
 
         console.log(url);
@@ -1525,8 +1525,9 @@ App.onPageInit('alarms.select', function(page) {
 
     //var alarmFields = ['accOff', 'accOn', 'customAlarm', 'custom2LowAlarm', 'geolock', 'geofenceIn', 'geofenceOut', 'illegalIgnition', 'lowBattery', 'mainBatteryFail', 'sosAlarm', 'speeding', 'tilt', 'harshAcc', 'harshBrk'];
 
-    var allCheckboxesLabel = $$(page.container).find('label.item-content');
-    var allCheckboxes = allCheckboxesLabel.find('input.input-checkbox-alarm');
+    //var allCheckboxesLabel = $$(page.container).find('label.item-content');
+    //var allCheckboxes = allCheckboxesLabel.find('input.input-checkbox-alarm');
+    var allCheckboxes = $$(page.container).find('input.input-checkbox-alarm');
     var assets = $$(page.container).find('input[name="Assets"]').val();
 
     var alarmPreferenceList = $$(page.container).find('.alarm_list');
@@ -1543,6 +1544,24 @@ App.onPageInit('alarms.select', function(page) {
     var overspeedRadioEl = $$(page.container).find('input[name="overspeed-radio"]');
     var overspeedVal = page.context.MaxSpeed ? page.context.MaxSpeed : 80;
 
+    var offlineInputEl = $$(page.container).find('input[name="checkbox-offline"]');
+    var offlineOptionsWrapperEl = $$(page.container).find('.offline-options-wrapper'); 
+    var offlineOptionsEl = $$(page.container).find('input[name="offline-option"]');
+    var showHintEl = $$(page.container).find('.showHint');
+
+    showHintEl.on('click', function(){
+        var parent = this.closest('.hintParent');
+        var title = parent.getAttribute('data-hint-title');
+        var text = parent.getAttribute('data-hint-text');
+
+        var popoverHTML = `<div class="popover popover-status">
+            ${ title ? `<p class="color-dealer">${ title }</p>` : '' }
+            ${ text ? `<p >${ text }</p>` : '' }
+            </div>`;
+        App.popover(popoverHTML, this);
+    });
+    
+
     speedingInputEl.on('change', function() {      
         if (this.checked) {
             overspeedRadioWrapperEl.removeClass('disabled');
@@ -1554,7 +1573,7 @@ App.onPageInit('alarms.select', function(page) {
     alarm.on('change', function(e) {
         for (var i = allCheckboxes.length - 1; i >= 0; i--) {
             allCheckboxes[i].checked = this.checked;            
-            if (allCheckboxes[i].name == 'checkbox-speeding') {
+            if (allCheckboxes[i].name == 'checkbox-speeding' || allCheckboxes[i].name == 'checkbox-offline') {
                 allCheckboxes[i].dispatchEvent(new Event('change'));  
             }                      
         }
@@ -1608,6 +1627,34 @@ App.onPageInit('alarms.select', function(page) {
                 ]
             });
         }
+    });
+
+    offlineInputEl.on('change', function(e) {
+        for (var i = offlineOptionsEl.length - 1; i >= 0; i--) {
+            offlineOptionsEl[i].checked = this.checked;
+        }
+        if (this.checked) {
+            offlineOptionsWrapperEl.removeClass('disabled');
+        } else{
+            offlineOptionsWrapperEl.addClass('disabled');
+        }  
+    });
+
+    offlineOptionsEl.on('change', function(e) {
+        let found = false;
+        for (var i = offlineOptionsEl.length - 1; i >= 0; i--) {
+            if (offlineOptionsEl[i].checked == true) {                
+                found = true;
+                break; 
+            }            
+        }
+        if (!found) {
+            this.checked = true;
+            App.addNotification({
+                hold: 3000,
+                message: LANGUAGE.PROMPT_MSG061
+            });
+        }        
     });
 
 
@@ -1733,7 +1780,6 @@ App.onPageInit('alarms.select', function(page) {
             }
         }
     });
-
    
 
     $$('.saveAlarm').on('click', function(e) {
@@ -1792,20 +1838,24 @@ App.onPageInit('alarms.select', function(page) {
                         force: true
                     });
 
-                    if (data.SpeedingMode == 2) {
+                    if (speedingInputEl.is(":checked")) {
                         var arr = [];
                         var assets = data.IMEIS.split(',');
                         for (var i = assets.length - 1; i >= 0; i--) {
-                            arr.push({
+                            var obj = {
                                 IMEI: assets[i], 
-                                Props: {
-                                    MaxSpeed: data.MaxSpeed
+                                Props: {                                    
+                                    MaxSpeedAlertMode: data.SpeedingMode
                                 }
-                            });                            
-                        }
-                        //console.log(arr);
-                        updateAssetList3(arr);                        
-                    }
+                            }
+                            if (data.SpeedingMode == 2) {
+                                obj.Props.MaxSpeed = data.MaxSpeed;
+                            }
+                            arr.push(obj);                            
+                        }                        
+                        updateAssetList3(arr);     
+                    }                   
+                    
 
                 } else {
                     App.alert('Something wrong');
@@ -2357,13 +2407,14 @@ App.onPageInit('resetPwd', function(page) {
 });
 
 App.onPageInit('asset.alarm', function(page) {
-    console.log(page.context);
+    //console.log(page.context);
     var alarm = $$(page.container).find('input[name = "checkbox-alarm"]');
 
     //var alarmFields = ['accOff', 'accOn', 'customAlarm', 'custom2LowAlarm', 'geolock', 'geofenceIn', 'geofenceOut', 'illegalIgnition', 'lowBattery', 'mainBatteryFail', 'sosAlarm', 'speeding', 'tilt', 'harshAcc', 'harshBrk'];
 
-    var allCheckboxesLabel = $$(page.container).find('label.item-content');
-    var allCheckboxes = allCheckboxesLabel.find('input.input-checkbox-alarm');
+    //var allCheckboxesLabel = $$(page.container).find('label.item-content');
+    //var allCheckboxes = allCheckboxesLabel.find('input.input-checkbox-alarm');
+    var allCheckboxes = $$(page.container).find('input.input-checkbox-alarm');
 
     var alarmPreferenceList = $$(page.container).find('.alarm_list');
     var ignoreBetweenEl = $$(page.container).find('[name="ignoreBetween"]');
@@ -2379,6 +2430,23 @@ App.onPageInit('asset.alarm', function(page) {
     var overspeedRadioEl = $$(page.container).find('input[name="overspeed-radio"]');
     var overspeedVal = page.context.MaxSpeed ? page.context.MaxSpeed : 80;
 
+    var offlineInputEl = $$(page.container).find('input[name="checkbox-offline"]');
+    var offlineOptionsWrapperEl = $$(page.container).find('.offline-options-wrapper'); 
+    var offlineOptionsEl = $$(page.container).find('input[name="offline-option"]');
+    var showHintEl = $$(page.container).find('.showHint');
+
+    showHintEl.on('click', function(){
+        var parent = this.closest('.hintParent');
+        var title = parent.getAttribute('data-hint-title');
+        var text = parent.getAttribute('data-hint-text');
+
+        var popoverHTML = `<div class="popover popover-status">
+            ${ title ? `<p class="color-dealer">${ title }</p>` : '' }
+            ${ text ? `<p >${ text }</p>` : '' }
+            </div>`;
+        App.popover(popoverHTML, this);
+    });
+
     speedingInputEl.on('change', function() {      
         if (this.checked) {
             overspeedRadioWrapperEl.removeClass('disabled');
@@ -2390,7 +2458,7 @@ App.onPageInit('asset.alarm', function(page) {
     alarm.on('change', function(e) {
         for (var i = allCheckboxes.length - 1; i >= 0; i--) {
             allCheckboxes[i].checked = this.checked;            
-            if (allCheckboxes[i].name == 'checkbox-speeding') {
+            if (allCheckboxes[i].name == 'checkbox-speeding' || allCheckboxes[i].name == 'checkbox-offline') {
                 allCheckboxes[i].dispatchEvent(new Event('change'));  
             }                      
         }
@@ -2444,6 +2512,34 @@ App.onPageInit('asset.alarm', function(page) {
                 ]
             });
         }
+    });
+
+    offlineInputEl.on('change', function(e) {
+        for (var i = offlineOptionsEl.length - 1; i >= 0; i--) {
+            offlineOptionsEl[i].checked = this.checked;
+        }
+        if (this.checked) {
+            offlineOptionsWrapperEl.removeClass('disabled');
+        } else{
+            offlineOptionsWrapperEl.addClass('disabled');
+        }  
+    });
+
+    offlineOptionsEl.on('change', function(e) {
+        let found = false;
+        for (var i = offlineOptionsEl.length - 1; i >= 0; i--) {
+            if (offlineOptionsEl[i].checked == true) {                
+                found = true;
+                break; 
+            }            
+        }
+        if (!found) {
+            this.checked = true;
+            App.addNotification({
+                hold: 3000,
+                message: LANGUAGE.PROMPT_MSG061
+            });
+        }        
     });
 
 
@@ -2617,19 +2713,22 @@ App.onPageInit('asset.alarm', function(page) {
             crossDomain: true,
             success: function(result) {
                 App.hidePreloader();
-                console.log(result);
+                //console.log(result);
                 if (result.MajorCode == '000') {
                     mainView.router.back();
-                    if (data.SpeedingMode == 2) {
-                        updateAssetList3([
-                            {
-                                IMEI: data.IMEIS, 
-                                Props: {
-                                    MaxSpeed: data.MaxSpeed
-                                }
+
+                    if (speedingInputEl.is(":checked")) {
+                        var obj = {
+                            IMEI: data.IMEIS, 
+                            Props: {                                    
+                                MaxSpeedAlertMode: data.SpeedingMode
                             }
-                        ]);
-                    }
+                        }
+                        if (data.SpeedingMode == 2) {
+                            obj.Props.MaxSpeed = data.MaxSpeed;
+                        }
+                        updateAssetList3([obj]);
+                    }                        
 
                 } else {
                     App.alert('Something wrong');
@@ -2929,6 +3028,7 @@ App.onPageInit('asset.location', function(page) {
     var alertType = page.context.AlertType;
     var speed = page.context.Speed;
     var speedUnitCode = page.context.SpeedUnitCode;
+    var alertSpeedingType = page.context.SpeedingType;
 
     showMap({ 'lat': lat, 'lng': lng });
 
@@ -2942,7 +3042,7 @@ App.onPageInit('asset.location', function(page) {
         showStreetView(params);
     });
 
-    if (alertType == 32) {
+    if (alertType == 32 && alertSpeedingType == 1) {
       
     	$.ajax({
 	        type: "GET",
@@ -4686,7 +4786,6 @@ function loadAlarmPage(params) {
     var IsIgnore = 0;
 
 
-
     if (!params) {
         if (assetAlarmVal) {
             $.each(alarms, function(key, value) {
@@ -4694,6 +4793,9 @@ function loadAlarmPage(params) {
                     alarms[key].state = false;
                 }
             });
+            if (assetAlarmVal == 36931518) {
+                alarms.alarm.state = false;
+            }
         }
     } else {
 
@@ -4702,6 +4804,9 @@ function loadAlarmPage(params) {
                 alarms[key].state = false;
             }
         });
+        if (params.AlertTypes == 36931518) {
+            alarms.alarm.state = false;
+        }
 
         if (params.Weeks) {
             var selectedDays = params.Weeks.split(',');
@@ -4880,7 +4985,9 @@ function loadTrackPage(params) {
         time: '',
         alertType: '',
         showSpeedLimit: '',
+        speedlimit: LANGUAGE.COM_MSG08,
         speedUnitCode: '',
+        speedingType: 1,
     };
     //{"title":"Acc off","type":65536,"imei":"0352544073967920","name":"Landcruiser Perth","lat":-32.032898333333335,"lng":115.86817722222216,"speed":0,"direct":0,"time":"2018-04-13 10:16:51"}
     if ((params && parseFloat(params.lat) !== 0 && parseFloat(params.lng) !== 0) || (parseFloat(asset.posInfo.lat) !== 0 && parseFloat(asset.posInfo.lng) !== 0)) {
@@ -4902,8 +5009,12 @@ function loadTrackPage(params) {
             details.direct = parseInt(params.direct);
             details.alertType = params.type;
 
-            if (params.type && params.type == '32') {
+            if (params.type && params.type == '32') {  //32 is speeding alert
                 details.showSpeedLimit = true;
+                if (asset.MaxSpeedAlertMode == '2') { //type 2 means alert triggerd from presetted speed, this speed we take from asset details
+                    details.speedingType = parseInt(asset.MaxSpeedAlertMode,10); 
+                    details.speedlimit = Protocol.Helper.getSpeedValue(asset.Unit, asset.MaxSpeed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
+                }                
             }
 
         } else {
@@ -4940,8 +5051,9 @@ function loadTrackPage(params) {
                 Coords: 'GPS: ' + Protocol.Helper.convertDMS(details.latlng.lat, details.latlng.lng),
                 AlertType: details.alertType,
                 ShowSpeedLimit: details.showSpeedLimit,
-                Speedlimit: LANGUAGE.COM_MSG08,
+                Speedlimit: details.speedlimit,
                 SpeedUnitCode: details.speedUnitCode,
+                SpeedingType: details.speedingType
             }
         });
 
@@ -5435,6 +5547,7 @@ function setAssetList(list) {
             Registration: list[i][index++],
             StockNumber: list[i][index++],
             MaxSpeed: list[i][index++],
+            MaxSpeedAlertMode: list[i][index++],
         };
     }
     setAssetListPosInfo(ary);
@@ -5523,6 +5636,7 @@ function updateAssetList2(list) {
             Registration: list[i][index++],
             StockNumber: list[i][index++],
             MaxSpeed: list[i][index++],
+            MaxSpeedAlertMode: list[i][index++],
         };
         /*$.each(ary[list[i][1]], function(key,value){
             if (POSINFOASSETLIST[list[i][1]]) {
