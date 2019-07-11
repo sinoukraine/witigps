@@ -105,7 +105,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG061": "At least one option should be selected.",	
 		"PROMPT_MSG062": "Over Road Speed - App will receive notification, if asset exceed the allowed speed of the road.",
 		"PROMPT_MSG063": "Over Set Speed - App will receive notification, if asset exceed presetted speed.",	
-		"PROMPT_MSG064": "App will receive notification, if asset will be offline for selected period of time.",	
+		"PROMPT_MSG064": "App will receive notification, if asset will be offline for certain period of time.",	
 
 
 		"LOGIN_MSG01": "The login(email) or password you entered is incorrect.",

@@ -1768,6 +1768,18 @@ App.onPageInit('alarms.select', function(page) {
             }
         }
 
+        if (offlineInputEl.is(":checked")) {   
+            data.OfflineHours = '';         
+            for (var i = offlineOptionsEl.length - 1; i >= 0; i--) {
+                if (offlineOptionsEl[i].checked) {
+                    data.OfflineHours += offlineOptionsEl[i].value + ',';
+                }                
+            }
+            if (data.OfflineHours) {
+                data.OfflineHours = data.OfflineHours.slice(0, -1);
+            }                
+        }
+
         /*console.log(data);*/
 
         App.showPreloader();
@@ -2698,6 +2710,17 @@ App.onPageInit('asset.alarm', function(page) {
             if (data.SpeedingMode == 2) {
                 data.MaxSpeed = overspeedVal;
             }
+        }
+        if (offlineInputEl.is(":checked")) {   
+            data.OfflineHours = '';         
+            for (var i = offlineOptionsEl.length - 1; i >= 0; i--) {
+                if (offlineOptionsEl[i].checked) {
+                    data.OfflineHours += offlineOptionsEl[i].value + ',';
+                }                
+            }
+            if (data.OfflineHours) {
+                data.OfflineHours = data.OfflineHours.slice(0, -1);
+            }                
         }
 
         //console.log(data);
@@ -4856,6 +4879,10 @@ function loadAlarmPage(params) {
             state: true,
             val: 2097152,
         },
+        offline: {
+            state: true,
+            val: 67108864,
+        },
         alarm: {
             state: true,
             //val: 0,
@@ -4959,6 +4986,18 @@ function loadAlarmPage(params) {
         overspeedRadio2 = !overspeedRadio2;
     }
 
+     var offlineOptions = {
+        '24': false,
+        '48': false,
+        '72': false,
+    }
+    if (params.OfflineHours) {
+        var selectedOfflineOptions = params.OfflineHours.split(',');
+        for (var i = selectedOfflineOptions.length - 1; i >= 0; i--) {
+            offlineOptions[selectedOfflineOptions[i]] = true;  
+        }
+    }
+
     mainView.router.load({
         url: 'resources/templates/asset.alarm.html',
         context: {
@@ -4992,6 +5031,11 @@ function loadAlarmPage(params) {
             OverspeedRadio1: overspeedRadio1,
             OverspeedRadio2: overspeedRadio2,
             MaxSpeed: params.MaxSpeed ? params.MaxSpeed : 80,
+
+            offline: alarms.offline.state,
+            offline24: offlineOptions['24'],
+            offline48: offlineOptions['48'],
+            offline72: offlineOptions['72'],
         }
     });
 }
