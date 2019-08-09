@@ -410,11 +410,11 @@ Protocol = {
         },    
         createMap: function(option){
             var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { name: 'osm', attribution: '' });            
-            var googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+            var googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
                 maxZoom: 22,
                 subdomains:['mt0','mt1','mt2','mt3']
             });           
-            var googleSatelitte = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+            var googleSatelitte = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
                 maxZoom: 20,
                 subdomains:['mt0','mt1','mt2','mt3']
             });  
@@ -794,10 +794,6 @@ Protocol.Common = JClass({
         this.SolutionType = arg.SolutionType;
         this.Registration = arg.Registration;
         this.StockNumber = arg.StockNumber;
-        this.MaxSpeed = arg.MaxSpeed;
-        this.MaxSpeedAlertMode = arg.MaxSpeedAlertMode;
-
-        
     
     },
     initDeviceInfoEx:function(){},
