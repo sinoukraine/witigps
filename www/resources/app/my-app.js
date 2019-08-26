@@ -4111,12 +4111,12 @@ function getMarkerDataTable(asset){
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG003+'</td>';
                     markerData +=       '<td class="marker-data-value">'+asset.posInfo.positionTime.format(window.COM_TIMEFORMAT)+'</td>';
                     markerData +=   '</tr>';
-                                    if (assetFeaturesStatus.stopped) {
+                                    /*if (assetFeaturesStatus.stopped) {
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG018+'</td>';
                     markerData +=       '<td class="marker-data-value">'+assetFeaturesStatus.stopped.duration+'</td>';
                     markerData +=   '</tr>';    
-                                    }
+                                    }*/
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG004+'</td>';
                     markerData +=       '<td class="marker-data-value">'+mileage+'</td>';
