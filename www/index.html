@@ -31,6 +31,8 @@
     <link rel="stylesheet" href="resources/plugins/leaflet.markercluster/css/MarkerCluster.css">
     <link rel="stylesheet" href="resources/plugins/leaflet.markercluster/css/MarkerCluster.Default.css">
 
+    <link rel="stylesheet" href="resources/plugins/leaflet.fullscreen/leaflet.fullscreen.css">
+
     <link rel="stylesheet" href="resources/fonts/roboto.css">
     <link rel="stylesheet" href="resources/app/my-app.css?v=1.1.1">
 
@@ -223,9 +225,17 @@
                             </form>   
                         <div class="searchbar-overlay"></div>   
                         <!-- Scrollable page content -->
+
+                       
+						<div class="float_button_wrapper view_all_button_wrapper bg-white">
+						    <a href="#" class="link color-black viewAllButton"  >
+						        <i class="f7-icons icon-show-assets color-black"></i>
+						        <span >{{@global.LANGUAGE.COM_MSG55}}</span>                    
+						    </a>
+						</div>
+
                         <div class="page-content">
-                            <!-- Search Bar -->
-                            
+                           				            
                             <div class="content-block index-search-nothing-found searchbar-not-found color-white">                               
                                 {{@global.LANGUAGE.COM_MSG05}}
                             </div>
@@ -260,6 +270,9 @@
     <script type="text/javascript" src="resources/plugins/leaflet.markercluster/js/leaflet.markercluster.js"></script>
     <!-- Coordinates grid --> 
     <script type="text/javascript" src="resources/plugins/leaflet.grid/leaflet.latlng-graticule.js"></script>
+    <!-- Full screen map button --> 
+    <script type="text/javascript" src="resources/plugins/leaflet.fullscreen/Leaflet.fullscreen.min.js"></script>
+    
     <!-- google api for street view -->
     <script async="async" defer="defer" src="https://maps.google.com/maps/api/js?v=weekly&key=AIzaSyC6eQHreVzeV0sGqzKLcNKzp6HfVcNTutI"></script>
     <!-- jClass -->

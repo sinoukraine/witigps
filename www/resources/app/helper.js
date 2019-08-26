@@ -24,6 +24,11 @@ Protocol = {
             popupAnchor:  [0, -60] // point from which the popup should open relative to the iconAnchor
         })
     ],
+    PolygonCustomization:{
+        color: '#AA5959',
+        fillColor: '#FF0000',
+        fillOpacity: 0.25,
+    },
     PositionTypes: {
         "NONE": 0,
         "GPS": 1,
@@ -420,7 +425,7 @@ Protocol = {
             });  
          
 
-            var map = L.map(option.target, { zoomControl: false, center: option.latLng, zoom: option.zoom, layers: [googleStreets] }); 
+            var map = L.map(option.target, { zoomControl: false, center: option.latLng, zoom: option.zoom, fullscreenControl: true, layers: [googleStreets] }); 
                         
             var layers = {
                 "<span class='mapSwitcherWrapper googleSwitcherWrapper'><img class='layer-icon' src='resources/images/googleRoad.png' alt='' /> <p>Map</p></span>": googleStreets,

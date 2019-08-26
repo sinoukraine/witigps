@@ -1148,6 +1148,9 @@ label.label-checkbox .item-after i.icon-form-checkbox{
 	.position_map_playback{
 		height: calc(100% - 190px);
 	}
+	.track_all_page .position_map{
+		height: 100%;
+	}
 		.map{
 			width: 100%;
 			height: 100%;
@@ -1200,7 +1203,9 @@ label.label-checkbox .item-after i.icon-form-checkbox{
 		    bottom: 88px;
 		    right: 16px;
 		}
-		.route_button_wrapper{
+		.route_button_wrapper,
+		.view_all_button_wrapper,
+		.settings_button_wrapper{
 		    bottom: 16px;
 		    right: 16px;
 		}
@@ -1320,6 +1325,25 @@ label.label-checkbox .item-after i.icon-form-checkbox{
 	.leaflet-popup-content-wrapper{
 		border-radius: 6px;
 	}
+
+	.leaflet-control-fullscreen{
+		border-radius: 50%;
+	}
+	.leaflet-control-fullscreen a.leaflet-control-fullscreen-button{
+		border-radius: 50%;
+
+		width: 44px;
+	    height: 44px;
+	    line-height: 44px;
+
+	    background-position: 6px 6px;
+
+	    background-size: 32px 64px;
+	}
+	.leaflet-touch.leaflet-fullscreen-on .leaflet-control-fullscreen a{
+		background-position: 6px -26px;
+	}
+	
 		.marker-data-table{
 			
 		}
@@ -1566,22 +1590,23 @@ label.label-checkbox .item-after i.icon-form-checkbox{
 			text-transform: uppercase;			
 		}
 
-		.layout-dark.geofenceList .item-title.label{
+		.layout-dark.geofenceList .item-title{
 			color: #fff;
 		}
 		/* GEOLOCK */
 
 
 		.input_geolock_radius{
-			position: absolute;
-			z-index: 500;
-			top: 18px;
-			/* width: 100%; */
-			/* width: 100%;
-			text-align: center; */
-			margin: 0;
-			padding: 0 32px;
-			box-sizing: border-box;
+			    position: absolute;
+    z-index: 500;
+    top: 18px;
+    /* width: 100%; */
+    margin: 0;
+    /* padding: 0 32px; */
+    box-sizing: border-box;
+    margin-left: -90px;
+    width: 180px;
+    left: 50%;
 		}
 		.input_geolock_radius:after{
 			display: none;
