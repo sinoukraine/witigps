@@ -4073,7 +4073,7 @@ function showStreetView(params) {
 }
 
 function getMarkerDataTable(asset){
-            var self = this;
+           
             //console.log(asset);
             var markerData = '';
             var customAddress = LANGUAGE.COM_MSG08;
@@ -4180,6 +4180,75 @@ function getMarkerDataTable(asset){
             return markerData;
                 
         };
+
+function getGeofenceDataTable(geofence, options){
+
+	//console.log(geofence);
+	var markerData = '';
+	if (geofence) {
+		let assignedAssets = '';
+		let assetList = getAssetList();
+		let assignedAssetsCount = '0';
+
+		if (options && options.geogroup) {
+			if (geofence.Assets && geofence.Assets.length) {
+				assignedAssetsCount = geofence.Assets.length;
+                for (var i = geofence.Assets.length - 1; i >= 0; i--) {                	
+                	assignedAssets += geofence.Assets[i].Name + ', ';
+                }
+            }
+		}else{
+			if (geofence.SelectedAssetList && geofence.SelectedAssetList.length) {
+				assignedAssetsCount = geofence.SelectedAssetList.length;
+                for (var i = geofence.SelectedAssetList.length - 1; i >= 0; i--) {                	
+                	assignedAssets += assetList[geofence.SelectedAssetList[i].IMEI].Name + ', ';
+                }
+            }
+		}
+		if (assignedAssets) {
+			assignedAssets = assignedAssets.slice(0, -2);
+		}else{
+			assignedAssets = LANGUAGE.COM_MSG58;
+		}
+						 
+
+		markerData += `
+		<table cellpadding="0" cellspacing="0" border="0" class="marker-data-table">
+           	<tr>
+               <td class="marker-data-caption">${ options && options.geogroup ? LANGUAGE.GEOFENCE_MSG_34 : LANGUAGE.GEOFENCE_MSG_32}</td>
+               <td class="marker-data-value">${ geofence.Name }</td>
+           	</tr>
+           	<tr>
+            	<td class="marker-data-caption">${ LANGUAGE.GEOFENCE_MSG_33 }(${ assignedAssetsCount })</td>
+            	<td class="marker-data-value">${ assignedAssets }</td>
+        	</tr>			
+        	`;
+        	
+        if (options && !options.geogroup) {
+        	markerData += `
+        	<tr>
+            	<td class="marker-data-caption">${ LANGUAGE.GEOFENCE_MSG_07 }</td>
+            	<td class="marker-data-value">${ Protocol.Helper.getGeofenceAlertType(geofence.Alerts) }</td>
+        	</tr>
+           	<tr>
+               <td class="marker-data-caption">${ LANGUAGE.COM_MSG37 }</td>
+               <td class="marker-data-value">${ geofence.State == 1 ? LANGUAGE.COM_MSG59 : LANGUAGE.COM_MSG60 }</td>
+           	</tr>`;
+        }        
+
+        markerData += ` 
+        	<tr>
+            	<td class="marker-data-caption">${ LANGUAGE.ASSET_TRACK_ALL_MSG011 }</td>
+            	<td class="marker-data-value ">${ Protocol.Helper.convertDMS(geofence.Lat, geofence.Lng) }</td>
+        	</tr>
+			<tr>
+            	<td class="marker-data-caption">${ LANGUAGE.ASSET_TRACK_ALL_MSG012 }</td>
+            	<td class="marker-data-value address-${ geofence.Code }">${ geofence.Address }</td>
+        	</tr>
+       	</table>`;
+	}
+	return markerData;
+}
 
 function showMap(params) {
 
@@ -6813,18 +6882,19 @@ var MapControls = {
                         Name: geofenceList[key].Name,
                         Code: geofenceList[key].Code,                                 
                     };
-                    let label = `${ LANGUAGE.GEOFENCE_MSG_32 }: ${geofenceList[key].Name} <br> ${ LANGUAGE.GEOFENCE_MSG_33 }: `;
+                    /*let label = `${ LANGUAGE.GEOFENCE_MSG_32 }: ${geofenceList[key].Name} <br> ${ LANGUAGE.GEOFENCE_MSG_33 }: `;
                     if (geofenceList[key].SelectedAssetList && geofenceList[key].SelectedAssetList.length) {
                         label += geofenceList[key].SelectedAssetList.length;
                     }else{
                         label += '0';
-                    }
+                    }*/
+                    let markerData = getGeofenceDataTable(geofenceList[key],{geogroup: false}); 
                     if (geofenceList[key].GeoType == 1) { //circle                           
                         if (geofenceList[key].Lat && geofenceList[key].Lng && geofenceList[key].Radius) {
                             geofenceDetails.polygon = L.circle([geofenceList[key].Lat, geofenceList[key].Lng], {
                                 ...Protocol.PolygonCustomization,                            
                                 radius: geofenceList[key].Radius,
-                            }).bindTooltip(label ,{permanent: false, direction: 'right'});  
+                            }).bindPopup(markerData,{maxWidth: 280, closeButton: false})//.bindTooltip(label ,{permanent: false, direction: 'right'});  
                         } 
                     }else if (geofenceList[key].GeoPolygon) {
                         var polygonCoordsArr = geofenceList[key].GeoPolygon.split('((').pop().split('))')[0].split(',');
@@ -6834,7 +6904,7 @@ var MapControls = {
                         }                        
                         geofenceDetails.polygon = L.polygon(geojsonArr, {
                             ...Protocol.PolygonCustomization,                               
-                        }).bindTooltip(label ,{permanent: false, direction: 'right'});
+                        }).bindPopup(markerData,{maxWidth: 280, closeButton: false}); //.bindTooltip(label ,{permanent: false, direction: 'right'});
                     }                                       
                     
                     if (geofenceDetails.polygon) {

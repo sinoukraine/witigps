@@ -323,6 +323,23 @@ Protocol = {
             }            
             return ret;
         },
+        getGeofenceAlertType: function(val){
+            var ret = '';
+            if (val) {
+                if ((parseInt(val) & 8) > 0) {        
+                    ret += LANGUAGE.GEOFENCE_MSG_12 + ', '; 
+                }
+                if ((parseInt(val) & 16) > 0) {        
+                    ret += LANGUAGE.GEOFENCE_MSG_13 + ', '; 
+                }                
+            } 
+            if (ret) {
+                ret = ret.slice(0, -2);
+            }else{
+                ret = LANGUAGE.COM_MSG58; 
+            }
+            return ret; 
+        },
         getAddressByGeocoder: function(latlng,replyFunc){
             /*var url = "http://map.quiktrak.co/reverse.php?format=json&lat={0}&lon={1}&zoom=18&addressdetails=1".format(latlng.lat, latlng.lng);
             JSON.request(url, function(result){ replyFunc(result.display_name);});*/
