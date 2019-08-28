@@ -4216,7 +4216,7 @@ function getGeofenceDataTable(geofence, options){
 
 		if (geofence.Week && geofence.Week.length) {	       
 	        for (var i = 0; i < geofence.Week.length; i++) {	        	
-	        	IgnoreDays += Protocol.DaysOfWeek[geofence.Week[i].Week].nameSmall + ', '; 
+	        	IgnoreDays += geofence.Week.length > 2 ? Protocol.DaysOfWeek[geofence.Week[i].Week].nameSmall + ', ' : Protocol.DaysOfWeek[geofence.Week[i].Week].name + ', '; 
 	        }
 	        if (IgnoreDays) {
 	        	IgnoreDays = IgnoreDays.slice(0, -2);
