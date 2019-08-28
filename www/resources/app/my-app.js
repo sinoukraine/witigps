@@ -4189,6 +4189,9 @@ function getGeofenceDataTable(geofence, options){
 		let assignedAssets = '';
 		let assetList = getAssetList();
 		let assignedAssetsCount = '0';
+		let BeginTime = '';
+		let EndTime = '';
+		let IgnoreDays = '';
 
 		if (options && options.geogroup) {
 			if (geofence.Assets && geofence.Assets.length) {
@@ -4210,6 +4213,17 @@ function getGeofenceDataTable(geofence, options){
 		}else{
 			assignedAssets = LANGUAGE.COM_MSG58;
 		}
+
+		if (geofence.Week && geofence.Week.length) {	       
+	        for (var i = 0; i < geofence.Week.length; i++) {	        	
+	        	IgnoreDays += Protocol.DaysOfWeek[geofence.Week[i].Week].nameSmall + ', '; 
+	        }
+	        if (IgnoreDays) {
+	        	IgnoreDays = IgnoreDays.slice(0, -2);
+	        }
+	        BeginTime = geofence.Week[0].BeginTime ? moment(geofence.Week[0].BeginTime, 'HH:mm:ss').add(UTCOFFSET, 'minutes').format('HH:mm:ss') : BeginTime;
+	        EndTime = geofence.Week[0].EndTime ? moment(geofence.Week[0].EndTime, 'HH:mm:ss').add(UTCOFFSET, 'minutes').format('HH:mm:ss') : EndTime;
+	    }
 						 
 
 		markerData += `
@@ -4223,17 +4237,34 @@ function getGeofenceDataTable(geofence, options){
             	<td class="marker-data-value">${ assignedAssets }</td>
         	</tr>			
         	`;
-        	
+
         if (options && !options.geogroup) {
         	markerData += `
-        	<tr>
-            	<td class="marker-data-caption">${ LANGUAGE.GEOFENCE_MSG_07 }</td>
-            	<td class="marker-data-value">${ Protocol.Helper.getGeofenceAlertType(geofence.Alerts) }</td>
-        	</tr>
-           	<tr>
-               <td class="marker-data-caption">${ LANGUAGE.COM_MSG37 }</td>
-               <td class="marker-data-value">${ geofence.State == 1 ? LANGUAGE.COM_MSG59 : LANGUAGE.COM_MSG60 }</td>
-           	</tr>`;
+	        	<tr>
+	            	<td class="marker-data-caption">${ LANGUAGE.GEOFENCE_MSG_07 }</td>
+	            	<td class="marker-data-value">${ Protocol.Helper.getGeofenceAlertType(geofence.Alerts) }</td>
+	        	</tr>
+	           	<tr>
+	               <td class="marker-data-caption">${ LANGUAGE.COM_MSG37 }</td>
+	               <td class="marker-data-value">${ geofence.State == 1 ? LANGUAGE.COM_MSG59 : LANGUAGE.COM_MSG60 }</td>
+	           	</tr>
+	           	<tr>
+	               <td class="marker-data-caption">${ LANGUAGE.GEOFENCE_MSG_28 }</td>
+	               <td class="marker-data-value">${ geofence.Inverse == 1 ? LANGUAGE.COM_MSG59 : LANGUAGE.COM_MSG60 }</td>
+	           	</tr>
+           	`;
+           	if (geofence.Inverse == 1) {
+           		markerData += `
+					<tr>
+		               <td class="marker-data-caption">${ LANGUAGE.ASSET_TRACK_ALL_MSG021 }</td>
+		               <td class="marker-data-value">${ BeginTime } - ${ EndTime }</td>
+		           	</tr>
+		           	<tr>
+		               <td class="marker-data-caption">${ LANGUAGE.GEOFENCE_MSG_31 }</td>
+		               <td class="marker-data-value">${ IgnoreDays }</td>
+		           	</tr>
+           		`;
+           	}
         }        
 
         markerData += ` 

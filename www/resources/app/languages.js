@@ -246,7 +246,7 @@ window.LanguagePackages= {
 		"ASSET_TRACK_ALL_MSG018": "Stopped Time",
 		"ASSET_TRACK_ALL_MSG019": "Engine Hours",
 		"ASSET_TRACK_ALL_MSG020": "Locate Asset",
-		"ASSET_TRACK_ALL_MSG021": "",
+		"ASSET_TRACK_ALL_MSG021": "Ignore Time",
 		"ASSET_TRACK_ALL_MSG022": "",
 		"ASSET_TRACK_ALL_MSG023": "",
 		"ASSET_TRACK_ALL_MSG024": "Voltage",
@@ -355,7 +355,8 @@ window.LanguagePackages= {
 		"GEOFENCE_MSG_31": "Ignore on",	
 		"GEOFENCE_MSG_32": "Geofence Name",	
 		"GEOFENCE_MSG_33": "Assigned Assets",
-		"GEOFENCE_MSG_34": "Group Name",							
+		"GEOFENCE_MSG_34": "Group Name",
+
 		"PASSWORD_FORGOT_MSG00": "Please, enter your registered E-mail address",
 		"PASSWORD_FORGOT_MSG01": "Please, enter E-mail",
 		"PASSWORD_FORGOT_MSG02": "Please, enter Verification Code that we have sent to your Email address",

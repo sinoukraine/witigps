@@ -126,6 +126,43 @@ Protocol = {
         "Immobilise": 2,
         "LockDoor": 4,
     },
+    DaysOfWeek: [
+        {
+            val: 0,
+            name: LANGUAGE.GEOFENCE_MSG_20,
+            nameSmall: LANGUAGE.COM_MSG46,
+        },
+        {
+            val: 1,
+            name: LANGUAGE.GEOFENCE_MSG_21,
+            nameSmall: LANGUAGE.COM_MSG47,
+        },
+        {
+            val: 2,
+            name: LANGUAGE.GEOFENCE_MSG_22,
+            nameSmall: LANGUAGE.COM_MSG48,
+        },
+        {
+            val: 3,
+            name: LANGUAGE.GEOFENCE_MSG_23,
+            nameSmall: LANGUAGE.COM_MSG49,
+        },
+        {
+            val: 4,
+            name: LANGUAGE.GEOFENCE_MSG_24,
+            nameSmall: LANGUAGE.COM_MSG50,
+        },
+        {
+            val: 5,
+            name: LANGUAGE.GEOFENCE_MSG_25,
+            nameSmall: LANGUAGE.COM_MSG51,
+        },
+        {
+            val: 6,
+            name: LANGUAGE.GEOFENCE_MSG_26,
+            nameSmall: LANGUAGE.COM_MSG52,
+        },
+    ],
     Helper: {
         getSpeedValue: function (speedUnit, speed) {
             var ret = 0;
