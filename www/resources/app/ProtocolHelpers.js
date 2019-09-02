@@ -448,16 +448,16 @@ Protocol.OUNING_WATCH = JClass(Protocol.Common,{
 Protocol.ClassManager.add("OUNING_WATCH", Protocol.OUNING_WATCH);
 
 Protocol.VT900_DOOR = JClass(Protocol.Common,{
-	STATIC: {
+    STATIC: {
 
     },
-	constructor: function(arg) {
-	    this.initDeviceInfo(arg);
-	    this._FIELD_INT2 = arg._FIELD_INT2;
-		this.posInfo = {};
+    constructor: function(arg) {
+        this.initDeviceInfo(arg);
+        this._FIELD_INT2 = arg._FIELD_INT2;
+        this.posInfo = {};
     },
-	initPosInfoEx: function (ary, posInfo) {
-	    posInfo.fuel = ary[24];
+    initPosInfoEx: function (ary, posInfo) {
+        posInfo.fuel = ary[24];
         posInfo.alt = ary[25];
         posInfo.rfid = ary[26];
     },
@@ -512,12 +512,32 @@ Protocol.GPT19H = JClass(Protocol.Common,{
         posInfo.Battery = ary[22];
         posInfo.Input2Voltage = ary[23];
         posInfo.Engine = ary[24];
-    },
-    createLiNodeOptionsInfo: function(){
-        var ret = "";
-
-        return ret;
-    }
+    },    
+    
 });
-
 Protocol.ClassManager.add("GPT19H", Protocol.GPT19H);
+
+Protocol.EELINK_TEMP = JClass(Protocol.Common,{
+    STATIC: {
+
+    },
+    constructor: function(arg) {
+        this.initDeviceInfo(arg);
+        this.posInfo = {};
+    },
+    initPosInfoEx:function(ary, posInfo){
+        posInfo.Voltage = ary[23];
+        posInfo.Input1Voltage = ary[24];
+        posInfo.Input2Voltage = ary[25];
+        posInfo.Engine = ary[26];        
+ 
+    },
+    initHisPosInfoEx:function(ary, posInfo){
+        posInfo.Voltage = ary[21];
+        posInfo.Input1Voltage = ary[22];
+        posInfo.Input2Voltage = ary[23];
+        posInfo.Engine = ary[24];
+
+    },    
+});
+Protocol.ClassManager.add("EELINK_TEMP", Protocol.EELINK_TEMP);

@@ -64,6 +64,7 @@ window.LanguagePackages= {
 		"COM_MSG58": "None",
 		"COM_MSG59": "Active",
 		"COM_MSG60": "Inactive",
+		"COM_MSG61": "Hide Geofences",
 
 
 		"PROMPT_MSG001": "Live tracking started",

@@ -572,7 +572,7 @@ Protocol = {
                         if(typeof asset.posInfo.alt == "undefined"){
                             ret.temperature.value = LANGUAGE.COM_MSG11;
                         }else{
-                            ret.temperature.value = asset.posInfo.alt + '&nbsp;°C'; 
+                            ret.temperature.value = Math.round(asset.posInfo.alt*10)/10 + '&nbsp;°C'; 
                         }                   
                     }
                     if(asset.haveFeature("FuelSensor")){
@@ -586,11 +586,19 @@ Protocol = {
                     if(asset.haveFeature("Voltage")){
                         ret.voltage = {};
                         //console.log(asset.posInfo.alt);
-                        if(typeof asset.posInfo.alt == "undefined"){
+                        /*if(typeof asset.posInfo.alt == "undefined"){
                             ret.voltage.value = LANGUAGE.COM_MSG11;
                         }else{                            
                             ret.voltage.value = (asset.posInfo.alt > 50? LANGUAGE.COM_MSG11 : ""+ Math.round(asset.posInfo.alt*10)/10 + '&nbsp;V');
-                        }                         
+                        }    */    
+
+                        ret.voltage.value = LANGUAGE.COM_MSG11;
+                        if(asset.posInfo.Voltage){
+                            ret.voltage.value =  Math.round(asset.posInfo.Voltage*10)/10 + '&nbsp;V';
+                        }
+                        else{
+                            ret.voltage.value = (asset.posInfo.alt > 50? LANGUAGE.COM_MSG11 : ""+ Math.round(asset.posInfo.alt*10)/10 + '&nbsp;V');
+                        }                 
                     } 
                     if(asset.haveFeature("Mileage")) {                    
                         ret.mileage = {};
