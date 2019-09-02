@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.sinopacific.quiktrak" version="1.4.15" xmlns="http://www.w3.org/ns/widgets" defaultlocale="en-US" android-versionCode="172" ios-CFBundleVersion="172">
+<widget xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.sinopacific.quiktrak" version="1.4.15" xmlns="http://www.w3.org/ns/widgets" defaultlocale="en-US" android-versionCode="173" ios-CFBundleVersion="173">
     <name>QuikTrak</name>
     <description>
         QuikTrak GPS tracker
@@ -56,7 +56,7 @@
     <plugin spec="https://github.com/phonegap/phonegap-mobile-accessibility.git" source="git" />
     <plugin name="cordova-launch-review" source="npm" spec="3.1.1" />
     <plugin name="cordova-plugin-inappbrowser" source="npm" spec="3.1.0"  />
-    <plugin name="cordova-plugin-wkwebview-engine" source="npm" spec="1.2.1"  />
+    <!-- <plugin name="cordova-plugin-wkwebview-engine" source="npm" spec="1.2.1"  /> -->
     
 
     <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
@@ -75,11 +75,11 @@
         <false/>
     </config-file>  
 
-    <feature name="CDVWKWebViewEngine">
+    <!-- <feature name="CDVWKWebViewEngine">
       <param name="ios-package" value="CDVWKWebViewEngine" />
     </feature>
-
-    <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
+    
+    <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" /> -->
 
 
     <platform name="android">
