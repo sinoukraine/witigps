@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.sinopacific.quiktrak" version="1.4.15" xmlns="http://www.w3.org/ns/widgets" defaultlocale="en-US" android-versionCode="173" ios-CFBundleVersion="173">
+<widget xmlns:cdv="http://cordova.apache.org/ns/1.0" id="com.sinopacific.quiktrak" version="1.4.15" xmlns="http://www.w3.org/ns/widgets" defaultlocale="en-US" android-versionCode="174" ios-CFBundleVersion="174">
     <name>QuikTrak</name>
     <description>
         QuikTrak GPS tracker
@@ -21,9 +21,9 @@
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
-        <allow-intent href="maps:*" />
-        
+        <allow-intent href="maps:*" />        
     </platform>
+    
     <preference name="DisallowOverscroll" value="true" />
     <preference name="Orientation" value="portrait" />
     <preference name="android-minSdkVersion" value="18" />
@@ -33,8 +33,7 @@
     <preference name="StatusBarOverlaysWebView" value="false" />
     <!-- <preference name="StatusBarBackgroundColor" value="#333" /> -->
     <preference name="StatusBarStyle" value="blacktranslucent" />
-    <preference name="phonegap-version" value="cli-7.1.0" />
-    <plugin name="cordova-plugin-statusbar" source="npm" spec="2.1.3" />
+    <preference name="phonegap-version" value="cli-7.1.0" />    
     
     <plugin name="phonegap-plugin-push" source="npm" spec="2.1.2">
         <variable name="SENDER_ID" value="106187216531" />
@@ -47,16 +46,17 @@
     </platform>
     
     <!-- <plugin name="cordova-plugin-console" source="npm" spec="1.0.7" /> -->
+    <plugin name="cordova-plugin-statusbar" source="npm" spec="2.4.3" />
     <plugin name="cordova-plugin-device" source="npm" spec="2.0.3" />
-    <plugin name="cordova-plugin-buildinfo" source="npm" spec="2.0.2" />    
-    <plugin name="cordova-plugin-dialogs" source="npm" spec="1.2.1" />
+    <plugin name="cordova-plugin-buildinfo" source="npm" spec="4.0.0" />    
+    <plugin name="cordova-plugin-dialogs" source="npm" spec="2.0.2" />
     <plugin name="cordova-plugin-whitelist" source="npm" spec="1.3.4" />
-    <plugin name="cordova-plugin-splashscreen" source="npm" spec="5.0.2" />
-    <plugin name="cordova-plugin-camera" source="npm" spec="4.0.3"  />
+    <plugin name="cordova-plugin-splashscreen" source="npm" spec="5.0.3" />
+    <plugin name="cordova-plugin-camera" source="npm" spec="4.1.0"  />
     <plugin spec="https://github.com/phonegap/phonegap-mobile-accessibility.git" source="git" />
     <plugin name="cordova-launch-review" source="npm" spec="3.1.1" />
     <plugin name="cordova-plugin-inappbrowser" source="npm" spec="3.1.0"  />
-    <!-- <plugin name="cordova-plugin-wkwebview-engine" source="npm" spec="1.2.1"  /> -->
+   
     
 
     <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
@@ -75,11 +75,7 @@
         <false/>
     </config-file>  
 
-    <!-- <feature name="CDVWKWebViewEngine">
-      <param name="ios-package" value="CDVWKWebViewEngine" />
-    </feature>
     
-    <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" /> -->
 
 
     <platform name="android">

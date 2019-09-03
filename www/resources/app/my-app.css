@@ -417,7 +417,8 @@ html:not(.watch-active-state) .button.btn_login.button-fill:active{
 		    		transform-origin: 50% 100%;
 			
 		} */
-			.menu_call_button{
+			.menu_call_button,
+			.menu_referral_button{
 				font-size: 14px !important;
 				    margin: 16px;
 			}
@@ -435,6 +436,10 @@ html:not(.watch-active-state) .button.btn_login.button-fill:active{
 
 				
 			}
+
+	.menu_wrapper.with-bigger-bottom-menu .menu{
+	padding-bottom: 182px;
+}
 	/* .menu_remainings {
 	    font-size: 16px;
 	    text-align: center;

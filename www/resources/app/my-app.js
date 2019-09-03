@@ -333,6 +333,7 @@ API_URL.URL_ROUTE = "maps://maps.apple.com/maps?daddr={0},{1}"; // ios link
 API_URL.URL_REFRESH_TOKEN = API_DOMIAN1 + "User/RefreshToken";
 
 API_URL.URL_USERGUIDE = "https://quiktrakglobal.com/pdf/qt-app.pdf";
+API_URL.URL_REFERRAL_PROGRAM = "https://forms.quiktrak.com.au/referral-program/";
 
 var cameraButtons = [
     {
@@ -644,6 +645,14 @@ $$('body').on('click', '.settingsButton', function() {
     event.preventDefault();
 
     MapControls.showMapControlls(this);
+
+    return false;
+});
+
+$$('body').on('click', '.menu_referral_button', function() {
+    event.preventDefault();
+
+    showReferralModal();
 
     return false;
 });
@@ -3432,6 +3441,7 @@ function clearUserInfo(){
     var mapSettingsObg = getMapSettings();
 
     var ModalReview = !localStorage.ModalReview ? '' : localStorage.ModalReview;
+    var ModalReferral = !localStorage.ModalReferral ? '' : localStorage.ModalReferral;
     var FirstLoginDone = !localStorage.FirstLoginDone ? '' : localStorage.FirstLoginDone;
     
     localStorage.clear(); 
@@ -3479,6 +3489,9 @@ function clearUserInfo(){
 
     if (ModalReview) {
         localStorage.ModalReview = ModalReview;
+    }
+    if (ModalReferral) {
+        localStorage.ModalReferral = ModalReferral;
     }
     if (FirstLoginDone) {
         localStorage.FirstLoginDone = FirstLoginDone;
@@ -3589,9 +3602,17 @@ function afterLogin(result){
     var CountryCode = result.Data.User.CountryCode;
 
     if (CountryCode && CountryCode.toLowerCase() != 'aus') {
-        $$('.menu_call_button').hide();
+        $$('.menu_call_button').hide();        
+        $$('.menu_referral_button').hide();
+              
+        $$('.menu_wrapper').removeClass('with-bigger-bottom-menu');
     }else{
         $$('.menu_call_button').show();
+        if (localStorage.elem_rc_flag) {
+            $$('.menu_referral_button').show();
+        }  
+       
+        $$('.menu_wrapper').addClass('with-bigger-bottom-menu');
     }
 }
 
@@ -4916,6 +4937,43 @@ function showNoCreditMessage(){
             },
         ]
     });             
+}
+
+function showReferralModal(autoShowed) {
+    var afterText = '';
+    if (autoShowed) {
+        afterText = '<div class="list-block no-hairlines modal-checkbox">' +
+            '<ul>' +
+            '<li>' +
+            '<label class="label-checkbox item-content">' +
+            '<input type="checkbox" name="checkbox-not-show-modal-referral" value="">' +
+            '<div class="item-media">' +
+            '<i class="icon icon-form-checkbox"></i>' +
+            '</div>' +
+            '<div class="item-inner">' +
+            '<div class="item-title">' + LANGUAGE.COM_MSG40 + '</div>' +
+            '</div>' +
+            '</label>' +
+            '</li>' +
+            '</ul>' +
+            '</div>';
+    }
+    var modal = App.modal({
+        title: LANGUAGE.PROMPT_MSG065,
+        text: `<div class="custom-modal-text">${ LANGUAGE.PROMPT_MSG066 } <b>${ LANGUAGE.PROMPT_MSG067 }</b> ${ LANGUAGE.PROMPT_MSG068 }</br>${ LANGUAGE.PROMPT_MSG069 } <a href="${ API_URL.URL_REFERRAL_PROGRAM }" class="external">${ LANGUAGE.PROMPT_MSG070 }</a> ${ LANGUAGE.PROMPT_MSG071 }</div>`,
+        afterText: afterText,
+        buttons: [{
+                text: LANGUAGE.COM_MSG38,
+                onClick: function(parent) {                 
+                    var checkboxState = parent.find('input[name="checkbox-not-show-modal-referral"]').is(":checked");
+                    if (checkboxState) {
+                        localStorage.ModalReferral = checkboxState;
+                    }
+                }
+            },
+            
+        ]
+    });
 }
 
 function showAskForReviewMessage(){
@@ -6283,7 +6341,9 @@ function setAssetListPosInfo(listObj){
             setTimeout(function(){        
                 if (!localStorage.ModalReview && localStorage.FirstLoginDone ) {
                     showAskForReviewMessage();
-                }     
+                } else if(!localStorage.ModalReferral && localStorage.elem_rc_flag ){
+                    showReferralModal(true);
+                }    
 
                 if (!localStorage.FirstLoginDone) {
                     localStorage.FirstLoginDone = true;
