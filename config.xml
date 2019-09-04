@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.sinopacific.quiktrak" version="1.4.15" android-versionCode="177" ios-CFBundleVersion="177" defaultlocale="en-US" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android" >	
+<widget id="com.sinopacific.quiktrak" version="1.4.15" android-versionCode="178" ios-CFBundleVersion="178" defaultlocale="en-US" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android" >	
     <name>QuikTrak</name>
     <description>
         QuikTrak GPS tracker
@@ -88,7 +88,13 @@
     
     <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" /> -->
 
-    <platform name="android">
+    <platform name="android">    	
+		<!-- <resource-file src="www/res/icon/android/push/drawable-mdpi/icon.png" target="app/src/main/res/drawable-mdpi/icon.png" />
+		<resource-file src="www/res/icon/android/push/drawable-hdpi/icon.png" target="app/src/main/res/drawable-hdpi/icon.png" />
+		<resource-file src="www/res/icon/android/push/drawable-xhdpi/icon.png" target="app/src/main/res/drawable-xhdpi/icon.png" />
+		<resource-file src="www/res/icon/android/push/drawable-xxhdpi/icon.png" target="app/src/main/res/drawable-xxhdpi/icon.png" />
+		<resource-file src="www/res/icon/android/push/drawable-xxxhdpi/icon.png" target="app/src/main/res/drawable-xxxhdpi/icon.png" /> -->
+
         <icon density="ldpi" src="www/res/icon/android/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="www/res/icon/android/drawable-mdpi-icon.png" />
         <icon density="hdpi" src="www/res/icon/android/drawable-hdpi-icon.png" />
