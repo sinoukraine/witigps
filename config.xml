@@ -88,12 +88,17 @@
     
     <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" /> -->
 
+   <!--  <config-file parent="./application" target="AndroidManifest.xml">
+       <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/custom_push_logo" />        
+   </config-file> -->
+
     <platform name="android">    	
 		<!-- <resource-file src="www/res/icon/android/push/drawable-mdpi/icon.png" target="app/src/main/res/drawable-mdpi/icon.png" />
 		<resource-file src="www/res/icon/android/push/drawable-hdpi/icon.png" target="app/src/main/res/drawable-hdpi/icon.png" />
 		<resource-file src="www/res/icon/android/push/drawable-xhdpi/icon.png" target="app/src/main/res/drawable-xhdpi/icon.png" />
 		<resource-file src="www/res/icon/android/push/drawable-xxhdpi/icon.png" target="app/src/main/res/drawable-xxhdpi/icon.png" />
 		<resource-file src="www/res/icon/android/push/drawable-xxxhdpi/icon.png" target="app/src/main/res/drawable-xxxhdpi/icon.png" /> -->
+		<resource-file src="www/res/icon/android/push/notification.png" target="app/src/main/res/drawable/notification.png" />		
 
         <icon density="ldpi" src="www/res/icon/android/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="www/res/icon/android/drawable-mdpi-icon.png" />
