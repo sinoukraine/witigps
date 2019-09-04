@@ -28,7 +28,8 @@
 	      <application android:usesCleartextTraffic="true" />
 	  </edit-config>
 	</platform>
-
+	
+	<preference name="load-url-timeout" value="140000" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="Orientation" value="portrait" />
     <preference name="android-minSdkVersion" value="19" />
