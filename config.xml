@@ -98,7 +98,7 @@
 		<resource-file src="www/res/icon/android/push/drawable-xhdpi/icon.png" target="app/src/main/res/drawable-xhdpi/icon.png" />
 		<resource-file src="www/res/icon/android/push/drawable-xxhdpi/icon.png" target="app/src/main/res/drawable-xxhdpi/icon.png" />
 		<resource-file src="www/res/icon/android/push/drawable-xxxhdpi/icon.png" target="app/src/main/res/drawable-xxxhdpi/icon.png" /> -->
-		<resource-file src="www/res/icon/android/push/notification.png" target="app/src/main/res/drawable/notification.png" />		
+				
 
         <icon density="ldpi" src="www/res/icon/android/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="www/res/icon/android/drawable-mdpi-icon.png" />
@@ -113,6 +113,8 @@
         <splash density="port-xhdpi" src="www/res/screen/android/drawable-port-xhdpi-screen.png" />
         <splash density="port-xxhdpi" src="www/res/screen/android/drawable-port-xxhdpi-screen.png" />
         <splash density="port-xxxhdpi" src="www/res/screen/android/drawable-port-xxxhdpi-screen.png" />
+
+        <resource-file src="notification.png" target="app/src/main/res/drawable/notification.png" />
     </platform>
     <platform name="ios">
       <icon height="57" platform="ios" src="www/res/icon/ios/icon.png" width="57" />
