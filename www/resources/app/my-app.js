@@ -16,7 +16,7 @@ function guid() {
   return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
 }
 
-alert('simple alert');
+//alert('simple alert');
 function getPlusInfo(){
     var uid = guid();
     if(window.device) {                        
@@ -64,7 +64,6 @@ if( navigator.userAgent.match(/Windows/i) ){
 document.addEventListener("deviceready", onDeviceReady, false ); 
 
 function onDeviceReady(){ 
-    alert('device is ready');
     if (cordova && cordova.InAppBrowser) {
         window.open = cordova.InAppBrowser.open;
     }
