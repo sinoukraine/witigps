@@ -88,9 +88,9 @@
     
     <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" /> -->
 
-   <!--  <config-file parent="./application" target="AndroidManifest.xml">
-       <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/custom_push_logo" />        
-   </config-file> -->
+   <config-file parent="./application" target="AndroidManifest.xml">
+       <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/notification" />        
+   </config-file>
 
     <platform name="android">    	
 		<!-- <resource-file src="www/res/icon/android/push/drawable-mdpi/icon.png" target="app/src/main/res/drawable-mdpi/icon.png" />
