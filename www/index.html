@@ -265,7 +265,16 @@
     <div class="popup tablet-fullscreen popup-win" id="win"></div>
 
     <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript"> alert('after  cordova.js');</script>
+    <script type="text/javascript"> alert('after  cordova.js');
+    document.addEventListener("deviceready", onDeviceReady, false ); 
+
+    function onDeviceReady(){ 
+      alert('device is ready');
+         
+
+      
+  }
+  </script>
     
     <!-- Path to Framework7 Library JS-->
     <script type="text/javascript" src="resources/libraries/framework7/js/framework7.min.js"></script>

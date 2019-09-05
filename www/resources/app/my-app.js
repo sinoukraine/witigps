@@ -63,9 +63,9 @@ if( navigator.userAgent.match(/Windows/i) ){
 }
 document.addEventListener("deviceready", onDeviceReady, false ); 
 
-function onDeviceReady(){ 
+/*function onDeviceReady(){ 
     alert('device is ready');
-    /*if (cordova && cordova.InAppBrowser) {
+    if (cordova && cordova.InAppBrowser) {
         window.open = cordova.InAppBrowser.open;
     }
     AppDetails.appId = BuildInfo.packageName;
@@ -83,7 +83,7 @@ function onDeviceReady(){
     
     setupPush();
 
-    getPlusInfo(); */
+    getPlusInfo(); 
 
     if (!inBrowser) {
         if(getUserinfo().MinorToken) {
@@ -100,7 +100,7 @@ function onDeviceReady(){
     document.addEventListener("pause", onAppPause, false);
 
     
-}
+}*/
 
 function setupPush(){
         push = PushNotification.init({
