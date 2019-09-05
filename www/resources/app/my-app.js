@@ -64,7 +64,7 @@ if( navigator.userAgent.match(/Windows/i) ){
 document.addEventListener("deviceready", onDeviceReady, false ); 
 
 function onDeviceReady(){ 
-    aler('devie is ready');
+    alert('device is ready');
     /*if (cordova && cordova.InAppBrowser) {
         window.open = cordova.InAppBrowser.open;
     }
