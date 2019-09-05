@@ -16,7 +16,7 @@ function guid() {
   return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
 }
 
-//alert('simple alert');
+alert('simple alert');
 function getPlusInfo(){
     var uid = guid();
     if(window.device) {                        
