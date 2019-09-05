@@ -8,8 +8,7 @@
         Sinopacific Co Limited
     </author>
     <content src="index.html" />
-    <access origin="*" />
-    <allow-navigation href="*" />
+    <access origin="*" />   
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
@@ -31,7 +30,7 @@
 	</platform>
 	
 
-	<preference name="load-url-timeout" value="140000" />
+	   <preference name="load-url-timeout" value="140000" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="Orientation" value="portrait" />
     <preference name="android-minSdkVersion" value="19" />
@@ -88,18 +87,11 @@
     
     <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" /> -->
 
-   <config-file parent="/manifest/application/" target="AndroidManifest.xml">
+   <!-- <config-file parent="/manifest/application/" target="AndroidManifest.xml">
        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/notification" />        
-   </config-file>
+   </config-file> -->
 
-    <platform name="android">    	
-		<!-- <resource-file src="www/res/icon/android/push/drawable-mdpi/icon.png" target="app/src/main/res/drawable-mdpi/icon.png" />
-		<resource-file src="www/res/icon/android/push/drawable-hdpi/icon.png" target="app/src/main/res/drawable-hdpi/icon.png" />
-		<resource-file src="www/res/icon/android/push/drawable-xhdpi/icon.png" target="app/src/main/res/drawable-xhdpi/icon.png" />
-		<resource-file src="www/res/icon/android/push/drawable-xxhdpi/icon.png" target="app/src/main/res/drawable-xxhdpi/icon.png" />
-		<resource-file src="www/res/icon/android/push/drawable-xxxhdpi/icon.png" target="app/src/main/res/drawable-xxxhdpi/icon.png" /> -->
-				
-
+    <platform name="android">   
         <icon density="ldpi" src="www/res/icon/android/drawable-ldpi-icon.png" />
         <icon density="mdpi" src="www/res/icon/android/drawable-mdpi-icon.png" />
         <icon density="hdpi" src="www/res/icon/android/drawable-hdpi-icon.png" />
@@ -114,7 +106,7 @@
         <splash density="port-xxhdpi" src="www/res/screen/android/drawable-port-xxhdpi-screen.png" />
         <splash density="port-xxxhdpi" src="www/res/screen/android/drawable-port-xxxhdpi-screen.png" />
 
-        <resource-file src="notification.png" target="app/src/main/res/drawable/notification.png" />
+        <!-- <resource-file src="notification.png" target="app/src/main/res/drawable/notification.png" /> -->
     </platform>
     <platform name="ios">
       <icon height="57" platform="ios" src="www/res/icon/ios/icon.png" width="57" />
