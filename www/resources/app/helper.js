@@ -479,7 +479,13 @@ Protocol = {
             });  
          
 
-            var map = L.map(option.target, { zoomControl: false, center: option.latLng, zoom: option.zoom, fullscreenControl: true, layers: [googleStreets] }); 
+            var map = L.map(option.target, {
+                zoomControl: false,
+                center: option.latLng,
+                zoom: option.zoom,
+                fullscreenControl: true,
+                drawControl: option.drawControl ? option.drawControl : false,
+                layers: [googleStreets] });
                         
             var layers = {
                 "<span class='mapSwitcherWrapper googleSwitcherWrapper'><img class='layer-icon' src='resources/images/googleRoad.png' alt='' /> <p>Map</p></span>": googleStreets,
