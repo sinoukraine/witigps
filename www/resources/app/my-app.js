@@ -2394,6 +2394,9 @@ App.onPageInit('geofence.add', function(page) {
             if (state.is(":checked")) {
                 valState = 1;
             }
+            var shareEl = $$(page.container).find('input[name="geofence-share"]');
+
+
 
 
             var data = {
@@ -2409,6 +2412,7 @@ App.onPageInit('geofence.add', function(page) {
                 GeoType: 1, //circle
                 AssetCodes: valAssets,
                 Address: valAddress,
+                Share: shareEl.is(":checked") ? 1 : 0,
                 Inverse: 0,
                 CycleType: 3, // NONE = 0, TIME = 1, DATE = 2, WEEK = 3
             };
@@ -2423,14 +2427,23 @@ App.onPageInit('geofence.add', function(page) {
                 var latlngs = geofenceLayer.getLatLngs();
                 if (latlngs.length === 1 && $.isArray(latlngs[0]) && latlngs[0].length > 1) {
                     latlngs=latlngs[0];
+                    if (latlngs[0].lat !== latlngs[latlngs.length-1].lat || latlngs[0].lng !== latlngs[latlngs.length-1].lng){
+                        latlngs.push(latlngs[0]);
+                    }
                 }
+
+                if (!isClockwise(latlngs)){
+                    latlngs = latlngs.reverse();
+                }
+
                 data.GeoType = 2;
 
                 var latlngArry=[];
+
                 for(var i=0;i<latlngs.length;i++){
                     latlngArry.push(latlngs[i].lng+" "+latlngs[i].lat);
                 }
-                latlngArry.push(latlngs[0].lng+" "+latlngs[0].lat);
+                //latlngArry.push(latlngs[0].lng+" "+latlngs[0].lat);
                 data.GeoPolygon = "POLYGON(("+latlngArry.join(',')+"))";
 
                 data.Lat = latlngs[0].lat;
@@ -2445,7 +2458,7 @@ App.onPageInit('geofence.add', function(page) {
             }
             data.BeginTime = moment(ignoreTimeFrom.val(), 'HH:mm').utc().format('HH:mm:ss');
             data.EndTime = moment(ignoreTimeTo.val(), 'HH:mm').utc().format('HH:mm:ss');
-            console.log(data);
+            //console.log(data);
             var url = API_URL.URL_GEOFENCE_ADD;
 
             if (valEdit) {
@@ -2453,7 +2466,7 @@ App.onPageInit('geofence.add', function(page) {
                 url = API_URL.URL_GEOFENCE_EDIT;
             }
 
-            //console.log(data);         
+            //console.log(data);
             saveGeofence(url, data);
 
         } else {
@@ -7264,7 +7277,17 @@ function isObjEmpty(obj) {
         if (hasOwnProperty.call(obj, key)) return false;
     }
     return true;
-};
+}
+
+function isClockwise(poly){
+    var sum = 0;
+    for (var i=0; i<poly.length-1; i++) {
+        var cur = poly[i],
+            next = poly[i+1];
+        sum += (next.lat - cur.lat) * (next.lng + cur.lng)
+    }
+    return sum > 0
+}
 
 
 /* ASSET EDIT PHOTO */
