@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget 
   version="1.4.15"
-  android-versionCode="192"
-  ios-CFBundleVersion="192"
+  android-versionCode="193"
+  ios-CFBundleVersion="193"
   id="com.sinopacific.quiktrak"
   xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android" defaultlocale="en-US" >
     <name>QuikTrak</name>

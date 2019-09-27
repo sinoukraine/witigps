@@ -1,4 +1,3 @@
-$hub = null;
 window.NULL = null;
 window.COM_TIMEFORMAT = 'YYYY-MM-DD HH:mm:ss';
 window.COM_TIMEFORMAT2 = 'YYYY-MM-DDTHH:mm:ss';
@@ -58,7 +57,7 @@ var AppDetails = {
     appleId: '1079168431',
 };
 
-if( navigator.userAgent.match(/Windows/i) ){    
+if( navigator.userAgent.match(/Windows|Macintosh/i) ){
     inBrowser = 1;
 }
 document.addEventListener("deviceready", onDeviceReady, false ); 
@@ -165,31 +164,29 @@ function setupPush(){
                 }, 1000); 
             }
 
-            
-            if (device && device.platform && device.platform.toLowerCase() == 'ios') {
-            	push.finish(
-				    () => {
-				      console.log('processing of push data is finished');
-				    },
-				    () => {
-				      console.log(
-				        'something went wrong with push.finish for ID =',
-				        data.additionalData.notId
-				      );
-				    },
-				    data.additionalData.notId
-				);
+
+            if (device && device.platform && device.platform.toLowerCase() === 'ios') {
+                push.finish(function () {
+                        console.log('processing of push data is finished');
+                    }, function () {
+                        console.log(
+                            'something went wrong with push.finish for ID =',
+                            data.additionalData.notId
+                        );
+                    },
+                    data.additionalData.notId
+                );
             }
 	            
         });
 
         if　(!localStorage.ACCOUNT){
             push.clearAllNotifications(
-                () => {
-                  console.log('success');
+                function () {
+                    console.log('success');
                 },
-                () => {
-                  console.log('error');
+                function () {
+                    console.log('error');
                 }
             );
         }
@@ -386,7 +383,7 @@ $$('.index-search-nothing-found').html(LANGUAGE.COM_MSG05);
 $$('.view-all-text').html(LANGUAGE.COM_MSG55);
 
 
-
+console.log(inBrowser);
 if (inBrowser) {
     if(getUserinfo().MinorToken) {
         //login();    
@@ -397,7 +394,7 @@ if (inBrowser) {
     } 
 }
 
-var virtualAssetList = App.virtualList('.assets_list', {
+virtualAssetList = App.virtualList('.assets_list', {
     // search item by item
     searchAll: function (query, items) {
         var foundItems = [];        
@@ -3506,11 +3503,11 @@ function clearUserInfo(){
 
     if(push) {
         push.clearAllNotifications(
-            () => {
-              console.log('success');
+            function () {
+                console.log('success');
             },
-            () => {
-              console.log('error');
+            function () {
+                console.log('error');
             }
         );
     }
