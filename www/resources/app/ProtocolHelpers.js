@@ -541,3 +541,4 @@ Protocol.EELINK_TEMP = JClass(Protocol.Common,{
     },    
 });
 Protocol.ClassManager.add("EELINK_TEMP", Protocol.EELINK_TEMP);
+
