@@ -29,10 +29,10 @@
         <allow-intent href="itms-apps:*" />
     </platform>
     <platform name="android">
-	  <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
-	      <application android:usesCleartextTraffic="true" />
-	  </edit-config>
-	</platform>
+  	  <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
+  	      <application android:usesCleartextTraffic="true" />
+  	  </edit-config>
+  	</platform>
 
     <preference name="load-url-timeout" value="140000" />
     <preference name="DisallowOverscroll" value="true" />
