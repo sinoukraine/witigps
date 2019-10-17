@@ -4105,7 +4105,7 @@ function showMapAll(params) {
         $.each(assetList, function(key, value){
             point = '';
             markerData = '';
-            if (POSINFOASSETLIST[key] && POSINFOASSETLIST[key].posInfo && POSINFOASSETLIST[key].posInfo.lat !== 0 && POSINFOASSETLIST[key].posInfo.lng !== 0) {
+            if (POSINFOASSETLIST[key] && POSINFOASSETLIST[key].posInfo && parseFloat(POSINFOASSETLIST[key].posInfo.lat) !== 0 && parseFloat(POSINFOASSETLIST[key].posInfo.lng) !== 0) {
                 point = L.marker([POSINFOASSETLIST[key].posInfo.lat,POSINFOASSETLIST[key].posInfo.lng], {icon: Protocol.MarkerIcon[1]});
                 markerData = getMarkerDataTable(POSINFOASSETLIST[key]);
                 point
