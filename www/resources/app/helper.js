@@ -1,4 +1,3 @@
-
 String.prototype.format = function (e) { var t = this; if (arguments.length > 0) if (arguments.length == 1 && typeof e == "object") { for (var n in e) if (e[n] != undefined) { var r = new RegExp("({" + n + "})", "g"); t = t.replace(r, e[n]) } } else for (var i = 0; i < arguments.length; i++) if (arguments[i] != undefined) { var r = new RegExp("({)" + i + "(})", "g"); t = t.replace(r, arguments[i]) } return t };
 String.prototype.subStrEx = function (e) { return this.length + 3 > e ? this.substr(0, e) + "..." : this };
 function isUndefined(e) { return "undefined" == typeof e };
@@ -1009,7 +1008,6 @@ Protocol.ClassManager = {
         return ret;
     }
 };
-
 
 
 

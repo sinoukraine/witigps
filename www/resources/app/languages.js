@@ -1,4 +1,3 @@
-
 window.LanguagePackages= {
 	"zh":{
 		
@@ -1717,4 +1716,3 @@ if(!Template7.global)
 }
 
 Template7.global.LANGUAGE = window.LANGUAGE;
-
