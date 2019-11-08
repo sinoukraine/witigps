@@ -571,6 +571,9 @@ Protocol = {
                             asset.posInfo.speed = 0;
                         }
                         ret.speed = {};
+                        if (asset.posInfo.speed<0){
+                            asset.posInfo.speed=0;
+                        }
                         ret.speed.value = Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
                     }
                     if(asset.haveFeature("TempSensor")){

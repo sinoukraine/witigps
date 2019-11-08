@@ -545,3 +545,20 @@ Protocol.EELINK_TEMP = JClass(Protocol.Common,{
     },    
 });
 Protocol.ClassManager.add("EELINK_TEMP", Protocol.EELINK_TEMP);
+
+Protocol.PHONE_TRACK = JClass(Protocol.Common,{
+    STATIC: {
+
+    },
+    constructor: function(arg) {
+        this.initDeviceInfo(arg);
+        this.posInfo = {};
+    },
+    initPosInfoEx:function(ary, posInfo){
+        posInfo.Battery = ary[14];
+    },
+    initHisPosInfoEx:function(ary, posInfo){
+        posInfo.Battery = ary[12];
+    }
+});
+Protocol.ClassManager.add("PHONE_TRACK", Protocol.PHONE_TRACK);
