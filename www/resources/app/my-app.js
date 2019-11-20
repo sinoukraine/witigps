@@ -11,57 +11,55 @@ try {
     window.localStorage.clear();
 }
 
-$hub = null;
 window.NULL = null;
 window.COM_TIMEFORMAT = 'YYYY-MM-DD HH:mm:ss';
 window.COM_TIMEFORMAT2 = 'YYYY-MM-DDTHH:mm:ss';
 window.COM_TIMEFORMAT3 = 'YYYY-MM-DDTHH:MM';
 UTCOFFSET = moment().utcOffset();
-
-function setUserinfo(user) { localStorage.setItem("COM.QUIKTRAK.LIVE.USERINFO", JSON.stringify(user)); }
-
-function getUserinfo() { var ret = {}; var str = localStorage.getItem("COM.QUIKTRAK.LIVE.USERINFO"); if (str) { ret = JSON.parse(str); } return ret; }
-
-function isJsonString(str) { try { var ret = JSON.parse(str); } catch (e) { return false; } return ret; }
-
-function toTitleCase(str) { return str.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); }); }
+function setUserinfo(user){localStorage.setItem("COM.QUIKTRAK.LIVE.USERINFO", JSON.stringify(user));}
+function getUserinfo(){var ret = {};var str = localStorage.getItem("COM.QUIKTRAK.LIVE.USERINFO");if(str) {ret = JSON.parse(str);} return ret;}
+function isJsonString(str){try{var ret=JSON.parse(str);}catch(e){return false;}return ret;}
+function toTitleCase(str){return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});}
 
 function guid() {
-    function S4() {
-        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-    }
-    return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+  function S4() {
+    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+  }
+  return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
 }
 
 
-function getPlusInfo() {
+function getPlusInfo(){
     var uid = guid();
-    if (window.device) {
-        if (!localStorage.PUSH_MOBILE_TOKEN) {
-            localStorage.PUSH_MOBILE_TOKEN = uid;
+    if(window.device) {
+        if(!localStorage.PUSH_MOBILE_TOKEN){
+        localStorage.PUSH_MOBILE_TOKEN = uid;
         }
         localStorage.PUSH_APP_KEY = BuildInfo.packageName;
         localStorage.PUSH_APPID_ID = BuildInfo.packageName;
         localStorage.DEVICE_TYPE = device.platform;
-    } else {
-        if (!localStorage.PUSH_MOBILE_TOKEN)
+    }else{
+            if(!localStorage.PUSH_MOBILE_TOKEN)
             localStorage.PUSH_MOBILE_TOKEN = uid;
-        if (!localStorage.PUSH_APP_KEY)
+            if(!localStorage.PUSH_APP_KEY)
             localStorage.PUSH_APP_KEY = uid;
-        if (!localStorage.PUSH_DEVICE_TOKEN)
+            if(!localStorage.PUSH_DEVICE_TOKEN)
             localStorage.PUSH_DEVICE_TOKEN = uid;
-        //localStorage.PUSH_DEVICE_TOKEN = "75ba1639-92ae-0c4c-d423-4fad1e48a49d"
-        localStorage.PUSH_APPID_ID = 'android.app.quiktrak.eu.quiktrak';
-        localStorage.DEVICE_TYPE = "android.app.quiktrak.eu.quiktrak";
+            //localStorage.PUSH_DEVICE_TOKEN = "75ba1639-92ae-0c4c-d423-4fad1e48a49d"
+        localStorage.PUSH_APPID_ID = 'ios.app.quiktrak.eu.quiktrak';
+        localStorage.DEVICE_TYPE = "ios.app.quiktrak.eu.quiktrak";
     }
 }
-
+//alert('simple alert4');
 var inBrowser = 0;
 var notificationChecked = 0;
 var loginTimer = 0;
+
+
+
 localStorage.loginDone = 0;
 //var appPaused = 0;
-
+//alert('simple alert6');
 var loginInterval = null;
 var pushConfigRetryMax = 40;
 var pushConfigRetry = 0;
@@ -75,33 +73,39 @@ var AppDetails = {
     appleId: '1079168431',
 };
 
-if (navigator.userAgent.match(/Windows/i)) {
+if( navigator.userAgent.match(/Windows|Macintosh/i) ){
     inBrowser = 1;
 }
+//alert(inBrowser);
+document.addEventListener("deviceready", onDeviceReady, false );
 
-document.addEventListener("deviceready", onDeviceReady, false);
-
-//function onPlusReady(){   
-function onDeviceReady() {
+function onDeviceReady(){
+    if (cordova && cordova.InAppBrowser) {
+        window.open = cordova.InAppBrowser.open;
+    }
     AppDetails.appId = BuildInfo.packageName;
 
     //fix app images and text size
     if (window.MobileAccessibility) {
         window.MobileAccessibility.usePreferredTextZoom(false);
     }
+
+    //if (device.platform == 'iOS' && StatusBar) {
     if (StatusBar) {
         StatusBar.styleDefault();
     }
+
 
     setupPush();
 
     getPlusInfo();
 
     if (!inBrowser) {
-        if (getUserinfo().MinorToken) {
-            //login(); 
+        if(getUserinfo().MinorToken) {
+            //login();
             preLogin();
-        } else {
+        }
+        else {
             logout();
         }
     }
@@ -113,139 +117,143 @@ function onDeviceReady() {
 
 }
 
-function setupPush() {
-    push = PushNotification.init({
-        "android": {
-            //"senderID": "264121929701"                             
-        },
-        "browser": {
-            pushServiceURL: 'https://push.api.phonegap.com/v1/push'
-        },
-        "ios": {
-            "sound": true,
-            "vibration": true,
-            "badge": true
-        },
-        "windows": {}
-    });
-    console.log('after init');
+function setupPush(){
+        push = PushNotification.init({
+            "android": {
+                //"senderID": "264121929701"
+            },
+            "browser": {
+                pushServiceURL: 'http://push.api.phonegap.com/v1/push'
+            },
+            "ios": {
+                "sound": true,
+                "vibration": true,
+                "badge": true
+            },
+            "windows": {}
+        });
+        console.log('after init');
 
-    push.on('registration', function(data) {
-        console.log('registration event: ' + data.registrationId);
-        //alert( JSON.stringify(data) );         
+        push.on('registration', function(data) {
+            console.log('registration event: ' + data.registrationId);
+            //$$('.regToken').val(JSON.stringify(data));
+            //App.alert( JSON.stringify(data) );
 
-        //localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
+            //localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
 
-        var oldRegId = localStorage.PUSH_DEVICE_TOKEN;
-        if (localStorage.PUSH_DEVICE_TOKEN !== data.registrationId) {
-            // Save new registration ID
-            localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
-            // Post registrationId to your app server as the value has changed
-            refreshToken(data.registrationId);
-        }
-    });
+            var oldRegId = localStorage.PUSH_DEVICE_TOKEN;
+            if (localStorage.PUSH_DEVICE_TOKEN !== data.registrationId) {
+                // Save new registration ID
+                localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
+                // Post registrationId to your app server as the value has changed
+                refreshToken(data.registrationId);
+            }
+        });
 
-    push.on('error', function(e) {
-        //console.log("push error = " + e.message);
-        alert("push error = " + e.message);
-    });
+        push.on('error', function(e) {
+            //console.log("push error = " + e.message);
+            alert("push error = " + e.message);
+        });
 
-    push.on('notification', function(data) {
-        //alert( JSON.stringify(data) );
+        push.on('notification', function(data) {
+            //alert( JSON.stringify(data) );
 
-        //if user using app and push notification comes
-        if (data && data.additionalData && data.additionalData.foreground) {
-            // if application open, show popup               
-            showMsgNotification([data.additionalData]);
-        } else if (data && data.additionalData && data.additionalData.payload) {
-            //if user NOT using app and push notification comes
 
-            App.showIndicator();
-            loginTimer = setInterval(function() {
-                //alert(localStorage.loginDone);
-                if (localStorage.loginDone) {
-                    clearInterval(loginTimer);
-                    setTimeout(function() {
-                        //alert('before processClickOnPushNotification');
-                        processClickOnPushNotification([data.additionalData.payload]);
-                        App.hideIndicator();
-                    }, 1000);
+            //if user using app and push notification comes
+            if (data && data.additionalData && data.additionalData.foreground) {
+               // if application open, show popup
+
+               showMsgNotification([data.additionalData]);
+            }
+            else if (data && data.additionalData && data.additionalData.payload){
+               //if user NOT using app and push notification comes
+                App.showIndicator();
+                loginTimer = setInterval(function() {
+                    //alert(localStorage.loginDone);
+                    if (localStorage.loginDone) {
+                        clearInterval(loginTimer);
+                        setTimeout(function(){
+                            //alert('before processClickOnPushNotification');
+                            processClickOnPushNotification([data.additionalData.payload]);
+                            App.hideIndicator();
+                        },1000);
+                    }
+                }, 1000);
+            }
+
+
+            if (device && device.platform && device.platform.toLowerCase() === 'ios') {
+                push.finish(function () {
+                        console.log('processing of push data is finished');
+                    }, function () {
+                        console.log(
+                            'something went wrong with push.finish for ID =',
+                            data.additionalData.notId
+                        );
+                    },
+                    data.additionalData.notId
+                );
+            }
+
+        });
+
+        if　(!localStorage.ACCOUNT){
+            push.clearAllNotifications(
+                function () {
+                    console.log('success');
+                },
+                function () {
+                    console.log('error');
                 }
-            }, 1000);
-        }
-        if (device && device.platform && device.platform.toLowerCase() == 'ios') {
-            push.finish(
-                () => {
-                    console.log('processing of push data is finished');
-                },
-                () => {
-                    console.log(
-                        'something went wrong with push.finish for ID =',
-                        data.additionalData.notId
-                    );
-                },
-                data.additionalData.notId
             );
         }
-
-
-    });
-
-    if　 (!localStorage.ACCOUNT) {
-        push.clearAllNotifications(
-            () => {
-                console.log('success');
-            },
-            () => {
-                console.log('error');
-            }
-        );
-    }
 }
 
-
-
-function onAppPause() {
-
+function onAppPause(){
+    /*if ($hub) {
+        $hub.stop();
+    }*/
 }
-
-function onAppResume() {
+function onAppResume(){
     if (localStorage.ACCOUNT && localStorage.PASSWORD) {
         getNewNotifications();
         getNewData();
     }
 
+    /*if ($hub) {
+        $hub.start();
+    }*/
 }
 
 
 
-function backFix(event) {
-    var page = App.getCurrentView().activePage;
-    if (page.name == "index") {
-        App.confirm(LANGUAGE.PROMPT_MSG015, function() {
+function backFix(event){
+    var page=App.getCurrentView().activePage;
+    if(page.name=="index"){
+        App.confirm(LANGUAGE.PROMPT_MSG015, function () {
             navigator.app.exitApp();
         });
-    } else {
+    }else{
         mainView.router.back();
     }
 }
 
-
 // Initialize your app
 var App = new Framework7({
-    swipePanel: 'left',
+    animateNavBackIcon: true,
     swipeBackPage: false,
-    material: true,
-    //pushState: true,       
+    //pushState: true,
+    swipePanel: 'left',
     allowDuplicateUrls: true,
     sortable: false,
     modalTitle: 'QuikTrak',
+    notificationTitle: 'QuikTrak',
     precompileTemplates: true,
     template7Pages: true,
-    onAjaxStart: function(xhr) {
+    onAjaxStart: function(xhr){
         App.showIndicator();
     },
-    onAjaxComplete: function(xhr) {
+    onAjaxComplete: function(xhr){
         App.hideIndicator();
     }
 });
@@ -256,19 +264,14 @@ var $$ = Dom7;
 // Add view
 var mainView = App.addView('.view-main', {
     domCache: true,
-    swipeBackPage: false
+    dynamicNavbar: true,
 });
 
-/*var AppDetails = {
-    name: 'QuikTrak-app',
-    code: 23,
-    supportCode: 3,
-};*/
 
 window.PosMarker = {};
 var MapTrack = null;
-var StreetViewService = null;
 var TargetAsset = {};
+var StreetViewService = null;
 var searchbar = null;
 var searchbarGeofence = null;
 var virtualAssetList = null;
@@ -289,9 +292,10 @@ var prevStatusLatLng = {
     'lng': 0,
 };
 
+
 var geofenceMarkerGroup = false;
 var AllMarkersGroup = false;
-var GeofenceFiguresGroup = new L.FeatureGroup();
+var GeofenceFiguresGroup = false;
 
 var API_DOMIAN1 = "https://api.m2mglobaltech.com/QuikTrak/V1/";
 var API_DOMIAN2 = "";
@@ -299,17 +303,15 @@ var API_DOMIAN3 = "https://api.m2mglobaltech.com/QuikProtect/V1/";
 var API_DOMIAN4 = "https://api.m2mglobaltech.com/Quikloc8/V1/";
 var API_URL = {};
 API_URL.URL_GET_LOGIN = API_DOMIAN1 + "User/Auth?username={0}&password={1}&appKey={2}&mobileToken={3}&deviceToken={4}&deviceType={5}";
-//API_URL.URL_GET_LOGOUT2 = API_DOMIAN1 + "User/Logoff2?MajorToken={0}&MinorToken={1}&username={2}&mobileToken={3}";
+//API_URL.URL_GET_LOGOUT = API_DOMIAN1 + "User/Logoff2?MajorToken={0}&MinorToken={1}&username={2}&mobileToken={3}";
 API_URL.URL_GET_LOGOUT = API_DOMIAN1 + "User/Logoff2?mobileToken={0}&deviceToken={1}";
 API_URL.URL_EDIT_ACCOUNT = API_DOMIAN1 + "User/Edit?MajorToken={0}&MinorToken={1}&FirstName={2}&SubName={3}&Mobile={4}&Phone={5}&EMail={6}";
 API_URL.URL_EDIT_DEVICE = API_DOMIAN1 + "Device/Edit?MinorToken={0}&Code={1}&name={2}&speedUnit={3}&initMileage={4}&initAccHours={5}&attr1={6}&attr2={7}&attr3={8}&attr4={9}&tag={10}&icon={11}&MajorToken={12}&registration={13}&MaxSpeed={14}&stockNumber=";
-
-/*API_URL.URL_SET_ALARM = API_DOMIAN1 + "Device/AlarmOptions?MinorToken={0}&imei={1}&options={2}";
-API_URL.URL_SET_ALARM2 = API_DOMIAN1 + "Device/AlarmOptions2?MinorToken={0}&imei={1}&options={2}";*/
+//API_URL.URL_SET_ALARM = API_DOMIAN1 + "Device/AlarmOptions?MinorToken={0}&imei={1}&options={2}";
+//API_URL.URL_SET_ALARM2 = API_DOMIAN1 + "Device/AlarmOptions2?MinorToken={0}&imei={1}&options={2}";
 
 /*API_URL.URL_SET_GEOLOCK_ON = API_DOMIAN1 + "Device/Lock?MajorToken={0}&MinorToken={1}&code={2}&radius=100";
 API_URL.URL_SET_GEOLOCK_OFF = API_DOMIAN1 + "Device/Unlock?MajorToken={0}&MinorToken={1}&code={2}";*/
-
 
 API_URL.URL_GET_POSITION = API_DOMIAN1 + "Device/GetPosInfo?MinorToken={0}&Code={1}";
 API_URL.URL_GET_POSITION2 = API_DOMIAN1 + "Device/GetPosInfo2?MinorToken={0}&Code={1}";
@@ -321,8 +323,8 @@ API_URL.URL_GET_POSITION_GPRS = API_DOMIAN1 + "Device/GprsCommand?MinorToken={0}
 API_URL.URL_RESET_PASSWORD = API_DOMIAN1 + "User/Password?MinorToken={0}&oldpwd={1}&newpwd={2}";
 API_URL.URL_VERIFY_BY_EMAIL = API_DOMIAN3 + "Client/VerifyCodeByEmail?email={0}";
 API_URL.URL_FORGOT_PASSWORD = API_DOMIAN3 + "Client/ForgotPassword?account={0}&newPassword={1}&checkNum={2}";
-API_URL.URL_GET_NEW_NOTIFICATIONS = API_DOMIAN1 + "Device/Alarms?MinorToken={0}&deviceToken={1}";
-API_URL.URL_GET_SPEEDLIMIT = "https://ss.sinopacific.com.ua/speedlimits/v1?latitude={0}&longitude={1}&timestamp=1"
+API_URL.URL_GET_NEW_NOTIFICATIONS = API_DOMIAN1 +"Device/Alarms?MinorToken={0}&deviceToken={1}";
+API_URL.URL_GET_SPEEDLIMIT = "https://ss.sinopacific.com.ua/speedlimits/v1?latitude={0}&longitude={1}&timestamp=1";
 
 API_URL.URL_SET_ALERT_CONFIG = API_DOMIAN1 + "Device/AlertConfigureEdit";
 API_URL.URL_GET_ALERT_CONFIG = API_DOMIAN1 + "Device/GetAlertConfigure";
@@ -333,43 +335,41 @@ API_URL.URL_GEOFENCE_EDIT = API_DOMIAN1 + "Device/FenceEdit";
 API_URL.URL_GEOFENCE_DELETE = API_DOMIAN1 + "Device/FenceDelete";
 API_URL.URL_GET_GEOFENCE_ASSET_LIST = API_DOMIAN1 + "Device/GetFenceAssetList";
 API_URL.URL_PHOTO_UPLOAD = "https://upload.quiktrak.co/image/Upload";
-
+API_URL.URL_SAVED_PHOTO = "https://upload.quiktrak.co/Attachment/images/";
 API_URL.URL_SUPPORT = "https://support.quiktrak.eu/?name={0}&loginName={1}&email={2}&phone={3}&s={4}";
 API_URL.URL_REPORT_THEFT = "https://forms.quiktrak.com.au/report-theft/?loginName={0}&imei={1}&make={2}&model={3}&rego={4}";
-
 
 API_URL.URL_GET_BALANCE = API_DOMIAN3 + "Client/Balance?MajorToken={0}&MinorToken={1}";
 API_URL.URL_SET_IMMOBILISATION = API_DOMIAN4 + "asset/Relay?MajorToken={0}&MinorToken={1}&code={2}&state={3}";
 API_URL.URL_SET_GEOLOCK = API_DOMIAN4 + "asset/GeoLock?MajorToken={0}&MinorToken={1}&code={2}&state={3}";
 API_URL.URL_SET_DOOR = API_DOMIAN4 + "asset/door?MajorToken={0}&MinorToken={1}&code={2}&state={3}";
 
-API_URL.URL_ROUTE = "https://www.google.com/maps/dir/?api=1&destination={0},{1}"; //&travelmode=walking
-//API_URL.URL_ROUTE = "maps://maps.apple.com/maps?daddr={0},{1}"; // ios link
+//API_URL.URL_ROUTE = "https://www.google.com/maps/dir/?api=1&destination={0},{1}"; //&travelmode=walking
+API_URL.URL_ROUTE = "maps://maps.apple.com/maps?daddr={0},{1}"; // ios link
 API_URL.URL_REFRESH_TOKEN = API_DOMIAN1 + "User/RefreshToken";
 
 API_URL.URL_USERGUIDE = "https://quiktrakglobal.com/pdf/qt-app.pdf";
 API_URL.URL_REFERRAL_PROGRAM = "https://forms.quiktrak.com.au/referral-program/";
 
-//https://api.m2mglobaltech.com/Quiktrak/V1/Device/AlertConfigureEdit
-//https://api.m2mglobaltech.com/Quiktrak/V1/Device/GetAlertConfigure
-
-
-var cameraButtons = [{
+var cameraButtons = [
+    {
         text: 'Take picture',
-        onClick: function() {
+        color: 'dealer',
+        onClick: function () {
             getImage(1);
         }
     },
     {
         text: 'From gallery',
-        onClick: function() {
+        color: 'dealer',
+        onClick: function () {
             getImage(0);
         }
     },
     {
         text: 'Cancel',
-        color: 'red',
-        onClick: function() {
+        color: 'dealer',
+        onClick: function () {
             //App.alert('Cancel clicked');
         }
     },
@@ -377,43 +377,34 @@ var cameraButtons = [{
 
 
 
-//http://api.m2mglobaltech.com/QuikTrak/V1/User/Auth?username=tongwei&password=888888&appKey=UcPXWJccwm7bcjvu7aZ7j5&deviceType=android&deviceToken=deviceToken&mobileToken=mobileToken
-//http://api.m2mglobaltech.com/QuikTrak/V1/User/Logoff2?username=tongwei&MinorToken=8944cbf0-7749-4c5e-bdba-8b7c4e47229b&MajorToken=f9087bb0-47ba-4d31-a038-ea676fdf0de2&mobileToken=push mobiletoken
-//http://api.m2mglobaltech.com/QuikTrak/V1/User/Edit?MinorToken=8944cbf0-7749-4c5e-bdba-8b7c4e47229b&MajorToken=f9087bb0-47ba-4d31-a038-ea676fdf0de2&FirstName=Tong&SubName=Wei&Mobile=&Phone=&EMail=tony@quiktrak.net
-//http://api.m2mglobaltech.com/QuikTrak/V1/Device/Edit?MinorToken=588bcf33-1af5-4fb3-8939-0cbc8f949fb3&Code=6562656064&name=testname&speedUnit=KPH&initMileage=8&initAccHours=100&tag=testname1&attr1=Toyota &attr2=Landcruiser&attr3=Black&attr4=2010
-//http://api.m2mglobaltech.com/QuikTrak/V1/Device/GetPosInfo?MinorToken=588bcf33-1af5-4fb3-8939-0cbc8f949fb3&Code=6562656064
-//http://api.m2mglobaltech.com/QuikTrak/V1/Device/GetHisPosArray?MinorToken=588bcf33-1af5-4fb3-8939-0cbc8f949fb3&Code=6562656064&From=2017-02-11T10:00:00&To=2017-02-12T10:00:00
-//http://api.m2mglobaltech.com/QuikTrak/V1/Device/GetPosInfos?MinorToken=588bcf33-1af5-4fb3-8939-0cbc8f949fb3
-//http://api.m2mglobaltech.com/QuikTrak/V1/User/Password?MinorToken=588bcf33-1af5-4fb&oldpwd=888888&newpwd=888888
-//http://api.m2mglobaltech.com/QuikTrak/V1/Device/FenceAdd
-//http://api.m2mglobaltech.com/QuikTrak/V1/Device/GetFenceList
-//http://api.m2mglobaltech.com/QuikTrak/V1/Device/FenceEdit
-//http://api.m2mglobaltech.com/QuikTrak/V1/Device/FenceDelete
-//http://api.m2mglobaltech.com/QuikTrak/V1/Device/AlarmOptions?MinorToken=588bcf33-1af5-4fb3-8939-0cbc8f949fb3&imei=6562656064&options=0
-
-
 var html = Template7.templates.template_Login_Screen();
 $$(document.body).append(html);
 html = Template7.templates.template_Popover_Menu();
 $$(document.body).append(html);
-html = Template7.templates.template_AssetList();
-$$('.navbar-fixed').append(html);
 
+$$('.index-title').html(LANGUAGE.MENU_MSG00);
+$$('.index-search-input').attr('placeholder',LANGUAGE.COM_MSG06);
+$$('.index-search-cancel').html(LANGUAGE.COM_MSG04);
+$$('.index-search-nothing-found').html(LANGUAGE.COM_MSG05);
+$$('.view-all-text').html(LANGUAGE.COM_MSG55);
+
+
+
+//alert(inBrowser);
 
 if (inBrowser) {
-    if (getUserinfo().MinorToken) {
+    if(getUserinfo().MinorToken) {
         //login();
         preLogin();
-    } else {
+    }
+    else {
         logout();
     }
 }
 
-
-
 virtualAssetList = App.virtualList('.assets_list', {
     // search item by item
-    searchAll: function(query, items) {
+    searchAll: function (query, items) {
         var foundItems = [];
         for (var i = 0; i < items.length; i++) {
             // Check if title contains query string
@@ -423,199 +414,187 @@ virtualAssetList = App.virtualList('.assets_list', {
         return foundItems;
     },
     //List of array items
-    items: [],
-    height: function(item) {
-        var height = 88;
+    items: [
+    ],
+    height: function (item) {
+        var height = 77;
         var asset = POSINFOASSETLIST[item.IMEI];
         var assetFeaturesStatus = Protocol.Helper.getAssetStateInfo(asset);
         if (assetFeaturesStatus && assetFeaturesStatus.stats) {
-            height = 116;
+            height = 103;
             if (assetFeaturesStatus.voltage && assetFeaturesStatus.fuel || assetFeaturesStatus.battery && assetFeaturesStatus.fuel || assetFeaturesStatus.battery && assetFeaturesStatus.voltage) {
-                height = 144;
+                height = 133;
             }
         }
         return height; //display the image with 50px height
     },
     // Display the each item using Template7 template parameter
-    renderItem: function(index, item) {
-
+    renderItem: function (index, item) {
         var ret = '';
         var asset = POSINFOASSETLIST[item.IMEI];
-        //if (asset) {
         var assetFeaturesStatus = Protocol.Helper.getAssetStateInfo(asset);
-        //var assetImg = 'resources/images/svg_asset.svg';
+        var assetImg = getAssetImg(item, {'assetList':true});
 
-        //console.log(item);
-        var assetImg = getAssetImg(item, { 'assetList': true });
 
+        //console.log(assetFeaturesStatus.status.eventTime);
         if (assetFeaturesStatus && assetFeaturesStatus.stats) {
 
 
-            ret += '<li class="item-link item-content item_asset" data-imei="' + item.IMEI + '" data-id="' + item.Id + '">';
-            ret += '<div class="item-media">' + assetImg + '</div>';
-            ret += '<div class="item-inner">';
-            ret += '<div class="item-title-row">';
-            ret += '<div class="item-title item-title-asse-name">' + item.Name + '</div>';
-            ret += '<div class="item-after">';
-            ret += '<i id="signal-state' + item.IMEI + '" class="f7-icons icon-other-signal ' + assetFeaturesStatus.GSM.state + '"></i>';
-            ret += '<i id="satellite-state' + item.IMEI + '" class="f7-icons icon-other-satellite ' + assetFeaturesStatus.GPS.state + '"></i>';
-            ret += '</div>';
-            ret += '</div>';
-            ret += '<div class="item-title-row item-title-row-status">';
-            ret += '<div class="item-title item-subtitle ' + assetFeaturesStatus.status.state + '" id="status-state' + item.IMEI + '"><i class="icon-status-fix icon-data-status"></i><span id="status-value' + item.IMEI + '">' + assetFeaturesStatus.status.value + '</span></div>';
-            ret += '<div class="item-after">';
-            ret += '<i id="immob-state' + item.IMEI + '" class="f7-icons icon-other-lock ' + assetFeaturesStatus.immob.state + ' "></i>';
-            ret += '<i id="geolock-state' + item.IMEI + '" class="f7-icons icon-other-geolock ' + assetFeaturesStatus.geolock.state + ' "></i>';
-            ret += '</div>';
-            ret += '</div>';
-            ret += '<div class="item-text">';
-            ret += '<div class="row no-gutter">';
-            if (assetFeaturesStatus.speed) {
-                ret += '<div class="col-50">';
-                ret += '<i class="f7-icons icon-data-speed asset_list_icon"></i>';
-                ret += '<span id="speed-value' + item.IMEI + '" class="">' + assetFeaturesStatus.speed.value + '</span>';
-                ret += '</div>';
-            }
-            if (assetFeaturesStatus.voltage) {
-                ret += '<div class="col-50">';
-                ret += '<i class="f7-icons icon-data-voltage asset_list_icon"></i>';
-                ret += '<span id="voltage-value' + item.IMEI + '" class="">' + assetFeaturesStatus.voltage.value + '</span>';
-                ret += '</div>';
-            }
-            if (assetFeaturesStatus.battery) {
-                ret += '<div class="col-50">';
-                ret += '<i class="f7-icons icon-data-battery asset_list_icon"></i>';
-                ret += '<span id="battery-value' + item.IMEI + '" class="">' + assetFeaturesStatus.battery.value + '</span>';
-                ret += '</div>';
-            }
-            if (assetFeaturesStatus.temperature) {
-                ret += '<div class="col-50">';
-                ret += '<i class="f7-icons icon-data-temperature asset_list_icon"></i>';
-                ret += '<span id="temperature-value' + item.IMEI + '" class="">' + assetFeaturesStatus.temperature.value + '</span>';
-                ret += '</div>';
-            }
-            if (assetFeaturesStatus.fuel) {
-                ret += '<div class="col-50">';
-                ret += '<i class="f7-icons icon-data-fuel asset_list_icon"></i>';
-                ret += '<span id="fuel-value' + item.IMEI + '" class="">' + assetFeaturesStatus.fuel.value + '</span>';
-                ret += '</div>';
-            }
-            if (assetFeaturesStatus.heartrate) {
-                ret += '<div class="col-50">';
-                ret += '<i class="f7-icons icon-other-hearth asset_list_icon"></i>';
-                ret += '<span id="heartrate-value' + item.IMEI + '" class="">' + assetFeaturesStatus.heartrate.value + '</span>';
-                ret += '</div>';
-            }
-            /*if (assetFeaturesStatus.driver){
-	            ret +=                  '<div class="col-50">';
-	            ret +=                      '<img class="asset_list_icon" src="resources/images/svg_ico_driver.svg" alt="">';
-	            ret +=                       '<span id="driver-value'+item.IMEI+'" class="">'+assetFeaturesStatus.driver.value+'</span>';
-	            ret +=                  '</div>';
-	                                } */
-            ret += '</div>';
-            ret += '</div>';
-            ret += '</div>';
-            ret += '</li>';
+        	ret +=  '<li class="item-link item-content item_asset" data-imei="' + item.IMEI + '" data-id="' + item.Id + '">';
+            ret +=      '<div class="item-media">'+assetImg+'</div>';
+            ret +=      '<div class="item-inner">';
+            ret +=          '<div class="item-title-row">';
+            ret +=              '<div class="item-title item-title-asse-name">' + item.Name + '</div>';
+            ret +=              '<div class="item-after">';
+            ret +=                  '<i id="signal-state'+item.IMEI+'" class="icon-other-signal '+assetFeaturesStatus.GSM.state+'"></i>';
+            ret +=                  '<i id="satellite-state'+item.IMEI+'" class="icon-other-satellite '+assetFeaturesStatus.GPS.state+'"></i>';
+            ret +=              '</div>';
+            ret +=          '</div>';
+            ret +=          '<div class="item-title-row item-title-row-status">';
+            ret +=              '<div class="item-title item-subtitle '+assetFeaturesStatus.status.state+'" id="status-state'+item.IMEI+'"><i class="icon-status-fix icon-other-asset"></i><span id="status-value'+item.IMEI+'">'+assetFeaturesStatus.status.value+'</span></div>';
+            ret +=              '<div class="item-after">';
+            ret +=                  '<i id="immob-state'+item.IMEI+'" class="icon-other-lock '+assetFeaturesStatus.immob.state+' "></i>';
+            ret +=                  '<i id="geolock-state'+item.IMEI+'" class="icon-other-geolock '+assetFeaturesStatus.geolock.state+' "></i>';
+            ret +=              '</div>';
+            ret +=          '</div>';
+            ret +=          '<div class="item-text">';
+            ret +=              '<div class="row no-gutter">';
+                                if (assetFeaturesStatus.speed) {
+            ret +=                  '<div class="col-50">';
+            ret +=                     '<i class="icon-data-speed asset_list_icon"></i>';
+            ret +=                     '<span id="speed-value'+item.IMEI+'">'+assetFeaturesStatus.speed.value+'</span>';
+            ret +=                  '</div>';
+                                }
+                                if (assetFeaturesStatus.voltage) {
+            ret +=                  '<div class="col-50">';
+            ret +=                     '<i class="icon-data-voltag asset_list_icon"></i>';
+            ret +=                     '<span id="voltage-value'+item.IMEI+'">'+assetFeaturesStatus.voltage.value+'</span>';
+            ret +=                  '</div>';
+                                }
+                                if (assetFeaturesStatus.battery) {
+            ret +=                  '<div class="col-50">';
+            ret +=                     '<i class="icon-data-battery asset_list_icon"></i>';
+            ret +=                     '<span id="battery-value'+item.IMEI+'">'+assetFeaturesStatus.battery.value+'</span>';
+            ret +=                  '</div>';
+                                }
+                                if (assetFeaturesStatus.temperature) {
+            ret +=                  '<div class="col-50">';
+            ret +=                     '<i class="icon-data-temperature asset_list_icon"></i>';
+            ret +=                     '<span id="temperature-value'+item.IMEI+'">'+assetFeaturesStatus.temperature.value+'</span>';
+            ret +=                  '</div>';
+                                }
+                                if (assetFeaturesStatus.fuel) {
+            ret +=                  '<div class="col-50">';
+            ret +=                     '<i class="icon-data-fuel asset_list_icon"></i>';
+            ret +=                     '<span id="fuel-value'+item.IMEI+'">'+assetFeaturesStatus.fuel.value+'</span>';
+            ret +=                  '</div>';
+                                }
+                                if (assetFeaturesStatus.heartrate) {
+            ret +=                  '<div class="col-50">';
+            ret +=                     '<i class="icon-other-hearth asset_list_icon"></i>';
+            ret +=                     '<span id="heartrate-value'+item.IMEI+'" class="">'+assetFeaturesStatus.heartrate.value+'</span>';
+            ret +=                  '</div>';
+                                }
+                                /*if (assetFeaturesStatus.driver){
+            ret +=                  '<div class="col-50">';
+            ret +=                      '<i class="icon-data-id asset_list_icon"></i>';
+            ret +=                       '<span id="driver-value'+item.IMEI+'">'+assetFeaturesStatus.driver.value+'</span>';
+            ret +=                  '</div>';
+                                } */
+            ret +=              '</div>';
+            ret +=          '</div>';
+            ret +=      '</div>';
+            ret +=  '</li>';
 
 
 
-        } else {
-            console.log('NO POSINFO for - ' + item.IMEI);
-            ret += '<li class="item-link item-content item_asset" data-imei="' + item.IMEI + '" data-id="' + item.Id + '" title="No data">';
-            ret += '<div class="item-media">' + assetImg + '</div>';
-            ret += '<div class="item-inner">';
-            ret += '<div class="item-title-row">';
-            ret += '<div class="item-title item-title-asse-name">' + item.Name + '</div>';
-            ret += '<div class="item-after"><i class="f7-icons  icon-other-signal state-0"></i><i class="f7-icons  icon-other-satellite state-0"></i></div>';
-            ret += '</div>';
-            ret += '<div class="item-title-row item-title-row-status">';
-            ret += '<div class="item-title item-subtitle state-0 "><i class="icon-status-fix icon-data-status"></i>' + LANGUAGE.COM_MSG11 + '</div>';
-            ret += '<div class="item-after"><i class="f7-icons icon-other-lock  state-0 "></i><i class="f7-icons icon-other-geolock  state-0"></i></div>';
-            ret += '</div>';
-            ret += '</div>';
-            ret += '</li>';
+        }else{
+            ret +=  '<li class="item-link item-content item_asset" data-imei="' + item.IMEI + '" data-id="' + item.Id + '" title="No data">';
+            ret +=      '<div class="item-media">'+ assetImg +'</div>';
+            ret +=      '<div class="item-inner">';
+            ret +=          '<div class="item-title-row">';
+            ret +=              '<div class="item-title item-title-asse-name">' + item.Name + '</div>';
+            ret +=                  '<div class="item-after"><i class="  icon-other-signal state-0"></i><i class="  icon-other-satellite state-0"></i></div>';
+            ret +=          '</div>';
+            ret +=          '<div class="item-title-row item-title-row-status">';
+            ret +=              '<div class="item-title item-subtitle state-0 "><i class="icon-status-fix icon-other-asset"></i>'+LANGUAGE.COM_MSG11+'</div>';
+            ret +=              '<div class="item-after"><i class=" icon-other-lock  state-0 "></i><i class=" icon-other-geolock  state-0"></i></div>';
+            ret +=          '</div>';
+            ret +=      '</div>';
+            ret +=  '</li>';
         }
-        //}else{
-        //
-        /*ret +=  '<li class="item-link item-content item_asset" data-imei="' + item.IMEI + '" data-id="' + item.Id + '" title="No data">';                    
-	            ret +=      '<div class="item-media"><img src="'+ assetImg +'" alt=""></div>';
-	            ret +=      '<div class="item-inner">';
-	            ret +=          '<div class="item-title-row">';
-	            ret +=              '<div class="item-title">' + item.Name + '</div>';
-	            ret +=                  '<div class="item-after"><i class="f7-icons icon-other-signal state-0"></i><i class="f7-icons icon-other-satellite state-0"></i></div>';
-	            ret +=          '</div>';
-	            ret +=          '<div class="item-subtitle state-0"><i class="icon-status"></i>'+LANGUAGE.COM_MSG11+'</div>';
-	            ret +=      '</div>';                   
-	            ret +=  '</li>';*/
-        //}      
-
-        //console.log(asset);
-
 
         return ret;
     },
 });
 
-$$('.login-form').on('submit', function(e) {
-    e.preventDefault();
+$$('.login-form').on('submit', function (e) {
+	e.preventDefault();
+    //login();
     preLogin();
     return false;
 });
 
-$$('body').on('click', '#account, #password', function(e) {
-    setTimeout(function() {
-        $('.login-screen-content').scrollTop(200);
-    }, 1000);
-});
-
-$$('body').on('click', '.notification_button', function(e) {
-    getNewNotifications({ 'loadPageNotification': true });
+$$('body').on('click', '.notification_button', function(e){
     $$('.notification_button').removeClass('new_not');
 });
-
-$$('body').on('click', '.deleteAllNotifications', function() {
-    App.confirm(LANGUAGE.PROMPT_MSG016, function() {
-        removeAllNotifications();
+$$('body').on('click', '.deleteAllNotifications', function(){
+    App.confirm(LANGUAGE.PROMPT_MSG016, function () {
+       removeAllNotifications();
     });
+});
+$$('body').on('change keyup input click', '.only_numbers', function(){
+    if (this.value.match(/[^0-9-]/g)) {
+         this.value = this.value.replace(/[^0-9-]/g, '');
+    }
+});
+
+$$('body').on('click', '.sorting_button', function(e){
+    var clickedLink = this;
+    var popoverHTML = '<div class="popover">'+
+                      '<div class="popover-inner">'+
+                        '<div class="list-block">'+
+                          '<ul>'+
+                          '<li class="color-gray list-button-label">'+LANGUAGE.COM_MSG41+'</li>'+
+                          '<li><a href="#" class="item-link list-button color-dealer" onClick="sortAssetList(this);" data-sort-by="name" >'+LANGUAGE.COM_MSG42+'</a></li>'+
+                          '<li><a href="#" class="item-link list-button color-dealer" onClick="sortAssetList(this);" data-sort-by="state" >'+LANGUAGE.COM_MSG43+'</a></li>'+
+                          '</ul>'+
+                        '</div>'+
+                      '</div>'+
+                    '</div>';
+    App.popover(popoverHTML, clickedLink);
+});
+
+$$('body').on('click', '.toggle-password', function(){
+    var password = $(this).siblings("input[name='password']");
+    if(password.hasClass('show_pwd')){
+        password.prop("type", "password").removeClass('show_pwd');
+    }else{
+        password.prop("type", "text").addClass('show_pwd');
+    }
+    $(this).toggleClass('color-gray');
+});
+
+$$('body').on('click', '.notification_button', function(e){
+    getNewNotifications({'loadPageNotification':true});
+    $$('.notification_button').removeClass('new_not');
 });
 
 $$('body').on('click', 'a.external', function(event) {
     event.preventDefault();
     var href = this.getAttribute('href');
     if (href) {
-        if (typeof navigator !== "undefined" && navigator.app) {
-            navigator.app.loadUrl(href, { openExternal: true });
+        /*if (typeof navigator !== "undefined" && navigator.app) {
+            navigator.app.loadUrl(href, {openExternal: true});
         } else {
-            window.open(href, '_blank');
-        }
+            window.open(href,'_blank');
+        }*/
+        window.open(encodeURI(href), '_blank', 'location=yes');
     }
     return false;
 });
 
-$$('body').on('change keyup input click', '.only_numbers', function() {
-    if (this.value.match(/[^0-9-]/g)) {
-        this.value = this.value.replace(/[^0-9-]/g, '');
-    }
-});
-
-$$('body').on('click', '.sorting_button', function(e) {
-    var clickedLink = this;
-    var popoverHTML = '<div class="popover">' +
-        '<div class="popover-inner">' +
-        '<div class="list-block">' +
-        '<ul>' +
-
-        '<li><a href="#" class="item-divider color-gray">' + LANGUAGE.COM_MSG41 + '</a></li>' +
-        '<li><a href="#" class="item-link list-button color-boatwatch" onClick="sortAssetList(this);" data-sort-by="name" >' + LANGUAGE.COM_MSG42 + '</a></li>' +
-        '<li><a href="#" class="item-link list-button color-boatwatch" onClick="sortAssetList(this);" data-sort-by="state" >' + LANGUAGE.COM_MSG43 + '</a></li>' +
-        '</ul>' +
-        '</div>' +
-        '</div>' +
-        '</div>';
-    App.popover(popoverHTML, clickedLink);
-});
-
-/*$$('body').on('click', '.navbar_title, .navbar_title_index', function(){
+/*$$('body').on('click', '.center', function(){
     //var json = '{"title":"GEOLOCK WARNING","type":1024,"imei":"0000004700673137","name":"A16 WATCH","lat":43.895091666666666,"lng":125.29207,"speed":0,"direct":0,"time":"2018-08-23 16:56:36"}';
     //showMsgNotification([json]);
     //getNewData();
@@ -625,17 +604,10 @@ $$('body').on('click', '.sorting_button', function(e) {
     setNotificationList([json]);
 });*/
 
-$$('body').on('click', '.toggle-password', function() {
-    var password = $(this).siblings("input[name='password']");
-    if (password.hasClass('show_pwd')) {
-        password.prop("type", "password").removeClass('show_pwd');
-    } else {
-        password.prop("type", "text").addClass('show_pwd');
-    }
-    $(this).toggleClass('color-gray');
-});
-
-$$('body').on('click', '.routeButton', function() {
+/*$$('body').on('click', '.center', function(){
+    getNewData();
+});*/
+$$('body').on('click', '.routeButton', function(){
     var that = $$(this);
     var lat = that.data('Lat');
     var lng = that.data('Lng');
@@ -643,18 +615,14 @@ $$('body').on('click', '.routeButton', function() {
         var href = API_URL.URL_ROUTE.format(
             encodeURIComponent(lat),
             encodeURIComponent(lng)
-        );
+            );
 
-        if (typeof navigator !== "undefined" && navigator.app) {
-            navigator.app.loadUrl(href, { openExternal: true });
-        } else {
-            window.open(href, '_blank');
-        }
+
+        window.open(href, '_blank', 'location=yes');
     }
-
 });
 
-$$('body').on('click', '.reportTheft', function() {
+$$('body').on('click', '.reportTheft', function(){
     event.preventDefault();
 
     loadPageTheftReport();
@@ -681,55 +649,49 @@ $$('body').on('click', '.settingsButton', function() {
 $$('body').on('click', '.menu_referral_button', function() {
     event.preventDefault();
 
-   	showReferralModal();
+    showReferralModal();
 
     return false;
 });
 
-
-
-
-
-
-
-$$('#menu li').on('click', function() {
+$$('body').on('click', '#menu li', function () {
     var id = $$(this).attr('id');
     var activePage = mainView.activePage;
 
-    switch (id) {
+    switch (id){
         case 'menuHome':
             mainView.router.back({
-                pageName: 'index',
-                force: true
+              pageName: 'index',
+              force: true
             });
             break;
 
         case 'menuProfile':
-            if (typeof(activePage) == 'undefined' || (activePage && activePage.name != "profile")) {
+            if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "profile")) {
                 loadProfilePage();
             }
             break;
 
         case 'menuRecharge':
-            if (typeof(activePage) == 'undefined' || (activePage && activePage.name != "user.recharge.credit")) {
+            if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "user.recharge.credit")) {
                 loadRechargeCredit();
             }
             break;
 
         case 'menuGeofence':
-            if (typeof(activePage) == 'undefined' || (activePage && activePage.name != "geofence")) {
+            if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "geofence")) {
                 loadGeofencePage();
             }
             break;
 
         case 'menuAlarms':
-            if (typeof(activePage) == 'undefined' || (activePage && activePage.name != "alarms.assets")) {
+            if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "alarms.assets")) {
                 loadAlarmsAssetsPage();
             }
             break;
 
         case 'menuReports':
-            if (typeof(activePage) == 'undefined' || (activePage && activePage.name != "reports")) {
+            if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "reports")) {
                 loadReportsPage();
             }
             break;
@@ -743,10 +705,8 @@ $$('#menu li').on('click', function() {
             break;
 
 
-
-
         case 'menuLogout':
-            App.confirm(LANGUAGE.PROMPT_MSG012, LANGUAGE.MENU_MSG04, function() {
+            App.confirm(LANGUAGE.PROMPT_MSG012, LANGUAGE.MENU_MSG04, function () {
                 logout();
             });
             break;
@@ -754,13 +714,13 @@ $$('#menu li').on('click', function() {
     }
 });
 
-$$(document).on('click', 'a.tab-link', function(e) {
+$$(document).on('click', 'a.tab-link', function(e){
     e.preventDefault();
     var currentPage = App.getCurrentView().activePage.name;
     var page = $$(this).data('id');
 
     if (currentPage != page) {
-        switch (page) {
+        switch (page){
             case 'asset.status':
                 loadStatusPage();
                 break;
@@ -787,14 +747,14 @@ $$(document).on('click', 'a.tab-link', function(e) {
     return false;
 });
 
-$$(document).on('click', '.backToIndex', function(e) {
+$$(document).on('click', '.backToIndex', function(e){
     mainView.router.back({
         pageName: 'index',
         force: true
     });
 });
 
-$$('.assets_list').on('click', '.item_asset', function() {
+$$('.assets_list').on('click', '.item_asset', function(){
     TargetAsset.ASSET_IMEI = $$(this).data("imei");
     TargetAsset.ASSET_ID = $$(this).data("id");
     TargetAsset.ASSET_IMG = '';
@@ -804,33 +764,30 @@ $$('.assets_list').on('click', '.item_asset', function() {
     loadStatusPage();
 });
 
-
-$$(document).on('refresh', '.pull-to-refresh-content', function(e) {
-    getNewNotifications({ 'ptr': true });
+$$(document).on('refresh','.pull-to-refresh-content',function(e){
+    getNewNotifications({'ptr':true});
 });
 
-$$(document).on('change', '.leaflet-control-layers-selector[type="radio"]', function() {
+$$(document).on('change', '.leaflet-control-layers-selector[type="radio"]', function(){
     if (TargetAsset.ASSET_IMEI) {
         var span = $$(this).next();
         var switcherWrapper = span.find('.mapSwitcherWrapper');
         if (switcherWrapper && switcherWrapper.hasClass('satelliteSwitcherWrapper')) {
             window.PosMarker[TargetAsset.ASSET_IMEI].setIcon(Protocol.MarkerIcon[1]);
-        } else {
+        }else{
             window.PosMarker[TargetAsset.ASSET_IMEI].setIcon(Protocol.MarkerIcon[0]);
         }
     }
 });
 
-App.onPageInit('notification', function(page) {
+App.onPageInit('notification', function(page){
     var notificationContainer = $$(page.container).find('.notification_list');
-    var deleteAllNotification = $$(page.container).find('.deleteAllNotifications');
-
     virtualNotificationList = App.virtualList(notificationContainer, {
-        height: function(item) {
-            return 70;
+        height: function (item) {
+            return 57;
         },
         items: [],
-        renderItem: function(index, item) {
+        renderItem: function (index, item) {
             var ret = '';
             if (typeof item == 'object') {
                 if (typeof item.speed === "undefined") {
@@ -844,38 +801,32 @@ App.onPageInit('notification', function(page) {
                 }
                 var alertName = Protocol.Helper.getAlertNameByType(item.type);
 
-                ret = '<li class="swipeout" data-id="' + item.listIndex + '" data-title="' + item.title + '" data-type="' + item.type + '" data-imei="' + item.imei + '" data-name="' + item.name + '" data-lat="' + item.lat + '" data-lng="' + item.lng + '" data-time="' + item.time + '" data-speed="' + item.speed + '" data-direct="' + item.direct + '" data-mileage="' + item.mileage + '">' +
-                    '<div class="swipeout-content item-content">' +
-                    '<div class="item-inner">' +
-                    '<div class="item-title-row">';
-               	if (alertName) {
-                    ret += '<div class="item-title">' + alertName + ' - ' + item.title + '</div>';
-                } else {
-                    ret += '<div class="item-title">' + item.title + '</div>';
-                }
-                //ret += '<div class="item-title">' + item.title + '</div>';
-                ret += '<div class="item-after">' + item.time + '</div>' +
-                    '</div>' +
-                    '<div class="item-subtitle">' + item.name + '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="swipeout-actions-left">' +
-                    '<a href="#" class="swipeout-delete swipeout-overswipe" data-confirm="' + LANGUAGE.PROMPT_MSG010 + '" data-confirm-title="' + LANGUAGE.PROMPT_MSG014 + '" data-close-on-cancel="true">Delete</a>' +
-                    '</div>' +
-                    '<div class="swipeout-actions-right">' +
-                    '<a href="#" class="swipeout-delete swipeout-overswipe" data-confirm="' + LANGUAGE.PROMPT_MSG010 + '" data-confirm-title="' + LANGUAGE.PROMPT_MSG014 + '" data-close-on-cancel="true">Delete</a>' +
-                    '</div>' +
-                    '</li>';
+                ret = '<li class="swipeout" data-id="'+item.listIndex+'" data-title="'+item.title+'" data-type="'+item.type+'" data-imei="'+item.imei+'" data-name="'+item.name+'" data-lat="'+item.lat+'" data-lng="'+item.lng+'" data-time="'+item.time+'" data-speed="'+item.speed+'" data-direct="'+item.direct+'" data-mileage="'+item.mileage+'">' +
+                            '<div class="swipeout-content item-content">' +
+                                '<div class="item-inner">' +
+                                    '<div class="item-title-row">';
+                                        if (alertName) {
+                                            ret += '<div class="item-title">' + alertName + ' - ' + item.title + '</div>';
+                                        } else {
+                                            ret += '<div class="item-title">' + item.title + '</div>';
+                                        }
+                //ret +=                  '<div class="item-title">' + item.title + '</div>';
+                ret +=                  '<div class="item-after">' + item.time + '</div>' +
+                                    '</div>' +
+                                    '<div class="item-subtitle">'+item.name+'</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="swipeout-actions-left">' +
+                                '<a href="#" class="swipeout-delete swipeout-overswipe" data-confirm="'+LANGUAGE.PROMPT_MSG010+'" data-confirm-title="'+LANGUAGE.PROMPT_MSG014+'" data-close-on-cancel="true">Delete</a>' +
+                            '</div>' +
+                            '<div class="swipeout-actions-right">' +
+                                '<a href="#" class="swipeout-delete swipeout-overswipe" data-confirm="'+LANGUAGE.PROMPT_MSG010+'" data-confirm-title="'+LANGUAGE.PROMPT_MSG014+'" data-close-on-cancel="true">Delete</a>' +
+                            '</div>' +
+                        '</li>';
             }
-
-            //alert(item.type + ' ' + item.title);
-            return ret;
+            return  ret;
         }
     });
-
-    //console.log('here');
-    /*var json = '{"title":"Speed","type":32,"imei":"0000004209084060","name":"A16 WATCH","lat":50.249984,"lng":32.282368,"speed":35,"direct":0,"time":"2018-08-23 16:56:37"}';
-    setNotificationList([json]);*/
 
     var user = localStorage.ACCOUNT;
     var notList = getNotificationList();
@@ -883,13 +834,14 @@ App.onPageInit('notification', function(page) {
     showNotification(notList[user]);
     getNewNotifications();
 
-    notificationContainer.on('deleted', '.swipeout', function() {
+    notificationContainer.on('deleted', '.swipeout', function () {
         var index = $$(this).data('id');
         removeNotificationListItem(index);
     });
 
-    notificationContainer.on('click', '.swipeout', function() {
-        if (!$$(this).hasClass('transitioning')) { //to preven click when swiping   
+    notificationContainer.on('click', '.swipeout', function(){
+        if ( !$$(this).hasClass('transitioning') ) {  //to preven click when swiping
+
             var data = {};
             data.lat = $$(this).data('lat');
             data.lng = $$(this).data('lng');
@@ -907,7 +859,7 @@ App.onPageInit('notification', function(page) {
                     if (!props) {
                         props = msg.payload;
                     }
-                } else {
+                }else{
                     props = isJsonString(msg);
                     if (!props) {
                         props = msg;
@@ -915,68 +867,63 @@ App.onPageInit('notification', function(page) {
                 }
             }
             //console.log(props);
-            if (props && parseFloat(data.lat) && parseFloat(data.lat)) {
+            if(  props && parseFloat(data.lat) && parseFloat(data.lat)){
                 TargetAsset.ASSET_IMEI = props.Imei ? props.Imei : props.imei;
                 loadTrackPage(props);
-            } else {
+            }else{
                 App.alert(LANGUAGE.PROMPT_MSG023);
             }
-
-
         }
     });
-
-
 });
-
 
 App.onPageInit('forgotPwd', function(page) {
     App.closeModal();
-    $$('.backToLogin').on('click', function() {
+    $$('.backToLogin').on('click', function(){
         App.loginScreen();
     });
-    $$('.sendEmail').on('click', function() {
+    $$('.sendEmail').on('click', function(){
         var email = $$(page.container).find('input[name="Email"]').val();
 
         if (!email) {
             App.alert(LANGUAGE.PASSWORD_FORGOT_MSG01);
-        } else {
+        }else{
             var url = API_URL.URL_VERIFY_BY_EMAIL.format(email);
             App.showPreloader();
-            JSON1.request(url, function(result) {
+            JSON1.request(url, function(result){
                     console.log(result);
 
                     if (result.MajorCode == '000' && result.MinorCode == '0000') {
                         verifyCheck.email = email;
                         verifyCheck.CheckCode = result.Data.CheckCode;
                         mainView.router.loadPage('resources/templates/forgotPwdCode.html');
-                    } else {
+                    }else{
                         App.alert(LANGUAGE.PASSWORD_FORGOT_MSG07);
                     }
 
                     App.hidePreloader();
                 },
-                function() { App.hidePreloader(); }
+                function(){ App.hidePreloader();   }
             );
         }
 
     });
 });
 App.onPageInit('forgotPwdCode', function(page) {
-    $$('.sendVerifyCode').on('click', function() {
+    $$('.sendVerifyCode').on('click', function(){
         var VerifyCode = $$(page.container).find('input[name="VerifyCode"]').val();
 
         if (!VerifyCode) {
             App.alert(LANGUAGE.PASSWORD_FORGOT_MSG04);
-        } else {
+        }else{
             if (VerifyCode == verifyCheck.CheckCode) {
                 mainView.router.load({
-                    url: 'resources/templates/forgotPwdNew.html',
-                    context: {
+                    url:'resources/templates/forgotPwdNew.html',
+                    context:{
                         Email: verifyCheck.email
                     }
                 });
-            } else {
+            }else{
                 App.alert(LANGUAGE.PASSWORD_FORGOT_MSG08);
             }
         }
@@ -984,36 +931,33 @@ App.onPageInit('forgotPwdCode', function(page) {
     });
 });
 App.onPageInit('forgotPwdNew', function(page) {
-    $$('.sendPwdNew').on('click', function() {
+    $$('.sendPwdNew').on('click', function(){
         var email = $$(page.container).find('input[name="Email"]').val();
         var newPassword = $$(page.container).find('input[name="newPassword"]').val();
         var newPasswordRepeat = $$(page.container).find('input[name="newPasswordRepeat"]').val();
 
         if (!newPassword && newPassword.length < 6) {
             App.alert(LANGUAGE.PASSWORD_FORGOT_MSG05);
-        } else {
+        }else{
             if (newPassword != newPasswordRepeat) {
                 App.alert(LANGUAGE.PASSWORD_FORGOT_MSG10);
-            } else {
-                var url = API_URL.URL_FORGOT_PASSWORD.format(email, encodeURIComponent(newPassword), verifyCheck.CheckCode);
+            }else{
+                var url = API_URL.URL_FORGOT_PASSWORD.format(email,encodeURIComponent(newPassword),verifyCheck.CheckCode);
                 App.showPreloader();
-                JSON1.request(url, function(result) {
+                JSON1.request(url, function(result){
                         if (result.MajorCode == '000' && result.MinorCode == '0000') {
                             App.alert(LANGUAGE.PASSWORD_FORGOT_MSG12);
                             $$('#account').val(email);
                             App.loginScreen();
 
-                            /*mainView.router.back({                             
-                              pageName: 'index', 
-                              force: true
-                            }); */
-                        } else {
+
+                        }else{
                             App.alert(LANGUAGE.PASSWORD_FORGOT_MSG11);
                         }
 
                         App.hidePreloader();
                     },
-                    function() { App.hidePreloader(); }
+                    function(){ App.hidePreloader();   }
                 );
             }
         }
@@ -1024,7 +968,7 @@ App.onPageInit('forgotPwdNew', function(page) {
 
 
 
-App.onPageInit('asset.status', function(page) {
+App.onPageInit('asset.status', function (page) {
 
     var Acc = $$(page.container).find('.position_acc');
     var Acc2 = $$(page.container).find('.position_acc2');
@@ -1037,141 +981,140 @@ App.onPageInit('asset.status', function(page) {
     var StoppedDuration = $$(page.container).find('.position_stoppedDuration');
     var Heartrate = $$(page.container).find('.position_heartrate');
 
-
     var clickedLink = '';
     var popoverHTML = '';
 
-
-    $$(page.container).find('.open-geolock').on('click', function() {
+    $$(page.container).find('.open-geolock').on('click', function () {
         clickedLink = this;
-        popoverHTML = '<div class="popover popover-status">' +
-            '<p class="color-dealer">' + LANGUAGE.ASSET_STATUS_MSG24 + '</p>' +
-            '<p>' + LANGUAGE.ASSET_STATUS_MSG43 + '</p>' +
-            '</div>';
-        App.popover(popoverHTML, clickedLink);
-    });
-    $$(page.container).find('.open-immob').on('click', function() {
-        clickedLink = this;
-        popoverHTML = '<div class="popover popover-status">' +
-            '<p class="color-dealer">' + LANGUAGE.ASSET_STATUS_MSG25 + '</p>' +
-            '<p>' + LANGUAGE.ASSET_STATUS_MSG42 + '</p>' +
-            '</div>';
-        App.popover(popoverHTML, clickedLink);
-    });
-    $$(page.container).find('.open-lockdoor').on('click', function() {
-        clickedLink = this;
-        popoverHTML = '<div class="popover popover-status">' +
-            '<p class="color-dealer">' + LANGUAGE.ASSET_STATUS_MSG26 + '</p>' +
-            '<p>' + LANGUAGE.ASSET_STATUS_MSG45 + '</p>' +
-            '</div>';
+        popoverHTML = '<div class="popover popover-status">'+
+                      '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG24+'</p>'+
+                      '<p>'+LANGUAGE.ASSET_STATUS_MSG43+'</p>'+
+                '</div>';
         App.popover(popoverHTML, clickedLink);
     });
 
+
+    $$(page.container).find('.open-immob').on('click', function () {
+        clickedLink = this;
+        popoverHTML = '<div class="popover popover-status">'+
+                      '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG25+'</p>'+
+                      '<p>'+LANGUAGE.ASSET_STATUS_MSG42+'</p>'+
+                '</div>';
+        App.popover(popoverHTML, clickedLink);
+    });
+    $$(page.container).find('.open-lockdoor').on('click', function () {
+        clickedLink = this;
+        popoverHTML = '<div class="popover popover-status">'+
+                      '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG26+'</p>'+
+                      '<p>'+LANGUAGE.ASSET_STATUS_MSG45+'</p>'+
+                '</div>';
+        App.popover(popoverHTML, clickedLink);
+    });
 
 
     if (Acc.text()) {
-        $$(page.container).find('.open-acc').on('click', function() {
+        $$(page.container).find('.open-acc').on('click', function () {
             clickedLink = this;
-            popoverHTML = '<div class="popover popover-status">' +
-                '<p class="color-dealer">' + LANGUAGE.ASSET_STATUS_MSG13 + ' - ' + Acc.text() + '</p>' +
-                '<p>' + LANGUAGE.ASSET_STATUS_MSG29 + '</p>' +
-                '</div>';
+            popoverHTML = '<div class="popover popover-status">'+
+                          '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG13+' - '+Acc.text()+'</p>'+
+                          '<p>'+LANGUAGE.ASSET_STATUS_MSG29+'</p>'+
+                    '</div>';
             App.popover(popoverHTML, clickedLink);
         });
     }
     if (Acc2.text()) {
-        $$(page.container).find('.open-acc2').on('click', function() {
+        $$(page.container).find('.open-acc2').on('click', function () {
             clickedLink = this;
-            popoverHTML = '<div class="popover popover-status">' +
-                '<p class="color-dealer">' + LANGUAGE.ASSET_STATUS_MSG14 + ' - ' + Acc2.text() + '</p>' +
-                /*'<p>'+LANGUAGE.ASSET_STATUS_MSG29+'</p>'+           */
-                '</div>';
+            popoverHTML = '<div class="popover popover-status">'+
+                          '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG14+' - '+Acc2.text()+'</p>'+
+                          /*'<p>'+LANGUAGE.ASSET_STATUS_MSG29+'</p>'+           */
+                    '</div>';
             App.popover(popoverHTML, clickedLink);
         });
     }
     if (Fuel.text()) {
-        $$(page.container).find('.open-fuel').on('click', function() {
+        $$(page.container).find('.open-fuel').on('click', function () {
             clickedLink = this;
-            popoverHTML = '<div class="popover popover-status">' +
-                '<p class="color-dealer">' + LANGUAGE.ASSET_STATUS_MSG12 + ' - ' + Fuel.text() + '</p>' +
-                '<p>' + LANGUAGE.ASSET_STATUS_MSG40 + '</p>' +
-                '</div>';
+            popoverHTML = '<div class="popover popover-status">'+
+                          '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG12+' - '+Fuel.text()+'</p>'+
+                          '<p>'+LANGUAGE.ASSET_STATUS_MSG40+'</p>'+
+                    '</div>';
             App.popover(popoverHTML, clickedLink);
         });
     }
     if (Voltage.text()) {
-        $$(page.container).find('.open-voltage').on('click', function() {
+        $$(page.container).find('.open-voltage').on('click', function () {
             clickedLink = this;
-            popoverHTML = '<div class="popover popover-status">' +
-                '<p class="color-dealer">' + LANGUAGE.ASSET_STATUS_MSG06 + ' - ' + Voltage.text() + '</p>' +
-                '<p>' + LANGUAGE.ASSET_STATUS_MSG33 + '</p>' +
-                '</div>';
+            popoverHTML = '<div class="popover popover-status">'+
+                          '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG06+' - '+Voltage.text()+'</p>'+
+                          '<p>'+LANGUAGE.ASSET_STATUS_MSG33+'</p>'+
+                    '</div>';
             App.popover(popoverHTML, clickedLink);
         });
     }
     if (Battery.text()) {
-        $$(page.container).find('.open-battery').on('click', function() {
+        $$(page.container).find('.open-battery').on('click', function () {
             clickedLink = this;
-            popoverHTML = '<div class="popover popover-status">' +
-                '<p class="color-dealer">' + LANGUAGE.ASSET_STATUS_MSG11 + ' - ' + Battery.text() + '</p>' +
-                '<p>' + LANGUAGE.ASSET_STATUS_MSG32 + '</p>' +
-                '</div>';
+            popoverHTML = '<div class="popover popover-status">'+
+                          '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG11+' - '+Battery.text()+'</p>'+
+                          '<p>'+LANGUAGE.ASSET_STATUS_MSG32+'</p>'+
+                    '</div>';
             App.popover(popoverHTML, clickedLink);
         });
     }
     if (Temperature.text()) {
-        $$(page.container).find('.open-temperature').on('click', function() {
+        $$(page.container).find('.open-temperature').on('click', function () {
             clickedLink = this;
-            popoverHTML = '<div class="popover popover-status">' +
-                '<p class="color-dealer">' + LANGUAGE.ASSET_STATUS_MSG15 + ' - ' + Temperature.text() + '</p>' +
-                /*'<p>'+LANGUAGE.ASSET_STATUS_MSG32+'</p>'+        */
-                '</div>';
+            popoverHTML = '<div class="popover popover-status">'+
+                          '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG15+' - '+Temperature.text()+'</p>'+
+                          /*'<p>'+LANGUAGE.ASSET_STATUS_MSG32+'</p>'+        */
+                    '</div>';
             App.popover(popoverHTML, clickedLink);
         });
     }
     if (Direction.text()) {
-        $$(page.container).find('.open-direction').on('click', function() {
+        $$(page.container).find('.open-direction').on('click', function () {
             clickedLink = this;
-            popoverHTML = '<div class="popover popover-status">' +
-                '<p class="color-dealer">' + LANGUAGE.ASSET_STATUS_MSG01 + ' - ' + Direction.text() + '</p>' +
-                '<p>' + LANGUAGE.ASSET_STATUS_MSG37 + '</p>' +
-                '</div>';
+            popoverHTML = '<div class="popover popover-status">'+
+                          '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG01+' - '+Direction.text()+'</p>'+
+                          '<p>'+LANGUAGE.ASSET_STATUS_MSG37+'</p>'+
+                    '</div>';
             App.popover(popoverHTML, clickedLink);
         });
     }
     if (EngineHours.text()) {
-        $$(page.container).find('.open-engineHours').on('click', function() {
+        $$(page.container).find('.open-engineHours').on('click', function () {
             clickedLink = this;
-            popoverHTML = '<div class="popover popover-status">' +
-                '<p class="color-dealer">' + LANGUAGE.ASSET_STATUS_MSG38 + ' - ' + EngineHours.text() + '</p>' +
-                /*'<p>'+LANGUAGE.ASSET_STATUS_MSG33+'</p>'+         */
-                '</div>';
+            popoverHTML = '<div class="popover popover-status">'+
+                          '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG38+' - '+EngineHours.text()+'</p>'+
+                          /*'<p>'+LANGUAGE.ASSET_STATUS_MSG33+'</p>'+         */
+                    '</div>';
             App.popover(popoverHTML, clickedLink);
         });
     }
     if (StoppedDuration.text()) {
-        $$(page.container).find('.open-stoppedDuration').on('click', function() {
+        $$(page.container).find('.open-stoppedDuration').on('click', function () {
             clickedLink = this;
-            popoverHTML = '<div class="popover popover-status">' +
-                '<p class="color-dealer">' + LANGUAGE.ASSET_STATUS_MSG39 + ' - ' + StoppedDuration.text() + '</p>' +
-                /*'<p>'+LANGUAGE.ASSET_STATUS_MSG37+'</p>'+   */
-                '</div>';
+            popoverHTML = '<div class="popover popover-status">'+
+                          '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG39+' - '+StoppedDuration.text()+'</p>'+
+                          /*'<p>'+LANGUAGE.ASSET_STATUS_MSG37+'</p>'+   */
+                    '</div>';
             App.popover(popoverHTML, clickedLink);
         });
     }
     if (Heartrate.text()) {
-        $$(page.container).find('.open-heartrate').on('click', function() {
+        $$(page.container).find('.open-heartrate').on('click', function () {
             clickedLink = this;
-            popoverHTML = '<div class="popover popover-status">' +
-                '<p class="color-dealer">' + LANGUAGE.ASSET_STATUS_MSG44 + ' - ' + Heartrate.text() + '</p>' +
-                /*'<p>'+LANGUAGE.ASSET_STATUS_MSG37+'</p>'+   */
-                '</div>';
+            popoverHTML = '<div class="popover popover-status">'+
+                          '<p class="color-dealer">'+LANGUAGE.ASSET_STATUS_MSG44+' - '+Heartrate.text()+'</p>'+
+                          /*'<p>'+LANGUAGE.ASSET_STATUS_MSG37+'</p>'+   */
+                    '</div>';
             App.popover(popoverHTML, clickedLink);
         });
     }
 
+    $$('.buttonAssetEdit').on('click', function(){
 
-    $$('.buttonAssetEdit').on('click', function() {
 
         var assetList = getAssetList();
         var asset = assetList[TargetAsset.ASSET_IMEI];
@@ -1179,19 +1122,14 @@ App.onPageInit('asset.status', function(page) {
         if (asset && asset.Icon) {
             var pattern = /^IMEI_/i;
             if (pattern.test(asset.Icon)) {
-                AssetImg = 'https://upload.quiktrak.co/Attachment/images/' + asset.Icon + '?' + new Date().getTime();
+                AssetImg = API_URL.URL_SAVED_PHOTO+asset.Icon+'?'+ new Date().getTime();
             }
         }
-   
         var MaxSpeed = asset.MaxSpeed;
-        /*if (MaxSpeed && asset.Unit) {
-            MaxSpeed = Protocol.Helper.getSpeedValue(asset.Unit, MaxSpeed);
-        }*/
-
         //console.log(asset);
         mainView.router.load({
-            url: 'resources/templates/asset.edit.html',
-            context: {
+        url:'resources/templates/asset.edit.html',
+            context:{
                 IMEI: asset.IMEI,
                 PRDTName: asset.PRDTName,
                 Name: asset.Name,
@@ -1204,7 +1142,7 @@ App.onPageInit('asset.status', function(page) {
                 Describe2: asset.Describe2,
                 Describe3: asset.Describe3,
                 Describe4: asset.Describe4,
-                AssetImg: AssetImg,                
+                AssetImg: AssetImg,
                 MaxSpeed: MaxSpeed,
             }
         });
@@ -1214,47 +1152,37 @@ App.onPageInit('asset.status', function(page) {
     var geolock = $$(page.container).find('input[name="Geolock"]');
     var immob = $$(page.container).find('input[name="Immobilise"]');
     var door = $$(page.container).find('input[name="LockDoor"]');
-    geolock.on('change', function() {
-        changeGeolockImmobState({ id: TargetAsset.ASSET_ID, imei: TargetAsset.ASSET_IMEI, state: this.checked, name: this.attributes.name.value });
+    geolock.on('change', function(){
+        changeGeolockImmobState({id: TargetAsset.ASSET_ID, imei: TargetAsset.ASSET_IMEI, state: this.checked, name: this.attributes.name.value});
     });
-    immob.on('change', function() {
-        if ((parseInt(POSINFOASSETLIST[TargetAsset.ASSET_IMEI]._FIELD_INT2) & 1) > 0) { // check if asset support immobilise feature
-            //if (POSINFOASSETLIST[TargetAsset.ASSET_IMEI]._FIELD_INT2 != 0) { 
-            changeGeolockImmobState({ id: TargetAsset.ASSET_ID, imei: TargetAsset.ASSET_IMEI, state: this.checked, name: this.attributes.name.value });
-        } else {
-            changeSwitcherState({ state: !this.checked, name: this.attributes.name.value });
-            showCustomMessage({ title: POSINFOASSETLIST[TargetAsset.ASSET_IMEI].Name, text: LANGUAGE.PROMPT_MSG033 });
+    immob.on('change', function(){
+        if (POSINFOASSETLIST[TargetAsset.ASSET_IMEI]._FIELD_INT2 != 0) { // check if asset support immobilise feature
+            changeGeolockImmobState({id: TargetAsset.ASSET_ID, imei: TargetAsset.ASSET_IMEI, state: this.checked, name: this.attributes.name.value});
+        } else{
+            changeSwitcherState({state: !this.checked, name: this.attributes.name.value});
+            showCustomMessage({title: POSINFOASSETLIST[TargetAsset.ASSET_IMEI].Name, text: LANGUAGE.PROMPT_MSG033});
         }
     });
-    door.on('change', function() {
+    door.on('change', function(){
         if ((parseInt(POSINFOASSETLIST[TargetAsset.ASSET_IMEI]._FIELD_INT2) & 512) > 0) { // check if asset support door lock feature
-            changeGeolockImmobState({ id: TargetAsset.ASSET_ID, imei: TargetAsset.ASSET_IMEI, state: this.checked, name: this.attributes.name.value });
-        } else {
-            changeSwitcherState({ state: !this.checked, name: this.attributes.name.value });
-            showCustomMessage({ title: POSINFOASSETLIST[TargetAsset.ASSET_IMEI].Name, text: LANGUAGE.PROMPT_MSG033 });
+            changeGeolockImmobState({id: TargetAsset.ASSET_ID, imei: TargetAsset.ASSET_IMEI, state: this.checked, name: this.attributes.name.value});
+        } else{
+            changeSwitcherState({state: !this.checked, name: this.attributes.name.value});
+            showCustomMessage({title: POSINFOASSETLIST[TargetAsset.ASSET_IMEI].Name, text: LANGUAGE.PROMPT_MSG033});
         }
     });
-
 });
 
-
-
-App.onPageInit('asset.edit', function(page) {
-    $$('.upload_photo, .asset_img img').on('click', function(e) {
+App.onPageInit('asset.edit', function (page) {
+    $$('.upload_photo, .asset_img img').on('click', function (e) {
         App.actions(cameraButtons);
     });
-
     var selectUnitSpeed = $$('select[name="Unit"]');
     selectUnitSpeed.val(selectUnitSpeed.data("set"));
 
-    $$('.saveAssetEdit').on('click', function() {
+    $$('.saveAssetEdit').on('click', function(){
         var Unit = $$(page.container).find('select[name="Unit"]').val();
         var MaxSpeed = $$(page.container).find('input[name="MaxSpeed"]').val();
-        /*if (MaxSpeed && Unit) {
-            MaxSpeed = Protocol.Helper.getSpeedValue(Unit, MaxSpeed);
-        }
-        console.log(MaxSpeed);*/
-
         var device = {
             IMEI: $$(page.container).find('input[name="IMEI"]').val(),
             Name: $$(page.container).find('input[name="Name"]').val(),
@@ -1270,72 +1198,64 @@ App.onPageInit('asset.edit', function(page) {
             Icon: TargetAsset.ASSET_IMG,
             MaxSpeed: MaxSpeed,
         };
-
-
+        //console.log(device);
         var userInfo = getUserinfo();
         var url = API_URL.URL_EDIT_DEVICE.format(userInfo.MinorToken,
-            TargetAsset.ASSET_ID,
-            encodeURIComponent(device.Name),
-            encodeURIComponent(device.Unit),
-            encodeURIComponent(device.Mileage),
-            encodeURIComponent(device.Runtime),
-            encodeURIComponent(device.Describe1),
-            encodeURIComponent(device.Describe2),
-            encodeURIComponent(device.Describe3),
-            encodeURIComponent(device.Describe4),
-            encodeURIComponent(device.Tag),
-            device.Icon,
-            userInfo.MajorToken,
-            encodeURIComponent(device.Registration),
-            encodeURIComponent(device.MaxSpeed)
-        );
+                TargetAsset.ASSET_ID,
+                encodeURIComponent(device.Name),
+                encodeURIComponent(device.Unit),
+                encodeURIComponent(device.Mileage),
+                encodeURIComponent(device.Runtime),
+                encodeURIComponent(device.Describe1),
+                encodeURIComponent(device.Describe2),
+                encodeURIComponent(device.Describe3),
+                encodeURIComponent(device.Describe4),
+                encodeURIComponent(device.Tag),
+                device.Icon,
+                userInfo.MajorToken,
+                encodeURIComponent(device.Registration),
+                encodeURIComponent(device.MaxSpeed)
+            );
 
-        console.log(url);
 
         App.showPreloader();
-        JSON1.request(url, function(result) {
+        JSON1.request(url, function(result){
                 console.log(result);
                 if (result.MajorCode == '000') {
                     TargetAsset.ASSET_IMG = '';
                     updateAssetList(device);
                     init_AssetList();
-                } else {
+                }else{
                     App.alert('Something wrong');
                 }
                 App.hidePreloader();
             },
-            function() {
-                App.hidePreloader();
-                App.alert(LANGUAGE.COM_MSG02);
-            }
+            function(){ App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02); }
         );
     });
 
 });
 
-App.onPageInit('asset.edit.photo', function(page) {
+App.onPageInit('asset.edit.photo', function (page) {
     //page.context.imgSrc = 'resources/images/add_photo_general.png';
 
     initCropper();
     //alert(cropper);
 
-    //After the selection or shooting is complete, jump out of the crop page and pass the image path to this page
-    //image.src = plus.webview.currentWebview().imgSrc;
-    //image.src = "img/head-default.jpg";    
 
-    $$('#save').on('click', function() {
+    $$('#save').on('click', function(){
         saveImg();
     });
-    $$('#redo').on('click', function() {
+    $$('#redo').on('click', function(){
         cropper.rotate(90);
     });
-    $$('#undo').on('click', function() {
+    $$('#undo').on('click', function(){
         cropper.rotate(-90);
     });
 });
 
-App.onPageInit('profile', function(page) {
-    $$('.saveProfile').on('click', function(e) {
+App.onPageInit('profile', function (page) {
+    $$('.saveProfile').on('click', function(e){
         var user = {
             FirstName: $$(page.container).find('input[name="FirstName"]').val(),
             SubName: $$(page.container).find('input[name="SubName"]').val(),
@@ -1345,15 +1265,15 @@ App.onPageInit('profile', function(page) {
         };
         var userInfo = getUserinfo();
         var url = API_URL.URL_EDIT_ACCOUNT.format(userInfo.MajorToken,
-            userInfo.MinorToken,
-            user.FirstName,
-            user.SubName,
-            user.Mobile,
-            user.Phone,
-            user.EMail
-        );
+                userInfo.MinorToken,
+                user.FirstName,
+                user.SubName,
+                user.Mobile,
+                user.Phone,
+                user.EMail
+            );
         App.showPreloader();
-        JSON1.request(url, function(result) {
+        JSON1.request(url, function(result){
                 console.log(result);
                 if (result.MajorCode == '000') {
                     userInfo.User = {
@@ -1367,20 +1287,17 @@ App.onPageInit('profile', function(page) {
                     setUserinfo(userInfo);
 
                     mainView.router.back();
-                } else {
+                }else{
                     App.alert('Something wrong');
                 }
                 App.hidePreloader();
             },
-            function() {
-                App.hidePreloader();
-                App.alert(LANGUAGE.COM_MSG02);
-            }
+            function(){ App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02); }
         );
     });
 });
 
-App.onPageInit('alarms.assets', function(page) {
+App.onPageInit('alarms.assets', function (page) {
 
     var assetListContainer = $$(page.container).find('.alarmsAssetList');
     var searchForm = $$('.searchbarAlarmsAssets');
@@ -1388,24 +1305,23 @@ App.onPageInit('alarms.assets', function(page) {
     var newAssetlist = [];
     var keys = Object.keys(assetList);
 
-
-    $.each(keys, function(index, value) {
+    $.each(keys, function( index, value ) {
         assetList[value].Selected = false;
         newAssetlist.push(assetList[value]);
     });
 
-    newAssetlist.sort(function(a, b) {
-        if (a.Name < b.Name) return -1;
-        if (a.Name > b.Name) return 1;
+    newAssetlist.sort(function(a,b){
+        if(a.Name < b.Name) return -1;
+        if(a.Name > b.Name) return 1;
         return 0;
     });
 
-    //console.log(newAssetlist);
-
-    var virtualAlarmsAssetsList = App.virtualList('.alarmsAssetList', {
+    var virtualAlarmsAssetsList = App.virtualList(assetListContainer, {
         items: newAssetlist,
-        height: 88,
-        searchAll: function(query, items) {
+        height: function (item) {
+            return 44;
+        },
+        searchAll: function (query, items) {
             console.log(items);
             var foundItems = [];
             for (var i = 0; i < items.length; i++) {
@@ -1415,41 +1331,24 @@ App.onPageInit('alarms.assets', function(page) {
             // Return array with indexes of matched items
             return foundItems;
         },
-        /*searchByItem: function (query, index, item) {
-	        // Check if title contains query string
-	        //if (item.title.indexOf(query.trim()) >= 0) {
-	        if (item.Name.toLowerCase().indexOf(query.toLowerCase().trim()) >= 0) {
-	            return true; //item matches query
-	        }
-	        else {
-	            return false; //item doesn't match
-	        }
-	    },*/
-        renderItem: function(index, item) {
+        renderItem: function (index, item) {
             var ret = '';
-            var assetImg = getAssetImg(item, { 'assetList': true });
 
-            ret += '<li data-index="' + index + '">';
-            ret += '<label class="label-checkbox item-content no-fastclick">';
-            if (item.Selected) {
-                ret += '<input type="checkbox" name="alarms-assets" value="" data-id="' + item.Id + '" data-imei="' + item.IMEI + '" checked="true" >';
-            } else {
-                ret += '<input type="checkbox" name="alarms-assets" value="" data-id="' + item.Id + '" data-imei="' + item.IMEI + '" >';
-            }
-            //ret +=          '<input type="checkbox" name="alarms-assets" value="" data-imei="' + item.IMEI + '" data-id="' + item.Id + '">';
-            ret += '<div class="item-media">' + assetImg + '</div>';
-            ret += '<div class="item-inner">';
-            ret += '<div class="item-title-row">';
-            ret += '<div class="item-title color-white">' + item.Name + '</div>';
-            ret += '<div class="item-after">';
-            ret += '<i class="icon icon-form-checkbox"></i>';
-            ret += '</div>';
-            ret += '</div>';
-            ret += '</div>';
-            ret += '</label>';
-            ret += '</li>';
+            ret +=  '<li data-index="'+index+'">';
+            ret +=      '<label class="label-checkbox item-content">';
+                 if (item.Selected) {
+                    ret +=          '<input type="checkbox" name="alarms-assets" value="" data-id="' + item.Id + '" data-imei="' + item.IMEI + '" checked="true" >';
+                }else{
+                    ret +=          '<input type="checkbox" name="alarms-assets" value="" data-id="' + item.Id + '" data-imei="' + item.IMEI + '" >';
+                }
+            ret +=          '<div class="item-media"><i class="icon icon-form-checkbox"></i></div>';
+            ret +=          '<div class="item-inner">';
+            ret +=              '<div class="item-title color-white">' + item.Name + '</div>';
+            ret +=          '</div>';
+            ret +=      '</label>';
+            ret +=  '</li>';
 
-            return ret;
+            return  ret;
         }
     });
 
@@ -1458,101 +1357,51 @@ App.onPageInit('alarms.assets', function(page) {
         searchIn: '.alarmsAssetList .item-title',
         found: '.list-block-search-alarms-assets',
         notFound: '.alarms-assets-search-nothing-found',
-        onDisable: function(s) {
+        onDisable: function(s){
             //$(s.container).slideUp();
         }
     });
 
+
     var SelectAll = $$(page.container).find('input[name="select-all"]');
 
-    SelectAll.on('change', function() {
+    SelectAll.on('change', function(){
         var state = false;
-        if ($$(this).prop('checked')) {
+        if( $$(this).prop('checked') ){
             state = true;
         }
-        $.each(virtualAlarmsAssetsList.items, function(index, value) {
+        $.each(virtualAlarmsAssetsList.items, function(index, value){
             value.Selected = state;
         });
         virtualAlarmsAssetsList.replaceAllItems(virtualAlarmsAssetsList.items);
     });
 
 
-    assetListContainer.on('change', 'input[name="alarms-assets"]', function() {
+    assetListContainer.on('change', 'input[name="alarms-assets"]', function(){
         var index = $$(this).closest('li').data('index');
         if (this.checked) {
             virtualAlarmsAssetsList.items[index].Selected = true;
-        } else {
+        }else{
             virtualAlarmsAssetsList.items[index].Selected = false;
         }
     });
 
-    var daysOfWeekArray = [{
-            val: 0,
-            name: LANGUAGE.GEOFENCE_MSG_20,
-            selected: false,
-        },
-        {
-            val: 1,
-            name: LANGUAGE.GEOFENCE_MSG_21,
-            selected: false,
-        },
-        {
-            val: 2,
-            name: LANGUAGE.GEOFENCE_MSG_22,
-            selected: false,
-        },
-        {
-            val: 3,
-            name: LANGUAGE.GEOFENCE_MSG_23,
-            selected: false,
-        },
-        {
-            val: 4,
-            name: LANGUAGE.GEOFENCE_MSG_24,
-            selected: false,
-        },
-        {
-            val: 5,
-            name: LANGUAGE.GEOFENCE_MSG_25,
-            selected: false,
-        },
-        {
-            val: 6,
-            name: LANGUAGE.GEOFENCE_MSG_26,
-            selected: false,
-        },
-    ];
-
-    /*if (geofence.Week && geofence.Week.length) {
-        $.each(geofence.Week, function(index, value){       
-            var dayIndex = daysOfWeekArray.findIndex(x => x.val === value.Week);
-            daysOfWeekArray[dayIndex].selected = true;
-        });
-        BeginTime = geofence.Week[0].BeginTime;
-        EndTime = geofence.Week[0].EndTime;
-    }*/
-
-
-    $('.saveAssets').on('click', function() {
+    $('.saveAssets').on('click', function(){
         var assets = [];
-        $.each(virtualAlarmsAssetsList.items, function(index, value) {
+        $.each(virtualAlarmsAssetsList.items, function(index, value){
             if (value.Selected) {
                 assets.push(value.IMEI);
             }
         });
-        //console.log(assets);
+
         if (assets.length > 0) {
             mainView.router.load({
-                url: 'resources/templates/alarms.select.html',
-                context: {
-                    Assets: assets.toString(),
-                    DaysOfWeek: daysOfWeekArray,
-                    BeginTime: '07:00',
-                    EndTime: '18:00',
-                    //IgnoreBetween: geofence.Inverse
+                url:'resources/templates/alarms.select.html',
+                context:{
+                    Assets: assets.toString()
                 }
             });
-        } else {
+        }else{
             App.addNotification({
                 hold: 3000,
                 message: LANGUAGE.PROMPT_MSG024
@@ -1563,14 +1412,12 @@ App.onPageInit('alarms.assets', function(page) {
 
 });
 
+
 App.onPageInit('alarms.select', function(page) {
 
     var alarm = $$(page.container).find('input[name = "checkbox-alarm"]');
 
-    //var alarmFields = ['accOff', 'accOn', 'customAlarm', 'custom2LowAlarm', 'geolock', 'geofenceIn', 'geofenceOut', 'illegalIgnition', 'lowBattery', 'mainBatteryFail', 'sosAlarm', 'speeding', 'tilt', 'harshAcc', 'harshBrk'];
 
-    //var allCheckboxesLabel = $$(page.container).find('label.item-content');
-    //var allCheckboxes = allCheckboxesLabel.find('input.input-checkbox-alarm');
     var allCheckboxes = $$(page.container).find('input.input-checkbox-alarm');
     var assets = $$(page.container).find('input[name="Assets"]').val();
 
@@ -1583,13 +1430,14 @@ App.onPageInit('alarms.select', function(page) {
     var BeginTimeValArray = BeginTimeInput.val() ? BeginTimeInput.val().split(':') : [];
     var EndTimeInputArray = EndTimeInput.val() ? EndTimeInput.val().split(':') : [];
 
+
     var speedingInputEl = $$(page.container).find('input[name="checkbox-speeding"]');
-    var overspeedRadioWrapperEl = $$(page.container).find('.overspeed-radio-wrapper'); 
+    var overspeedRadioWrapperEl = $$(page.container).find('.overspeed-radio-wrapper');
     var overspeedRadioEl = $$(page.container).find('input[name="overspeed-radio"]');
     var overspeedVal = page.context.MaxSpeed ? page.context.MaxSpeed : 80;
 
     var offlineInputEl = $$(page.container).find('input[name="checkbox-offline"]');
-    var offlineOptionsWrapperEl = $$(page.container).find('.offline-options-wrapper'); 
+    var offlineOptionsWrapperEl = $$(page.container).find('.offline-options-wrapper');
     var offlineOptionsEl = $$(page.container).find('input[name="offline-option"]');
     var showHintEl = $$(page.container).find('.showHint');
 
@@ -1604,32 +1452,32 @@ App.onPageInit('alarms.select', function(page) {
             </div>`;
         App.popover(popoverHTML, this);
     });
-    
 
-    speedingInputEl.on('change', function() {      
+
+    speedingInputEl.on('change', function() {
         if (this.checked) {
             overspeedRadioWrapperEl.removeClass('disabled');
         }  else{
             overspeedRadioWrapperEl.addClass('disabled');
-        }               
+        }
     });
 
     alarm.on('change', function(e) {
         for (var i = allCheckboxes.length - 1; i >= 0; i--) {
-            allCheckboxes[i].checked = this.checked;            
+            allCheckboxes[i].checked = this.checked;
             if (allCheckboxes[i].name == 'checkbox-speeding' || allCheckboxes[i].name == 'checkbox-offline') {
-                allCheckboxes[i].dispatchEvent(new Event('change'));  
-            }                      
+                allCheckboxes[i].dispatchEvent(new Event('change'));
+            }
         }
     });
 
     ignoreBetweenEl.on('change', function() {
         pickerWrapperEl.toggleClass('disabled');
         ignoreOnEl.toggleClass('disabled');
-    });   
-   
-    overspeedRadioEl.on('change', function(e) {        
-        if (e.target.value == 2) { 
+    });
+
+    overspeedRadioEl.on('change', function(e) {
+        if (e.target.value == 2) {
             App.modal({
                 title: '<div class="custom-modal-logo-wrapper"><img class="custom-modal-logo" src="resources/images/logo.png" alt=""/></div>',
                 text: '<div class="custom-modal-text">' + LANGUAGE.PROMPT_MSG060 + ':</div>',
@@ -1647,15 +1495,15 @@ App.onPageInit('alarms.select', function(page) {
                         </li>
                     </ul>
                 </div>
-                `,                      
+                `,
                 buttons: [{
                         text: LANGUAGE.COM_MSG04,
-                        onClick: function() {                                
+                        onClick: function() {
                             for (var i = overspeedRadioEl.length - 1; i >= 0; i--) {
-                                if (overspeedRadioEl[i].value == '1') { 
+                                if (overspeedRadioEl[i].value == '1') {
                                     overspeedRadioEl[i].checked = true;
-                                    break; 
-                                }                                    
+                                    break;
+                                }
                             }
                         }
                     },
@@ -1665,7 +1513,7 @@ App.onPageInit('alarms.select', function(page) {
                         onClick: function(modal, e) {
                             //console.log(modal, e);
                             var enteredVal = $$(modal).find('input[name="Overspeed"]').val();
-                            overspeedVal = enteredVal ? enteredVal : 1;                               
+                            overspeedVal = enteredVal ? enteredVal : 1;
                         }
                     },
                 ]
@@ -1681,16 +1529,16 @@ App.onPageInit('alarms.select', function(page) {
             offlineOptionsWrapperEl.removeClass('disabled');
         } else{
             offlineOptionsWrapperEl.addClass('disabled');
-        }  
+        }
     });
 
     offlineOptionsEl.on('change', function(e) {
         let found = false;
         for (var i = offlineOptionsEl.length - 1; i >= 0; i--) {
-            if (offlineOptionsEl[i].checked == true) {                
+            if (offlineOptionsEl[i].checked == true) {
                 found = true;
-                break; 
-            }            
+                break;
+            }
         }
         if (!found) {
             this.checked = true;
@@ -1698,9 +1546,8 @@ App.onPageInit('alarms.select', function(page) {
                 hold: 3000,
                 message: LANGUAGE.PROMPT_MSG061
             });
-        }        
+        }
     });
-
 
     if (!BeginTimeValArray || !BeginTimeValArray.length) {
         BeginTimeValArray = ['07', '00'];
@@ -1723,10 +1570,7 @@ App.onPageInit('alarms.select', function(page) {
         value: BeginTimeValArray,
 
         onChange: function(picker, values, displayValues) {
-            /*var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
-            if (values[1] > daysInMonth) {
-                picker.cols[1].setValue(daysInMonth);
-            }*/
+
         },
 
         formatValue: function(p, values, displayValues) {
@@ -1742,11 +1586,7 @@ App.onPageInit('alarms.select', function(page) {
                     return arr;
                 })(),
             },
-            // Divider
-            /*{
-                divider: true,
-                content: ':'
-            },*/
+
             // Minutes
             {
                 values: (function() {
@@ -1773,10 +1613,7 @@ App.onPageInit('alarms.select', function(page) {
         value: EndTimeInputArray,
 
         onChange: function(picker, values, displayValues) {
-            /*var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
-            if (values[1] > daysInMonth) {
-                picker.cols[1].setValue(daysInMonth);
-            }*/
+
         },
 
         formatValue: function(p, values, displayValues) {
@@ -1792,11 +1629,7 @@ App.onPageInit('alarms.select', function(page) {
                     return arr;
                 })(),
             },
-            // Divider
-            /*{
-                divider: true,
-                content: ':'
-            },*/
+
             // Minutes
             {
                 values: (function() {
@@ -1824,7 +1657,7 @@ App.onPageInit('alarms.select', function(page) {
             }
         }
     });
-   
+
 
     $$('.saveAlarm').on('click', function(e) {
         var userInfo = getUserinfo();
@@ -1863,16 +1696,16 @@ App.onPageInit('alarms.select', function(page) {
             }
         }
 
-        if (offlineInputEl.is(":checked")) {   
-            data.OfflineHours = '';         
+        if (offlineInputEl.is(":checked")) {
+            data.OfflineHours = '';
             for (var i = offlineOptionsEl.length - 1; i >= 0; i--) {
                 if (offlineOptionsEl[i].checked) {
                     data.OfflineHours += offlineOptionsEl[i].value + ',';
-                }                
+                }
             }
             if (data.OfflineHours) {
                 data.OfflineHours = data.OfflineHours.slice(0, -1);
-            }                
+            }
         }
 
         /*console.log(data);*/
@@ -1899,19 +1732,18 @@ App.onPageInit('alarms.select', function(page) {
                         var assets = data.IMEIS.split(',');
                         for (var i = assets.length - 1; i >= 0; i--) {
                             var obj = {
-                                IMEI: assets[i], 
-                                Props: {                                    
+                                IMEI: assets[i],
+                                Props: {
                                     MaxSpeedAlertMode: data.SpeedingMode
                                 }
-                            }
+                            };
                             if (data.SpeedingMode == 2) {
                                 obj.Props.MaxSpeed = data.MaxSpeed;
                             }
-                            arr.push(obj);                            
-                        }                        
-                        updateAssetList3(arr);     
-                    }                   
-                    
+                            arr.push(obj);
+                        }
+                        updateAssetList3(arr);
+                    }
 
                 } else {
                     App.alert('Something wrong');
@@ -1925,7 +1757,6 @@ App.onPageInit('alarms.select', function(page) {
 
     });
 
-
 });
 
 App.onPageBeforeRemove('alarms.select', function(page) {
@@ -1933,31 +1764,33 @@ App.onPageBeforeRemove('alarms.select', function(page) {
     App.closeModal('.custom-picker');
 });
 
-App.onPageInit('geofence', function(page) {
+
+
+App.onPageInit('geofence', function (page) {
     var geofenceListContainer = $$(page.container).find('.geofenceList');
     var geofenceSearchForm = $$(page.container).find('.searchbarGeofence');
+
     var geofenceList = getGeoFenceList();
     var arrGeofenceList = [];
     var geofenceListKeys = Object.keys(geofenceList);
     var userInfo = getUserinfo();
 
-
-    $.each(geofenceListKeys, function(index, value) {
+    $.each(geofenceListKeys, function( index, value ) {
         geofenceList[value].Name = geofenceList[value].Name.toLowerCase();
         arrGeofenceList.push(geofenceList[value]);
     });
 
-    arrGeofenceList.sort(function(a, b) {
-        if (a.Name < b.Name) return -1;
-        if (a.Name > b.Name) return 1;
+    arrGeofenceList.sort(function(a,b){
+        if(a.Name < b.Name) return -1;
+        if(a.Name > b.Name) return 1;
         return 0;
     });
-    // console.log(arrGeofenceList);
+
     if (virtualGeofenceList) {
         virtualGeofenceList.destroy();
     }
     virtualGeofenceList = App.virtualList(geofenceListContainer, {
-        searchAll: function(query, items) {
+        searchAll: function (query, items) {
             var foundItems = [];
             for (var i = 0; i < items.length; i++) {
                 // Check if title contains query string
@@ -1967,51 +1800,42 @@ App.onPageInit('geofence', function(page) {
             return foundItems;
         },
         items: arrGeofenceList,
-        renderItem: function(index, item) {
+        renderItem: function (index, item) {
             var ret = '';
-            if (item.CustomerCode !== userInfo.MajorToken){ // if geofence is shared from master account
-                ret = '<li class="item-content" id="' + item.Code + '" data-code="' + item.Code + '" data-index="' + index + '" data-state="' + item.State + '" data-customer-code="'+item.CustomerCode+'">' +
-                        '<div class="item-inner">' +
-                            //'<div class="item-title-row">' +
-                                '<div class="item-title ">' + item.Name + '</div>' +
 
-                            //'</div>' +
-                            '<div class="item-text">' + item.Address + '</div>' +
-                        '</div>' +
-                    '</li>';
-            }else{
-                ret = '<li class="item-content" id="' + item.Code + '" data-code="' + item.Code + '" data-index="' + index + '" data-state="' + item.State + '" data-customer-code="'+item.CustomerCode+'">' +
-                        '<div class="item-inner">' +
-                            '<div class="item-title-row">' +
-                                '<div class="item-title ">' + item.Name + '</div>' +
-                                '<div class="item-after "><a href="#" class="item-link geofence_menu"><i class="f7-icons icon-other-menu-geofence color-white"></i></a></div>' +
+            if (item.CustomerCode !== userInfo.MajorToken){ // if geofence is shared from master account
+                ret =   '<li class="item-content" id="'+ item.Code +'" data-code="'+ item.Code +'" data-index="'+ index +'" data-name="'+ toTitleCase(item.Name) +'" data-customer-code="'+item.CustomerCode+'">' +
+                            '<div class="item-inner">' +
+                                '<div class="item-title">'+ toTitleCase(item.Name) +'</div>' +
+                                '<div class="item-text ">'+ item.Address +'</div>' +
                             '</div>' +
-                            '<div class="item-text">' + item.Address + '</div>' +
-                        '</div>' +
+                        '</li>';
+            }else{
+                ret =   '<li class="item-content" id="'+ item.Code +'" data-code="'+ item.Code +'" data-index="'+ index +'" data-name="'+ toTitleCase(item.Name) +'" data-customer-code="'+item.CustomerCode+'">' +
+                    '<div class="item-inner">' +
+                    '<div class="item-title-row">' +
+                    '<div class="item-title">'+ toTitleCase(item.Name) +'</div>' +
+                    '<div class="item-after "><a href="#" class="item-link geofence_menu"><i class="f7-icons icon-other-menu color-white"></i></a></div>' +
+                    '</div>' +
+                    '<div class="item-text ">'+ item.Address +'</div>' +
+                    '</div>' +
                     '</li>';
             }
-
-
-            return ret;
+            return  ret;
         }
     });
+
 
     initSearchbar(geofenceSearchForm);
 
 
-    /*$$('.button_search').on('click', function(){        
-        $('.searchbarGeofence').slideDown(400, function(){
-            $$('.searchbarGeofence input').focus();
-        });                
-    });*/
-    $$('.addGeofence').on('click', function(e) {
+    $$('.addGeofence').on('click', function(e){
         var assetList = formatArrAssetList();
-
         mainView.router.load({
-            url: 'resources/templates/geofence.add.html',
-            context: {
+            url:'resources/templates/geofence.add.html',
+            context:{
                 GeofenceName: LANGUAGE.GEOFENCE_MSG_00,
-                Assets: assetList,
+                Assets: assetList
             }
         });
     });
@@ -2028,82 +1852,47 @@ App.onPageInit('geofence', function(page) {
 
     });
 
-    geofenceListContainer.on('click', '.geofence_menu', function() {
+    geofenceListContainer.on('click', '.geofence_menu', function () {
         var parentLi = $$(this).closest('li');
         var geofenceCode = parentLi.data('code');
         var listIndex = parentLi.data('index');
+        var geofenceName = parentLi.data('name');
         //virtualGeofenceList.deleteItem(listIndex);
+        var buttons = [
+            {
+                text: geofenceName,
+                label: true,
 
-        var state = '';
-        if (parentLi.data('state') == 1) {
-            state = 'checked="checked"';
-        }
-
-        var editGeo = '<div class="action_button_wrapper">' +
-            '<div class="action_button_block action_button_media">' +
-            '<i class="f7-icons icon-other-edit"></i>' +
-            '</div>' +
-            '<div class="action_button_block action_button_text">' +
-            LANGUAGE.COM_MSG17 +
-            '</div>' +
-            '</div>';
-        var deleteGeo = '<div class="action_button_wrapper">' +
-            '<div class="action_button_block action_button_media">' +
-            '<i class="f7-icons icon-other-remove"></i>' +
-            '</div>' +
-            '<div class="action_button_block action_button_text">' +
-            LANGUAGE.COM_MSG18 +
-            '</div>' +
-            '</div>';
-
-
-        var toggleGeo = '<div class="action_button_wrapper">' +
-            '<div class="action_button_block action_button_media">' +
-            '<i class="f7-icons icon-other-active"></i>' +
-            '</div>' +
-            '<div class="action_button_block action_button_text">' +
-            LANGUAGE.GEOFENCE_MSG_10 +
-            '</div>' +
-            '<span class="label-switch actionButton-label">' +
-            '<input type="checkbox" name="checkbox-active" ' + state + '>' +
-            '<div class="checkbox"></div>' +
-            '</span>' +
-            '</div>';
-
-        var buttons = [{
-                text: editGeo,
-                onClick: function() {
+            },
+            {
+                text: LANGUAGE.COM_MSG17,
+                color: 'boatwatch',
+                onClick: function () {
                     editGeofence(geofenceCode);
                 }
             },
             {
-                text: toggleGeo,
-                onClick: function() {
-                    //editGeofence(geofenceCode);
-                    var stateNew = 1;
-                    if (parentLi.data('state') == 1) {
-                        stateNew = 0;
-                    }
-                    changeGeofenceState(arrGeofenceList[parentLi.data('index')], stateNew);
+                text: LANGUAGE.COM_MSG18,
+                color: 'boatwatch',
+                onClick: function () {
+                    App.confirm(LANGUAGE.PROMPT_MSG011, function(){
+                        deleteGeofence(geofenceCode, listIndex);
+                    });
+
 
                 }
             },
             {
-                text: deleteGeo,
+                text: LANGUAGE.COM_MSG04,
                 color: 'red',
-                onClick: function() {
-                    App.confirm(LANGUAGE.PROMPT_MSG011, function() {
-                        deleteGeofence(geofenceCode, listIndex);
-                    });
-                }
             },
-
         ];
         App.actions(buttons);
     });
 
 
 });
+
 
 App.onPageInit('geofence.view', function(page) {
     showMapGeofence(getGeoFenceList()[page.context.Code]);
@@ -2112,15 +1901,15 @@ App.onPageBeforeRemove('geofence.view', function(page) {
     MapTrack.off('draw:created', onMapGeofenceDraw);
 });
 
-App.onPageInit('geofence.add', function(page) {
+App.onPageInit('geofence.add', function (page) {
     var valEdit = $$(page.container).find('input[name="geofenceEdit"]').val();
 
     var timeRangeState = $$(page.container).find('select[name="timeRangeState"]');
-    //var timeRangeblocks = $$(page.container).find('.time_range_block');
+   // var timeRangeblocks = $$(page.container).find('.time_range_block');
     var searchGeofenceAddress = $$(page.container).find('form[name="searchGeofenceAddress"]');
     var container = $$(page.container).find('.page-content');
-    //var radius = $$(page.container).find('input[name="geolockRadius"]');
-    var address = $$(page.container).find('[name="geofenceAddress"]');
+   	//var radius = $$('body').find('input[name="geolockRadius"]');
+    var address =  $$(page.container).find('[name="geofenceAddress"]');
     var geofenceName = $$(page.container).find('input[name="geofenceName"]');
     var assets = $$(page.container).find('select[name="assets"]');
 
@@ -2154,96 +1943,71 @@ App.onPageInit('geofence.add', function(page) {
         App.popover(popoverHTML, this);
     });
 
-    //var today = new Date();
 
-    /*radius.on('change input', function() {
-        var value = this.value;
-        if (!value.match(/[^0-9]/g)) {
-            window.PosMarker.geofence.setRadius(value);
-            if (geofenceMarkerGroup && geofenceMarkerGroup.getLayers().length > 0) {
-                MapTrack.flyToBounds([geofenceMarkerGroup.getBounds(), window.PosMarker.geofence.getBounds()], { padding: [8, 8] });
-            } else {
-                MapTrack.flyToBounds([window.PosMarker.geofence.getBounds()], { padding: [8, 8] });
-            }
-        }
-    });*/
-
-    /*timeRangeState.on('change', function() {
-        var value = this.value;
-        App.showTab('#tab' + value);
-    });*/
-
-    assets.on('change', function() {
+    assets.on('change', function(){
         var arrAssets = [];
-        assets.find('option:checked').each(function() {
-            arrAssets.push($$(this).data('imei'));
+        assets.find('option:checked').each(function(){
+           arrAssets.push($$(this).data('imei'));
         });
         updateGeofenceMarkerGroup(arrAssets, valEdit ? 1 : 0);
     });
 
-    searchGeofenceAddress.on('submit', function(e) {
-        e.preventDefault();
-        var valAddress = address.val();
-        if (valAddress.length >= 3) {
-            Protocol.Helper.getLatLngByGeocoder(valAddress, function(latlng) {
-                if (latlng) {
-                    container.scrollTop(0, 300, function() {
-                        //window.PosMarker.geofence.setLatLng(latlng);
-                        MapTrack.setView(latlng);
-                    });
-                } else {
-                    App.addNotification({
-                        hold: 3000,
-                        message: LANGUAGE.COM_MSG05
-                    });
-                }
-            });
-        }
-        return false;
+    searchGeofenceAddress.on('submit', function(e){
+    	e.preventDefault();
+    	var valAddress = address.val();
+    	if (valAddress.length >= 3) {
+    		Protocol.Helper.getLatLngByGeocoder(valAddress,function(latlng){
+    			if (latlng) {
+				    container.scrollTop(0, 300, function(){
+				    	//window.PosMarker.geofence.setLatLng(latlng);
+					    MapTrack.setView(latlng);
+				    });
+    			}else{
+    				App.addNotification({
+		                hold: 3000,
+		                message: LANGUAGE.COM_MSG05
+		            });
+    			}
+			});
+    	}
+    	return false;
     });
 
     var pickerFrom = App.picker({
         input: BeginTimeInput,
         cssClass: 'custom-picker custom-time',
-        toolbarTemplate: '<div class="toolbar">' +
-            '<div class="toolbar-inner">' +
-            '<div class="left"><div class="text">' + LANGUAGE.GEOFENCE_MSG_29 + '</div></div>' +
-            '<div class="right">' +
-            '<a href="#" class="link close-picker color-black">{{closeText}}</a>' +
-            '</div>' +
-            '</div>' +
-            '</div>',
+        toolbarTemplate:'<div class="toolbar">'+
+                          '<div class="toolbar-inner">'+
+                            '<div class="left"><div class="text">'+LANGUAGE.GEOFENCE_MSG_29+'</div></div>'+
+                            '<div class="right">'+
+                              '<a href="#" class="link close-picker color-black">{{closeText}}</a>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>',
 
         value: BeginTimeValArray,
 
-        onChange: function(picker, values, displayValues) {
-            /*var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
-            if (values[1] > daysInMonth) {
-                picker.cols[1].setValue(daysInMonth);
-            }*/
+        onChange: function (picker, values, displayValues) {
+
         },
 
-        formatValue: function(p, values, displayValues) {
+        formatValue: function (p, values, displayValues) {
             return values[0] + ':' + values[1];
         },
 
         cols: [
             // Hours
             {
-                values: (function() {
+                values: (function () {
                     var arr = [];
                     for (var i = 0; i <= 23; i++) { arr.push(i < 10 ? '0' + i : i); }
                     return arr;
                 })(),
             },
-            // Divider
-            /*{
-                divider: true,
-                content: ':'
-            },*/
+
             // Minutes
             {
-                values: (function() {
+                values: (function () {
                     var arr = [];
                     for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
                     return arr;
@@ -2255,45 +2019,38 @@ App.onPageInit('geofence.add', function(page) {
     var pickerTo = App.picker({
         input: EndTimeInput,
         cssClass: 'custom-picker custom-time',
-        toolbarTemplate: '<div class="toolbar">' +
-            '<div class="toolbar-inner">' +
-            '<div class="left"><div class="text">' + LANGUAGE.GEOFENCE_MSG_30 + '</div></div>' +
-            '<div class="right">' +
-            '<a href="#" class="link close-picker color-black">{{closeText}}</a>' +
-            '</div>' +
-            '</div>' +
-            '</div>',
+        toolbarTemplate:'<div class="toolbar">'+
+                          '<div class="toolbar-inner">'+
+                            '<div class="left"><div class="text">'+LANGUAGE.GEOFENCE_MSG_30+'</div></div>'+
+                            '<div class="right">'+
+                              '<a href="#" class="link close-picker color-black">{{closeText}}</a>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>',
 
         value: EndTimeInputArray,
 
-        onChange: function(picker, values, displayValues) {
-            /*var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
-            if (values[1] > daysInMonth) {
-                picker.cols[1].setValue(daysInMonth);
-            }*/
+        onChange: function (picker, values, displayValues) {
+
         },
 
-        formatValue: function(p, values, displayValues) {
+        formatValue: function (p, values, displayValues) {
             return values[0] + ':' + values[1];
         },
 
         cols: [
             // Hours
             {
-                values: (function() {
+                values: (function () {
                     var arr = [];
                     for (var i = 0; i <= 23; i++) { arr.push(i < 10 ? '0' + i : i); }
                     return arr;
                 })(),
             },
-            // Divider
-            /*{
-                divider: true,
-                content: ':'
-            },*/
+
             // Minutes
             {
-                values: (function() {
+                values: (function () {
                     var arr = [];
                     for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
                     return arr;
@@ -2302,13 +2059,13 @@ App.onPageInit('geofence.add', function(page) {
         ]
     });
 
-    $$(geofencePreferenceList).on('click', 'li.picker-el-wrapper', function(event) {
+    $$(geofencePreferenceList).on('click', 'li.picker-el-wrapper', function(event){
         event.stopPropagation();
         var input = $$(this).find('input');
 
         if (input) {
             var name = input.attr('name');
-            switch (name) {
+            switch(name){
                 case 'picker-from':
                     pickerFrom.open();
                     break;
@@ -2319,23 +2076,15 @@ App.onPageInit('geofence.add', function(page) {
         }
     });
 
-    ignoreBetweenEl.on('change', function() {
+    ignoreBetweenEl.on('change', function(){
         pickerWrapperEl.toggleClass('disabled');
         ignoreOnEl.toggleClass('disabled');
-        /*if (this.checked) {
-            pickerWrapperEl.removeClass('disabled');
-            ignoreOnEl.removeClass('disabled');
-        }else{
-            pickerWrapperEl.addClass('disabled');
-            ignoreOnEl.addClass('disabled');
-        }*/
+
     });
 
     if (valEdit) {
-
         showMapGeofence(getGeoFenceList()[valEdit]);
-
-    } else {
+    }else{
         showMapGeofence();
     }
 
@@ -2356,7 +2105,7 @@ App.onPageInit('geofence.add', function(page) {
 
         var geofenceLayers =  GeofenceFiguresGroup.getLayers();
         var geofenceLayer = geofenceLayers.length ? geofenceLayers[0] : false;
-    //GeofenceFiguresGroup
+        //GeofenceFiguresGroup
         /*if (valRadius < 100) {
             valid = 0;
             errorList.push(LANGUAGE.PROMPT_MSG008);
@@ -2494,20 +2243,15 @@ App.onPageInit('geofence.add', function(page) {
         }
 
     });
-
-
 });
 
-
-App.onPageBeforeRemove('geofence.add', function(page) {
+App.onPageBeforeRemove('geofence.add', function(page){
     // fix to close modal calendar if it was opened and default back button pressed
     App.closeModal('.custom-picker');
-
-    MapTrack.off('draw:created', onMapGeofenceDraw);
 });
 
-App.onPageInit('resetPwd', function(page) {
-    $$('.saveResetPwd').on('click', function(e) {
+App.onPageInit('resetPwd', function (page) {
+    $$('.saveResetPwd').on('click', function(e){
         var password = {
             old: $$(page.container).find('input[name="Password"]').val(),
             new: $$(page.container).find('input[name="NewPassword"]').val(),
@@ -2518,44 +2262,38 @@ App.onPageInit('resetPwd', function(page) {
             if (password.new == password.confirm) {
                 var userInfo = getUserinfo();
                 var url = API_URL.URL_RESET_PASSWORD.format(userInfo.MinorToken,
-                    encodeURIComponent(password.old),
-                    encodeURIComponent(password.new)
-                );
+                        encodeURIComponent(password.old),
+                        encodeURIComponent(password.new)
+                    );
                 //console.log(url);
                 App.showPreloader();
-                JSON1.request(url, function(result) {
-                        //console.log(result);                  
+                JSON1.request(url, function(result){
+                        //console.log(result);
                         if (result.MajorCode == '000') {
-                            App.alert(LANGUAGE.PROMPT_MSG003, function() {
+                            App.alert(LANGUAGE.PROMPT_MSG003, function(){
                                 logout();
                             });
-                        } else {
+                        }else{
                             App.alert('Wrong password');
                         }
                         App.hidePreloader();
                     },
-                    function() {
-                        App.hidePreloader();
-                        App.alert(LANGUAGE.COM_MSG02);
-                    }
+                    function(){ App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02); }
                 );
-            } else {
-                App.alert(LANGUAGE.COM_MSG14); //Passwords do not match
+            }else{
+                App.alert(LANGUAGE.COM_MSG14);  //Passwords do not match
             }
-        } else {
+        }else{
             App.alert(LANGUAGE.COM_MSG15); // Password should contain at least 6 characters
         }
     });
 });
 
+
 App.onPageInit('asset.alarm', function(page) {
-    //console.log(page.context);
     var alarm = $$(page.container).find('input[name = "checkbox-alarm"]');
 
-    //var alarmFields = ['accOff', 'accOn', 'customAlarm', 'custom2LowAlarm', 'geolock', 'geofenceIn', 'geofenceOut', 'illegalIgnition', 'lowBattery', 'mainBatteryFail', 'sosAlarm', 'speeding', 'tilt', 'harshAcc', 'harshBrk'];
 
-    //var allCheckboxesLabel = $$(page.container).find('label.item-content');
-    //var allCheckboxes = allCheckboxesLabel.find('input.input-checkbox-alarm');
     var allCheckboxes = $$(page.container).find('input.input-checkbox-alarm');
 
     var alarmPreferenceList = $$(page.container).find('.alarm_list');
@@ -2568,12 +2306,12 @@ App.onPageInit('asset.alarm', function(page) {
     var EndTimeInputArray = EndTimeInput.val() ? EndTimeInput.val().split(':') : [];
 
     var speedingInputEl = $$(page.container).find('input[name="checkbox-speeding"]');
-    var overspeedRadioWrapperEl = $$(page.container).find('.overspeed-radio-wrapper'); 
+    var overspeedRadioWrapperEl = $$(page.container).find('.overspeed-radio-wrapper');
     var overspeedRadioEl = $$(page.container).find('input[name="overspeed-radio"]');
     var overspeedVal = page.context.MaxSpeed ? page.context.MaxSpeed : 80;
 
     var offlineInputEl = $$(page.container).find('input[name="checkbox-offline"]');
-    var offlineOptionsWrapperEl = $$(page.container).find('.offline-options-wrapper'); 
+    var offlineOptionsWrapperEl = $$(page.container).find('.offline-options-wrapper');
     var offlineOptionsEl = $$(page.container).find('input[name="offline-option"]');
     var showHintEl = $$(page.container).find('.showHint');
 
@@ -2589,30 +2327,30 @@ App.onPageInit('asset.alarm', function(page) {
         App.popover(popoverHTML, this);
     });
 
-    speedingInputEl.on('change', function() {      
+    speedingInputEl.on('change', function() {
         if (this.checked) {
             overspeedRadioWrapperEl.removeClass('disabled');
         }  else{
             overspeedRadioWrapperEl.addClass('disabled');
-        }               
+        }
     });
 
     alarm.on('change', function(e) {
         for (var i = allCheckboxes.length - 1; i >= 0; i--) {
-            allCheckboxes[i].checked = this.checked;            
+            allCheckboxes[i].checked = this.checked;
             if (allCheckboxes[i].name == 'checkbox-speeding' || allCheckboxes[i].name == 'checkbox-offline') {
-                allCheckboxes[i].dispatchEvent(new Event('change'));  
-            }                      
+                allCheckboxes[i].dispatchEvent(new Event('change'));
+            }
         }
     });
 
     ignoreBetweenEl.on('change', function() {
         pickerWrapperEl.toggleClass('disabled');
         ignoreOnEl.toggleClass('disabled');
-    });   
-   
-    overspeedRadioEl.on('change', function(e) {        
-        if (e.target.value == 2) { 
+    });
+
+    overspeedRadioEl.on('change', function(e) {
+        if (e.target.value == 2) {
             App.modal({
                 title: '<div class="custom-modal-logo-wrapper"><img class="custom-modal-logo" src="resources/images/logo.png" alt=""/></div>',
                 text: '<div class="custom-modal-text">' + LANGUAGE.PROMPT_MSG060 + ':</div>',
@@ -2630,15 +2368,15 @@ App.onPageInit('asset.alarm', function(page) {
                         </li>
                     </ul>
                 </div>
-                `,                      
+                `,
                 buttons: [{
                         text: LANGUAGE.COM_MSG04,
-                        onClick: function() {                                
+                        onClick: function() {
                             for (var i = overspeedRadioEl.length - 1; i >= 0; i--) {
-                                if (overspeedRadioEl[i].value == '1') { 
+                                if (overspeedRadioEl[i].value == '1') {
                                     overspeedRadioEl[i].checked = true;
-                                    break; 
-                                }                                    
+                                    break;
+                                }
                             }
                         }
                     },
@@ -2648,7 +2386,7 @@ App.onPageInit('asset.alarm', function(page) {
                         onClick: function(modal, e) {
                             //console.log(modal, e);
                             var enteredVal = $$(modal).find('input[name="Overspeed"]').val();
-                            overspeedVal = enteredVal ? enteredVal : 1;                               
+                            overspeedVal = enteredVal ? enteredVal : 1;
                         }
                     },
                 ]
@@ -2664,16 +2402,16 @@ App.onPageInit('asset.alarm', function(page) {
             offlineOptionsWrapperEl.removeClass('disabled');
         } else{
             offlineOptionsWrapperEl.addClass('disabled');
-        }  
+        }
     });
 
     offlineOptionsEl.on('change', function(e) {
         let found = false;
         for (var i = offlineOptionsEl.length - 1; i >= 0; i--) {
-            if (offlineOptionsEl[i].checked == true) {                
+            if (offlineOptionsEl[i].checked == true) {
                 found = true;
-                break; 
-            }            
+                break;
+            }
         }
         if (!found) {
             this.checked = true;
@@ -2681,7 +2419,7 @@ App.onPageInit('asset.alarm', function(page) {
                 hold: 3000,
                 message: LANGUAGE.PROMPT_MSG061
             });
-        }        
+        }
     });
 
 
@@ -2706,10 +2444,7 @@ App.onPageInit('asset.alarm', function(page) {
         value: BeginTimeValArray,
 
         onChange: function(picker, values, displayValues) {
-            /*var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
-            if (values[1] > daysInMonth) {
-                picker.cols[1].setValue(daysInMonth);
-            }*/
+
         },
 
         formatValue: function(p, values, displayValues) {
@@ -2725,11 +2460,7 @@ App.onPageInit('asset.alarm', function(page) {
                     return arr;
                 })(),
             },
-            // Divider
-            /*{
-                divider: true,
-                content: ':'
-            },*/
+
             // Minutes
             {
                 values: (function() {
@@ -2756,10 +2487,7 @@ App.onPageInit('asset.alarm', function(page) {
         value: EndTimeInputArray,
 
         onChange: function(picker, values, displayValues) {
-            /*var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
-            if (values[1] > daysInMonth) {
-                picker.cols[1].setValue(daysInMonth);
-            }*/
+
         },
 
         formatValue: function(p, values, displayValues) {
@@ -2775,11 +2503,7 @@ App.onPageInit('asset.alarm', function(page) {
                     return arr;
                 })(),
             },
-            // Divider
-            /*{
-                divider: true,
-                content: ':'
-            },*/
+
             // Minutes
             {
                 values: (function() {
@@ -2808,7 +2532,6 @@ App.onPageInit('asset.alarm', function(page) {
         }
     });
 
-    
     $$('.saveAlarm').on('click', function(e) {
         var userInfo = getUserinfo();
         var ignoreDaysArr = $(page.container).find('[name="ignore-days"]').val();
@@ -2821,7 +2544,7 @@ App.onPageInit('asset.alarm', function(page) {
             DateTo: moment(EndTimeInput.val(), 'HH:mm').utc().format('HH:mm'),
             AlertTypes: 0,
             Weeks: '',
-            IsIgnore: 0,            
+            IsIgnore: 0,
         };
 
         if (ignoreBetweenEl.is(":checked")) {
@@ -2831,31 +2554,30 @@ App.onPageInit('asset.alarm', function(page) {
             data.Weeks = ignoreDaysArr.toString();
         }
         if (allCheckboxes && allCheckboxes.length) {
-            for (var i = allCheckboxes.length - 1; i >= 0; i--) {               
+            for (var i = allCheckboxes.length - 1; i >= 0; i--) {
                 if (!allCheckboxes[i].checked) {
                     data.AlertTypes += parseInt(allCheckboxes[i].value, 10);
                 }
             }
         }
-
         if (speedingInputEl.is(":checked")) {
             data.SpeedingMode = parseInt($$(page.container).find('input[name="overspeed-radio"]:checked').val(),10);
             if (data.SpeedingMode == 2) {
                 data.MaxSpeed = overspeedVal;
             }
         }
-
-        if (offlineInputEl.is(":checked")) {   
-            data.OfflineHours = '';         
+        if (offlineInputEl.is(":checked")) {
+            data.OfflineHours = '';
             for (var i = offlineOptionsEl.length - 1; i >= 0; i--) {
                 if (offlineOptionsEl[i].checked) {
                     data.OfflineHours += offlineOptionsEl[i].value + ',';
-                }                
+                }
             }
             if (data.OfflineHours) {
                 data.OfflineHours = data.OfflineHours.slice(0, -1);
-            }                
+            }
         }
+
         //console.log(data);
 
         App.showPreloader();
@@ -2868,22 +2590,22 @@ App.onPageInit('asset.alarm', function(page) {
             crossDomain: true,
             success: function(result) {
                 App.hidePreloader();
-                //console.log(result);
+                console.log(result);
                 if (result.MajorCode == '000') {
                     mainView.router.back();
 
                     if (speedingInputEl.is(":checked")) {
                         var obj = {
-                            IMEI: data.IMEIS, 
-                            Props: {                                    
+                            IMEI: data.IMEIS,
+                            Props: {
                                 MaxSpeedAlertMode: data.SpeedingMode
                             }
-                        }
+                        };
                         if (data.SpeedingMode == 2) {
                             obj.Props.MaxSpeed = data.MaxSpeed;
                         }
                         updateAssetList3([obj]);
-                    }                        
+                    }
 
                 } else {
                     App.alert('Something wrong');
@@ -2897,64 +2619,67 @@ App.onPageInit('asset.alarm', function(page) {
 
     });
 
-});
 
+
+
+});
 
 App.onPageBeforeRemove('asset.alarm', function(page) {
     // fix to close modal calendar if it was opened and default back button pressed
     App.closeModal('.custom-picker');
 });
 
-App.onPageInit('asset.playback', function(page) {
+
+App.onPageInit('asset.playback', function (page) {
 
     var playbackListSettings = $$(page.container).find('.list-playback-settings');
     var today = new Date();
-    var yesterday = new Date(new Date().setDate(new Date().getDate() - 1));
+    var yesterday = new Date(new Date().setDate(new Date().getDate()-1));
 
     var pickerStartDate = App.picker({
         input: '.picker-start-date',
         cssClass: 'custom-picker custom-date',
         //toolbarCloseText: '',
-        toolbarTemplate: '<div class="toolbar">' +
-            '<div class="toolbar-inner">' +
-            '<div class="left"><div class="text">' + LANGUAGE.ASSET_PLAYBACK_MSG04 + '</div></div>' +
-            '<div class="right">' +
-            '<a href="#" class="link close-picker color-black">{{closeText}}</a>' +
-            '</div>' +
-            '</div>' +
-            '</div>',
+        toolbarTemplate:'<div class="toolbar">'+
+                          '<div class="toolbar-inner">'+
+                            '<div class="left"><div class="text">'+LANGUAGE.ASSET_PLAYBACK_MSG04+'</div></div>'+
+                            '<div class="right">'+
+                              '<a href="#" class="link close-picker color-black">{{closeText}}</a>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>',
 
         value: [yesterday.getMonth(), yesterday.getDate(), yesterday.getFullYear()],
 
-        onChange: function(picker, values, displayValues) {
-            var daysInMonth = new Date(picker.value[2], picker.value[0] * 1 + 1, 0).getDate();
+        onChange: function (picker, values, displayValues) {
+            var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
             if (values[1] > daysInMonth) {
                 picker.cols[1].setValue(daysInMonth);
             }
         },
 
-        formatValue: function(p, values, displayValues) {
+        formatValue: function (p, values, displayValues) {
             if (Array.isArray(displayValues) && displayValues.length === 0) {
                 displayValues[0] = moment(yesterday).format('MMMM');
             }
             return displayValues[0] + ' ' + values[1] + ', ' + values[2];
+
         },
 
         cols: [
             // Months
             {
                 values: ('0 1 2 3 4 5 6 7 8 9 10 11').split(' '),
-                //displayValues: ('January February March April May June July August September October November December').split(' '),
-                displayValues: [LANGUAGE.ASSET_PLAYBACK_MSG12, LANGUAGE.ASSET_PLAYBACK_MSG13, LANGUAGE.ASSET_PLAYBACK_MSG14, LANGUAGE.ASSET_PLAYBACK_MSG15, LANGUAGE.ASSET_PLAYBACK_MSG16, LANGUAGE.ASSET_PLAYBACK_MSG17, LANGUAGE.ASSET_PLAYBACK_MSG18, LANGUAGE.ASSET_PLAYBACK_MSG19, LANGUAGE.ASSET_PLAYBACK_MSG20, LANGUAGE.ASSET_PLAYBACK_MSG21, LANGUAGE.ASSET_PLAYBACK_MSG22, LANGUAGE.ASSET_PLAYBACK_MSG23],
+                displayValues: [LANGUAGE.ASSET_PLAYBACK_MSG12,LANGUAGE.ASSET_PLAYBACK_MSG13,LANGUAGE.ASSET_PLAYBACK_MSG14,LANGUAGE.ASSET_PLAYBACK_MSG15,LANGUAGE.ASSET_PLAYBACK_MSG16,LANGUAGE.ASSET_PLAYBACK_MSG17,LANGUAGE.ASSET_PLAYBACK_MSG18,LANGUAGE.ASSET_PLAYBACK_MSG19,LANGUAGE.ASSET_PLAYBACK_MSG20,LANGUAGE.ASSET_PLAYBACK_MSG21,LANGUAGE.ASSET_PLAYBACK_MSG22,LANGUAGE.ASSET_PLAYBACK_MSG23],
                 textAlign: 'left'
             },
             // Days
             {
-                values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+                values: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
             },
             // Years
             {
-                values: (function() {
+                values: (function () {
                     var arr = [];
                     var endYear = today.getFullYear();
                     for (var i = 1950; i <= endYear; i++) { arr.push(i); }
@@ -2972,45 +2697,37 @@ App.onPageInit('asset.playback', function(page) {
     var pickerStartTime = App.picker({
         input: '.picker-start-time',
         cssClass: 'custom-picker custom-time',
-        toolbarTemplate: '<div class="toolbar">' +
-            '<div class="toolbar-inner">' +
-            '<div class="left"><div class="text">' + LANGUAGE.ASSET_PLAYBACK_MSG05 + '</div></div>' +
-            '<div class="right">' +
-            '<a href="#" class="link close-picker color-black">{{closeText}}</a>' +
-            '</div>' +
-            '</div>' +
-            '</div>',
+        toolbarTemplate:'<div class="toolbar">'+
+                          '<div class="toolbar-inner">'+
+                            '<div class="left"><div class="text">'+LANGUAGE.ASSET_PLAYBACK_MSG05+'</div></div>'+
+                            '<div class="right">'+
+                              '<a href="#" class="link close-picker color-black">{{closeText}}</a>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>',
 
         value: [today.getHours(), (today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes())],
 
-        onChange: function(picker, values, displayValues) {
-            /*var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
-            if (values[1] > daysInMonth) {
-                picker.cols[1].setValue(daysInMonth);
-            }*/
+        onChange: function (picker, values, displayValues) {
+
         },
 
-        formatValue: function(p, values, displayValues) {
+        formatValue: function (p, values, displayValues) {
             return values[0] + ':' + values[1];
         },
 
         cols: [
             // Hours
             {
-                values: (function() {
+                values: (function () {
                     var arr = [];
                     for (var i = 0; i <= 23; i++) { arr.push(i); }
                     return arr;
                 })(),
             },
-            // Divider
-            /*{
-                divider: true,
-                content: ':'
-            },*/
-            // Minutes
+                        // Minutes
             {
-                values: (function() {
+                values: (function () {
                     var arr = [];
                     for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
                     return arr;
@@ -3022,25 +2739,25 @@ App.onPageInit('asset.playback', function(page) {
     var pickerEndtDate = App.picker({
         input: '.picker-end-date',
         cssClass: 'custom-picker custom-date',
-        toolbarTemplate: '<div class="toolbar">' +
-            '<div class="toolbar-inner">' +
-            '<div class="left"><div class="text">' + LANGUAGE.ASSET_PLAYBACK_MSG06 + '</div></div>' +
-            '<div class="right">' +
-            '<a href="#" class="link close-picker color-black">{{closeText}}</a>' +
-            '</div>' +
-            '</div>' +
-            '</div>',
+        toolbarTemplate:'<div class="toolbar">'+
+                          '<div class="toolbar-inner">'+
+                            '<div class="left"><div class="text">'+LANGUAGE.ASSET_PLAYBACK_MSG06+'</div></div>'+
+                            '<div class="right">'+
+                              '<a href="#" class="link close-picker color-black">{{closeText}}</a>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>',
 
         value: [today.getMonth(), today.getDate(), today.getFullYear()],
 
-        onChange: function(picker, values, displayValues) {
-            var daysInMonth = new Date(picker.value[2], picker.value[0] * 1 + 1, 0).getDate();
+        onChange: function (picker, values, displayValues) {
+            var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
             if (values[1] > daysInMonth) {
                 picker.cols[1].setValue(daysInMonth);
             }
         },
 
-        formatValue: function(p, values, displayValues) {
+        formatValue: function (p, values, displayValues) {
             if (Array.isArray(displayValues) && displayValues.length === 0) {
                 displayValues[0] = moment().format('MMMM');
             }
@@ -3051,16 +2768,16 @@ App.onPageInit('asset.playback', function(page) {
             // Months
             {
                 values: ('0 1 2 3 4 5 6 7 8 9 10 11').split(' '),
-                displayValues: [LANGUAGE.ASSET_PLAYBACK_MSG12, LANGUAGE.ASSET_PLAYBACK_MSG13, LANGUAGE.ASSET_PLAYBACK_MSG14, LANGUAGE.ASSET_PLAYBACK_MSG15, LANGUAGE.ASSET_PLAYBACK_MSG16, LANGUAGE.ASSET_PLAYBACK_MSG17, LANGUAGE.ASSET_PLAYBACK_MSG18, LANGUAGE.ASSET_PLAYBACK_MSG19, LANGUAGE.ASSET_PLAYBACK_MSG20, LANGUAGE.ASSET_PLAYBACK_MSG21, LANGUAGE.ASSET_PLAYBACK_MSG22, LANGUAGE.ASSET_PLAYBACK_MSG23],
+                displayValues: [LANGUAGE.ASSET_PLAYBACK_MSG12,LANGUAGE.ASSET_PLAYBACK_MSG13,LANGUAGE.ASSET_PLAYBACK_MSG14,LANGUAGE.ASSET_PLAYBACK_MSG15,LANGUAGE.ASSET_PLAYBACK_MSG16,LANGUAGE.ASSET_PLAYBACK_MSG17,LANGUAGE.ASSET_PLAYBACK_MSG18,LANGUAGE.ASSET_PLAYBACK_MSG19,LANGUAGE.ASSET_PLAYBACK_MSG20,LANGUAGE.ASSET_PLAYBACK_MSG21,LANGUAGE.ASSET_PLAYBACK_MSG22,LANGUAGE.ASSET_PLAYBACK_MSG23],
                 textAlign: 'left'
             },
             // Days
             {
-                values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+                values: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
             },
             // Years
             {
-                values: (function() {
+                values: (function () {
                     var arr = [];
                     var endYear = today.getFullYear();
                     for (var i = 1950; i <= endYear; i++) { arr.push(i); }
@@ -3078,45 +2795,38 @@ App.onPageInit('asset.playback', function(page) {
     var pickerEndtTime = App.picker({
         input: '.picker-end-time',
         cssClass: 'custom-picker custom-time',
-        toolbarTemplate: '<div class="toolbar">' +
-            '<div class="toolbar-inner">' +
-            '<div class="left"><div class="text">' + LANGUAGE.ASSET_PLAYBACK_MSG07 + '</div></div>' +
-            '<div class="right">' +
-            '<a href="#" class="link close-picker color-black">{{closeText}}</a>' +
-            '</div>' +
-            '</div>' +
-            '</div>',
+        toolbarTemplate:'<div class="toolbar">'+
+                          '<div class="toolbar-inner">'+
+                            '<div class="left"><div class="text">'+LANGUAGE.ASSET_PLAYBACK_MSG07+'</div></div>'+
+                            '<div class="right">'+
+                              '<a href="#" class="link close-picker color-black">{{closeText}}</a>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>',
 
         value: [today.getHours(), (today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes())],
 
-        onChange: function(picker, values, displayValues) {
-            /*var daysInMonth = new Date(picker.value[2], picker.value[0]*1 + 1, 0).getDate();
-            if (values[1] > daysInMonth) {
-                picker.cols[1].setValue(daysInMonth);
-            }*/
+        onChange: function (picker, values, displayValues) {
+
         },
 
-        formatValue: function(p, values, displayValues) {
+        formatValue: function (p, values, displayValues) {
             return values[0] + ':' + values[1];
         },
 
         cols: [
             // Hours
             {
-                values: (function() {
+                values: (function () {
                     var arr = [];
                     for (var i = 0; i <= 23; i++) { arr.push(i); }
                     return arr;
                 })(),
             },
-            // Divider
-            /*{
-                divider: true,
-                content: ':'
-            },*/
+
             // Minutes
             {
-                values: (function() {
+                values: (function () {
                     var arr = [];
                     for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
                     return arr;
@@ -3125,7 +2835,7 @@ App.onPageInit('asset.playback', function(page) {
         ]
     });
 
-    $$('.showPlayback').on('click', function() {
+    $$('.showPlayback').on('click', function(){
         var fromDate = $$(page.container).find('input[name="picker-start-date"]').val();
         var fromTime = $$(page.container).find('input[name="picker-start-time"]').val();
         var toDate = $$(page.container).find('input[name="picker-end-date"]').val();
@@ -3138,17 +2848,18 @@ App.onPageInit('asset.playback', function(page) {
         from = moment(from, datepickerFormat).utc().format(window.COM_TIMEFORMAT2);
         to = moment(to, datepickerFormat).utc().format(window.COM_TIMEFORMAT2);
 
+
         getHisPosArray(from, to);
     });
 
-    $$(playbackListSettings).on('click', 'li', function(event) {
+    $$(playbackListSettings).on('click', 'li', function(event){
         event.stopPropagation();
         var input = $$(this).find('input');
 
 
         if (input) {
             var name = input.attr('name');
-            switch (name) {
+            switch(name){
                 case 'picker-start-date':
                     pickerStartDate.open();
                     break;
@@ -3168,13 +2879,13 @@ App.onPageInit('asset.playback', function(page) {
 
 });
 
-App.onPageBeforeRemove('asset.playback', function(page) {
+
+App.onPageBeforeRemove('asset.playback', function(page){
     // fix to close modal calendar if it was opened and default back button pressed
     App.closeModal('.custom-picker');
 });
 
-App.onPageInit('asset.location', function(page) {
-
+App.onPageInit('asset.location', function (page) {
     var panoButton = $$(page.container).find('.pano_button');
     var speedLimitEl = $$(page.container).find('.position_speedlimit');
     var lat = panoButton.data('lat');
@@ -3185,12 +2896,12 @@ App.onPageInit('asset.location', function(page) {
     var speedUnitCode = page.context.SpeedUnitCode;
     var alertSpeedingType = page.context.SpeedingType;
 
-    showMap({ 'lat': lat, 'lng': lng });
+    showMap({'lat':lat,'lng':lng});
     initSettingsButton();
 
-    StreetViewService.getPanorama({ location: latlng, radius: 50 }, processSVData);
+    StreetViewService.getPanorama({location:latlng, radius: 50}, processSVData);
 
-    panoButton.on('click', function() {
+    panoButton.on('click', function(){
         var params = {
             'lat': $$(this).data('lat'),
             'lng': $$(this).data('lng'),
@@ -3199,37 +2910,32 @@ App.onPageInit('asset.location', function(page) {
     });
 
     if (alertType == 32 && alertSpeedingType == 1) {
-      
-    	$.ajax({
-	        type: "GET",
-	        url: API_URL.URL_GET_SPEEDLIMIT.format(page.context.Lat, page.context.Lng),
-	        data: {},
-	        async: true,
-	        crossDomain: true,
-	        cache: false,
-	        success: function(result) {
-	           //console.log(result);	
-	           	if (result && result.max) {
-	           		var speed = Protocol.Helper.getSpeedValue(speedUnitCode, parseInt(result.max));
+
+        $.ajax({
+            type: "GET",
+            url: API_URL.URL_GET_SPEEDLIMIT.format(page.context.Lat, page.context.Lng),
+            data: {},
+            async: true,
+            crossDomain: true,
+            cache: false,
+            success: function(result) {
+               //console.log(result);
+                if (result && result.max) {
+                    var speed = Protocol.Helper.getSpeedValue(speedUnitCode, parseInt(result.max));
                     var speedUnit = Protocol.Helper.getSpeedUnit(speedUnitCode);
-	           		speedLimitEl.html(parseInt(speed) + ' '+ speedUnit);
-	           	}
+                    speedLimitEl.html(parseInt(speed) + ' '+ speedUnit);
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+               console.log('womething wrong');
+            }
+        });
 
-	        },
-	        error: function(XMLHttpRequest, textStatus, errorThrown) {
-	           console.log('womething wrong')
-	        }
-	    });
-    	    	
-        
     }
-
-    //console.log(page)
 });
 App.onPageBeforeRemove('asset.location', function(page) {
     MapControls.isGeofencesShowed() ? MapControls.hideGeofences() : '';
 });
-
 
 App.onPageInit('asset.track.all', function(page) {
     showMapAll();
@@ -3246,8 +2952,6 @@ App.onPageInit('asset.track.all', function(page) {
     initSettingsButton();
 });
 
-
-
 App.onPageBeforeRemove('asset.track.all', function(page) {
     clearInterval(trackTimer);
     trackTimer = false;
@@ -3256,7 +2960,7 @@ App.onPageBeforeRemove('asset.track.all', function(page) {
 });
 
 
-App.onPageInit('asset.track', function(page) {
+App.onPageInit('asset.track', function (page) {
     showMap();
     initSettingsButton();
 
@@ -3272,19 +2976,19 @@ App.onPageInit('asset.track', function(page) {
     var lng = panoButton.data('lng');
     var latlng = new google.maps.LatLng(lat, lng);
     var data = {
-        'posTime': posTime,
-        'posMileage': posMileage,
-        'posSpeed': posSpeed,
-        'posAddress': posAddress,
-        'routeButton': routeButton,
-        'panoButton': panoButton,
-        'posLatlng': posLatlng,
+        'posTime':posTime,
+        'posMileage':posMileage,
+        'posSpeed':posSpeed,
+        'posAddress':posAddress,
+        'routeButton':routeButton,
+        'panoButton':panoButton,
+        'posLatlng':posLatlng,
     };
     var sendPingButton = $$(page.container).find('.sendPing');
     var MinorToken = getUserinfo().MinorToken;
 
-    StreetViewService.getPanorama({ location: latlng, radius: 50 }, processSVData);
-    panoButton.on('click', function() {
+    StreetViewService.getPanorama({location:latlng, radius: 50}, processSVData);
+    panoButton.on('click', function(){
         var params = {
             'lat': $$(this).data('lat'),
             'lng': $$(this).data('lng'),
@@ -3292,70 +2996,66 @@ App.onPageInit('asset.track', function(page) {
         showStreetView(params);
     });
 
-    $$('.refreshTrack').on('click', function() {
+    $$('.refreshTrack').on('click', function(){
         updateAssetData(data);
     });
 
-    trackTimer = setInterval(function() {
-        updateMarkerPositionTrack(data);
-    }, 10000);
+    trackTimer = setInterval(function(){
+                updateMarkerPositionTrack(data);
+            }, 10000);
 
-    sendPingButton.on('click', function() {
+    sendPingButton.on('click', function(){
         var button = $$(this).closest('.float_button_wrapper');
         button.addClass('disabled');
-        setTimeout(function() {
+        setTimeout(function(){
             button.removeClass('disabled');
-        }, 10000);
+        }, 10000 );
 
         var container = $$('body');
         if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
         App.showProgressbar(container);
 
-        var url = API_URL.URL_GET_POSITION_GPRS.format(MinorToken, TargetAsset.ASSET_ID);
-        // console.log(url);  
+        var url = API_URL.URL_GET_POSITION_GPRS.format(MinorToken,TargetAsset.ASSET_ID);
+        // console.log(url);
         JSON1.request(url, function(result) {
                 console.log(result);
-                if (result.MajorCode == '000') {
-                    setTimeout(updateAssetDataByGPRS, 10000);
-                    setTimeout(updateAssetDataByGPRS, 15000);
-                    setTimeout(updateAssetDataByGPRS, 30000);
+                if(result.MajorCode == '000') {
+                    setTimeout(updateAssetDataByGPRS,10000);
+                    setTimeout(updateAssetDataByGPRS,15000);
+                    setTimeout(updateAssetDataByGPRS,30000);
 
-                } else if (result.MajorCode == '100' && result.MinorCode == '1002') {
+                }else if(result.MajorCode == '100' && result.MinorCode == '1002'){
                     App.alert(LANGUAGE.COM_MSG29);
-                } else if (result.MajorCode == '100' && result.MinorCode == '1003' && result.Data === null) {
+                }else if(result.MajorCode == '100' && result.MinorCode == '1003' && result.Data === null){
                     App.alert(LANGUAGE.COM_MSG31);
-                } else {
+                }else{
                     App.alert(LANGUAGE.COM_MSG16);
                 }
                 App.hideProgressbar();
             },
-            function() {
-                App.hideProgressbar();
-                App.alert(LANGUAGE.COM_MSG02);
-            }
+            function(){ App.hideProgressbar();  App.alert(LANGUAGE.COM_MSG02); }
         );
 
     });
-
 });
 
-App.onPageBeforeRemove('asset.track', function(page) {
+App.onPageBeforeRemove('asset.track', function(page){
     clearInterval(trackTimer);
     trackTimer = false;
     MapControls.isGeofencesShowed() ? MapControls.hideGeofences() : '';
 });
 
-App.onPageInit('asset.playback.show', function(page) {
+App.onPageInit('asset.playback.show', function (page) {
 
     var rangeInput = $$(page.container).find('input[name="rangeInput"]');
     var startPlayback = $$('body').find('.startPlayback');
     var startPlaybackIco = $$(startPlayback).find('i');
     showMapPlayback();
     var valueMax = HistoryArray.length - 1;
-    rangeInput.attr('max', valueMax);
+    rangeInput.attr('max',valueMax);
     var asset = POSINFOASSETLIST[TargetAsset.ASSET_IMEI];
 
-    var lastQueryPosinfo = {}; //get last  query  position       
+    var lastQueryPosinfo = {};//get last  query  position
 
     var posTime = $$(page.container).find('.position_time');
     //var posDir = $$(page.container).find('.position_direction');
@@ -3368,9 +3068,9 @@ App.onPageInit('asset.playback.show', function(page) {
     var lat = panoButton.data('lat');
     var lng = panoButton.data('lng');
 
-    StreetViewService.getPanorama({ location: new google.maps.LatLng(lat, lng), radius: 50 }, processSVData);
+    StreetViewService.getPanorama({location:new google.maps.LatLng(lat, lng), radius: 50}, processSVData);
 
-    panoButton.on('click', function() {
+    panoButton.on('click', function(){
         var params = {
             'lat': $$(this).data('lat'),
             'lng': $$(this).data('lng'),
@@ -3378,27 +3078,27 @@ App.onPageInit('asset.playback.show', function(page) {
         showStreetView(params);
     });
 
-    rangeInput.on('change input', function() {
+    rangeInput.on('change input', function(){
         var value = $$(this).val();
         updateMarkerPositionPlayback(value);
     });
 
-    startPlayback.on('click', function() {
+    startPlayback.on('click', function(){
         if (playbackTimer) {
             $$(startPlaybackIco).removeClass('icon-header-pause');
             $$(startPlaybackIco).addClass('icon-header-play');
             clearInterval(playbackTimer);
             playbackTimer = false;
-        } else {
+        }else{
             $$(startPlaybackIco).removeClass('icon-header-play');
             $$(startPlaybackIco).addClass('icon-header-pause');
 
-            playbackTimer = setInterval(function() {
+            playbackTimer = setInterval(function(){
                 var value = rangeInput.val();
                 if (value != valueMax) {
                     value++;
                     rangeInput.val(value);
-                } else {
+                }else{
                     rangeInput.val(0);
                     value = 0;
                     clearInterval(playbackTimer);
@@ -3412,8 +3112,9 @@ App.onPageInit('asset.playback.show', function(page) {
         }
     });
 
-    $$('.menuRoutes').on('click', function() {
-        var buttons = [{
+    $$('.menuRoutes').on('click', function () {
+        var buttons = [
+            {
                 text: LANGUAGE.ASSET_PLAYBACK_MSG28,
                 label: true,
 
@@ -3421,15 +3122,15 @@ App.onPageInit('asset.playback.show', function(page) {
             {
                 text: LANGUAGE.ASSET_PLAYBACK_MSG29,
                 //color: 'boatwatch',
-                onClick: function() {
-                    showPlaybackRoute(2); //optimized      
+                onClick: function () {
+                    showPlaybackRoute(2);      //optimized
                 }
             },
             {
                 text: LANGUAGE.ASSET_PLAYBACK_MSG30,
                 //color: 'boatwatch',
-                onClick: function() {
-                    showPlaybackRoute(1); //raw
+                onClick: function () {
+                    showPlaybackRoute(1);       //raw
                 }
             },
             {
@@ -3440,40 +3141,41 @@ App.onPageInit('asset.playback.show', function(page) {
         App.actions(buttons);
     });
 
-    function updateMarkerPositionPlayback(value) {
+    function updateMarkerPositionPlayback(value){
         window.PosMarker[TargetAsset.ASSET_IMEI].setLatLng([HistoryArray[value].lat, HistoryArray[value].lng]);
-        posTime.html(moment(HistoryArray[value].positionTime, 'X').format(window.COM_TIMEFORMAT));
-        //posDir.html(asset.posInfo.direct);        
+        posTime.html(moment(HistoryArray[value].positionTime,'X').format(window.COM_TIMEFORMAT));
+        //posDir.html(asset.posInfo.direct);
         posMileage.html((Protocol.Helper.getMileageValue(asset.Unit, HistoryArray[value].mileage) + parseInt(asset.InitMileage) + parseInt(asset._FIELD_FLOAT7)) + '&nbsp;' + Protocol.Helper.getMileageUnit(asset.Unit));
         posSpeed.html(Protocol.Helper.getSpeedValue(asset.Unit, HistoryArray[value].speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit));
         posLatlng.html('GPS: ' + Protocol.Helper.convertDMS(HistoryArray[value].lat, HistoryArray[value].lng));
         MapTrack.setView([HistoryArray[value].lat, HistoryArray[value].lng]);
-        if (lastQueryPosinfo && Math.floor(HistoryArray[value].lat * 10000) / 10000 === lastQueryPosinfo.lat && Math.floor(HistoryArray[value].lng * 10000) / 10000 === lastQueryPosinfo.lng) {
+        if(lastQueryPosinfo && Math.floor(HistoryArray[value].lat * 10000) / 10000 === lastQueryPosinfo.lat && Math.floor(HistoryArray[value].lng * 10000) / 10000 === lastQueryPosinfo.lng ){
             posAddress.html(lastQueryPosinfo.address);
-        } else {
+        }else{
             var latlng = {
                 lat: HistoryArray[value].lat,
                 lng: HistoryArray[value].lng
             };
             updatePanoButton(latlng);
-            Protocol.Helper.getAddressByGeocoder(latlng, function(address) {
-                lastQueryPosinfo = { lat: Math.floor(latlng.lat * 10000) / 10000, lng: Math.floor(latlng.lng * 10000) / 10000, address: address };
+            Protocol.Helper.getAddressByGeocoder(latlng,function(address){
+                lastQueryPosinfo = {lat : Math.floor(latlng.lat * 10000) / 10000, lng : Math.floor(latlng.lng * 10000) / 10000, address: address };
                 posAddress.html(address);
             });
         }
     }
 
     function updatePanoButton(params) {
-        panoButton.data('lat', params.lat);
-        panoButton.data('lng', params.lng);
-        StreetViewService.getPanorama({ location: new google.maps.LatLng(params.lat, params.lng), radius: 50 }, processSVData);
+        panoButton.data('lat',params.lat);
+        panoButton.data('lng',params.lng);
+        StreetViewService.getPanorama({location:new google.maps.LatLng(params.lat,params. lng), radius: 50}, processSVData);
     }
 
 
 
 });
 
-App.onPageBeforeRemove('asset.playback.show', function(page) {
+
+App.onPageBeforeRemove('asset.playback.show', function(page){
     clearInterval(playbackTimer);
     playbackTimer = false;
     HistoryArray = [];
@@ -3483,14 +3185,15 @@ App.onPageBeforeRemove('asset.playback.show', function(page) {
     playbackLayerGroupOpt = false;
 });
 
-App.onPageInit('user.recharge.credit', function(page) {
+App.onPageInit('user.recharge.credit', function (page) {
     var buyNowButtons = $$(page.container).find('.button_buy_now');
-    buyNowButtons.on('click', function(event) {
+    buyNowButtons.on('click', function(event){
         event.preventDefault();
-        setTimeout(function() {
+        setTimeout(function(){
             App.modal({
                 text: LANGUAGE.PROMPT_MSG030, //LANGUAGE.PROMPT_MSG017
-                buttons: [{
+                buttons: [
+                    {
                         text: LANGUAGE.COM_MSG34,
                         onClick: function() {
                             checkBalance(true);
@@ -3498,7 +3201,8 @@ App.onPageInit('user.recharge.credit', function(page) {
                     },
                     {
                         text: LANGUAGE.COM_MSG35,
-                        onClick: function() {}
+                        onClick: function() {
+                        }
                     },
                 ]
             });
@@ -3508,13 +3212,13 @@ App.onPageInit('user.recharge.credit', function(page) {
 
 });
 
-App.onPageInit('reports', function(page) {
+App.onPageInit('reports', function (page) {
     var reportsListEl = $$(page.container).find('.reportsList');
 
-    reportsListEl.on('click', '.item-link', function() {
+    reportsListEl.on('click', '.item-link', function(){
         var type = $$(this).data('type');
 
-        switch (type) {
+        switch (type){
             case '1':
                 loadPageOverviewReport();
                 break;
@@ -3532,22 +3236,19 @@ App.onPageInit('reports', function(page) {
 
 
 
+function clearUserInfo(){
 
-
-
-
-function clearUserInfo() {
-    getPlusInfo();
-    var mobileToken = !localStorage.PUSH_MOBILE_TOKEN ? '' : localStorage.PUSH_MOBILE_TOKEN;
-    var appId = !localStorage.PUSH_APPID_ID ? '' : localStorage.PUSH_APPID_ID;
-    var deviceToken = !localStorage.PUSH_DEVICE_TOKEN ? '' : localStorage.PUSH_DEVICE_TOKEN;
-    var userName = !localStorage.ACCOUNT ? '' : localStorage.ACCOUNT;
+    var mobileToken = !localStorage.PUSH_MOBILE_TOKEN? '' : localStorage.PUSH_MOBILE_TOKEN;
+    var appId = !localStorage.PUSH_APPID_ID? '' : localStorage.PUSH_APPID_ID;
+    var deviceToken = !localStorage.PUSH_DEVICE_TOKEN? '' : localStorage.PUSH_DEVICE_TOKEN;
+    var userName = !localStorage.ACCOUNT? '' : localStorage.ACCOUNT;
+    var elem_rc_flag = !localStorage.elem_rc_flag ? '' : localStorage.elem_rc_flag;
     var userInfo = getUserinfo();
     var MinorToken = userInfo.MinorToken;
     var MajorToken = userInfo.MajorToken;
     window.PosMarker = {};
-    TargetAsset = {};
-    POSINFOASSETLIST = {};
+	TargetAsset = {};
+	POSINFOASSETLIST = {};
     var alarmList = getAlarmList();
     var pushList = getNotificationList();
     var mapSettingsObg = getMapSettings();
@@ -3558,12 +3259,12 @@ function clearUserInfo() {
 
     localStorage.clear();
 
-    if (push) {
+    if(push) {
         push.clearAllNotifications(
-            () => {
+            function () {
                 console.log('success');
             },
-            () => {
+            function () {
                 console.log('error');
             }
         );
@@ -3588,6 +3289,10 @@ function clearUserInfo() {
         localStorage.setItem("COM.QUIKTRAK.LIVE.MAPSETTINGS", JSON.stringify(mapSettingsObg));
     }
 
+    if (elem_rc_flag) {
+        localStorage.elem_rc_flag = 1;
+    }
+
     if (deviceToken) {
         localStorage.PUSH_DEVICE_TOKEN = deviceToken;
     }
@@ -3605,132 +3310,124 @@ function clearUserInfo() {
         localStorage.FirstLoginDone = FirstLoginDone;
     }
 
-    JSON1.request(API_URL.URL_GET_LOGOUT.format(mobileToken, deviceToken), function(result) { console.log(result); });
+    /*if(MinorToken){
+        JSON1.request(API_URL.URL_GET_LOGOUT.format(MajorToken, MinorToken, userName, mobileToken), function(result){ console.log(result); });
+    } */
+
+    JSON1.request(API_URL.URL_GET_LOGOUT.format(mobileToken, deviceToken), function(result){ console.log(result); });
 
     $$("input[name='account']").val(userName);
 }
 
 
-function logout() {
+function logout(){
     clearUserInfo();
     App.loginScreen();
 }
 
-function preLogin() {
+function preLogin(){
     hideKeyboard();
-    //getPlusInfo();
+    getPlusInfo();
     App.showPreloader();
-    if (localStorage.PUSH_DEVICE_TOKEN) {
+    if  (localStorage.PUSH_DEVICE_TOKEN){
         login();
-    } else {
-        loginInterval = setInterval(reGetPushDetails, 500);
+    }else{
+        loginInterval = setInterval( reGetPushDetails, 500);
     }
 }
 
-function reGetPushDetails() {
-
-    //getPlusInfo();
-    if (pushConfigRetry <= pushConfigRetryMax) {
+function reGetPushDetails(){
+    //hideKeyboard();
+    getPlusInfo();
+    if  (pushConfigRetry <= pushConfigRetryMax){
         pushConfigRetry++;
-        if (localStorage.PUSH_DEVICE_TOKEN) {
+        if  (localStorage.PUSH_DEVICE_TOKEN){
             clearInterval(loginInterval);
             login();
         }
-    } else {
+    }else{
         clearInterval(loginInterval);
         pushConfigRetry = 0;
         login();
-        /*setTimeout(function(){
-           App.alert(LANGUAGE.PROMPT_MSG052);
-        },2000);*/
+
     }
 }
 
-function login() {
+function login(){
+    //alert('login() called');
     getPlusInfo();
     //hideKeyboard();
 
+        //App.showPreloader();
+        var mobileToken = !localStorage.PUSH_MOBILE_TOKEN? '' : localStorage.PUSH_MOBILE_TOKEN;
+        var appKey = !localStorage.PUSH_APP_KEY? '' : localStorage.PUSH_APP_KEY;
+        var deviceToken = !localStorage.PUSH_DEVICE_TOKEN? '' : localStorage.PUSH_DEVICE_TOKEN;
+        var deviceType = !localStorage.DEVICE_TYPE? '' : localStorage.DEVICE_TYPE;
+        var account = $$("input[name='account']");
+        var password = $$("input[name='password']");
 
+        var urlLogin = API_URL.URL_GET_LOGIN.format(!account.val()? localStorage.ACCOUNT: account.val(),
+                                         encodeURIComponent(!password.val()? localStorage.PASSWORD: password.val()),
+                                         appKey,
+                                         mobileToken,
+                                         encodeURIComponent(deviceToken),
+                                         deviceType);
+        JSON1.request(urlLogin, function(result){
+               console.log(result);
+                if(result.MajorCode == '000') {
+                    //result.Data.elemRc = true;
+                    if (result.Data.elemRc) {
+                        localStorage.elem_rc_flag = 1;
+                        //localStorage.removeItem('elem_rc_flag');
+                    }
+                    if(!!account.val()) {
+                        localStorage.ACCOUNT = account.val();
+                        localStorage.PASSWORD = password.val();
+                    }
+                    account.val(null);
+                    password.val(null);
+                    setUserinfo(result.Data);
+                    setAssetList(result.Data.Devices);
+                    updateUserCredits(result.Data.User.Credits);
+                    //alert('mobileToken: '+mobileToken+' appKey: '+appKey+' deviceToken: '+deviceToken+' deviceType: '+deviceType);
+                    afterLogin(result);
 
-    var mobileToken = !localStorage.PUSH_MOBILE_TOKEN ? '111' : localStorage.PUSH_MOBILE_TOKEN;
-    var appKey = !localStorage.PUSH_APP_KEY ? '111' : localStorage.PUSH_APP_KEY;
-    //var deviceToken = !localStorage.PUSH_DEVICE_TOKEN? '111' : localStorage.PUSH_DEVICE_TOKEN;
-    var deviceToken = !localStorage.PUSH_DEVICE_TOKEN ? '111' : localStorage.PUSH_DEVICE_TOKEN;
-    var deviceType = !localStorage.DEVICE_TYPE ? 'webapp' : localStorage.DEVICE_TYPE;
-    var account = $$("input[name='account']");
-    var password = $$("input[name='password']");
+                    //init_AssetList();
+                    //initSearchbar();
+                    //webSockConnect();
+                    getNewNotifications();
 
-    // alert('logged in');
-
-    var urlLogin = API_URL.URL_GET_LOGIN.format(!account.val() ? localStorage.ACCOUNT : account.val(),
-        encodeURIComponent(!password.val() ? localStorage.PASSWORD : password.val()),
-        appKey,
-        mobileToken,
-        encodeURIComponent(deviceToken),
-        deviceType);
-    //alert(urlLogin);
-    //console.log(urlLogin);                             
-    JSON1.request(urlLogin, function(result) {
-            console.log(result);
-            if (result.MajorCode == '000') {
-                //var info = plus.push.getClientInfo();
-                /*setTimeout(function(){
-					App.alert(" plus.push.getClientInfo() = "+JSON.stringify(info));
-            	},5000);*/
-                //alert(" plus.push.getClientInfo() =: "+JSON.stringify(info));
-                //alert("deviceToken: "+deviceToken+" mobileToken: "+deviceToken+" appKey: "+appKey);
-                if (!!account.val()) {
-                    localStorage.ACCOUNT = account.val();
-                    localStorage.PASSWORD = password.val();
+                    App.closeModal();
+                }else{
+                    App.loginScreen();
+                    App.alert(LANGUAGE.LOGIN_MSG01);
                 }
-                account.val(null);
-                password.val(null);
-                setUserinfo(result.Data);
-                setAssetList(result.Data.Devices);
-                updateUserCredits(result.Data.User.Credits);
-                afterLogin(result);
-
-
-                //init_AssetList(); 
-                //initSearchbar();
-                //webSockConnect();  
-                getNewNotifications();
-
-                App.closeModal();
-            } else {
-                App.alert(LANGUAGE.LOGIN_MSG01);
-                App.loginScreen();
-            }
-            App.hidePreloader();
-        },
-        function() {
-            App.hidePreloader();
-            App.alert(LANGUAGE.COM_MSG02);
-            App.loginScreen();
-        }
-    );
+                App.hidePreloader();
+            },
+            function(){ App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02); App.loginScreen();}
+        );
 
 }
 
-function afterLogin(result) {
+function afterLogin(result){
     var CountryCode = result.Data.User.CountryCode;
 
     if (CountryCode && CountryCode.toLowerCase() != 'aus') {
-      
         $$('.menu_call_button').hide();
         $$('.menu_referral_button').hide();
 
         $$('.menu_wrapper').removeClass('with-bigger-bottom-menu');
-    } else {
-       
+    }else{
         $$('.menu_call_button').show();
-        $$('.menu_referral_button').show();
+        if (localStorage.elem_rc_flag) {
+            $$('.menu_referral_button').show();
+        }
 
         $$('.menu_wrapper').addClass('with-bigger-bottom-menu');
     }
 }
 
-function refreshToken(newDeviceToken) {
+function refreshToken(newDeviceToken){
     console.log('refreshToken() called');
     var userInfo = getUserinfo();
 
@@ -3742,17 +3439,17 @@ function refreshToken(newDeviceToken) {
             DeviceToken: newDeviceToken,
         };
 
-        //console.log(urlLogin);                             
-        JSON1.requestPost(API_URL.URL_REFRESH_TOKEN, data, function(result) {
-                if (result.MajorCode == '000') {
+        //console.log(urlLogin);
+        JSON1.requestPost(API_URL.URL_REFRESH_TOKEN, data, function(result){
+                if(result.MajorCode == '000') {
 
-                } else {
+                }else{
 
                 }
             },
-            function() { console.log('error during refresh token'); }
+            function(){ console.log('error during refresh token');  }
         );
-    } else {
+    }else{
         console.log('not loggined');
     }
 
@@ -3769,17 +3466,13 @@ function init_AssetList() {
     var newAssetlist = [];
     var keys = Object.keys(assetList);
 
-    $.each(keys, function(index, value) {
+    $.each(keys, function( index, value ) {
         newAssetlist.push(assetList[value]);
     });
 
-    /*newAssetlist.sort(function(a,b){
-        if(a.Name < b.Name) return -1;
-        if(a.Name > b.Name) return 1;
-        return 0;
-    });*/
 
-    newAssetlist = sortListByState(newAssetlist, 'state');
+
+    newAssetlist = sortListByState(newAssetlist,'state');
 
     mainView.router.back({
         pageName: 'index',
@@ -3787,17 +3480,42 @@ function init_AssetList() {
     });
 
     virtualAssetList.replaceAllItems(newAssetlist);
+    initExtend();
 
+    //setTimeout(function(){
+        updateAssetsPosInfoTimer = setInterval(function(){
+            updateAssetsPosInfo();
+        }, 15000);
+    //}, 15000);
 
-    updateAssetsPosInfoTimer = setInterval(function() {
-        updateAssetsPosInfo();
-    }, 15000);
 
 }
 
+var elem_rc =   '<li class="item-content list-panel-all close-panel item-link" id="menuRecharge" style="display:none;">' +
+                   '<div class="item-media">' +
+                     '<i class="f7-icons icon-menu-recharge"></i>' +
+                  ' </div>' +
+                  ' <div class="item-inner">' +
+                    ' <div class="item-title">' + LANGUAGE.MENU_MSG02 + '</div>' +
+                  ' </div>' +
+                '</li>';
+$$(elem_rc).insertAfter('#menuAlarms');
 
+elem_rc =   '<div class="menu_remainings" style="display:none;">' +
+                LANGUAGE.COM_MSG32 + ': <span class="remaining_counter">---</span> ' +
+            '</div>';
+$$(elem_rc).insertAfter('.menu_call_button');
 
-function initSearchbar(searchContainer) {
+function initExtend(){
+    if ($$("#menuRecharge").length !== 0 && localStorage.elem_rc_flag) {
+        $$('body').find('#menuRecharge').css('display', 'flex');
+    }
+    if ($$(".menu_remainings").length !== 0 && localStorage.elem_rc_flag) {
+        $$('body').find('.menu_remainings').css('display', 'block');
+    }
+}
+
+function initSearchbar(searchContainer){
     if (!searchContainer) {
         if (searchbar) {
             searchbar.destroy();
@@ -3807,48 +3525,30 @@ function initSearchbar(searchContainer) {
             searchIn: '.item-title',
             found: '.searchbar-found',
             notFound: '.searchbar-not-found',
-            onDisable: function(s) {
-                //$(s.container).slideUp();
-            }
+
         });
-    } else {
+    }else{
         if (searchbarGeofence) {
             searchbarGeofence.destroy();
         }
         searchbarGeofence = App.searchbar(searchContainer, {
             searchList: '.list-block-search-geofence',
             searchIn: '.item-title',
-            found: '.searchbar-found',
-            notFound: '.geofence-search-nothing-found',
-            onDisable: function(s) {
-                //$(s.container).slideUp();
-            }
+            found: '.searchbar-found-geofence',
+            notFound: '.searchbar-not-found-geofence',
+
         });
     }
 
 }
 
-function initSearchbarGeofence() {
-    if (searchbarGeofence) {
-        searchbarGeofence.destroy();
-    }
-    searchbarGeofence = App.searchbar('.searchbarGeofence', {
-        searchList: '.list-block-search',
-        searchIn: '.item-title',
-        found: '.searchbar-found',
-        notFound: '.searchbar-not-found',
-        onDisable: function(s) {
-            $(s.container).slideUp();
-        }
-    });
-}
 
 
-function loadProfilePage() {
+function loadProfilePage(){
     var userInfo = getUserinfo().User;
     mainView.router.load({
-        url: 'resources/templates/profile.html',
-        context: {
+        url:'resources/templates/profile.html',
+        context:{
             FirstName: userInfo.FirstName,
             SubName: userInfo.SubName,
             Mobile: userInfo.Mobile,
@@ -3858,7 +3558,9 @@ function loadProfilePage() {
     });
 }
 
-function loadGeofencePage() {
+
+
+function loadGeofencePage(){
     var userInfo = getUserinfo();
 
     var data = {
@@ -3868,79 +3570,56 @@ function loadGeofencePage() {
 
     App.showPreloader();
     $.ajax({
-        type: "POST",
-        url: API_URL.URL_GET_GEOFENCE_LIST,
-        data: data,
-        async: true,
-        crossDomain: true,
-        cache: false,
-        success: function(result) {
+           type: "POST",
+            url: API_URL.URL_GET_GEOFENCE_LIST,
+           data: data,
+          async: true,
+    crossDomain: true,
+          cache: false,
+        success: function (result) {
             App.hidePreloader();
-            if (result.MajorCode == '000') {
+            if (result.MajorCode == '000' ) {
                 var geofenceList = result.Data;
                 setGeoFenceList(geofenceList);
                 //console.log(result);
                 mainView.router.load({
-                    url: 'resources/templates/geofence.html',
-                    context: {
+                    url:'resources/templates/geofence.html',
+                    context:{
 
                     }
                 });
                 $$('#map').remove();
-            } else {
+            }else{
                 App.alert(LANGUAGE.PROMPT_MSG013);
             }
 
 
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            App.hidePreloader();
-            App.alert(LANGUAGE.COM_MSG02);
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+           App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02);
         }
     });
 
 
 }
 
-function loadRechargeCredit() {
+function loadRechargeCredit(){
     var MinorToken = getUserinfo().MinorToken;
-    //var CountryCode = getUserinfo().UserInfo.CountryCode;
 
-    /*AUS*/
-    /*var buttons = {
-        'button10' : 'KPF23R37HEJAC',
-        'button50' : 'QYHM382HALQBG',
-        'button100' : '7GB5ZBQQU5RAY',
-        'buttonCur' : 'AUD' 
-    };  */
 
     var buttons = {
-        'button10': 'XTKUPGEYWZ3T4',
-        'button50': 'KWC3YWFGZTW28',
-        'button100': 'QTULPNEWWN6CN',
-        'buttonCur': 'USD'
+        'button10' : 'XTKUPGEYWZ3T4',
+        'button50' : 'KWC3YWFGZTW28',
+        'button100' : 'QTULPNEWWN6CN',
+        'buttonCur' : 'USD'
     };
 
-    /*switch (CountryCode){
-        case 'USA':
-            buttons.button10  = 'XTKUPGEYWZ3T4';
-            buttons.button50  = 'KWC3YWFGZTW28';
-            buttons.button100 = 'QTULPNEWWN6CN';
-            buttons.buttonCur = 'USD';
-            break;
-        case 'CAN':
-            buttons.button10  = 'FSMSLCFUPE954';
-            buttons.button50  = 'GFBCR2TX9XEJL';
-            buttons.button100 = 'MFCNEYY4R5WHG';
-            buttons.buttonCur = 'CAD';
-            break;
-    }*/
 
     mainView.router.load({
         url: 'resources/templates/user.recharge.credit.html',
-        context: {
+        context:{
             userCode: MinorToken,
-            dealerNumber: AppDetails.code, // 2 - means M-Protekt
+            dealerNumber: AppDetails.code,    // 2 - means M-Protekt
             other: AppDetails.name,
             button10: buttons.button10,
             button50: buttons.button50,
@@ -3951,36 +3630,59 @@ function loadRechargeCredit() {
     });
 }
 
-function loadAlarmsAssetsPage() {
+function loadAlarmsAssetsPage(){
     mainView.router.load({
-        url: 'resources/templates/alarms.assets.html',
-        context: {
+                    url:'resources/templates/alarms.assets.html',
+                    context:{
 
-        }
-    });
+                    }
+                });
 }
 
-function loadPageUserGuide() {
+function loadPageUserGuide(){
     var href = API_URL.URL_USERGUIDE;
-    if (typeof navigator !== "undefined" && navigator.app) {
-        navigator.app.loadUrl(href, { openExternal: true });
-    } else {
-        window.open(href, '_blank');
-    }
+
+    window.open(href, '_blank', 'location=yes');
 }
 
-function loadReportsPage() {
+function loadReportsPage(){
     mainView.router.load({
-        url: 'resources/templates/reports.html',
+        url:'resources/templates/reports.html',
 
     });
 }
 
-function loadPageOverviewReport() {
+function loadPageOverviewReport(){
     var userInfo = getUserinfo().User;
     var assetList = formatArrAssetList();
     mainView.router.load({
-        url: 'resources/templates/reports.overview.html',
+        url:'resources/templates/reports.overview.html',
+        context: {
+            Assets: assetList,
+            Email: userInfo.EMail,
+            StartDateTime: moment().subtract(1, 'days').format(window.COM_TIMEFORMAT3),
+            EndDateTime: moment().format(window.COM_TIMEFORMAT3),
+        }
+    });
+}
+function loadPageAlarmReport(){
+    var userInfo = getUserinfo().User;
+    var assetList = formatArrAssetList();
+    mainView.router.load({
+        url:'resources/templates/reports.alarm.html',
+        context: {
+            Assets: assetList,
+            Email: userInfo.EMail,
+            StartDateTime: moment().subtract(1, 'days').format(window.COM_TIMEFORMAT3),
+            EndDateTime: moment().format(window.COM_TIMEFORMAT3),
+        }
+    });
+}
+function loadPageTripReport(){
+    var userInfo = getUserinfo().User;
+    var assetList = formatArrAssetList();
+    mainView.router.load({
+        url:'resources/templates/reports.trip.html',
         context: {
             Assets: assetList,
             Email: userInfo.EMail,
@@ -3990,43 +3692,15 @@ function loadPageOverviewReport() {
     });
 }
 
-function loadPageAlarmReport() {
-    var userInfo = getUserinfo().User;
-    var assetList = formatArrAssetList();
-    mainView.router.load({
-        url: 'resources/templates/reports.alarm.html',
-        context: {
-            Assets: assetList,
-            Email: userInfo.EMail,
-            StartDateTime: moment().subtract(1, 'days').format(window.COM_TIMEFORMAT3),
-            EndDateTime: moment().format(window.COM_TIMEFORMAT3),
-        }
-    });
-}
-
-function loadPageTripReport() {
-    var userInfo = getUserinfo().User;
-    var assetList = formatArrAssetList();
-    mainView.router.load({
-        url: 'resources/templates/reports.trip.html',
-        context: {
-            Assets: assetList,
-            Email: userInfo.EMail,
-            StartDateTime: moment().subtract(1, 'days').format(window.COM_TIMEFORMAT3),
-            EndDateTime: moment().format(window.COM_TIMEFORMAT3),
-        }
-    });
-}
-
-function loadPageTheftReport() {
+function loadPageTheftReport(){
     var assetList = getAssetList();
     var asset = assetList[TargetAsset.ASSET_IMEI];
     var param = {
-        loginName: '',
-        imei: '',
-        make: '',
-        model: '',
-        registration: ''
+        loginName:'',
+        imei:'',
+        make:'',
+        model:'',
+        rego: ''
     };
 
 
@@ -4047,25 +3721,21 @@ function loadPageTheftReport() {
         param.registration = encodeURIComponent(asset.Registration.trim());
     }
 
-    var href = API_URL.URL_REPORT_THEFT.format(param.loginName, param.imei, param.make, param.model, param.registration);
+    var href = API_URL.URL_REPORT_THEFT.format(param.loginName,param.imei,param.make,param.model,param.registration);
 
-    if (typeof navigator !== "undefined" && navigator.app) {
-        //plus.runtime.openURL(href); 
-        navigator.app.loadUrl(href, { openExternal: true });
-    } else {
-        window.open(href, '_blank');
-    }
+
+    window.open(href, '_blank', 'location=yes');
 }
 
-function loadPageSupport() {
+function loadPageSupport(){
     var userInfo = getUserinfo().User;
 
     var param = {
         'name': '',
-        'loginName': '',
-        'email': '',
-        'phone': '',
-        'service': AppDetails.supportCode, //means quikloc8.co in support page
+        'loginName':'',
+        'email':'',
+        'phone':'',
+        'service':AppDetails.supportCode, //means quikloc8.co in support page
     };
 
     if (userInfo.FirstName) {
@@ -4091,14 +3761,10 @@ function loadPageSupport() {
         param.name = encodeURIComponent(param.name);
     }
 
-    var href = API_URL.URL_SUPPORT.format(param.name, param.loginName, param.email, param.phone, param.service);
+    var href = API_URL.URL_SUPPORT.format(param.name,param.loginName,param.email,param.phone,param.service);
 
-    if (typeof navigator !== "undefined" && navigator.app) {
-        //plus.runtime.openURL(href); 
-        navigator.app.loadUrl(href, { openExternal: true });
-    } else {
-        window.open(href, '_blank');
-    }
+
+    window.open(href, '_blank', 'location=yes');
 }
 
 function loadPageViewAll() {
@@ -4107,27 +3773,27 @@ function loadPageViewAll() {
     mainView.router.load({
         url: 'resources/templates/asset.track.all.html',
         context: {
-            
+
         }
     });
 }
 
-function loadResetPwdPage() {
+function loadResetPwdPage(){
     mainView.router.load({
-        url: 'resources/templates/resetPwd.html',
-        context: {
+        url:'resources/templates/resetPwd.html',
+        context:{
 
         }
     });
 }
 
-function getAssetImg(params, imgFor) {
+function getAssetImg(params, imgFor){
     var assetImg = '';
     if (params && imgFor.assetList) {
         var pattern = /^IMEI_/i;
         if (params.Icon && pattern.test(params.Icon)) {
-            assetImg = '<img class="item_asset_img" src="https://upload.quiktrak.co/Attachment/images/' + params.Icon + '?' + new Date().getTime() + '" alt="">';
-        } else if (params.Name) {
+            assetImg = '<img class="item_asset_img" src="'+API_URL.URL_SAVED_PHOTO+params.Icon+'?'+ new Date().getTime()+'" alt="">';
+        }else if (params.Name) {
             params.Name = $.trim(params.Name);
             var splitted = params.Name.split(' ');
             if (splitted.length > 1) {
@@ -4138,22 +3804,22 @@ function getAssetImg(params, imgFor) {
                         if (!one || !two) {
                             if (!one) {
                                 one = splitted[i][0];
-                            } else {
+                            }else{
                                 two = splitted[i][0];
                                 break;
                             }
                         }
                     }
                 }
-                assetImg = '<div class="item_asset_img bg-white"><div class="text-a-c vertical-center user_f_l">' + one + two + '</div></div>';
-            } else {
-                assetImg = '<div class="item_asset_img bg-white"><div class="text-a-c vertical-center user_f_l">' + params.Name[0] + params.Name[1] + '</div></div>';
+                assetImg = '<div class="item_asset_img bg-white"><div class="text-a-c vertical-center user_f_l">'+one+two+'</div></div>';
+            }else{
+                assetImg = '<div class="item_asset_img bg-white"><div class="text-a-c vertical-center user_f_l">'+params.Name[0]+params.Name[1]+'</div></div>';
             }
 
-        } else if (params.IMEI) {
-            assetImg = '<div class="item_asset_img bg-white"><div class="text-a-c vertical-center user_f_l">' + params.IMEI[0] + params.IMEI[1] + '</div></div>';
+        }else if(params.IMEI){
+            assetImg = '<div class="item_asset_img bg-white"><div class="text-a-c vertical-center user_f_l">'+params.IMEI[0]+params.IMEI[1]+'</div></div>';
         }
-    } else {
+    }else{
         assetImg = '<div class="item_asset_img bg-white"><div class="text-a-c vertical-center user_f_l">?</div></div>';
     }
     return assetImg;
@@ -4173,47 +3839,47 @@ function processSVData(data, status) {
     }
 }
 
-function showStreetView(params) {
-    var dynamicPopup = '<div class="popup">' +
-        '<div class="float_button_wrapper back_button_wrapper close-popup"><i class="f7-icons">close</i></div>' +
-        '<div class="pano_map">' +
-        '<div id="pano" class="pano" ></div>' +
-        '</div>' +
-        '</div>';
+function showStreetView(params){
+    var dynamicPopup = '<div class="popup">'+
+                              '<div class="float_button_wrapper back_button_wrapper close-popup"><i class="f7-icons">close</i></div>'+
+                              '<div class="pano_map">'+
+                                '<div id="pano" class="pano" ></div>'+
+                              '</div>'+
+                            '</div>';
     App.popup(dynamicPopup);
 
     var panoramaOptions = {
-        position: new google.maps.LatLng(params.lat, params.lng),
-        pov: {
-            heading: 0,
-            pitch: 0
-        },
-        linksControl: false,
-        panControl: false,
-        enableCloseButton: false,
-        addressControl: false
+            position: new google.maps.LatLng(params.lat, params.lng),
+            pov: {
+                heading: 0,
+                pitch: 0
+            },
+            linksControl: false,
+            panControl: false,
+            enableCloseButton: false,
+            addressControl: false
     };
-    var panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), panoramaOptions);
+    var panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'),panoramaOptions);
 }
 
 function getMarkerDataTable(asset){
-           
+
             //console.log(asset);
             var markerData = '';
             var customAddress = LANGUAGE.COM_MSG08;
-           
-            
+
+
             if (asset ) {
-                var assetFeaturesStatus = Protocol.Helper.getAssetStateInfo(asset);        
+                var assetFeaturesStatus = Protocol.Helper.getAssetStateInfo(asset);
                 if (assetFeaturesStatus && assetFeaturesStatus.stats) {
                     var speed = 0;
-                    var mileage = '-'; 
-                    var launchHours = '';           
+                    var mileage = '-';
+                    var launchHours = '';
                     var positionType = Protocol.Helper.getPositionType(parseInt(asset.posInfo.positionType));
                     deirectionCardinal = Protocol.Helper.getDirectionCardinal(asset.posInfo.direct);
                     if (typeof asset.Unit !== "undefined" && typeof asset.posInfo.speed !== "undefined") {
                         speed = Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
-                    } 
+                    }
                     if (typeof asset.Unit !== "undefined" && typeof asset.posInfo.mileage !== "undefined" && asset.posInfo.mileage != '-') {
                         mileage = Protocol.Helper.getMileage(asset, asset.posInfo.mileage);
                     }
@@ -4226,11 +3892,11 @@ function getMarkerDataTable(asset){
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG001+'</td>';
                     markerData +=       '<td class="marker-data-value">'+asset.Name+'</td>';
-                    markerData +=   '</tr>';          
+                    markerData +=   '</tr>';
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG002+'</td>';
                     markerData +=       '<td class="marker-data-value">'+assetFeaturesStatus.status.value+'</td>';
-                    markerData +=   '</tr>';            
+                    markerData +=   '</tr>';
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG003+'</td>';
                     markerData +=       '<td class="marker-data-value">'+asset.posInfo.positionTime.format(window.COM_TIMEFORMAT)+'</td>';
@@ -4239,7 +3905,7 @@ function getMarkerDataTable(asset){
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG018+'</td>';
                     markerData +=       '<td class="marker-data-value">'+assetFeaturesStatus.stopped.duration+'</td>';
-                    markerData +=   '</tr>';    
+                    markerData +=   '</tr>';
                                     }*/
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG004+'</td>';
@@ -4249,18 +3915,18 @@ function getMarkerDataTable(asset){
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG019+'</td>';
                     markerData +=       '<td class="marker-data-value">'+launchHours+'</td>';
-                    markerData +=   '</tr>';    
+                    markerData +=   '</tr>';
                                     }
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG005+'</td>';
                     markerData +=       '<td class="marker-data-value">'+speed+'</td>';
-                    markerData +=   '</tr>'; 
+                    markerData +=   '</tr>';
                                     if (assetFeaturesStatus.acc) {
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG006+'</td>';
                     markerData +=       '<td class="marker-data-value">'+assetFeaturesStatus.acc.value+'</td>';
                     markerData +=   '</tr>';
-                                    }            
+                                    }
                                     if (assetFeaturesStatus.battery) {
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG007+'</td>';
@@ -4278,17 +3944,17 @@ function getMarkerDataTable(asset){
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG009+'</td>';
                     markerData +=       '<td class="marker-data-value">'+assetFeaturesStatus.fuel.value+'</td>';
                     markerData +=   '</tr>';
-                                    }                           
+                                    }
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG010+'</td>';
                     markerData +=       '<td class="marker-data-value">'+deirectionCardinal+' ('+asset.posInfo.direct+'&deg;)</td>';
-                    markerData +=   '</tr>';   
+                    markerData +=   '</tr>';
                                     if (positionType) {
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG013+'</td>';
                     markerData +=       '<td class="marker-data-value ">'+positionType+'</td>';
                     markerData +=   '</tr>';
-                                    }                        
+                                    }
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_ALL_MSG011+'</td>';
                     markerData +=       '<td class="marker-data-value ">'+ Protocol.Helper.convertDMS(asset.posInfo.lat, asset.posInfo.lng) +'</td>';
@@ -4302,31 +3968,31 @@ function getMarkerDataTable(asset){
             }
 
             return markerData;
-                
-        };
+
+        }
 
 function getGeofenceDataTable(geofence, options){
 
-	//console.log(geofence);
-	var markerData = '';
-	if (geofence) {
-		let assignedAssets = '';
-		let assetList = getAssetList();
-		let assignedAssetsCount = '0';
-		let BeginTime = '';
-		let EndTime = '';
-		let IgnoreDays = '';
+    //console.log(geofence);
+    var markerData = '';
+    if (geofence) {
+        let assignedAssets = '';
+        let assetList = getAssetList();
+        let assignedAssetsCount = '0';
+        let BeginTime = '';
+        let EndTime = '';
+        let IgnoreDays = '';
 
-		if (options && options.geogroup) {
-			if (geofence.Assets && geofence.Assets.length) {
-				assignedAssetsCount = geofence.Assets.length;
-                for (var i = geofence.Assets.length - 1; i >= 0; i--) {                	
-                	assignedAssets += geofence.Assets[i].Name + ', ';
+        if (options && options.geogroup) {
+            if (geofence.Assets && geofence.Assets.length) {
+                assignedAssetsCount = geofence.Assets.length;
+                for (var i = geofence.Assets.length - 1; i >= 0; i--) {
+                    assignedAssets += geofence.Assets[i].Name + ', ';
                 }
             }
-		}else{
-			if (geofence.SelectedAssetList && geofence.SelectedAssetList.length) {
-				assignedAssetsCount = geofence.SelectedAssetList.length;
+        }else{
+            if (geofence.SelectedAssetList && geofence.SelectedAssetList.length) {
+                assignedAssetsCount = geofence.SelectedAssetList.length;
                 for (var i = geofence.SelectedAssetList.length - 1; i >= 0; i--) {
                     if (assetList[geofence.SelectedAssetList[i].IMEI]){
                         assignedAssets += assetList[geofence.SelectedAssetList[i].IMEI].Name + ', ';
@@ -4335,87 +4001,86 @@ function getGeofenceDataTable(geofence, options){
                     }
                 }
             }
-		}
-		if (assignedAssets) {
-			assignedAssets = assignedAssets.slice(0, -2);
-		}else{
-			assignedAssets = LANGUAGE.COM_MSG58;
-		}
+        }
+        if (assignedAssets) {
+            assignedAssets = assignedAssets.slice(0, -2);
+        }else{
+            assignedAssets = LANGUAGE.COM_MSG58;
+        }
 
-		if (geofence.Week && geofence.Week.length) {	       
-	        for (var i = 0; i < geofence.Week.length; i++) {	        	
-	        	IgnoreDays += geofence.Week.length > 2 ? Protocol.DaysOfWeek[geofence.Week[i].Week].nameSmall + ', ' : Protocol.DaysOfWeek[geofence.Week[i].Week].name + ', '; 
-	        }
-	        if (IgnoreDays) {
-	        	IgnoreDays = IgnoreDays.slice(0, -2);
-	        }
-	        BeginTime = geofence.Week[0].BeginTime ? moment(geofence.Week[0].BeginTime, 'HH:mm:ss').add(UTCOFFSET, 'minutes').format('HH:mm:ss') : BeginTime;
-	        EndTime = geofence.Week[0].EndTime ? moment(geofence.Week[0].EndTime, 'HH:mm:ss').add(UTCOFFSET, 'minutes').format('HH:mm:ss') : EndTime;
-	    }
-						 
+        if (geofence.Week && geofence.Week.length) {
+            for (var i = 0; i < geofence.Week.length; i++) {
+                IgnoreDays += geofence.Week.length > 2 ? Protocol.DaysOfWeek[geofence.Week[i].Week].nameSmall + ', ' : Protocol.DaysOfWeek[geofence.Week[i].Week].name + ', ';
+            }
+            if (IgnoreDays) {
+                IgnoreDays = IgnoreDays.slice(0, -2);
+            }
+            BeginTime = geofence.Week[0].BeginTime ? moment(geofence.Week[0].BeginTime, 'HH:mm:ss').add(UTCOFFSET, 'minutes').format('HH:mm:ss') : BeginTime;
+            EndTime = geofence.Week[0].EndTime ? moment(geofence.Week[0].EndTime, 'HH:mm:ss').add(UTCOFFSET, 'minutes').format('HH:mm:ss') : EndTime;
+        }
 
-		markerData += `
-		<table cellpadding="0" cellspacing="0" border="0" class="marker-data-table">
-           	<tr>
+
+        markerData += `
+        <table cellpadding="0" cellspacing="0" border="0" class="marker-data-table">
+            <tr>
                <td class="marker-data-caption">${ options && options.geogroup ? LANGUAGE.GEOFENCE_MSG_34 : LANGUAGE.GEOFENCE_MSG_32}</td>
                <td class="marker-data-value">${ geofence.Name }</td>
-           	</tr>
-           	<tr>
-            	<td class="marker-data-caption">${ LANGUAGE.GEOFENCE_MSG_33 }(${ assignedAssetsCount })</td>
-            	<td class="marker-data-value">${ assignedAssets }</td>
-        	</tr>			
-        	`;
+            </tr>
+            <tr>
+                <td class="marker-data-caption">${ LANGUAGE.GEOFENCE_MSG_33 }(${ assignedAssetsCount })</td>
+                <td class="marker-data-value">${ assignedAssets }</td>
+            </tr>           
+            `;
 
         if (options && !options.geogroup) {
-        	markerData += `
-	        	<tr>
-	            	<td class="marker-data-caption">${ LANGUAGE.GEOFENCE_MSG_07 }</td>
-	            	<td class="marker-data-value">${ Protocol.Helper.getGeofenceAlertType(geofence.Alerts) }</td>
-	        	</tr>
-	           	<tr>
-	               <td class="marker-data-caption">${ LANGUAGE.COM_MSG37 }</td>
-	               <td class="marker-data-value">${ geofence.State == 1 ? LANGUAGE.COM_MSG59 : LANGUAGE.COM_MSG60 }</td>
-	           	</tr>
-	           	<tr>
-	               <td class="marker-data-caption">${ LANGUAGE.GEOFENCE_MSG_28 }</td>
-	               <td class="marker-data-value">${ geofence.Inverse == 1 ? LANGUAGE.COM_MSG59 : LANGUAGE.COM_MSG60 }</td>
-	           	</tr>
-           	`;
-           	if (geofence.Inverse == 1) {
-           		markerData += `
-					<tr>
-		               <td class="marker-data-caption">${ LANGUAGE.ASSET_TRACK_ALL_MSG021 }</td>
-		               <td class="marker-data-value">${ BeginTime } - ${ EndTime }</td>
-		           	</tr>
-		           	<tr>
-		               <td class="marker-data-caption">${ LANGUAGE.GEOFENCE_MSG_31 }</td>
-		               <td class="marker-data-value">${ IgnoreDays }</td>
-		           	</tr>
-           		`;
-           	}
-        }        
+            markerData += `
+                <tr>
+                    <td class="marker-data-caption">${ LANGUAGE.GEOFENCE_MSG_07 }</td>
+                    <td class="marker-data-value">${ Protocol.Helper.getGeofenceAlertType(geofence.Alerts) }</td>
+                </tr>
+                <tr>
+                   <td class="marker-data-caption">${ LANGUAGE.COM_MSG37 }</td>
+                   <td class="marker-data-value">${ geofence.State == 1 ? LANGUAGE.COM_MSG59 : LANGUAGE.COM_MSG60 }</td>
+                </tr>
+                <tr>
+                   <td class="marker-data-caption">${ LANGUAGE.GEOFENCE_MSG_28 }</td>
+                   <td class="marker-data-value">${ geofence.Inverse == 1 ? LANGUAGE.COM_MSG59 : LANGUAGE.COM_MSG60 }</td>
+                </tr>
+            `;
+            if (geofence.Inverse == 1) {
+                markerData += `
+                    <tr>
+                       <td class="marker-data-caption">${ LANGUAGE.ASSET_TRACK_ALL_MSG021 }</td>
+                       <td class="marker-data-value">${ BeginTime } - ${ EndTime }</td>
+                    </tr>
+                    <tr>
+                       <td class="marker-data-caption">${ LANGUAGE.GEOFENCE_MSG_31 }</td>
+                       <td class="marker-data-value">${ IgnoreDays }</td>
+                    </tr>
+                `;
+            }
+        }
 
         markerData += ` 
-        	<tr>
-            	<td class="marker-data-caption">${ LANGUAGE.ASSET_TRACK_ALL_MSG011 }</td>
-            	<td class="marker-data-value ">${ Protocol.Helper.convertDMS(geofence.Lat, geofence.Lng) }</td>
-        	</tr>
-			<tr>
-            	<td class="marker-data-caption">${ LANGUAGE.ASSET_TRACK_ALL_MSG012 }</td>
-            	<td class="marker-data-value address-${ geofence.Code }">${ geofence.Address }</td>
-        	</tr>
-       	</table>`;
-	}
-	return markerData;
+            <tr>
+                <td class="marker-data-caption">${ LANGUAGE.ASSET_TRACK_ALL_MSG011 }</td>
+                <td class="marker-data-value ">${ Protocol.Helper.convertDMS(geofence.Lat, geofence.Lng) }</td>
+            </tr>
+            <tr>
+                <td class="marker-data-caption">${ LANGUAGE.ASSET_TRACK_ALL_MSG012 }</td>
+                <td class="marker-data-value address-${ geofence.Code }">${ geofence.Address }</td>
+            </tr>
+        </table>`;
+    }
+    return markerData;
 }
 
 function showMap(params) {
-
     var asset = TargetAsset.ASSET_IMEI;
     var latlng = [];
     if (params) {
         latlng = [params.lat, params.lng];
-    } else {
+    }else{
         latlng = [POSINFOASSETLIST[asset].posInfo.lat, POSINFOASSETLIST[asset].posInfo.lng];
     }
 
@@ -4429,51 +4094,51 @@ function showMap(params) {
 
 function showMapAll(params) {
 
-    var latlng = [0,0];   
+    var latlng = [0,0];
 
     MapTrack = Protocol.Helper.createMap({ target: 'map', latLng: latlng, zoom: 15 });
     //window.PosMarker[asset].addTo(MapTrack);
-    var assetList = getAssetList(); 
+    var assetList = getAssetList();
     AllMarkersGroup = L.markerClusterGroup({'maxClusterRadius':35});
     if (assetList) {
         var point = '';
-        var markerData = '';                
-        $.each(assetList, function(key, value){   
-            point = ''; 
+        var markerData = '';
+        $.each(assetList, function(key, value){
+            point = '';
             markerData = '';
             if (POSINFOASSETLIST[key] && POSINFOASSETLIST[key].posInfo && parseFloat(POSINFOASSETLIST[key].posInfo.lat) !== 0 && parseFloat(POSINFOASSETLIST[key].posInfo.lng) !== 0) {
-                point = L.marker([POSINFOASSETLIST[key].posInfo.lat,POSINFOASSETLIST[key].posInfo.lng], {icon: Protocol.MarkerIcon[1]});                         
+                point = L.marker([POSINFOASSETLIST[key].posInfo.lat,POSINFOASSETLIST[key].posInfo.lng], {icon: Protocol.MarkerIcon[1]});
                 markerData = getMarkerDataTable(POSINFOASSETLIST[key]);
-                point                            
+                point
                     .bindPopup(markerData,{maxWidth: 280, closeButton: false})
-                    .on('popupopen', function (e) {                               
+                    .on('popupopen', function (e) {
                         if (!POSINFOASSETLIST[key].posInfo.customAddress) {
-                            Protocol.Helper.getAddressByGeocoder({lat: POSINFOASSETLIST[key].posInfo.lat, lng: POSINFOASSETLIST[key].posInfo.lng},function(address){                           
-                                POSINFOASSETLIST[key].posInfo.customAddress = address;                               
-                                markerData = getMarkerDataTable(POSINFOASSETLIST[key]);                           
-                                e.target.setPopupContent(markerData);                                        
-                                e.popup.update();                                       
-                            }); 
-                        }                                 
+                            Protocol.Helper.getAddressByGeocoder({lat: POSINFOASSETLIST[key].posInfo.lat, lng: POSINFOASSETLIST[key].posInfo.lng},function(address){
+                                POSINFOASSETLIST[key].posInfo.customAddress = address;
+                                markerData = getMarkerDataTable(POSINFOASSETLIST[key]);
+                                e.target.setPopupContent(markerData);
+                                e.popup.update();
+                            });
+                        }
                     });
                 /*if (app.device.desktop) {
                     point.bindTooltip(POSINFOASSETLIST[key].Name,{permanent: false, direction: 'right'});
                 }*/
                 point._custom_asset_imei = key;
                 point.addTo(AllMarkersGroup);
-                POSINFOASSETLIST[key].markerId = AllMarkersGroup.getLayerId(point); 
+                POSINFOASSETLIST[key].markerId = AllMarkersGroup.getLayerId(point);
             }
-        });               
+        });
         if (AllMarkersGroup.getBounds().isValid()) {
             /*console.log(AllMarkersGroup.getBounds().isValid());*/
-            MapTrack.fitBounds(AllMarkersGroup.getBounds(),{padding:[16,16]});                 
+            MapTrack.fitBounds(AllMarkersGroup.getBounds(),{padding:[16,16]});
             AllMarkersGroup.addTo(MapTrack);
-        }                    
-    }    
+        }
+    }
 }
 
 function updateAllMarkers(assetList){
-     
+
     $.each(assetList, function(key, value){
         if (POSINFOASSETLIST[key] && POSINFOASSETLIST[key].posInfo && POSINFOASSETLIST[key].posInfo.lat !== 0 && POSINFOASSETLIST[key].posInfo.lng !== 0) {
             var markerData = getMarkerDataTable(POSINFOASSETLIST[key]);
@@ -4481,68 +4146,65 @@ function updateAllMarkers(assetList){
             if (point) {
                 point.setLatLng([POSINFOASSETLIST[key].posInfo.lat, POSINFOASSETLIST[key].posInfo.lng]).setPopupContent(markerData);
                 var popup = point.getPopup();
-                if (popup.isOpen()) {                        
+                if (popup.isOpen()) {
                     popup.update();
-                    Protocol.Helper.getAddressByGeocoder({lat: POSINFOASSETLIST[key].posInfo.lat, lng: POSINFOASSETLIST[key].posInfo.lng},function(address){                           
+                    Protocol.Helper.getAddressByGeocoder({lat: POSINFOASSETLIST[key].posInfo.lat, lng: POSINFOASSETLIST[key].posInfo.lng},function(address){
                         POSINFOASSETLIST[key].posInfo.customAddress = address;
                         if (popup.isOpen()) {
-                            markerData = getMarkerDataTable(POSINFOASSETLIST[key]);                           
-                            point.setPopupContent(markerData);                                     
+                            markerData = getMarkerDataTable(POSINFOASSETLIST[key]);
+                            point.setPopupContent(markerData);
                             popup.update();
-                        }                    
-                    });     
-                }    
-            }                                            
+                        }
+                    });
+                }
+            }
         }
     });
-               
-};
 
-function showMapPlayback() {
+}
+
+function showMapPlayback(){
     var optimizedState = $$('body .playback_page').find('input[name="optimizedState"]');
     var asset = TargetAsset.ASSET_IMEI;
     var latlng = [POSINFOASSETLIST[asset].posInfo.lat, POSINFOASSETLIST[asset].posInfo.lng];
-
     MapTrack = Protocol.Helper.createMap({ target: 'map', latLng: latlng, zoom: 15 });
     window.PosMarker[asset].addTo(MapTrack);
-
     if (!StreetViewService) {
         StreetViewService = new google.maps.StreetViewService();
     }
 
     var polylinePoints = [];
 
-    $.each(HistoryArray, function(index, value) {
+    $.each( HistoryArray, function(index,value){
         var point = new L.LatLng(value.lat, value.lng);
         polylinePoints.push(point);
     });
 
-    //console.log(EventsArray);
     if (EventsArray) {
-        var eventPoints = L.markerClusterGroup({ 'maxClusterRadius': 35, });
+        var eventPoints = L.markerClusterGroup({'maxClusterRadius':35,});
         var markerIcon = L.icon({
             iconUrl: 'resources/images/info-pin.svg',
-            iconSize: [32, 32], // size of the icon                        
-            iconAnchor: [16, 31], // point of the icon which will correspond to marker's location                        
-            popupAnchor: [0, -32] // point from which the popup should open relative to the iconAnchor      
+            iconSize:     [32, 32], // size of the icon
+            iconAnchor:   [16, 31], // point of the icon which will correspond to marker's location
+            popupAnchor:  [0, -32] // point from which the popup should open relative to the iconAnchor
         });
         var markerData = '';
         var point = '';
         var popupAddresses = {};
 
-        $.each(EventsArray, function(index, value) {
+        $.each( EventsArray, function(index,value){
             if (parseFloat(value.lat) !== 0 && parseFloat(value.lng) !== 0) {
-                if (value.eventClass == 1 || value.eventClass == 4 && value.eventType == 0) { //filtering to display only   1-Alert(alarms) , 2-ACC , 4 - static  events                      
+                if (value.eventClass == 1 ||  value.eventClass == 4 && value.eventType == 0) {  //filtering to display only   1-Alert(alarms) , 2-ACC , 4 - static  events
                     value.index = index;
                     markerData = getMarkerDataTableInfoPin(value);
-                    point = L.marker([value.lat, value.lng], { icon: markerIcon });
-                    point.bindPopup(markerData, { "maxWidth": 260 })
-                        .on('popupopen', function(marker) {
+                    point = L.marker([value.lat, value.lng], {icon: markerIcon});
+                    point.bindPopup(markerData,{"maxWidth":260})
+                        .on('popupopen', function (popup) {
                             if (popupAddresses[index]) {
-                                $$('body .position_map').find('[data-popupIdAddress="' + index + '"]').html(popupAddresses[index]);
-                            } else {
-                                Protocol.Helper.getAddressByGeocoder(this.getLatLng(), function(address) {
-                                    $$('body .position_map').find('[data-popupIdAddress="' + index + '"]').html(address);
+                                $$('body .position_map').find('[data-popupIdAddress="'+index+'"]').html(popupAddresses[index]);
+                            }else{
+                                Protocol.Helper.getAddressByGeocoder(this.getLatLng(),function(address){
+                                    $$('body .position_map').find('[data-popupIdAddress="'+index+'"]').html(address);
                                     popupAddresses[index] = address;
                                 });
                             }
@@ -4555,12 +4217,12 @@ function showMapPlayback() {
     }
 
     var polylineCustomization = {
-        'mainBg': {
+        'mainBg':{
             color: '#6199CC',
             weight: 6,
             opacity: 1,
         },
-        'main': {
+        'main':{
             color: '#00B1FC',
             weight: 3,
             opacity: 1,
@@ -4570,48 +4232,56 @@ function showMapPlayback() {
     var polylineBG = new L.Polyline(polylinePoints, polylineCustomization.mainBg);
     var polyline = new L.Polyline(polylinePoints, polylineCustomization.main);
 
+    //MapTrack.addLayer(polylineBG).addLayer(polyline);
+
     playbackLayerGroup = L.featureGroup([polylineBG, polyline]);
     if (!optimizedState.is(":checked")) {
         playbackLayerGroup.addTo(MapTrack);
-        MapTrack.fitBounds(polyline.getBounds()); // zoom the map to the polyline
+        MapTrack.fitBounds(polyline.getBounds());     // zoom the map to the polyline
     }
+
+
+
+    /*if (layerControl) {
+        layerControl.addOverlay(playbackLayerGroup,"Raw Route");
+    }  */
 }
 
-function getOptimizedRoute(rawArray) {
+function getOptimizedRoute(rawArray){
     var optimizedState = $$('body .playback_page').find('input[name="optimizedState"]');
     var container = $$('body');
     if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
     App.showProgressbar(container);
 
     var polylineCustomization = {
-        'mainBg': {
+        'mainBg':{
             color: '#6199CC',
             weight: 6,
             opacity: 1,
         },
-        'main': {
+        'main':{
             color: '#00B1FC',
             weight: 3,
             opacity: 1,
         },
-        'droppedBg': {
+        'droppedBg':{
             //color: '#b50000',     //red
-            color: '#b47605', //orange
+            color: '#b47605',   //orange
             weight: 6,
             opacity: 0.7,
         },
-        'dropped': {
+        'dropped':{
             //color: '#fc0405',
-            color: '#fd9a08', //orange
+            color: '#fd9a08',   //orange
             weight: 3,
             opacity: 0.7,
         },
-        'boundariesBg': {
+        'boundariesBg':{
             color: '#6199CC',
             weight: 6,
             opacity: 0.4,
         },
-        'boundaries': {
+        'boundaries':{
             color: '#00B1FC',
             weight: 3,
             opacity: 0.4,
@@ -4626,10 +4296,10 @@ function getOptimizedRoute(rawArray) {
         async: true,
         cache: false,
         timeout: 10000,
-        success: function(result) {
+        success: function (result) {
             var polylineOptBg = new L.Polyline(result.polylines, polylineCustomization.mainBg);
             var polylineOpt = new L.Polyline(result.polylines, polylineCustomization.main);
-            playbackLayerGroupOpt = L.featureGroup([polylineOptBg, polylineOpt]);
+            playbackLayerGroupOpt = L.featureGroup([polylineOptBg,polylineOpt]);
 
             if (result.dropped) {
                 var polylineOptDroppedBg = new L.Polyline(result.dropped, polylineCustomization.droppedBg);
@@ -4642,23 +4312,20 @@ function getOptimizedRoute(rawArray) {
                 playbackLayerGroupOpt.addLayer(polylineOptBoundariesBg).addLayer(polylineOptBoundaries);
             }
             /*if (layerControl) {
-                layerControl.addOverlay(playbackLayerGroupOpt,"Optimized Route");      
+                layerControl.addOverlay(playbackLayerGroupOpt,"Optimized Route");
             } */
             if (optimizedState.is(":checked")) {
                 playbackLayerGroupOpt.addTo(MapTrack);
-                MapTrack.fitBounds(playbackLayerGroupOpt.getBounds()); // zoom the map to the polyline
+                MapTrack.fitBounds(playbackLayerGroupOpt.getBounds());     // zoom the map to the polyline
             }
             App.hideProgressbar();
         },
-        error: function(textStatus) {
+        error: function (textStatus) {
             console.log(textStatus);
-            if (optimizedState.is(":checked")) {
-                App.addNotification({
-                    hold: 3000,
-                    message: LANGUAGE.PROMPT_MSG021
-                });
-            }
-
+            App.addNotification({
+                hold: 3000,
+                message: LANGUAGE.PROMPT_MSG021
+            });
             var iTIMESTAMP = 3,
                 iLAT = 10,
                 iLNG = 11,
@@ -4671,22 +4338,22 @@ function getOptimizedRoute(rawArray) {
             }
             var polylineOptBg = L.polyline(raw_polyline, polylineCustomization.mainBg);
             var polylineOpt = L.polyline(raw_polyline, polylineCustomization.main);
-            playbackLayerGroupOpt = L.featureGroup([polylineOptBg, polylineOpt]);
+            playbackLayerGroupOpt = L.featureGroup([polylineOptBg,polylineOpt]);
             if (optimizedState.is(":checked")) {
                 playbackLayerGroupOpt.addTo(MapTrack);
-                MapTrack.fitBounds(playbackLayerGroupOpt.getBounds()); // zoom the map to the polyline
+                MapTrack.fitBounds(playbackLayerGroupOpt.getBounds());     // zoom the map to the polyline
             }
             App.hideProgressbar();
             /*if (layerControl) {
-                layerControl.addOverlay(playbackLayerGroup,"Show Optimized");       
+                layerControl.addOverlay(playbackLayerGroup,"Show Optimized");
             }*/
         }
     });
 }
 
-function showPlaybackRoute(routeType) { // 1 - raw, 2 - optimized
+function showPlaybackRoute(routeType){  // 1 - raw, 2 - optimized
     if (routeType && MapTrack) {
-        switch (routeType) {
+        switch (routeType){
             case 1:
                 if (playbackLayerGroup) {
                     if (playbackLayerGroupOpt) {
@@ -4696,7 +4363,7 @@ function showPlaybackRoute(routeType) { // 1 - raw, 2 - optimized
                         MapTrack.addLayer(playbackLayerGroup);
                         MapTrack.fitBounds(playbackLayerGroup.getBounds());
                     }
-                } else {
+                }else{
                     console.log('There is no such playback route');
                 }
                 break;
@@ -4710,7 +4377,7 @@ function showPlaybackRoute(routeType) { // 1 - raw, 2 - optimized
                         MapTrack.addLayer(playbackLayerGroupOpt);
                         MapTrack.fitBounds(playbackLayerGroupOpt.getBounds());
                     }
-                } else {
+                }else{
                     console.log('There is no such playback route');
                 }
                 break;
@@ -4751,26 +4418,18 @@ function updateGeofenceMarkerGroup(assets, geofenceEdit) {
 
 }
 
-/*function updateGeofenceAddress(latlng) {
-    var container = $$('body');
-    if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
-    App.showProgressbar(container);
-    Protocol.Helper.getAddressByGeocoder(latlng, function(address) {
-        $$('body [name="geofenceAddress"]').val(address);
-        App.hideProgressbar();
-    });
-}*/
 
-function showMapGeofence(geofence) {
+function showMapGeofence(geofence){
     var latlng = ['-33.869444', '151.208333'];
-    //var radius = 300;
-    geofenceMarkerGroup = L.markerClusterGroup({ 'maxClusterRadius': 35, });
+   // var radius = 300;
+    geofenceMarkerGroup = L.markerClusterGroup({'maxClusterRadius':35,});
     // FeatureGroup is to store editable layers
     GeofenceFiguresGroup = new L.FeatureGroup();
     var geofenceFigure = false;
     var assets = [];
     var editFlag = 0;
     var userInfo = getUserinfo();
+    var polygonStyles = Protocol.PolygonCustomization;
 
     if (geofence) {
         editFlag = 1;
@@ -4782,10 +4441,8 @@ function showMapGeofence(geofence) {
             });
         }
         if (geofence.GeoType == 1) { //circle
-            geofenceFigure = L.circle(latlng, {
-                ...Protocol.PolygonCustomization,
-                radius: geofence.Radius,
-            });
+            polygonStyles.radius = geofence.Radius;
+            geofenceFigure = L.circle(latlng, polygonStyles);
         }else{
             if (geofence.GeoPolygon) {
                 var polygonCoordsArr = geofence.GeoPolygon.split('((').pop().split('))')[0].split(',');
@@ -4793,9 +4450,7 @@ function showMapGeofence(geofence) {
                 for (var i = polygonCoordsArr.length - 1; i >= 0; i--) {
                     geojsonArr.push(polygonCoordsArr[i].split(' ').map(parseFloat).reverse());
                 }
-                geofenceFigure = L.polygon(geojsonArr, {
-                    ...Protocol.PolygonCustomization
-                });
+                geofenceFigure = L.polygon(geojsonArr, polygonStyles);
             }
         }
     } else {
@@ -4858,58 +4513,57 @@ function onMapGeofenceDraw(e) {
     GeofenceFiguresGroup.clearLayers().addLayer(layer);
 }
 
-
-function loadStatusPage() {
+function loadStatusPage(){
     var asset = POSINFOASSETLIST[TargetAsset.ASSET_IMEI];
 
     if (asset) {
-        var assetFeaturesStatus = Protocol.Helper.getAssetStateInfo(asset);
-        var speed = Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
+    	var assetFeaturesStatus = Protocol.Helper.getAssetStateInfo(asset);
+	    var speed = Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
         var direct = asset.posInfo.direct;
         var deirectionCardinal = Protocol.Helper.getDirectionCardinal(direct);
-        var time = LANGUAGE.COM_MSG11;
-        if (asset.posInfo.positionTime) {
-            time = asset.posInfo.positionTime.format(window.COM_TIMEFORMAT);
-        }
+	    var time = LANGUAGE.COM_MSG11;
+	    if (asset.posInfo.positionTime) {
+	        time = asset.posInfo.positionTime.format(window.COM_TIMEFORMAT);
+	    }
 
-        var latlng = {};
-        latlng.lat = asset.posInfo.lat;
-        latlng.lng = asset.posInfo.lng;
-        var assetStats = {
-            voltage: false,
-            acc: false,
-            acc2: false,
-            mileage: false,
-            battery: false,
-            fuel: false,
+	    var latlng = {};
+	    latlng.lat = asset.posInfo.lat;
+	    latlng.lng = asset.posInfo.lng;
+	    var assetStats = {
+	        voltage: false,
+	        acc: false,
+	        acc2: false,
+	        mileage: false,
+	        battery: false,
+	        fuel: false,
             engineHours: false,
             stoppedDuration: false,
             geolock: false,
             immob: false,
             heartrate: false,
             lockdoor: false,
-        };
+	    };
 
 
-        if (assetFeaturesStatus.acc) {
-            assetStats.acc = assetFeaturesStatus.acc.value;
-        }
-        if (assetFeaturesStatus.acc2) {
-            assetStats.acc2 = assetFeaturesStatus.acc2.value;
-        }
-        if (assetFeaturesStatus.voltage) {
-            assetStats.voltage = assetFeaturesStatus.voltage.value;
-        }
-        if (assetFeaturesStatus.mileage) {
-            assetStats.mileage = assetFeaturesStatus.mileage.value;
+	    if (assetFeaturesStatus.acc) {
+	        assetStats.acc = assetFeaturesStatus.acc.value;
+	    }
+	    if (assetFeaturesStatus.acc2) {
+	        assetStats.acc2 = assetFeaturesStatus.acc2.value;
+	    }
+	    if (assetFeaturesStatus.voltage) {
+	        assetStats.voltage = assetFeaturesStatus.voltage.value;
+	    }
+	    if (assetFeaturesStatus.mileage) {
+	        assetStats.mileage = assetFeaturesStatus.mileage.value;
             assetStats.engineHours = assetFeaturesStatus.engineHours.value;
-        }
-        if (assetFeaturesStatus.battery) {
-            assetStats.battery = assetFeaturesStatus.battery.value;
-        }
-        if (assetFeaturesStatus.fuel) {
-            assetStats.fuel = assetFeaturesStatus.fuel.value;
-        }
+	    }
+	    if (assetFeaturesStatus.battery) {
+	        assetStats.battery = assetFeaturesStatus.battery.value;
+	    }
+	    if (assetFeaturesStatus.fuel) {
+	        assetStats.fuel = assetFeaturesStatus.fuel.value;
+	    }
         if (assetFeaturesStatus.temperature) {
             assetStats.temperature = assetFeaturesStatus.temperature.value;
         }
@@ -4922,7 +4576,7 @@ function loadStatusPage() {
         if (assetFeaturesStatus.immob) {
             assetStats.immob = assetFeaturesStatus.immob.value;
         }
-        if (assetFeaturesStatus.heartrate) {
+        if (assetFeaturesStatus.heartrate ) {
             assetStats.heartrate = assetFeaturesStatus.heartrate.value;
         }
         if (assetFeaturesStatus.lockdoor) {
@@ -4930,21 +4584,21 @@ function loadStatusPage() {
         }
 
 
-        mainView.router.load({
-            url: 'resources/templates/asset.status.html',
-            context: {
-                Name: asset.Name,
-                Time: time,
-                Direction: deirectionCardinal + ' (' + direct + '&deg;)',
-                Speed: speed,
-                Address: LANGUAGE.COM_MSG08,
-                Voltage: assetStats.voltage,
-                Acc: assetStats.acc,
-                Acc2: assetStats.acc2,
-                Mileage: assetStats.mileage,
+	    mainView.router.load({
+	        url:'resources/templates/asset.status.html',
+	        context:{
+	            Name: asset.Name,
+	            Time: time,
+	            Direction: deirectionCardinal+' ('+direct+'&deg;)',
+	            Speed: speed,
+	            Address: LANGUAGE.COM_MSG08,
+	            Voltage: assetStats.voltage,
+	            Acc: assetStats.acc,
+	            Acc2: assetStats.acc2,
+	            Mileage: assetStats.mileage,
                 EngineHours: assetStats.engineHours,
-                Battery: assetStats.battery,
-                Fuel: assetStats.fuel,
+	            Battery: assetStats.battery,
+	            Fuel: assetStats.fuel,
                 Temperature: assetStats.temperature,
                 StoppedDuration: assetStats.stoppedDuration,
                 ImmobState: assetStats.immob,
@@ -4952,33 +4606,34 @@ function loadStatusPage() {
                 Coords: 'GPS: ' + Protocol.Helper.convertDMS(latlng.lat, latlng.lng),
                 Heartrate: assetStats.heartrate,
                 LockDoorState: assetStats.lockdoor,
-            }
-        });
+	        }
+	    });
 
-        if (latlng.lat !== 0 && latlng.lng !== 0) {
-            Protocol.Helper.getAddressByGeocoder(latlng, function(address) {
+	    if (parseFloat(latlng.lat) !== 0 && parseFloat(latlng.lng) !== 0) {
+            Protocol.Helper.getAddressByGeocoder(latlng,function(address){
                 $$('body .display_address').html(address);
             });
-        } else {
+        }else{
             $$('body .display_address').html(LANGUAGE.COM_MSG11);
         }
-
-    } else {
-        App.alert(LANGUAGE.PROMPT_MSG007);
+    }else{
+    	App.alert(LANGUAGE.PROMPT_MSG007);
     }
 
 
 }
 
-function changeGeolockImmobState(params) {
+function changeGeolockImmobState(params){
     if (params && params.id) {
         var userInfo = getUserinfo();
         var url = API_URL.URL_SET_GEOLOCK;
         if (params.name == 'Immobilise') {
             url = API_URL.URL_SET_IMMOBILISATION;
-        } else if (params.name == 'LockDoor') {
+        }else if(params.name == 'LockDoor'){
             url = API_URL.URL_SET_DOOR;
         }
+
+
 
         if (params.name == 'LockDoor') {
             url = url.format(userInfo.MajorToken,
@@ -4986,7 +4641,7 @@ function changeGeolockImmobState(params) {
                 params.id,
                 params.state ? 'lock' : 'unlock'
             );
-        } else {
+        }else{
             url = url.format(userInfo.MajorToken,
                 userInfo.MinorToken,
                 params.id,
@@ -4994,12 +4649,10 @@ function changeGeolockImmobState(params) {
             );
         }
 
-        console.log(url);
         App.showPreloader();
-        JSON1.request(url, function(result) {
+        JSON1.request(url, function(result){
                 console.log(result);
                 if (result.MajorCode == '000') {
-                    console.log(params);
                     setStatusNewState({
                         asset: params.imei,
                         forAlarm: params.name,
@@ -5008,40 +4661,36 @@ function changeGeolockImmobState(params) {
                     changeIconColor(params);
                     checkBalance();
 
-                } else if (result.MajorCode == '200' && result.MinorCode == '1003') {
+                }else if(result.MajorCode == '200' && result.MinorCode == '1003'){
                     showNoCreditMessage();
                     params.state = !params.state;
                     changeSwitcherState(params);
-                } else if (result.MajorCode == '100' && result.MinorCode == '1003') {
-                    showCustomMessage({ title: LANGUAGE.PROMPT_MSG050, text: LANGUAGE.PROMPT_MSG051 });
+                }else if(result.MajorCode == '100' && result.MinorCode == '1003'){
+                    showCustomMessage({title: LANGUAGE.PROMPT_MSG050, text: LANGUAGE.PROMPT_MSG051});
                     params.state = !params.state;
                     changeSwitcherState(params);
-                } else {
+                }else{
                     App.alert(LANGUAGE.COM_MSG36);
                     params.state = !params.state;
                     changeSwitcherState(params);
                 }
-                App.hidePreloader();
+                                App.hidePreloader();
             },
-            function() {
-                App.hidePreloader();
-                App.alert(LANGUAGE.COM_MSG02);
-            }
+            function(){ App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02); }
         );
     }
 }
 
-function setStatusNewState(params) {
+function setStatusNewState(params){
     if (params.state === true) {
-        POSINFOASSETLIST[params.asset].StatusNew = POSINFOASSETLIST[params.asset].StatusNew | Protocol.StatusNewEnum[params.forAlarm];
-    } else {
-        POSINFOASSETLIST[params.asset].StatusNew = POSINFOASSETLIST[params.asset].StatusNew & ~Protocol.StatusNewEnum[params.forAlarm];
+        POSINFOASSETLIST[params.asset].StatusNew = POSINFOASSETLIST[params.asset].StatusNew | Protocol.StatusNewEnum[params.forAlarm] ;
+    }else{
+        POSINFOASSETLIST[params.asset].StatusNew = POSINFOASSETLIST[params.asset].StatusNew & ~Protocol.StatusNewEnum[params.forAlarm] ;
     }
 }
-
-function changeIconColor(params) {
+function changeIconColor(params){
     if (params.name) {
-        var input = $$('.status_page [name=' + params.name + ']');
+        var input = $$('.status_page [name='+params.name+']');
         if (input) {
             var parent = input.closest('.item-content');
             var icon = parent.find('.item-media i');
@@ -5049,50 +4698,49 @@ function changeIconColor(params) {
 
                 if (params.name == 'Immobilise') {
                     $$(icon).removeClass('state-3 color-gray').addClass('state-3');
-                    $('#immob-state' + params.imei).removeClass('state-3 state-0').addClass('state-3');
-                } else if (params.name == 'LockDoor') {
+                    $('#immob-state'+params.imei).removeClass('state-3 state-0').addClass('state-3');
+                }else if(params.name == 'LockDoor'){
                     $$(icon).removeClass('state-3 color-gray').addClass('state-3');
-                } else {
+                }else{
                     $$(icon).removeClass('state-1 color-gray').addClass('state-1');
-                    $('#geolock-state' + params.imei).removeClass('state-1 state-0').addClass('state-1');
+                    $('#geolock-state'+params.imei).removeClass('state-1 state-0').addClass('state-1');
                 }
-            } else {
+            }else{
                 if (params.name == 'Immobilise') {
                     $$(icon).removeClass('state-3 color-gray').addClass('color-gray');
-                    $('#immob-state' + params.imei).removeClass('state-3 state-0').addClass('state-0');
-                } else if (params.name == 'LockDoor') {
+                    $('#immob-state'+params.imei).removeClass('state-3 state-0').addClass('state-0');
+                }else if(params.name == 'LockDoor'){
                     $$(icon).removeClass('state-3 color-gray').addClass('color-gray');
-                } else {
+                }else{
                     $$(icon).removeClass('state-1 color-gray').addClass('color-gray');
-                    $('#geolock-state' + params.imei).removeClass('state-1 state-0').addClass('state-0');
+                    $('#geolock-state'+params.imei).removeClass('state-1 state-0').addClass('state-0');
                 }
             }
         }
     }
 }
-
-function changeSwitcherState(params) {
+function changeSwitcherState(params){
     if (params.name) {
-        var input = $$('.status_page [name=' + params.name + ']');
+        var input = $$('.status_page [name='+params.name+']');
         if (input) {
             input.prop('checked', params.state);
         }
     }
 }
-
-function showNoCreditMessage() {
-    var modalTex = '<div class="color-red custom-modal-title">' + LANGUAGE.PROMPT_MSG032 + '</div>' +
-        '<div class="custom-modal-text">' + LANGUAGE.PROMPT_MSG029 + '</div>';
+function showNoCreditMessage(){
+    var modalTex = '<div class="color-red custom-modal-title">'+ LANGUAGE.PROMPT_MSG032 +'</div>' +
+                    '<div class="custom-modal-text">'+ LANGUAGE.PROMPT_MSG029 +'</div>';
     App.modal({
-        title: '<div class="custom-modal-logo-wrapper"><img class="custom-modal-logo" src="resources/images/logo.png" alt=""/></div>',
-        text: modalTex,
-        buttons: [{
+           title: '<div class="custom-modal-logo-wrapper"><img class="custom-modal-logo" src="resources/images/logo.png" alt=""/></div>',
+            text: modalTex,
+         buttons: [
+            {
                 text: LANGUAGE.COM_MSG35
             },
             {
                 text: LANGUAGE.COM_MSG34,
                 //bold: true,
-                onClick: function() {
+                onClick: function () {
                     loadRechargeCredit();
                 }
             },
@@ -5101,9 +4749,9 @@ function showNoCreditMessage() {
 }
 
 function showReferralModal(autoShowed) {
-	var afterText = '';
-	if (autoShowed) {
-		afterText = '<div class="list-block no-hairlines modal-checkbox">' +
+    var afterText = '';
+    if (autoShowed) {
+        afterText = '<div class="list-block no-hairlines modal-checkbox">' +
             '<ul>' +
             '<li>' +
             '<label class="label-checkbox item-content">' +
@@ -5118,31 +4766,31 @@ function showReferralModal(autoShowed) {
             '</li>' +
             '</ul>' +
             '</div>';
-	}
-	var modal = App.modal({
+    }
+    var modal = App.modal({
         title: LANGUAGE.PROMPT_MSG065,
         text: `<div class="custom-modal-text">${ LANGUAGE.PROMPT_MSG066 } <b>${ LANGUAGE.PROMPT_MSG067 }</b> ${ LANGUAGE.PROMPT_MSG068 }</br>${ LANGUAGE.PROMPT_MSG069 } <a href="${ API_URL.URL_REFERRAL_PROGRAM }" class="external">${ LANGUAGE.PROMPT_MSG070 }</a> ${ LANGUAGE.PROMPT_MSG071 }</div>`,
         afterText: afterText,
         buttons: [{
                 text: LANGUAGE.COM_MSG38,
-                onClick: function(parent) {                	
+                onClick: function(parent) {
                     var checkboxState = parent.find('input[name="checkbox-not-show-modal-referral"]').is(":checked");
                     if (checkboxState) {
                         localStorage.ModalReferral = checkboxState;
                     }
                 }
             },
-            
+
         ]
     });
 }
 
-function showAskForReviewMessage() {
+function showAskForReviewMessage(){
 
     var appId = '';
-    if (window.device) {
+    if(window.device) {
         var platform = device.platform.toLowerCase();
-        switch (platform) {
+        switch(platform){
             case "ios":
                 appId = AppDetails.appleId;
                 break;
@@ -5155,26 +4803,27 @@ function showAskForReviewMessage() {
 
     var modal = App.modal({
         title: '<div class="custom-modal-logo-wrapper"><img class="custom-modal-logo" src="resources/images/logo.png" alt=""/></div>',
-        text: '<div class="custom-modal-text">' + LANGUAGE.PROMPT_MSG053 + '</div>',
-        afterText: '<div class="list-block no-hairlines modal-checkbox">' +
-            '<ul>' +
-            '<li>' +
-            '<label class="label-checkbox item-content">' +
-            '<input type="checkbox" name="checkbox-not-show-modal-review" value="">' +
-            '<div class="item-media">' +
-            '<i class="icon icon-form-checkbox"></i>' +
-            '</div>' +
-            '<div class="item-inner">' +
-            '<div class="item-title">' + LANGUAGE.COM_MSG40 + '</div>' +
-            '</div>' +
-            '</label>' +
-            '</li>' +
-            '</ul>' +
-            '</div>',
-        buttons: [{
+        text: '<div class="custom-modal-text">' + LANGUAGE.PROMPT_MSG053 +'</div>',
+        afterText:  '<div class="list-block no-hairlines modal-checkbox">' +
+                        '<ul>' +
+                            '<li>' +
+                                '<label class="label-checkbox item-content">' +
+                                    '<input type="checkbox" name="checkbox-not-show-modal-review" value="">' +
+                                    '<div class="item-media">' +
+                                        '<i class="icon icon-form-checkbox"></i>' +
+                                    '</div>' +
+                                    '<div class="item-inner">' +
+                                        '<div class="item-title">' + LANGUAGE.COM_MSG40 + '</div>' +
+                                    '</div>' +
+                                '</label>' +
+                            '</li>' +
+                        '</ul>' +
+                    '</div>',
+        buttons: [
+            {
                 text: LANGUAGE.COM_MSG39,
-                onClick: function(parent) {
-                    var checkboxState = parent.find('input[name="checkbox-not-show-modal-review"]').is(":checked");
+                onClick: function () {
+                    var checkboxState = $$('body input[name="checkbox-not-show-modal-review"]').is(":checked");
                     if (checkboxState) {
                         localStorage.ModalReview = checkboxState;
                     }
@@ -5183,16 +4832,16 @@ function showAskForReviewMessage() {
             {
                 text: LANGUAGE.COM_MSG38,
                 bold: true,
-                onClick: function(parent) {
-                    var checkboxState = parent.find('input[name="checkbox-not-show-modal-review"]').is(":checked");
+                onClick: function () {
+                    var checkboxState = $$('body input[name="checkbox-not-show-modal-review"]').is(":checked");
                     if (checkboxState) {
                         localStorage.ModalReview = checkboxState;
                     }
 
                     if (LaunchReview) {
-                        LaunchReview.launch(function() {
+                        LaunchReview.launch(function(){
                             console.log("Successfully launched store app");
-                        }, function(err) {
+                        },function(err){
                             console.log("Error launching store app: " + err);
                         }, appId);
                     }
@@ -5202,21 +4851,23 @@ function showAskForReviewMessage() {
     });
 }
 
-function showCustomMessage(params) {
+function showCustomMessage(params){
     var modalTex = '';
     if (params.title) {
-        modalTex += '<div class="color-red custom-modal-title">' + params.title + '</div>';
+        modalTex += '<div class="color-red custom-modal-title">'+ params.title +'</div>';
     }
     if (params.text) {
-        modalTex += '<div class="custom-modal-text">' + params.text + '</div>';
+        modalTex += '<div class="custom-modal-text">'+ params.text +'</div>';
     }
 
     App.modal({
-        title: '<div class="custom-modal-logo-wrapper"><img class="custom-modal-logo" src="resources/images/logo.png" alt=""/></div>',
-        text: modalTex,
-        buttons: [{
-            text: LANGUAGE.COM_MSG38
-        }]
+           title: '<div class="custom-modal-logo-wrapper"><img class="custom-modal-logo" src="resources/images/logo.png" alt=""/></div>',
+            text: modalTex,
+         buttons: [
+            {
+                text: LANGUAGE.COM_MSG38
+            }
+        ]
     });
 }
 
@@ -5373,6 +5024,7 @@ function loadAlarmPage(params) {
     var IsIgnore = 0;
 
 
+
     if (!params) {
         if (assetAlarmVal) {
             $.each(alarms, function(key, value) {
@@ -5422,20 +5074,20 @@ function loadAlarmPage(params) {
     var speedingMode = 1;
     var overspeedRadio1 = true;
     var overspeedRadio2 = false;
-    if (params && params.SpeedingMode && params.SpeedingMode == 2) {
+    if (params.SpeedingMode && params.SpeedingMode == 2) {
         overspeedRadio1 = !overspeedRadio1;
         overspeedRadio2 = !overspeedRadio2;
     }
 
-    var offlineOptions = {
+     var offlineOptions = {
         '24': false,
         '48': false,
         '72': false,
-    }
-    if (params && params.OfflineHours) {
+    };
+    if (params.OfflineHours) {
         var selectedOfflineOptions = params.OfflineHours.split(',');
         for (var i = selectedOfflineOptions.length - 1; i >= 0; i--) {
-            offlineOptions[selectedOfflineOptions[i]] = true;  
+            offlineOptions[selectedOfflineOptions[i]] = true;
         }
     }
 
@@ -5477,33 +5129,28 @@ function loadAlarmPage(params) {
             offline24: offlineOptions['24'],
             offline48: offlineOptions['48'],
             offline72: offlineOptions['72'],
-
         }
     });
 }
 
-
-
-function loadPlaybackPage() {
+function loadPlaybackPage(){
     var asset = POSINFOASSETLIST[TargetAsset.ASSET_IMEI];
     checkMapExisting();
     mainView.router.load({
-        url: 'resources/templates/asset.playback.html',
-        context: {
+        url:'resources/templates/asset.playback.html',
+        context:{
             Name: asset.Name,
         }
     });
 }
-
-function checkMapExisting() {
+function checkMapExisting(){
     if ($$('#map')) {
         $$('#map').remove();
         MapTrack = null;
     }
 }
 
-
-function getMarkerDataTableInfoPin(point) {
+function getMarkerDataTableInfoPin(point){
     var markerData = '';
 
     var beginTime = moment(point.beginTime).format(window.COM_TIMEFORMAT);
@@ -5512,95 +5159,92 @@ function getMarkerDataTableInfoPin(point) {
     var endTime = moment(point.endTime).format(window.COM_TIMEFORMAT);
     endTime = moment.utc(endTime).toDate();
     endTime = moment(endTime).local().format(window.COM_TIMEFORMAT);
+    var dateDifference = Protocol.Helper.getDifferenceBTtwoDates(beginTime,endTime);
 
-
-    var dateDifference = Protocol.Helper.getDifferenceBTtwoDates(point.beginTime, point.endTime);
-    var duration = moment.duration(dateDifference, "milliseconds").format('d[d] h[h] m[m] s[s]');
+    var duration = moment.duration(dateDifference, "milliseconds").format('d[d] h[h] m[m]');
 
     markerData += '<table cellpadding="0" cellspacing="0" border="0" class="marker-data-table">';
-    switch (point.eventClass) {
+    switch (point.eventClass){
         case 1:
-            markerData += '<tr>';
-            markerData += '<td class="marker-data-caption">Alarm</td>';
-            $.each(Protocol.PositionAlerts, function(key, val) {
+            markerData +=   '<tr>';
+            markerData +=       '<td class="marker-data-caption">Alarm</td>';
+            $.each(Protocol.PositionAlerts,function(key,val){
                 if (val == point.eventType) {
-                    markerData += '<td class="marker-data-value">' + key + '</td>';
+                    markerData +=       '<td class="marker-data-value">'+key+'</td>';
                 }
             });
-            markerData += '</tr>';
+            markerData +=   '</tr>';
             break;
 
-        case 2: // ACC
-            markerData += '<tr>';
-            markerData += '<td class="marker-data-caption">' + LANGUAGE.ASSET_STATUS_MSG13 + '</td>'; //Ignition
-            if (point.eventType === 0) {
-                markerData += '<td class="marker-data-value">OFF</td>';
-            } else {
-                markerData += '<td class="marker-data-value">ON</td>';
-            }
-            markerData += '</tr>';
+        case 2:     // ACC
+            markerData +=   '<tr>';
+            markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_STATUS_MSG13+'</td>';    //Ignition
+                if (point.eventType === 0) {
+            markerData +=       '<td class="marker-data-value">OFF</td>';
+                }else{
+            markerData +=       '<td class="marker-data-value">ON</td>';
+                }
+            markerData +=   '</tr>';
             break;
 
-        case 4: // ACTIVE
-            markerData += '<tr>';
-            markerData += '<td class="marker-data-caption">' + LANGUAGE.COM_MSG28 + '</td>'; //Activity
-            if (point.eventType === 0) {
-                markerData += '<td class="marker-data-value">' + LANGUAGE.ASSET_STATUS_MSG04 + '</td>'; //Stopped
-            } else {
-                markerData += '<td class="marker-data-value">' + LANGUAGE.ASSET_STATUS_MSG05 + '</td>'; //Move
-            }
-            markerData += '</tr>';
+        case 4:     // ACTIVE
+            markerData +=   '<tr>';
+            markerData +=       '<td class="marker-data-caption">'+LANGUAGE.COM_MSG28+'</td>';    //Activity
+                if (point.eventType === 0) {
+            markerData +=       '<td class="marker-data-value">'+LANGUAGE.ASSET_STATUS_MSG04+'</td>';   //Stopped
+                }else{
+            markerData +=       '<td class="marker-data-value">'+LANGUAGE.ASSET_STATUS_MSG05+'</td>';  //Move
+                }
+            markerData +=   '</tr>';
             break;
     }
 
-    markerData += '<tr>';
-    markerData += '<td class="marker-data-caption">' + LANGUAGE.ASSET_PLAYBACK_MSG05 + '</td>';
-    markerData += '<td class="marker-data-value">' + beginTime + '</td>';
-    markerData += '</tr>';
-    markerData += '<tr>';
-    markerData += '<td class="marker-data-caption">' + LANGUAGE.ASSET_PLAYBACK_MSG07 + '</td>';
-    markerData += '<td class="marker-data-value">' + endTime + '</td>';
-    markerData += '</tr>';
-    markerData += '<tr>';
-    markerData += '<td class="marker-data-caption">' + LANGUAGE.ASSET_PLAYBACK_MSG24 + '</td>';
-    markerData += '<td class="marker-data-value">' + duration + '</td>';
-    markerData += '</tr>';
-    markerData += '<tr>';
-    markerData += '<td class="marker-data-caption">' + LANGUAGE.ASSET_TRACK_MSG11 + '</td>';
-    markerData += '<td class="marker-data-value marker-address" data-popupIdAddress="' + point.index + '">' + LANGUAGE.COM_MSG08 + '</td>';
-    markerData += '</tr>';
+    markerData +=   '<tr>';
+    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_PLAYBACK_MSG05+'</td>';
+    markerData +=       '<td class="marker-data-value">'+beginTime+'</td>';
+    markerData +=   '</tr>';
+    markerData +=   '<tr>';
+    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_PLAYBACK_MSG07+'</td>';
+    markerData +=       '<td class="marker-data-value">'+endTime+'</td>';
+    markerData +=   '</tr>';
+    markerData +=   '<tr>';
+    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_PLAYBACK_MSG24+'</td>';
+    markerData +=       '<td class="marker-data-value">'+duration+'</td>';
+    markerData +=   '</tr>';
+    markerData +=   '<tr>';
+    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG11+'</td>';
+    markerData +=       '<td class="marker-data-value marker-address" data-popupIdAddress="'+point.index+'">'+LANGUAGE.COM_MSG08+'</td>';
+    markerData +=   '</tr>';
 
     markerData += '</table>';
 
     return markerData;
 }
 
-function loadTrackPage(params) {
+function loadTrackPage(params){
     //alert(JSON.stringify(params));
     var asset = POSINFOASSETLIST[TargetAsset.ASSET_IMEI];
 
     var details = {
-        direct: '',
-        speed: 0,
-        mileage: '-',
-        templateUrl: 'resources/templates/asset.track.html',
-        latlng: {},
-        name: '',
-        time: '',
+        direct : '',
+        speed : 0,
+        mileage : '-',
+        templateUrl : 'resources/templates/asset.track.html',
+        latlng : {},
+        name : '',
+        time : '',
         alertType: '',
         showSpeedLimit: '',
         speedlimit: LANGUAGE.COM_MSG08,
         speedUnitCode: '',
         speedingType: 1,
     };
-    //{"title":"Acc off","type":65536,"imei":"0352544073967920","name":"Landcruiser Perth","lat":-32.032898333333335,"lng":115.86817722222216,"speed":0,"direct":0,"time":"2018-04-13 10:16:51"}
-    if ((params && parseFloat(params.lat) !== 0 && parseFloat(params.lng) !== 0) || (parseFloat(asset.posInfo.lat) !== 0 && parseFloat(asset.posInfo.lng) !== 0)) {
+//{"title":"Acc off","type":65536,"imei":"0352544073967920","name":"Landcruiser Perth","lat":-32.032898333333335,"lng":115.86817722222216,"speed":0,"direct":0,"time":"2018-04-13 10:16:51"}
+    if ((params && parseFloat(params.lat) !== 0 && parseFloat(params.lng) !== 0) || (parseFloat(asset.posInfo.lat) !== 0 && parseFloat(asset.posInfo.lng) !== 0) ){
         if (params) {
-            //alert('here');            
-            window.PosMarker[TargetAsset.ASSET_IMEI] = L.marker([params.lat, params.lng], { icon: Protocol.MarkerIcon[0] });
+            window.PosMarker[TargetAsset.ASSET_IMEI] = L.marker([params.lat, params.lng], {icon: Protocol.MarkerIcon[0]});
             window.PosMarker[TargetAsset.ASSET_IMEI].setLatLng([params.lat, params.lng]);
-
-            if (asset && typeof asset.Unit !== "undefined" && typeof params.speed !== "undefined") {
+            if (asset && typeof asset.Unit !== "undefined" && typeof params.speed !== "undefined" ) {
                 details.speed = Protocol.Helper.getSpeedValue(asset.Unit, params.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
                 details.speedUnitCode = asset.Unit;
             }
@@ -5616,13 +5260,13 @@ function loadTrackPage(params) {
             if (params.type && params.type == '32') {  //32 is speeding alert
                 details.showSpeedLimit = true;
                 if (asset.MaxSpeedAlertMode == '2') { //type 2 means alert triggerd from presetted speed, this speed we take from asset details
-                    details.speedingType = parseInt(asset.MaxSpeedAlertMode,10); 
+                    details.speedingType = parseInt(asset.MaxSpeedAlertMode,10);
                     details.speedlimit = Protocol.Helper.getSpeedValue(asset.Unit, asset.MaxSpeed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
-                }                
+                }
             }
 
-        } else {
-            window.PosMarker[TargetAsset.ASSET_IMEI] = L.marker([asset.posInfo.lat, asset.posInfo.lng], { icon: Protocol.MarkerIcon[0] });
+        }else{
+            window.PosMarker[TargetAsset.ASSET_IMEI] = L.marker([asset.posInfo.lat, asset.posInfo.lng], {icon: Protocol.MarkerIcon[0]});
             window.PosMarker[TargetAsset.ASSET_IMEI].setLatLng([asset.posInfo.lat, asset.posInfo.lng]);
             details.direct = asset.posInfo.direct;
             if (typeof asset.Unit !== "undefined" && typeof asset.posInfo.speed !== "undefined") {
@@ -5639,14 +5283,13 @@ function loadTrackPage(params) {
         }
 
         var deirectionCardinal = Protocol.Helper.getDirectionCardinal(details.direct);
-
         checkMapExisting();
         mainView.router.load({
-            url: details.templateUrl,
-            context: {
+            url:details.templateUrl,
+            context:{
                 Name: details.name,
                 Time: details.time,
-                Direction: deirectionCardinal + ' (' + details.direct + '&deg;)',
+                Direction: deirectionCardinal+' ('+details.direct+'&deg;)',
                 Mileage: details.mileage,
                 Speed: details.speed,
                 Address: LANGUAGE.COM_MSG08,
@@ -5661,17 +5304,18 @@ function loadTrackPage(params) {
             }
         });
 
-        Protocol.Helper.getAddressByGeocoder(details.latlng, function(address) {
+        Protocol.Helper.getAddressByGeocoder(details.latlng,function(address){
             $$('body .display_address').html(address);
         });
 
-    } else {
+    }else{
         App.alert(LANGUAGE.PROMPT_MSG004);
     }
 
 }
 
-function globalsTodafault() {
+
+function globalsTodafault(){
     clearInterval(trackTimer);
     trackTimer = false;
 
@@ -5679,20 +5323,23 @@ function globalsTodafault() {
     playbackTimer = false;
     HistoryArray = [];
     EventsArray = [];
+    layerControl = false;
+    playbackLayerGroup = false;
+    playbackLayerGroupOpt = false;
 }
 
-function updateAssetData(parameters) {
+function updateAssetData(parameters){
     var userInfo = getUserinfo();
-    //var url = API_URL.URL_GET_ALL_POSITIONS.format(userInfo.MinorToken); 
-    var url = API_URL.URL_GET_POSITION.format(userInfo.MinorToken, TargetAsset.ASSET_ID);
+    //var url = API_URL.URL_GET_ALL_POSITIONS.format(userInfo.MinorToken);
+    var url = API_URL.URL_GET_POSITION.format(userInfo.MinorToken,TargetAsset.ASSET_ID);
 
     var container = $$('body');
     if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
     App.showProgressbar(container);
 
-    JSON1.request(url, function(result) {
+    JSON1.request(url, function(result){
 
-            if (result.MajorCode == '000') {
+            if (result.MajorCode == '000' ) {
                 if (result.Data) {
 
                     var posData = result.Data.Pos;
@@ -5704,46 +5351,47 @@ function updateAssetData(parameters) {
                         }
                     }
 
-                    setTimeout(function() {
+
+                    setTimeout(function(){
                         updateMarkerPositionTrack(parameters);
                         App.hideProgressbar();
-                    }, 500);
+                    },500);
                     updateAssetsListStats();
 
                 }
-            } else {
+            }else{
                 App.hideProgressbar();
             }
         },
-        function() {
+        function(){
             App.hideProgressbar();
         }
     );
 }
 
-function updateAssetDataByGPRS() {
+function updateAssetDataByGPRS(){
     var userInfo = getUserinfo();
 
-    var url = API_URL.URL_GET_POSITION2.format(userInfo.MinorToken, TargetAsset.ASSET_ID);
+    var url = API_URL.URL_GET_POSITION2.format(userInfo.MinorToken,TargetAsset.ASSET_ID);
     //console.log(url);
     var container = $$('body');
     if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
     App.showProgressbar(container);
 
-    JSON1.request(url, function(result) {
-            //console.log(result);                     
-            if (result.MajorCode == '000') {
+    JSON1.request(url, function(result){
+            //console.log(result);
+            if (result.MajorCode == '000' ) {
                 if (result.Data) {
                     if (typeof(result.Data) == 'string') {
                         result.Data = JSON.parse(result.Data);
                     }
                     //console.log(result.Data);
-                    //POSINFOASSETLIST[result.Data[1]].initPosInfo(result.Data); 
+                    //POSINFOASSETLIST[result.Data[1]].initPosInfo(result.Data);
                     if (POSINFOASSETLIST[result.Data[1]] && result.Data[5] > POSINFOASSETLIST[result.Data[1]].posInfo.positionTime._i) {
                         POSINFOASSETLIST[result.Data[1]].initPosInfo(result.Data);
-                        setTimeout(function() {
+                        setTimeout(function(){
                             updateMarkerPositionTrack();
-                        }, 500);
+                        },500);
                         updateAssetsListStats();
                     }
 
@@ -5752,176 +5400,174 @@ function updateAssetDataByGPRS() {
             App.hideProgressbar();
 
         },
-        function() {
+        function(){
             App.hideProgressbar();
         }
     );
 }
 
-function updateMarkerPositionTrack(data) {
-    var asset = POSINFOASSETLIST[TargetAsset.ASSET_IMEI];
+function updateMarkerPositionTrack(data){
+        var asset = POSINFOASSETLIST[TargetAsset.ASSET_IMEI];
 
-    if (asset) {
-        window.PosMarker[TargetAsset.ASSET_IMEI].setLatLng([asset.posInfo.lat, asset.posInfo.lng]);
+        if (asset) {
+            window.PosMarker[TargetAsset.ASSET_IMEI].setLatLng([asset.posInfo.lat, asset.posInfo.lng]);
 
-        data.posTime.html(asset.posInfo.positionTime.format(window.COM_TIMEFORMAT));
-        data.posMileage.html((Protocol.Helper.getMileageValue(asset.Unit, asset.posInfo.mileage) + parseInt(asset.InitMileage) + parseInt(asset._FIELD_FLOAT7)) + '&nbsp;' + Protocol.Helper.getMileageUnit(asset.Unit));
-        data.posSpeed.html(Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit));
-        MapTrack.setView([asset.posInfo.lat, asset.posInfo.lng]);
+            data.posTime.html(asset.posInfo.positionTime.format(window.COM_TIMEFORMAT));
+            data.posMileage.html((Protocol.Helper.getMileageValue(asset.Unit, asset.posInfo.mileage) + parseInt(asset.InitMileage) + parseInt(asset._FIELD_FLOAT7)) + '&nbsp;' + Protocol.Helper.getMileageUnit(asset.Unit));
+            data.posSpeed.html(Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit));
+            MapTrack.setView([asset.posInfo.lat, asset.posInfo.lng]);
 
-        var latlng = {};
-        latlng.lat = asset.posInfo.lat;
-        latlng.lng = asset.posInfo.lng;
+            var latlng = {};
+            latlng.lat = asset.posInfo.lat;
+            latlng.lng = asset.posInfo.lng;
 
-        if (data.routeButton) {
-            data.routeButton.data('lat', latlng.lat);
-            data.routeButton.data('lng', latlng.lng);
+            if (data.routeButton) {
+                data.routeButton.data('lat',latlng.lat);
+                data.routeButton.data('lng',latlng.lng);
+            }
+
+            if (data.panoButton) {
+                data.panoButton.data('lat',latlng.lat);
+                data.panoButton.data('lng',latlng.lng);
+            }
+
+            if (data.posLatlng) {
+                data.posLatlng.html('GPS: ' + Protocol.Helper.convertDMS(latlng.lat, latlng.lng));
+            }
+
+            Protocol.Helper.getAddressByGeocoder(latlng,function(address){
+                data.posAddress.html(address);
+            });
         }
-
-        if (data.panoButton) {
-            data.panoButton.data('lat', latlng.lat);
-            data.panoButton.data('lng', latlng.lng);
-        }
-
-        if (data.posLatlng) {
-            data.posLatlng.html('GPS: ' + Protocol.Helper.convertDMS(latlng.lat, latlng.lng));
-        }
-
-        Protocol.Helper.getAddressByGeocoder(latlng, function(address) {
-            data.posAddress.html(address);
-        });
-    }
 
 }
 
-function getHisPosArray(from, to) {
-    var MinorToken = getUserinfo().MinorToken;
+function getHisPosArray(from, to){
+	var MinorToken = getUserinfo().MinorToken;
 
-    var url = API_URL.URL_GET_POSITION_ARR.format(MinorToken,
-        TargetAsset.ASSET_ID,
-        from,
-        to);
-
+	var url = API_URL.URL_GET_POSITION_ARR.format(MinorToken,
+    		TargetAsset.ASSET_ID,
+    		from,
+    		to);
+            console.log(url);
     App.showPreloader();
 
-    JSON1.request(url, function(result) {
-            // console.log(result);
-            if (result.MajorCode == '000') {
-                var hisArray = result.Data.HisArry;
-                if (hisArray.length === 0) {
-                    App.addNotification({
-                        hold: 5000,
-                        message: LANGUAGE.COM_MSG05
-                    });
-                } else {
+	JSON1.request(url, function(result){
+
+	        if(result.MajorCode == '000') {
+                console.log(result);
+	        	var hisArray = result.Data.HisArry;
+	        	if (hisArray.length === 0) {
+	        		App.addNotification({
+		                hold: 5000,
+		                message: LANGUAGE.COM_MSG05
+		            });
+	        	}else{
                     if (result.Data.HisEvents) {
                         setEventsArray(result.Data.HisEvents);
                     }
                     setHistoryArray(hisArray);
 
                     var rawArray = [];
-                    $.each(hisArray, function(index, value) {
-                        rawArray.push([
-                            null,
-                            null,
-                            null,
-                            new Date(value[0] * 1000),
-                            null,
-                            null,
-                            null,
-                            null,
-                            null,
-                            null,
-                            value[1], //lat
-                            value[2], // lng
-                            null,
-                            value[3], //direct
-                            value[4], //speed
-                            value[6] //mileage
-                        ]);
+                    $.each( hisArray, function(index,value){
+                            rawArray.push([
+                                null,
+                                null,
+                                null,
+                                new Date(value[0] * 1000),
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                value[1],   //lat
+                                value[2],   // lng
+                                null,
+                                value[3],   //direct
+                                value[4],   //speed
+                                value[6]    //mileage
+                            ]);
                     });
 
                     getOptimizedRoute(rawArray);
 
-                    var asset = POSINFOASSETLIST[TargetAsset.ASSET_IMEI];
-                    var firstPoint = hisArray[0];
-                    var latlng = {};
-                    latlng.lat = firstPoint[1];
-                    latlng.lng = firstPoint[2];
 
-                    var speed = Protocol.Helper.getSpeedValue(asset.Unit, firstPoint[4]) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
+	        		var asset = POSINFOASSETLIST[TargetAsset.ASSET_IMEI];
+	        		var firstPoint = hisArray[0];
+	        		var latlng = {};
+	        		latlng.lat = firstPoint[1];
+	        		latlng.lng = firstPoint[2];
+
+	        		var speed = Protocol.Helper.getSpeedValue(asset.Unit, firstPoint[4]) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
                     //var direct = firstPoint[3];
                     var mileage = (Protocol.Helper.getMileageValue(asset.Unit, firstPoint[6]) + parseInt(asset.InitMileage) + parseInt(asset._FIELD_FLOAT7)) + '&nbsp;' + Protocol.Helper.getMileageUnit(asset.Unit);
-                    var time = moment(firstPoint[0], 'X').format(window.COM_TIMEFORMAT);
+					var time = moment(firstPoint[0],'X').format(window.COM_TIMEFORMAT);
 
 
-                    window.PosMarker[TargetAsset.ASSET_IMEI] = L.marker([latlng.lat, latlng.lng], { icon: Protocol.MarkerIcon[0] });
-                    window.PosMarker[TargetAsset.ASSET_IMEI].setLatLng([latlng.lat, latlng.lng]);
-                    POSINFOASSETLIST[TargetAsset.ASSET_IMEI].posInfo.lat = latlng.lat;
-                    POSINFOASSETLIST[TargetAsset.ASSET_IMEI].posInfo.lng = latlng.lng;
 
-                    mainView.router.load({
-                        url: 'resources/templates/asset.playback.show.html',
-                        context: {
-                            Name: asset.Name,
-                            Time: time,
-                            //Direction: direct,
+				    window.PosMarker[TargetAsset.ASSET_IMEI] = L.marker([latlng.lat, latlng.lng], {icon: Protocol.MarkerIcon[0]});
+				    window.PosMarker[TargetAsset.ASSET_IMEI].setLatLng([latlng.lat, latlng.lng]);
+				    POSINFOASSETLIST[TargetAsset.ASSET_IMEI].posInfo.lat = latlng.lat;
+					POSINFOASSETLIST[TargetAsset.ASSET_IMEI].posInfo.lng = latlng.lng;
+
+	        		mainView.router.load({
+			        url:'resources/templates/asset.playback.show.html',
+			            context:{
+			                Name: asset.Name,
+			                Time: time,
+			                //Direction: direct,
                             Mileage: mileage,
-                            Speed: speed,
-                            Address: LANGUAGE.COM_MSG08,
+			                Speed: speed,
+			                Address: LANGUAGE.COM_MSG08,
                             Lat: latlng.lat,
                             Lng: latlng.lng,
                             Coords: 'GPS: ' + Protocol.Helper.convertDMS(latlng.lat, latlng.lng),
-                        }
-                    });
+			            }
+			        });
 
-                    Protocol.Helper.getAddressByGeocoder(latlng, function(address) {
-                        $$('body .display_address').html(address);
-                    });
-                }
-            } else if (result.MajorCode == '100' && result.MinorCode == '1002') {
+			        Protocol.Helper.getAddressByGeocoder(latlng,function(address){
+				        $$('body .display_address').html(address);
+				    });
+	        	}
+	        }else if(result.MajorCode == '100' && result.MinorCode == '1002'){
                 App.alert(LANGUAGE.ASSET_PLAYBACK_MSG09);
-            } else {
+            }else{
                 App.alert('Something wrong');
             }
-            App.hidePreloader();
-        },
-        function() {
-            App.hidePreloader();
-            App.alert(LANGUAGE.COM_MSG02);
-        }
-    );
+	        App.hidePreloader();
+	    },
+	    function(){ App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02); }
+	);
 }
 
-
-function setHistoryArray(array) {
+function setHistoryArray(array){
     //console.log(array);
     HistoryArray = [];
-    $.each(array, function(key, value) {
-        if (JSON.stringify(array[key]) !== JSON.stringify(array[key - 1])) {
-            var index = 0;
-            var point = {};
-            point.positionTime = value[index++];
-            point.lat = value[index++];
-            point.lng = value[index++];
-            point.direct = value[index++];
-            point.speed = value[index++];
-            point.timeSpan = value[index++];
-            point.mileage = value[index++];
-            point.alerts = value[index++];
-            point.status = value[index++];
+    $.each( array, function(key,value){
+    	if ( JSON.stringify(array[key]) !== JSON.stringify(array[key-1]) ) {
+	        var index = 0;
+	        var point = {};
+	        point.positionTime = value[index++];
+	        point.lat = value[index++];
+	        point.lng = value[index++];
+	        point.direct = value[index++];
+	        point.speed = value[index++];
+	        point.timeSpan = value[index++];
+	        point.mileage = value[index++];
+	        point.alerts = value[index++];
+	        point.status = value[index++];
 
-            HistoryArray.push(point);
-        }
+	        HistoryArray.push(point);
+	    }
     });
 }
-
-function setEventsArray(array) {
+function setEventsArray(array){
     //console.log(array);
     EventsArray = [];
     if (array && array.length !== 0) {
-        $.each(array, function(key, value) {
-            if (JSON.stringify(array[key]) !== JSON.stringify(array[key - 1])) {
+        $.each( array, function(key,value){
+            if ( JSON.stringify(array[key]) !== JSON.stringify(array[key-1]) ) {
                 var index = 0;
                 var point = {};
                 point.assetID = value[index++];
@@ -5948,180 +5594,174 @@ function setEventsArray(array) {
 
 }
 
-function updateAssetsPosInfo(updateMarkers = false) {
+function updateAssetsPosInfo(){
     var userInfo = getUserinfo();
     var assetList = getAssetList();
     var codes = '';
-    $.each(assetList, function(index, val) {
-        codes += val.Id + ',';
+    $.each(assetList, function(index, val){
+        codes += val.Id+',';
     });
     if (codes) {
         codes = codes.slice(0, -1);
     }
-    //var url = API_URL.URL_GET_ALL_POSITIONS.format(userInfo.MinorToken); 
-    var url = API_URL.URL_GET_ALL_POSITIONS2.format(userInfo.MinorToken, userInfo.MajorToken);
+    //var url = API_URL.URL_GET_ALL_POSITIONS.format(userInfo.MinorToken);
+    var url = API_URL.URL_GET_ALL_POSITIONS2.format(userInfo.MinorToken,userInfo.MajorToken);
     var data = {
         'codes': codes,
     };
+    //console.log(data);
+    //JSON1.request(url, function(result){
+    JSON1.requestPost(url,data, function(result){
 
-    //JSON1.request(url, function(result){ 
-    JSON1.requestPost(url, data, function(result) {
-            //console.log(result);                     
+            //console.log(result);
             if (result.MajorCode == '000') {
                 var data = result.Data;
                 var posData = '';
                 var imei = '';
-
-                $.each(data, function(key, value) {
+                $.each( data, function( key, value ) {
                     posData = value;
                     imei = posData[1];
-
-                    if ( !isObjEmpty(POSINFOASSETLIST[imei]) && !POSINFOASSETLIST[imei].posInfo.positionTime || POSINFOASSETLIST[imei] && posData[5] >= POSINFOASSETLIST[imei].posInfo.positionTime._i ) {
+                    if (!isObjEmpty(POSINFOASSETLIST[imei]) && !POSINFOASSETLIST[imei].posInfo.positionTime || POSINFOASSETLIST[imei] && posData[5] >= POSINFOASSETLIST[imei].posInfo.positionTime._i ) {
                         POSINFOASSETLIST[imei].initPosInfo(posData);
                     }
+
                 });
                 updateAssetsListStats();
-                if (updateMarkers) {
-                    updateAllMarkers(assetList);
-                }
             }
         },
-        function() {}
+        function(){ }
     );
 }
 
-function updateAssetsListStats() {
+function updateAssetsListStats(){
     var assetFeaturesStatus = '';
     var state = '';
     var value = '';
-    $.each(POSINFOASSETLIST, function(key, val) {
+    $.each( POSINFOASSETLIST, function( key, val ) {
         assetFeaturesStatus = Protocol.Helper.getAssetStateInfo(POSINFOASSETLIST[key]);
         if (assetFeaturesStatus.GSM) {
-            state = $$("#signal-state" + key);
+            state = $$("#signal-state"+key);
             state.removeClass('state-0 state-1 state-2 state-3');
             state.addClass(assetFeaturesStatus.GSM.state);
         }
         if (assetFeaturesStatus.GPS) {
-            state = $$("#satellite-state" + key);
+            state = $$("#satellite-state"+key);
             state.removeClass('state-0 state-1 state-2 state-3');
             state.addClass(assetFeaturesStatus.GPS.state);
         }
         if (assetFeaturesStatus.geolock) {
-            state = $$("#geolock-state" + key);
+            state = $$("#geolock-state"+key);
             state.removeClass('state-0 state-1 state-2 state-3');
             state.addClass(assetFeaturesStatus.geolock.state);
         }
         if (assetFeaturesStatus.immob) {
-            state = $$("#immob-state" + key);
+            state = $$("#immob-state"+key);
             state.removeClass('state-0 state-1 state-2 state-3');
             state.addClass(assetFeaturesStatus.immob.state);
         }
         if (assetFeaturesStatus.status) {
-            state = $$("#status-state" + key);
+            state = $$("#status-state"+key);
             state.removeClass('state-0 state-1 state-2 state-3');
             state.addClass(assetFeaturesStatus.status.state);
-            value = $$("#status-value" + key);
+            value = $$("#status-value"+key);
             value.html(assetFeaturesStatus.status.value);
         }
 
         if (assetFeaturesStatus.speed) {
-            value = $$("#speed-value" + key);
+            value = $$("#speed-value"+key);
             value.html(assetFeaturesStatus.speed.value);
         }
         if (assetFeaturesStatus.temperature) {
-            value = $$("#temperature-value" + key);
+            value = $$("#temperature-value"+key);
             value.html(assetFeaturesStatus.temperature.value);
         }
         if (assetFeaturesStatus.fuel) {
-            value = $$("#fuel-value" + key);
+            value = $$("#fuel-value"+key);
             value.html(assetFeaturesStatus.fuel.value);
         }
         if (assetFeaturesStatus.voltage) {
-            value = $$("#voltage-value" + key);
+            value = $$("#voltage-value"+key);
             value.html(assetFeaturesStatus.voltage.value);
         }
         if (assetFeaturesStatus.battery) {
-            value = $$("#battery-value" + key);
+            value = $$("#battery-value"+key);
             value.html(assetFeaturesStatus.battery.value);
         }
         /*if (assetFeaturesStatus.driver) {
-            value = $$("#driver-value"+key);        
-            value.html(assetFeaturesStatus.battery.value); 
+            value = $$("#driver-value"+key);
+            value.html(assetFeaturesStatus.battery.value);
         } */
     });
 
     var activePage = mainView.activePage;
-    if (typeof(activePage) != 'undefined' && activePage.name == "asset.status") {
+    if ( typeof(activePage) != 'undefined' && activePage.name == "asset.status") {
         if (TargetAsset.ASSET_IMEI) {
             var asset = POSINFOASSETLIST[TargetAsset.ASSET_IMEI];
             if (asset) {
                 assetFeaturesStatus = Protocol.Helper.getAssetStateInfo(asset);
                 if (assetFeaturesStatus && assetFeaturesStatus.stats) {
-                    var direct = asset.posInfo.direct;
-                    var deirectionCardinal = Protocol.Helper.getDirectionCardinal(direct);
-                    var statusPageContainer = $$('.status_page');
-                    var stoppedDurationContainer = statusPageContainer.find('.position_stoppedDuration');
+                	var direct = asset.posInfo.direct;
+	                var deirectionCardinal = Protocol.Helper.getDirectionCardinal(direct);
+	                var statusPageContainer = $$('.status_page');
+	                var stoppedDurationContainer = statusPageContainer.find('.position_stoppedDuration');
 
-                    statusPageContainer.find('.position_time').html(asset.posInfo.positionTime.format(window.COM_TIMEFORMAT));
-                    statusPageContainer.find('.position_speed').html(Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit));
-                    statusPageContainer.find('.position_direction').html(deirectionCardinal + ' (' + direct + '&deg;)');
+	                statusPageContainer.find('.position_time').html(asset.posInfo.positionTime.format(window.COM_TIMEFORMAT));
+	                statusPageContainer.find('.position_speed').html(Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit));
+	                statusPageContainer.find('.position_direction').html(deirectionCardinal+' ('+direct+'&deg;)');
 
-                    if (prevStatusLatLng.lat != asset.posInfo.lat || prevStatusLatLng.lng != asset.posInfo.lng) {
-                        prevStatusLatLng = {
-                            'lat': asset.posInfo.lat,
-                            'lng': asset.posInfo.lng,
-                        };
-                        statusPageContainer.find('.position_coords').html('GPS: ' + Protocol.Helper.convertDMS(asset.posInfo.lat, asset.posInfo.lng));
-                        Protocol.Helper.getAddressByGeocoder(prevStatusLatLng, function(address) {
-                            statusPageContainer.find('.display_address').html(address);
-                        });
-                    }
+	                if (prevStatusLatLng.lat != asset.posInfo.lat || prevStatusLatLng.lng != asset.posInfo.lng) {
+	                    prevStatusLatLng = {
+	                        'lat': asset.posInfo.lat,
+	                        'lng': asset.posInfo.lng,
+	                    };
+	                    statusPageContainer.find('.position_coords').html('GPS: ' + Protocol.Helper.convertDMS(asset.posInfo.lat, asset.posInfo.lng));
+	                    Protocol.Helper.getAddressByGeocoder(prevStatusLatLng,function(address){
+	                        statusPageContainer.find('.display_address').html(address);
+	                    });
+	                }
 
-                    if (assetFeaturesStatus.acc) {
-                        statusPageContainer.find('.position_acc').html(assetFeaturesStatus.acc.value);
-                    }
-                    if (assetFeaturesStatus.acc2) {
-                        statusPageContainer.find('.position_acc2').html(assetFeaturesStatus.acc2.value);
-                    }
-                    if (assetFeaturesStatus.fuel) {
-                        statusPageContainer.find('.position_fuel').html(assetFeaturesStatus.fuel.value);
-                    }
-                    if (assetFeaturesStatus.voltage) {
-                        statusPageContainer.find('.position_voltage').html(assetFeaturesStatus.voltage.value);
-                    }
-                    if (assetFeaturesStatus.battery) {
-                        statusPageContainer.find('.position_battery').html(assetFeaturesStatus.battery.value);
-                    }
-                    if (assetFeaturesStatus.temperature) {
-                        statusPageContainer.find('.position_temperature').html(assetFeaturesStatus.temperature.value);
-                    }
-                    if (assetFeaturesStatus.mileage) {
-                        statusPageContainer.find('.position_mileage').html(assetFeaturesStatus.mileage.value);
-                        statusPageContainer.find('.position_engineHours').html(assetFeaturesStatus.engineHours.value);
-                    }
-                    if (assetFeaturesStatus.stopped && stoppedDurationContainer.length > 0) {
-                        stoppedDurationContainer.html(assetFeaturesStatus.stopped.duration);
-                    } else if (stoppedDurationContainer.length > 0) {
-                        stoppedDurationContainer.html('-');
-                    }
+	                if (assetFeaturesStatus.acc) {
+	                    statusPageContainer.find('.position_acc').html(assetFeaturesStatus.acc.value);
+	                }
+	                if (assetFeaturesStatus.acc2) {
+	                    statusPageContainer.find('.position_acc2').html(assetFeaturesStatus.acc2.value);
+	                }
+	                if (assetFeaturesStatus.fuel) {
+	                    statusPageContainer.find('.position_fuel').html(assetFeaturesStatus.fuel.value);
+	                }
+	                if (assetFeaturesStatus.voltage) {
+	                    statusPageContainer.find('.position_voltage').html(assetFeaturesStatus.voltage.value);
+	                }
+	                if (assetFeaturesStatus.battery) {
+	                    statusPageContainer.find('.position_battery').html(assetFeaturesStatus.battery.value);
+	                }
+	                if (assetFeaturesStatus.temperature) {
+	                    statusPageContainer.find('.position_temperature').html(assetFeaturesStatus.temperature.value);
+	                }
+	                if (assetFeaturesStatus.mileage) {
+	                    statusPageContainer.find('.position_mileage').html(assetFeaturesStatus.mileage.value);
+	                    statusPageContainer.find('.position_engineHours').html(assetFeaturesStatus.engineHours.value);
+	                }
+	                if (assetFeaturesStatus.stopped && stoppedDurationContainer.length > 0) {
+	                    stoppedDurationContainer.html(assetFeaturesStatus.stopped.duration);
+	                }
                     if (assetFeaturesStatus.heartrate) {
                         statusPageContainer.find('.position_heartrate').html(assetFeaturesStatus.heartrate.value);
                     }
 
-                    statusPageContainer.find('.position_immob').removeClass('state-0 state-1 state-2 state-3').addClass(assetFeaturesStatus.immob.state);
-                    statusPageContainer.find('.position_geolock').removeClass('state-0 state-1 state-2 state-3').addClass(assetFeaturesStatus.geolock.state);
-                    statusPageContainer.find('.position_lockdoor').removeClass('state-0 state-1 state-2 state-3').addClass(assetFeaturesStatus.lockdoor.state);
-                    /*console.log(assetFeaturesStatus.immob.state);
-                    console.log(assetFeaturesStatus.geolock.state);*/
+	                statusPageContainer.find('.position_immob').removeClass('state-0 state-1 state-2 state-3').addClass(assetFeaturesStatus.immob.state);
+	                statusPageContainer.find('.position_geolock').removeClass('state-0 state-1 state-2 state-3').addClass(assetFeaturesStatus.geolock.state);
                 }
+
+
             }
         }
     }
 }
 
-function setAssetList(list) {
+function setAssetList(list){
     var ary = {};
-    for (var i = 0; i < list.length; i++) {
+    for(var i = 0; i < list.length; i++) {
         var index = 0;
         ary[list[i][1]] = {
             Id: list[i][index++],
@@ -6158,20 +5798,19 @@ function setAssetList(list) {
         };
     }
     setAssetListPosInfo(ary);
-    localStorage.setItem("COM.QUIKTRAK.LIVE.ASSETLIST", JSON.stringify(ary));
-    //console.log(ary);
-}
 
-function getAssetList() {
+    localStorage.setItem("COM.QUIKTRAK.LIVE.ASSETLIST", JSON.stringify(ary));
+}
+function getAssetList(){
     var ret = null;
     var str = localStorage.getItem("COM.QUIKTRAK.LIVE.ASSETLIST");
-    if (str) {
+    if(str)
+    {
         ret = JSON.parse(str);
     }
     return ret;
 }
-
-function updateAssetList(asset) {
+function updateAssetList(asset){
     var list = getAssetList();
 
     POSINFOASSETLIST[asset.IMEI].IMEI = list[asset.IMEI].IMEI = asset.IMEI;
@@ -6187,7 +5826,7 @@ function updateAssetList(asset) {
     POSINFOASSETLIST[asset.IMEI].Describe3 = list[asset.IMEI].Describe3 = asset.Describe3;
     POSINFOASSETLIST[asset.IMEI].Describe4 = list[asset.IMEI].Describe4 = asset.Describe4;
     if (asset.Icon) {
-        POSINFOASSETLIST[asset.IMEI].Icon = list[asset.IMEI].Icon = asset.Icon + '?' + new Date().getTime();
+        POSINFOASSETLIST[asset.IMEI].Icon = list[asset.IMEI].Icon = asset.Icon +'?'+ new Date().getTime();
     }
     POSINFOASSETLIST[asset.IMEI].MaxSpeed = list[asset.IMEI].MaxSpeed = asset.MaxSpeed;
 
@@ -6197,23 +5836,23 @@ function updateAssetList(asset) {
 function updateAssetList3(assets) {
     var list = getAssetList();
 
-    for (var i = assets.length - 1; i >= 0; i--) {        
+    for (var i = assets.length - 1; i >= 0; i--) {
         if (assets[i].IMEI && assets[i].Props) {
             let keys = Object.keys(assets[i].Props);
             for (const key of keys) {
                 list[assets[i].IMEI][key] = assets[i].Props[key];
                 if (POSINFOASSETLIST[assets[i].IMEI]) {
                     POSINFOASSETLIST[assets[i].IMEI][key] = assets[i].Props[key];
-                }                
+                }
             }
         }
     }
     localStorage.setItem("COM.QUIKTRAK.LIVE.ASSETLIST", JSON.stringify(list));
 }
 
-function updateAssetList2(list) {
+function updateAssetList2(list){
     var ary = {};
-    for (var i = 0; i < list.length; i++) {
+    for(var i = 0; i < list.length; i++) {
         var index = 0;
         ary[list[i][1]] = {
             Id: list[i][index++],
@@ -6251,10 +5890,10 @@ function updateAssetList2(list) {
         /*$.each(ary[list[i][1]], function(key,value){
             if (POSINFOASSETLIST[list[i][1]]) {
                 POSINFOASSETLIST[list[i][1]][key] = value;
-            }            
+            }
         });   */
         if (POSINFOASSETLIST[list[i][1]]) {
-            POSINFOASSETLIST[list[i][1]].StatusNew = ary[list[i][1]].StatusNew;
+            POSINFOASSETLIST[list[i][1]].StatusNew =  ary[list[i][1]].StatusNew;
         }
     }
 
@@ -6286,45 +5925,37 @@ function updateAssetList2(list) {
     localStorage.setItem("COM.QUIKTRAK.LIVE.ASSETLIST", JSON.stringify(ary));
 }
 
-function setAssetListPosInfo(listObj) {
+function setAssetListPosInfo(listObj){
     var userInfo = getUserinfo();
 
     var codes = '';
-    $.each(listObj, function(index, val) {
-        codes += val.Id + ',';
+    $.each(listObj, function(index, val){
+        codes += val.Id+',';
     });
     if (codes) {
         codes = codes.slice(0, -1);
-    };
-
-    var url = API_URL.URL_GET_ALL_POSITIONS2.format(userInfo.MinorToken, userInfo.MajorToken);
+    }
+    var url = API_URL.URL_GET_ALL_POSITIONS2.format(userInfo.MinorToken,userInfo.MajorToken);
     var data = {
         'codes': codes,
     };
-    //console.log(url);    
     //console.log(data);
-    localStorage.loginDone = 0;
-    JSON1.requestPost(url, data, function(result) {
+    JSON1.requestPost(url,data, function(result){
             console.log(result);
+
             if (result.MajorCode == '000') {
-                //var data = result.Data;
+                var data = result.Data;
                 if (result.Data) {
-                    $.each(result.Data, function(key, value) {
-                        /*if (value[1] === '0000004210259869'){
-                            value[1] = 'test';
-                        }*/
+                     $.each( result.Data, function( key, value ) {
                         var posData = value;
                         var imei = posData[1];
                         var protocolClass = posData[2];
                         var deviceInfo = listObj[imei];
-                        //console.log(posData);
-                        //console.log(deviceInfo);
-                        //console.log(!isObjEmpty(deviceInfo));
-                        if  ( !isObjEmpty(deviceInfo) && deviceInfo.IMEI === imei){
-                            POSINFOASSETLIST[imei] = Protocol.ClassManager.get(protocolClass, deviceInfo);
-                            POSINFOASSETLIST[imei].initPosInfo(posData);
-                        }
 
+                         if  ( !isObjEmpty(deviceInfo) && deviceInfo.IMEI === imei){
+                             POSINFOASSETLIST[imei] = Protocol.ClassManager.get(protocolClass, deviceInfo);
+                             POSINFOASSETLIST[imei].initPosInfo(posData);
+                         }
 
                     });
 
@@ -6333,58 +5964,54 @@ function setAssetListPosInfo(listObj) {
                 //console.log(POSINFOASSETLIST);
 
                 App.hidePreloader();
-            } else {
+            }else{
                 //console.log(result);
             }
             init_AssetList();
             initSearchbar();
-            setTimeout(function() {
-                if (!localStorage.ModalReview && localStorage.FirstLoginDone) {
+            setTimeout(function(){
+                if (!localStorage.ModalReview && localStorage.FirstLoginDone ) {
                     showAskForReviewMessage();
-                }else if(!localStorage.ModalReferral){
-                	showReferralModal(true);
+                } else if(!localStorage.ModalReferral && localStorage.elem_rc_flag ){
+                    showReferralModal(true);
                 }
 
                 if (!localStorage.FirstLoginDone) {
                     localStorage.FirstLoginDone = true;
                 }
             }, 5000);
-
             localStorage.loginDone = 1;
         },
-        function() { localStorage.loginDone = 1; }
+        function(){localStorage.loginDone = 1; }
     );
 }
 
-function updateAssetListPosInfo(posData) {
+function updateAssetListPosInfo(posData){
     POSINFOASSETLIST[posData[1]].initPosInfo(posData);
 }
 
-function checkBalance(alert) {
+function checkBalance(alert){
     if (alert) {
         App.showPreloader();
     }
     var userInfo = getUserinfo();
     var url = API_URL.URL_GET_BALANCE.format(userInfo.MajorToken, userInfo.MinorToken);
-    JSON1.request(url, function(result) {
+    JSON1.request(url, function(result){
             if (result.MajorCode == '000') {
                 userInfo.User.Credits = result.Data.SMSTimes;
                 setUserinfo(userInfo);
                 if (alert) {
-                    App.alert(LANGUAGE.PROMPT_MSG031 + ': ' + result.Data.SMSTimes);
+                    App.alert(LANGUAGE.PROMPT_MSG031+': '+result.Data.SMSTimes);
                 }
                 updateUserCredits(result.Data.SMSTimes);
             }
             App.hidePreloader();
         },
-        function() {
-            App.hidePreloader();
-            App.alert(LANGUAGE.COM_MSG02);
-        }
+        function (){App.hidePreloader();App.alert(LANGUAGE.COM_MSG02);}
     );
 }
 
-function updateUserCredits(credits) {
+function updateUserCredits(credits){
     console.log(credits);
     $$('body .remaining_counter').html(credits);
 
@@ -6393,30 +6020,24 @@ function updateUserCredits(credits) {
     }, 1000);*/
 }
 
-function setAlarmList(options) {
+function setAlarmList(options){
     var list = getAlarmList();
     if (!list) {
         list = {};
     }
     list[options.IMEI] = options;
 
-
     localStorage.setItem("COM.QUIKTRAK.LIVE.ALARMLIST", JSON.stringify(list));
 }
-
-function getAlarmList() {
-    var ret = null;
-    var str = localStorage.getItem("COM.QUIKTRAK.LIVE.ALARMLIST");
-    if (str) { ret = JSON.parse(str); }
-    return ret;
+function getAlarmList(){
+    var ret = null;var str = localStorage.getItem("COM.QUIKTRAK.LIVE.ALARMLIST");if(str){ret = JSON.parse(str);}return ret;
 }
-
 function updateAlarmOptVal(alarmOptions) {
     var IMEI = alarmOptions.IMEI.split(',');
     var assetList = getAssetList();
 
     if (IMEI) {
-        $.each(IMEI, function(index, value) {
+        $.each(IMEI, function(index, value){
             assetList[value].AlarmOptions = alarmOptions.options;
         });
     }
@@ -6424,31 +6045,29 @@ function updateAlarmOptVal(alarmOptions) {
     localStorage.setItem("COM.QUIKTRAK.LIVE.ASSETLIST", JSON.stringify(assetList));
 }
 
-function getNewData() {
-    //alert('here');
+function getNewData(){
     getPlusInfo();
-    //hideKeyboard();    
+    //hideKeyboard();
 
-    var mobileToken = !localStorage.PUSH_MOBILE_TOKEN ? '111' : localStorage.PUSH_MOBILE_TOKEN;
-    var appKey = !localStorage.PUSH_APP_KEY ? '111' : localStorage.PUSH_APP_KEY;
-    var deviceToken = !localStorage.PUSH_DEVICE_TOKEN ? '111' : localStorage.PUSH_DEVICE_TOKEN;
-    var deviceType = !localStorage.DEVICE_TYPE ? 'webapp' : localStorage.DEVICE_TYPE;
+    var mobileToken = !localStorage.PUSH_MOBILE_TOKEN? '123' : localStorage.PUSH_MOBILE_TOKEN;
+    var appKey = !localStorage.PUSH_APP_KEY? '4SSm4aQPNj6uI5NlWmGsGA' : localStorage.PUSH_APP_KEY;
+    var deviceToken = !localStorage.PUSH_DEVICE_TOKEN? '123' : localStorage.PUSH_DEVICE_TOKEN;
+    var deviceType = !localStorage.DEVICE_TYPE? 'android' : localStorage.DEVICE_TYPE;
 
-    // alert('logged in');
+   // alert('logged in');
 
     var urlLogin = API_URL.URL_GET_LOGIN.format(localStorage.ACCOUNT,
-        encodeURIComponent(localStorage.PASSWORD),
-        appKey,
-        mobileToken,
-        encodeURIComponent(deviceToken),
-        deviceType);
-    //alert(urlLogin); 
-    //console.log(urlLogin);                             
-    JSON1.request(urlLogin, function(result) {
-            console.log(result);
-            if (result.MajorCode == '000') {
+                                     encodeURIComponent(localStorage.PASSWORD),
+                                     appKey,
+                                     mobileToken,
+                                     encodeURIComponent(deviceToken),
+                                     deviceType);
+    //console.log(urlLogin);
+    JSON1.request(urlLogin, function(result){
+           console.log(result);
+            if(result.MajorCode == '000') {
                 setUserinfo(result.Data);
-                //setAssetList(result.Data.Devices); 
+                //setAssetList(result.Data.Devices);
                 updateUserCredits(result.Data.User.Credits);
                 if (result.Data.Devices) {
                     updateAssetList2(result.Data.Devices);
@@ -6456,13 +6075,13 @@ function getNewData() {
 
             }
         },
-        function() {}
+        function(){  }
     );
 
 
 }
 
-function sortAssetList(elem) {
+function sortAssetList(elem){
     if (elem) {
         var $elem = $$(elem);
         var sortType = $elem.data("sort-by");
@@ -6478,29 +6097,29 @@ function sortAssetList(elem) {
     App.closeModal();
 }
 
-function sortListByState(array, sortType) {
+function sortListByState(array, sortType){
     if (array && array.length) {
-        array.sort(function(a, b) {
-            if (a.Name < b.Name) return -1;
-            if (a.Name > b.Name) return 1;
+        array.sort(function(a,b){
+            if(a.Name < b.Name) return -1;
+            if(a.Name > b.Name) return 1;
             return 0;
         });
 
-        switch (sortType) {
+        switch(sortType){
             case 'state':
-                var oneDay = 1000 * 60 * 60 * 24;
+                var oneDay = 1000*60*60*24;
                 var now = moment();
                 var arrayOnline = [];
                 var arrayOffline = [];
                 for (var i = 0; i < array.length; i++) {
                     if (POSINFOASSETLIST[array[i].IMEI] && POSINFOASSETLIST[array[i].IMEI].posInfo && POSINFOASSETLIST[array[i].IMEI].posInfo.positionTime) {
                         var dateDifference = Protocol.Helper.getDifferenceBTtwoDates(POSINFOASSETLIST[array[i].IMEI].posInfo.positionTime, now);
-                        if (dateDifference <= oneDay) {
+                        if (dateDifference <= oneDay){
                             arrayOnline.push(array[i]);
-                        } else {
+                        }else{
                             arrayOffline.push(array[i]);
                         }
-                    } else {
+                    }else{
                         arrayOffline.push(array[i]);
                     }
                 }
@@ -6512,39 +6131,35 @@ function sortListByState(array, sortType) {
     return array;
 }
 
-function getNewNotifications(params) {
+function getNewNotifications(params){
     var userInfo = getUserinfo();
-    var MinorToken = !userInfo ? '' : userInfo.MinorToken;
-    var deviceToken = !localStorage.PUSH_DEVICE_TOKEN ? '' : localStorage.PUSH_DEVICE_TOKEN;
+    var MinorToken = !userInfo ? '': userInfo.MinorToken;
+    var deviceToken = !localStorage.PUSH_DEVICE_TOKEN? '' : localStorage.PUSH_DEVICE_TOKEN;
 
     if (MinorToken && deviceToken) {
         var container = $$('body');
         if (container.children('.progressbar, .progressbar-infinite').length) return; //don't run all this if there is a current progressbar loading
         App.showProgressbar(container);
 
-        var url = API_URL.URL_GET_NEW_NOTIFICATIONS.format(MinorToken, deviceToken);
+        var url = API_URL.URL_GET_NEW_NOTIFICATIONS.format(MinorToken,encodeURIComponent(deviceToken));
         notificationChecked = 0;
 
-        JSON1.request(url, function(result) {
+        JSON1.request(url, function(result){
                 App.hideProgressbar();
                 notificationChecked = 1;
                 if (params && params.ptr === true) {
                     App.pullToRefreshDone();
                 }
-                /*if(window.plus) {
-                    plus.push.clear();
-                }*/
 
-                console.log(result);
                 if (result.MajorCode == '000') {
                     var data = result.Data;
                     if (Array.isArray(data) && data.length > 0) {
                         setNotificationList(result.Data);
 
-                        var page = mainView.activePage;
-                        if (typeof(page) == 'undefined' || (page && page.name != "notification")) {
+                        var page = App.getCurrentView().activePage;
+                        if ( page && page.name != "notification" ) {
                             $$('.notification_button').addClass('new_not');
-                        } else {
+                        }else{
                             showNotification(result.Data);
                         }
                     }
@@ -6555,10 +6170,10 @@ function getNewNotifications(params) {
 
                         if (notList && notList[user] && notList[user].length > 0 || Array.isArray(data) && data.length > 0) {
                             mainView.router.load({
-                                url: 'resources/templates/notification.html',
+                                url:'resources/templates/notification.html',
                             });
                             $$('.notification_button').removeClass('new_not');
-                        } else {
+                        }else{
                             App.addNotification({
                                 hold: 3000,
                                 message: LANGUAGE.PROMPT_MSG019
@@ -6566,12 +6181,12 @@ function getNewNotifications(params) {
                         }
                     }
 
-                } else {
+                }else{
                     console.log(result);
                 }
 
             },
-            function() {
+            function(){
                 App.hideProgressbar();
                 notificationChecked = 1;
                 if (params && params.ptr === true) {
@@ -6582,7 +6197,7 @@ function getNewNotifications(params) {
     }
 }
 
-function removeNotificationListItem(index) {
+function removeNotificationListItem(index){
     var list = getNotificationList();
     var user = localStorage.ACCOUNT;
 
@@ -6590,7 +6205,7 @@ function removeNotificationListItem(index) {
     localStorage.setItem("COM.QUIKTRAK.LIVE.NOTIFICATIONLIST.BW", JSON.stringify(list));
     var existLi = $$('.notification_list li');
     index = existLi.length - 2;
-    existLi.each(function() {
+    existLi.each(function(){
         var currentLi = $$(this);
         if (!currentLi.hasClass('deleting')) {
             currentLi.attr('data-id', index);
@@ -6599,16 +6214,14 @@ function removeNotificationListItem(index) {
     });
     virtualNotificationList.clearCache();
 }
-
-function removeAllNotifications() {
+function removeAllNotifications(){
     var list = getNotificationList();
     var user = localStorage.ACCOUNT;
     list[user] = [];
     localStorage.setItem("COM.QUIKTRAK.LIVE.NOTIFICATIONLIST.BW", JSON.stringify(list));
     virtualNotificationList.deleteAllItems();
 }
-
-function setNotificationList(list) {
+function setNotificationList(list){
     var pushList = getNotificationList();
     var user = localStorage.ACCOUNT;
 
@@ -6616,7 +6229,7 @@ function setNotificationList(list) {
         if (!pushList[user]) {
             pushList[user] = [];
         }
-    } else {
+    }else{
         pushList = {};
         pushList[user] = [];
     }
@@ -6634,7 +6247,7 @@ function setNotificationList(list) {
                 if (!msg) {
                     msg = list[i].payload;
                 }
-            } else if (list[i]) {
+            }else if(list[i]){
                 msg = isJsonString(list[i]);
                 if (!msg) {
                     msg = list[i];
@@ -6642,7 +6255,7 @@ function setNotificationList(list) {
             }
             if (msg) {
                 if (msg.time) {
-                    localTime = moment.utc(msg.time).toDate();
+                    localTime  = moment.utc(msg.time).toDate();
                     msg.time = moment(localTime).format(window.COM_TIMEFORMAT);
                     list[i] = msg;
 
@@ -6664,50 +6277,47 @@ function setNotificationList(list) {
     localStorage.setItem("COM.QUIKTRAK.LIVE.NOTIFICATIONLIST.BW", JSON.stringify(pushList));
 }
 
-function getNotificationList() {
-    var ret = {};
-    var str = localStorage.getItem("COM.QUIKTRAK.LIVE.NOTIFICATIONLIST.BW");
-    if (str) { ret = JSON.parse(str); }
-    return ret;
+function getNotificationList(){
+    var ret = {};var str = localStorage.getItem("COM.QUIKTRAK.LIVE.NOTIFICATIONLIST.BW");if(str) {ret = JSON.parse(str);}return ret;
 }
 
-function clearNotificationList() {
+function clearNotificationList(){
     var list = getNotificationList();
     var user = localStorage.ACCOUNT;
-    if (list) {
+    if(list) {
         list[user] = [];
     }
     localStorage.setItem("COM.QUIKTRAK.LIVE.NOTIFICATIONLIST.BW", JSON.stringify(list));
 }
 
-function showNotification(list) {
+function showNotification(list){
     var data = null;
-    var isJson = '';
+    var isJson ='';
     var newList = [];
     var index = parseInt($('.notification_list li').first().data('id'));
     if (list) {
         for (var i = 0; i < list.length; i++) {
             data = null;
-            isJson = '';
+            isJson ='';
             if (list[i].payload) {
                 isJson = isJsonString(list[i].payload);
                 if (isJson) {
                     data = isJson;
-                } else {
+                }else{
                     data = list[i].payload;
                 }
-            } else {
+            }else{
                 isJson = isJsonString(list[i]);
                 if (isJson) {
                     data = isJson;
-                } else {
+                }else{
                     data = list[i];
                 }
             }
             if (data) {
                 if (isNaN(index)) {
                     index = 0;
-                } else {
+                }else{
                     index++;
                 }
                 data.listIndex = index;
@@ -6728,7 +6338,7 @@ function showNotification(list) {
     }
 }
 
-function processClickOnPushNotification(msgJ) {
+function processClickOnPushNotification(msgJ){
     if (Array.isArray(msgJ)) {
         var msg = null;
         msg = isJsonString(msgJ[0]);
@@ -6738,12 +6348,7 @@ function processClickOnPushNotification(msgJ) {
         }
 
         if (msg && msg.time && msg.name && msg.title) {
-            var activePage = App.getCurrentView().activePage;
 
-            //if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {               
-            /* if ( typeof(activePage) == 'undefined' || (activePage && activePage.name != "notification")) {
-                 mainView.router.refreshPage();
-             }   */
 
             if (parseFloat(msg.lat) && parseFloat(msg.lng)) {
                 TargetAsset.ASSET_IMEI = msg.imei;
@@ -6753,10 +6358,10 @@ function processClickOnPushNotification(msgJ) {
                     msg.time = moment(localTime).format(window.COM_TIMEFORMAT);
                 }
                 loadTrackPage(msg);
-            } else {
+            }else{
                 App.alert(LANGUAGE.PROMPT_MSG023);
             }
-            /*}else{                
+            /*}else{
                 mainView.router.refreshPage();
             }   */
         }
@@ -6764,7 +6369,7 @@ function processClickOnPushNotification(msgJ) {
 }
 
 
-function showMsgNotification(arrMsgJ) {
+function showMsgNotification(arrMsgJ){
 
 
     if (Array.isArray(arrMsgJ)) {
@@ -6775,16 +6380,16 @@ function showMsgNotification(arrMsgJ) {
             if (!msg) {
                 msg = arrMsgJ[0].payload;
             }
-        } else {
+        }else{
             msg = isJsonString(arrMsgJ[0]);
             if (!msg) {
                 msg = arrMsgJ[0];
             }
         }
         if (msg && msg.title && msg.name) {
-            if (page.name != "notification") {
+            if ( page.name != "notification" ) {
                 $$('.notification_button').addClass('new_not');
-                var message = msg.name + '</br>' + msg.title;
+                var message = msg.name+'</br>'+msg.title;
                 App.addNotification({
                     hold: 5000,
                     message: message,
@@ -6793,7 +6398,7 @@ function showMsgNotification(arrMsgJ) {
                         color: 'boatwatch',
                         close: false,
                     },
-                    onClick: function() {
+                    onClick: function () {
                         App.closeNotification('.notifications');
                         $$('.notification_button').removeClass('new_not');
 
@@ -6805,7 +6410,7 @@ function showMsgNotification(arrMsgJ) {
             }
 
 
-            if (msg.imei && msg.type && parseInt(msg.type) == 1024) { //geolock                
+            if (msg.imei && msg.type && parseInt(msg.type) == 1024 ) {  //geolock
                 var params = {
                     id: '',
                     imei: msg.imei,
@@ -6828,25 +6433,19 @@ function setMapSettigns(list){
     localStorage.setItem("COM.QUIKTRAK.LIVE.MAPSETTINGS", JSON.stringify(list));
 }
 function getMapSettings() {
-    var ret = null;
+    var ret = {};
     var str = localStorage.getItem("COM.QUIKTRAK.LIVE.MAPSETTINGS");
     if(str) {
         ret = JSON.parse(str);
-    }else{
-        ret = {};
     }
     return ret;
 }
 
-function setGeoFenceList(list) {
+function setGeoFenceList(list){
     localStorage.setItem("COM.QUIKTRAK.LIVE.GEOFENCELIST", JSON.stringify(list));
 }
-
-function getGeoFenceList() {
-    var ret = null;
-    var str = localStorage.getItem("COM.QUIKTRAK.LIVE.GEOFENCELIST");
-    if (str) { ret = JSON.parse(str); }
-    return ret;
+function getGeoFenceList(){
+    var ret = null;var str = localStorage.getItem("COM.QUIKTRAK.LIVE.GEOFENCELIST");if(str){ret = JSON.parse(str);}return ret;
 }
 
 function loadGeofenceViewPage(code){
@@ -6860,13 +6459,13 @@ function loadGeofenceViewPage(code){
     });
 }
 
-function editGeofence(code) {
+function editGeofence(code){
     var geofence = getGeoFenceList()[code];
     var assetList = formatArrAssetList();
 
-    if (geofence.SelectedAssetList && geofence.SelectedAssetList.length > 0) {
-        $.each(assetList, function(index, value) {
-            $.each(geofence.SelectedAssetList, function(index1, value1) {
+    if (geofence.SelectedAssetList && geofence.SelectedAssetList.length>0) {
+        $.each(assetList, function(index, value){
+            $.each(geofence.SelectedAssetList, function(index1, value1){
                 if (value1.AsCode == value.Id) {
                     value.Selected = 1;
                 }
@@ -6879,13 +6478,14 @@ function editGeofence(code) {
     if (geofence.Alerts == 24) {
         AlarmIn = 1;
         AlarmOut = 1;
-    } else if (geofence.Alerts == 16) {
+    }else if (geofence.Alerts == 16){
         AlarmOut = 1;
-    } else {
+    }else{
         AlarmIn = 1;
     }
 
-    var daysOfWeekArray = [{
+    var daysOfWeekArray = [
+        {
             val: 0,
             name: LANGUAGE.GEOFENCE_MSG_20,
             selected: false,
@@ -6933,10 +6533,9 @@ function editGeofence(code) {
         EndTime = geofence.Week[0].EndTime ? moment(geofence.Week[0].EndTime, 'HH:mm:ss').add(UTCOFFSET, 'minutes').format('HH:mm:ss') : EndTime;
     }
 
-
     mainView.router.load({
-        url: 'resources/templates/geofence.add.html',
-        context: {
+        url:'resources/templates/geofence.add.html',
+        context:{
             GeofenceName: geofence.Name,
             Assets: assetList,
             Edit: code,
@@ -6956,7 +6555,7 @@ function editGeofence(code) {
 
 }
 
-function deleteGeofence(code, index) {
+function deleteGeofence(code, index){
     var userInfo = getUserinfo();
     var data = {
         MajorToken: userInfo.MajorToken,
@@ -6965,74 +6564,32 @@ function deleteGeofence(code, index) {
 
     App.showPreloader();
     $.ajax({
-        type: "POST",
-        url: API_URL.URL_GEOFENCE_DELETE,
-        data: data,
-        async: true,
-        crossDomain: true,
-        cache: false,
-        success: function(result) {
+           type: "POST",
+            url: API_URL.URL_GEOFENCE_DELETE,
+           data: data,
+          async: true,
+    crossDomain: true,
+          cache: false,
+        success: function (result) {
             App.hidePreloader();
-            if (result.MajorCode == '000') {
+            if (result.MajorCode == '000' ) {
 
                 //Fix: some time virtual list do not remove feleted items, so first we hide deleted then remove
                 var geofenceListContainer = $$('.geofenceList ul');
-                var itemDelete = geofenceListContainer.find('li[data-index="' + index + '"]');
+                var itemDelete = geofenceListContainer.find('li[data-index="'+index+'"]');
                 itemDelete.hide();
 
                 virtualGeofenceList.deleteItem(index);
 
-            } else {
+            }else{
                 App.alert(LANGUAGE.PROMPT_MSG013);
             }
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            App.hidePreloader();
-            App.alert(LANGUAGE.COM_MSG02);
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+           App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02);
         }
     });
 }
-
-function changeGeofenceState(geofence, state) {
-    if (geofence && typeof(geofence) == 'object') {
-        var assetCodes = '';
-        if (geofence.SelectedAssetList && geofence.SelectedAssetList.length > 0) {
-            $.each(geofence.SelectedAssetList, function(key, val) {
-                assetCodes += ',' + val.AsCode;
-            });
-        }
-        if (assetCodes) {
-            assetCodes = assetCodes.substr(1);
-        }
-        var userInfo = getUserinfo();
-        var data = {
-            MajorToken: userInfo.MajorToken,
-            MinorToken: userInfo.MinorToken,
-            Name: geofence.Name,
-            Lat: geofence.Lat,
-            Lng: geofence.Lng,
-            Radius: geofence.Radius,
-            Alerts: geofence.Alerts,
-            DelayTime: 0,
-            AlertConfigState: state,
-            GeoType: 1,
-            AssetCodes: assetCodes,
-            Address: geofence.Address,
-            Code: geofence.Code,
-            Inverse: geofence.Inverse ? geofence.Inverse : 0,
-        };
-        if (geofence.Week && geofence.Week.length) {
-            data.BeginTime = geofence.Week[0].BeginTime ? geofence.Week[0].BeginTime : '';
-            data.EndTime = geofence.Week[0].EndTime ? geofence.Week[0].EndTime : '';
-
-            data.Days = geofence.Week.map(x => x.Week).toString();
-        }
-        console.log(data);
-        var url = API_URL.URL_GEOFENCE_EDIT;
-        saveGeofence(url, data);
-    }
-}
-
 function saveGeofence(url, params) {
     if (url && params) {
         App.showPreloader();
@@ -7064,28 +6621,28 @@ function saveGeofence(url, params) {
         });
     }
 }
-
-function formatArrAssetList() {
+function formatArrAssetList(){
     var assetList = getAssetList();
     var newAssetlist = [];
     if (assetList) {
         var keys = Object.keys(assetList);
 
-        $.each(keys, function(index, value) {
+        $.each(keys, function( index, value ) {
             newAssetlist.push(assetList[value]);
         });
 
-        newAssetlist.sort(function(a, b) {
-            if (a.Name < b.Name) return -1;
-            if (a.Name > b.Name) return 1;
+        newAssetlist.sort(function(a,b){
+            if(a.Name < b.Name) return -1;
+            if(a.Name > b.Name) return 1;
             return 0;
         });
     }
     return newAssetlist;
 }
 
+
 function initSettingsButton() {
-    
+
     var userInfo = getUserinfo();
 
     var data = {
@@ -7110,116 +6667,68 @@ function initSettingsButton() {
             if (result.MajorCode == '000') {
                 var geofenceList = result.Data;
                 setGeoFenceList(geofenceList);
-                
+
                 var mapSettingsObg = getMapSettings();
-                mapSettingsObg && mapSettingsObg.showGeofences ? MapControls.showGeofences() : ''; 
-            } 
+                mapSettingsObg && mapSettingsObg.showGeofences ? MapControls.showGeofences() : '';
+            }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             //App.hidePreloader();
             App.hideProgressbar();
             App.alert(LANGUAGE.COM_MSG02);
-            
+
         }
     });
 }
-
 var MapControls = {
     data: {
         Geofences: [],
     },
-    
+
     isGeofencesShowed: function(){
-        return !!this.data.Geofences.length; //simplified this.data.Geofences.length ? true : false;
+        return this.data.Geofences.length ? true : false;
     },
-    showGeofences: function(){      
+    showGeofences: function(){
         var self = this;
         if (!self.isGeofencesShowed()) {
             var geofenceList = getGeoFenceList();// app.methods.getFromStorage('geofenceList');
             //var groupList = app.methods.getFromStorage('groupList');
 
             if (!isObjEmpty(geofenceList) ) {
-                const keys = Object.keys(geofenceList);             
-                for (const key of keys) {  
+                const keys = Object.keys(geofenceList);
+                var polygonStyles = Protocol.PolygonCustomization;
+                for (const key of keys) {
                     let geofenceDetails = {
                         Name: geofenceList[key].Name,
-                        Code: geofenceList[key].Code,                                 
+                        Code: geofenceList[key].Code,
                     };
-                    /*let label = `${ LANGUAGE.GEOFENCE_MSG_32 }: ${geofenceList[key].Name} <br> ${ LANGUAGE.GEOFENCE_MSG_33 }: `;
-                    if (geofenceList[key].SelectedAssetList && geofenceList[key].SelectedAssetList.length) {
-                        label += geofenceList[key].SelectedAssetList.length;
-                    }else{
-                        label += '0';
-                    }*/
-                    let markerData = getGeofenceDataTable(geofenceList[key],{geogroup: false}); 
-                    if (geofenceList[key].GeoType == 1) { //circle                           
+                    let markerData = getGeofenceDataTable(geofenceList[key],{geogroup: false});
+                    if (geofenceList[key].GeoType == 1) { //circle
                         if (geofenceList[key].Lat && geofenceList[key].Lng && geofenceList[key].Radius) {
-                            geofenceDetails.polygon = L.circle([geofenceList[key].Lat, geofenceList[key].Lng], {
-                                ...Protocol.PolygonCustomization,                            
-                                radius: geofenceList[key].Radius,
-                            }).bindPopup(markerData,{maxWidth: 280, closeButton: false})//.bindTooltip(label ,{permanent: false, direction: 'right'});  
-                        } 
+                            polygonStyles.radius = geofenceList[key].Radius;
+                            geofenceDetails.polygon = L.circle([geofenceList[key].Lat, geofenceList[key].Lng], polygonStyles).bindPopup(markerData,{maxWidth: 280, closeButton: false})//.bindTooltip(label ,{permanent: false, direction: 'right'});
+                        }
                     }else if (geofenceList[key].GeoPolygon) {
                         var polygonCoordsArr = geofenceList[key].GeoPolygon.split('((').pop().split('))')[0].split(',');
                         var geojsonArr = [];
                         for (var i = polygonCoordsArr.length - 1; i >= 0; i--) {
                             geojsonArr.push(polygonCoordsArr[i].split(' ').map(parseFloat).reverse());
-                        }                        
-                        geofenceDetails.polygon = L.polygon(geojsonArr, {
-                            ...Protocol.PolygonCustomization,                               
-                        }).bindPopup(markerData,{maxWidth: 280, closeButton: false}); //.bindTooltip(label ,{permanent: false, direction: 'right'});
-                    }                                       
-                    
+                        }
+                        geofenceDetails.polygon = L.polygon(geojsonArr, polygonStyles).bindPopup(markerData,{maxWidth: 280, closeButton: false}); //.bindTooltip(label ,{permanent: false, direction: 'right'});
+                    }
+
                     if (geofenceDetails.polygon) {
                         geofenceDetails.polygon.addTo(MapTrack);
-                        self.data.Geofences.push(geofenceDetails); 
-                    }                                                                  
-                }                      
-            }
-
-            /*if (groupList && groupList.length) {
-                for (var i = groupList.length - 1; i >= 0; i--) {
-                    if (groupList[i].Code != '000000') {
-                        let geofenceDetails = {
-                            Name: groupList[i].Name,
-                            Code: groupList[i].Code,                                 
-                        };
-                        let label = `${ LANGUAGE.REPORT_PANEL_MSG54 }: ${groupList[i].Name} <br> ${ LANGUAGE.COM_MSG104 }: `;
-                        if (groupList[i].Assets && groupList[i].Assets.length) {
-                            label += groupList[i].Assets.length;
-                        }else{
-                            label += '0';
-                        }                    
-                        if (groupList[i].GeoType == 1) { //circle                           
-                            if (groupList[i].Lat && groupList[i].Lng && groupList[i].Radius) {
-                                geofenceDetails.polygon = L.circle([groupList[i].Lat, groupList[i].Lng], {
-                                    ...app.data.PolygonCustomization,                            
-                                    radius: groupList[i].Radius,
-                                }).bindTooltip(label,{permanent: false, direction: 'right'});  
-                            } 
-                        }else if (groupList[i].GeoPolygon) {
-                            var polygonCoordsArr = groupList[i].GeoPolygon.split('((').pop().split('))')[0].split(',');
-                            var geojsonArr = [];
-                            for (var y = polygonCoordsArr.length - 1; y >= 0; y--) {
-                                geojsonArr.push(polygonCoordsArr[y].split(' ').map(parseFloat).reverse());
-                            }                        
-                            geofenceDetails.polygon = L.polygon(geojsonArr, {
-                                ...app.data.PolygonCustomization,                               
-                            }).bindTooltip(label,{permanent: false, direction: 'right'});
-                                                                   
-                        }
-                        if (geofenceDetails.polygon) {
-                            geofenceDetails.polygon.addTo(MapTrack);
-                            self.data.Geofences.push(geofenceDetails); 
-                        }   
+                        self.data.Geofences.push(geofenceDetails);
                     }
                 }
-            }*/
-        } 
+            }
+
+        }
     },
     hideGeofences: function(){
         var self = this;
-        if (self.data.Geofences && self.data.Geofences.length) {                    
+        if (self.data.Geofences && self.data.Geofences.length) {
             for (var i = self.data.Geofences.length - 1; i >= 0; i--) {
                 if (self.data.Geofences[i].polygon) {
                     MapTrack.removeLayer(self.data.Geofences[i].polygon);
@@ -7234,51 +6743,38 @@ var MapControls = {
             let index = self.data.Geofences.findIndex(el => el.Code == code);
             if (index != -1) {
                 MapTrack.removeLayer(self.data.Geofences[index].polygon);
-            }           
+            }
         }
     },
 
 
     showMapControlls: function(target){
         var self = this;
-        var mapSettingsObg = getMapSettings();        
-        
+        var mapSettingsObg = getMapSettings();
+
         var buttons = [
             {
-                text: `
-                <div class="action_button_wrapper">
-                    <div class="action_button_block action_button_media">
-                        <i class="f7-icons icon-menu-geofence"></i>
-                    </div>
-                    <div class="action_button_block action_button_text">
-                        ${ LANGUAGE.COM_MSG57 }
-                    </div>
-                    <span class="label-switch actionButton-label">
-                        <input type="checkbox" name="checkbox-map-settings" value="showGeofences" ${ mapSettingsObg && mapSettingsObg.showGeofences ? 'checked' : '' }/>
-                        <div class="checkbox"></div>
-                    </span>
-                </div>`,
-                /*text: `<input type="hidden" name="checkbox-map-settings" value="showGeofences" ${ mapSettingsObg && mapSettingsObg.showGeofences ? 'checked' : '' }/>
-                        ${ mapSettingsObg && mapSettingsObg.showGeofences ? LANGUAGE.COM_MSG57 : LANGUAGE.COM_MSG61 }`,*/
+                text: `<input type="hidden" name="checkbox-map-settings" value="showGeofences" ${ mapSettingsObg && mapSettingsObg.showGeofences ? 'checked' : '' }/>
+                        ${ mapSettingsObg.showGeofences ?  LANGUAGE.COM_MSG61 : LANGUAGE.COM_MSG57 }`,
                 onClick: function(parent) {
-                    var input = $$(parent).find('input[name="checkbox-map-settings"]');  
+                    var input = $$(parent).find('input[name="checkbox-map-settings"]');
                     var newState = !input.prop( "checked" );
 
-                    mapSettingsObg[input.val()] = newState;  
+                    mapSettingsObg[input.val()] = newState;
 
                     setMapSettigns(mapSettingsObg);
-                    newState ? MapControls.showGeofences() : MapControls.hideGeofences();  
-                    
-                }                
-                 
+                    newState ? MapControls.showGeofences() : MapControls.hideGeofences();
+
+                }
+
             },
-            
+
         ];
-        App.actions(target, buttons);                
+        App.actions(target, buttons);
     },
 };
 
-function isObjEmpty(obj) {           
+function isObjEmpty(obj) {
     // null and undefined are "empty"
     if (obj == null) return true;
     // Assume if it has a length property with a non-zero value
@@ -7298,6 +6794,7 @@ function isObjEmpty(obj) {
     return true;
 }
 
+
 function isClockwise(poly){
     var sum = 0;
     for (var i=0; i<poly.length-1; i++) {
@@ -7310,43 +6807,41 @@ function isClockwise(poly){
 
 
 /* ASSET EDIT PHOTO */
-
 var cropper = null;
 var resImg = null;
-
-function initCropper() {
+function initCropper(){
     var image = document.getElementById('image');
-    //alert(image);     
+    //alert(image);
     cropper = new Cropper(image, {
-        aspectRatio: 1 / 1,
-        dragMode: 'move',
-        rotatable: true,
-        minCropBoxWidth: 200,
-        minCropBoxHeight: 200,
-        minCanvasWidth: 200,
-        minCanvasHeight: 200,
-        minContainerWidth: 200,
-        minContainerHeight: 200,
-        crop: function(data) {}
+        aspectRatio: 1/1,
+        dragMode:'move',
+        rotatable:true,
+        minCropBoxWidth:200,
+        minCropBoxHeight:200,
+        minCanvasWidth:200,
+        minCanvasHeight:200,
+        minContainerWidth:200,
+        minContainerHeight:200,
+        crop: function(data) {
+         }
     });
 
 }
-
-function saveImg() {
-    resImg = cropper.getCroppedCanvas({
-        width: 200,
-        height: 200
+function saveImg(){
+    resImg =  cropper.getCroppedCanvas({
+          width: 200,
+          height: 200
     }).toDataURL();
 
-    $$('.asset_img img').attr('src', resImg);
+    $$('.asset_img img').attr('src',resImg);
 
     if (TargetAsset.ASSET_IMEI) {
-        $$('.assets_list li[data-imei="' + TargetAsset.ASSET_IMEI + '"] .item-media img').attr('src', resImg);
+        $$('.assets_list li[data-imei="'+TargetAsset.ASSET_IMEI+'"] .item-media img').attr('src',resImg);
     }
 
     var assetImg = {
         data: resImg,
-        id: 'IMEI_' + TargetAsset.ASSET_IMEI
+        id: 'IMEI_'+TargetAsset.ASSET_IMEI
     };
 
     App.showPreloader();
@@ -7357,48 +6852,46 @@ function saveImg() {
         async: true,
         cache: false,
         crossDomain: true,
-        success: function(result) {
+        success: function (result) {
             App.hidePreloader();
             //var res = JSON.stringify(result);
             //alert(res);
-            result = typeof(result) == 'string' ? eval("(" + result + ")") : result;
+            result = typeof (result) == 'string' ? eval("(" + result + ")") : result;
             if (result.MajorCode == "000") {
                 /*App.alert('Result Data:'+ result.Data);*/
                 TargetAsset.ASSET_IMG = result.Data;
-            } else {
+            }else{
                 App.alert('Something wrong. Photo not saved');
             }
             mainView.router.back();
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
-            App.hidePreloader();
-            App.alert(LANGUAGE.COM_MSG02);
+        error: function(XMLHttpRequest, textStatus, errorThrown){
+           App.hidePreloader(); App.alert(LANGUAGE.COM_MSG02);
         }
     });
 
 }
 
 
-function getImage(source) {
+function getImage(source){
 
     if (!navigator.camera) {
         alert("Camera API not supported", "Error");
 
-    } else {
-        var options = {
-            quality: 50,
-            destinationType: Camera.DestinationType.DATA_URL,
-            sourceType: source, // 0:Photo Library, 1=Camera, 2=Saved Album
-            encodingType: 0 // 0=JPG 1=PNG
-        };
+    }else{
+        var options = { quality: 50,
+                        destinationType: Camera.DestinationType.DATA_URL,
+                        sourceType: source,      // 0:Photo Library, 1=Camera, 2=Saved Album
+                        encodingType: 0     // 0=JPG 1=PNG
+                      };
 
         navigator.camera.getPicture(
             function(imgData) {
-                //$('.media-object', this.$el).attr('src', "data:image/jpeg;base64,"+imgData);
+              //$('.media-object', this.$el).attr('src', "data:image/jpeg;base64,"+imgData);
                 mainView.router.load({
                     url: 'resources/templates/asset.edit.photo.html',
                     context: {
-                        imgSrc: "data:image/jpeg;base64," + imgData
+                        imgSrc: "data:image/jpeg;base64,"+imgData
                     }
                 });
 
@@ -7410,3 +6903,4 @@ function getImage(source) {
     }
 
 }
+
