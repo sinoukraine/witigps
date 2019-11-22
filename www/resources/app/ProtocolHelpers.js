@@ -145,6 +145,7 @@ Protocol.TIANQIN_LK3G = JClass(Protocol.Common,{
     },
     initPosInfoEx:function(ary, posInfo){
         posInfo.Battery = ary[23];
+        posInfo.LBSWifi = ary[24];
     },
     initHisPosInfoEx:function(ary, posInfo){
         posInfo.Battery = ary[21];
@@ -395,13 +396,16 @@ Protocol.GOT20 = JClass(Protocol.Common,{
         posInfo.Input1Voltage = ary[24];
         posInfo.Input2Voltage = ary[25];
         posInfo.Engine = ary[26];
+        posInfo.launchHours= ary[26];
+
     },
     initHisPosInfoEx:function(ary, posInfo){
         posInfo.Voltage = ary[21];
         posInfo.Input1Voltage = ary[22];
         posInfo.Input2Voltage = ary[23];
         posInfo.Engine = ary[24];
-    },
+        posInfo.launchHours= ary[24];
+    }
 });
 Protocol.ClassManager.add("GOT20", Protocol.GOT20);
 
@@ -448,16 +452,16 @@ Protocol.OUNING_WATCH = JClass(Protocol.Common,{
 Protocol.ClassManager.add("OUNING_WATCH", Protocol.OUNING_WATCH);
 
 Protocol.VT900_DOOR = JClass(Protocol.Common,{
-    STATIC: {
+	STATIC: {
 
     },
-    constructor: function(arg) {
-        this.initDeviceInfo(arg);
-        this._FIELD_INT2 = arg._FIELD_INT2;
-        this.posInfo = {};
+	constructor: function(arg) {
+	    this.initDeviceInfo(arg);
+	    this._FIELD_INT2 = arg._FIELD_INT2;
+		this.posInfo = {};
     },
-    initPosInfoEx: function (ary, posInfo) {
-        posInfo.fuel = ary[24];
+	initPosInfoEx: function (ary, posInfo) {
+	    posInfo.fuel = ary[24];
         posInfo.alt = ary[25];
         posInfo.rfid = ary[26];
     },
