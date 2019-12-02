@@ -97,6 +97,8 @@ function onDeviceReady() {
 
     getPlusInfo();
 
+    setAppVersion();
+
     if (!inBrowser) {
         if (getUserinfo().MinorToken) {
             //login(); 
@@ -202,7 +204,11 @@ function setupPush() {
         );
     }
 }
-
+function setAppVersion(){
+    if (BuildInfo.version){
+        $$('.appVersion').text(BuildInfo.version);
+    }
+}
 
 
 function onAppPause() {
