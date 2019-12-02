@@ -58,8 +58,8 @@ function getPlusInfo() {
 
 var inBrowser = 0;
 var notificationChecked = 0;
-var loginTimer = 0;
-localStorage.loginDone = 0;
+window.loginTimer = 0;
+window.loginDone = 0;
 //var appPaused = 0;
 
 var loginInterval = null;
@@ -163,12 +163,10 @@ function setupPush() {
             //if user NOT using app and push notification comes
 
             App.showIndicator();
-            loginTimer = setInterval(function() {
-                //alert(localStorage.loginDone);
-                if (localStorage.loginDone) {
+            window.loginTimer = setInterval(function() {
+                if (window.loginDone) {
                     clearInterval(loginTimer);
                     setTimeout(function() {
-                        //alert('before processClickOnPushNotification');
                         processClickOnPushNotification([data.additionalData.payload]);
                         App.hideIndicator();
                     }, 1000);
@@ -206,7 +204,7 @@ function setupPush() {
 }
 function setAppVersion(){
     if (BuildInfo.version){
-        $$('.appVersion').text(BuildInfo.version);
+        $$('.appVersion').text("v" + BuildInfo.version);
     }
 }
 
@@ -6309,7 +6307,7 @@ function setAssetListPosInfo(listObj) {
     };
     //console.log(url);    
     //console.log(data);
-    localStorage.loginDone = 0;
+    window.loginDone = 0;
     JSON1.requestPost(url, data, function(result) {
             console.log(result);
             if (result.MajorCode == '000') {
@@ -6356,9 +6354,9 @@ function setAssetListPosInfo(listObj) {
                 }
             }, 5000);
 
-            localStorage.loginDone = 1;
+            window.loginDone = 1;
         },
-        function() { localStorage.loginDone = 1; }
+        function() { window.loginDone = 1; }
     );
 }
 
