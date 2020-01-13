@@ -3581,6 +3581,7 @@ function clearUserInfo() {
         virtualAssetList.deleteAllItems();
     }
 
+
     if (alarmList) {
         localStorage.setItem("COM.QUIKTRAK.LIVE.ALARMLIST", JSON.stringify(alarmList));
     }
