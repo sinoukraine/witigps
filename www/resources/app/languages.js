@@ -117,6 +117,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG041": "Updated",
 		"PROMPT_MSG042": "No Position Info",
 		"PROMPT_MSG043": "This feature is available for assets activated prior to the <span class='text-color-red'>LIVE</span> version",
+		"PROMPT_MSG044": "Are you sure you want to close the application?",
 
 
 

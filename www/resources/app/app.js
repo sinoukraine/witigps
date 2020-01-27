@@ -40,6 +40,14 @@ API_URL.URL_ROUTE_IOS = "maps://maps.apple.com/maps?daddr={0},{1}";
 
 API_URL.GET_BALANCE = API_DOMIAN3 + "Balance";
 
+let AppDetails = {
+    name: 'QuikTrak-app',
+    code: 23,
+    supportCode: 3,
+    appId: '',
+    appleId: '1079168431',
+};
+
 let VirtualAssetListMain = false;
 let UpdateAssetsPosInfoTimer = false;
 let POSINFOASSETLIST = {};
@@ -1367,10 +1375,33 @@ const mainView = app.views.create('.view-main', {
     stackPages: true
 });
 
+document.addEventListener("deviceready", onDeviceReady, false);
 
-/*function initSV(){
-    StreetViewService = new google.maps.StreetViewService();
-}*/
+function onDeviceReady() {
+    AppDetails.appId = BuildInfo.packageName;
+
+    //fix app images and text size
+    if (window.MobileAccessibility) {
+        window.MobileAccessibility.usePreferredTextZoom(false);
+    }
+    if (StatusBar) {
+        StatusBar.styleDefault();
+    }
+
+    document.addEventListener("backbutton", backFix, false);
+    /*document.addEventListener("resume", onAppResume, false);
+    document.addEventListener("pause", onAppPause, false);*/
+}
+
+function backFix(event) {
+    if (mainView.router.url === '/') {
+        app.dialog.confirm(LANGUAGE.PROMPT_MSG044, function() {
+            navigator.app.exitApp();
+        });
+    } else {
+        mainView.router.back();
+    }
+}
 
 
 $$('body').on('submit', '[name="login-form"]', function (e) {
