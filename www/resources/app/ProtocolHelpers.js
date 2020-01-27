@@ -358,8 +358,8 @@ Protocol.JT808_KMXXX = JClass(Protocol.Common,{
     },
     initHisPosInfoEx:function(ary, posInfo){
         //posInfo.Battery = ary[21];
-    } 
-      
+    }
+
 });
 Protocol.ClassManager.add("JT808_KMXXX", Protocol.JT808_KMXXX);
 
@@ -378,7 +378,7 @@ Protocol.TIANQIN_LK3GP = JClass(Protocol.Common,{
     initHisPosInfoEx:function(ary, posInfo){
         posInfo.Battery = ary[21];
     },
-    
+
 });
 Protocol.ClassManager.add("TIANQIN_LK3GP", Protocol.TIANQIN_LK3GP);
 
@@ -465,7 +465,7 @@ Protocol.VT900_DOOR = JClass(Protocol.Common,{
         posInfo.fuel = ary[22];
         posInfo.alt = ary[23];
         posInfo.rfid = ary[24];
-    },    
+    },
 });
 Protocol.ClassManager.add("VT900_DOOR", Protocol.VT900_DOOR);
 
@@ -488,7 +488,7 @@ Protocol.KKS = JClass(Protocol.Common,{
         posInfo.ECT = ary[22];
         posInfo.DTC = ary[23];
         posInfo.MPG = ary[24];
-    },    
+    },
 });
 Protocol.ClassManager.add("KKS", Protocol.KKS);
 
@@ -512,8 +512,12 @@ Protocol.GPT19H = JClass(Protocol.Common,{
         posInfo.Battery = ary[22];
         posInfo.Input2Voltage = ary[23];
         posInfo.Engine = ary[24];
-    },    
-    
+    },
+    createLiNodeOptionsInfo: function(){
+        var ret = "";
+
+        return ret;
+    }
 });
 Protocol.ClassManager.add("GPT19H", Protocol.GPT19H);
 
@@ -529,8 +533,8 @@ Protocol.EELINK_TEMP = JClass(Protocol.Common,{
         posInfo.Voltage = ary[23];
         posInfo.Input1Voltage = ary[24];
         posInfo.Input2Voltage = ary[25];
-        posInfo.Engine = ary[26];        
- 
+        posInfo.Engine = ary[26];
+
     },
     initHisPosInfoEx:function(ary, posInfo){
         posInfo.Voltage = ary[21];
@@ -538,7 +542,7 @@ Protocol.EELINK_TEMP = JClass(Protocol.Common,{
         posInfo.Input2Voltage = ary[23];
         posInfo.Engine = ary[24];
 
-    },    
+    },
 });
 Protocol.ClassManager.add("EELINK_TEMP", Protocol.EELINK_TEMP);
 
