@@ -68,6 +68,7 @@ window.LanguagePackages= {
 		"COM_MSG062": "Show Geofences",
 		"COM_MSG063": "State",
 		"COM_MSG064": "Remove",
+		"COM_MSG065": "Selected Assets",
 
 
 		"PROMPT_MSG000": "Nothing found",
@@ -185,6 +186,8 @@ window.LanguagePackages= {
 
 		"GEOFENCES_MSG00": "Circle",
 		"GEOFENCES_MSG01": "Polygon",
+		"GEOFENCES_MSG02": "Assets",
+		"GEOFENCES_MSG03": "Selected",
 
 		"ASSET_STATUS_LIVE_MSG00": "Status",
 		"ASSET_STATUS_LIVE_MSG01": "Date, Time",

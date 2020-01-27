@@ -41,6 +41,11 @@ var routes = [
         componentUrl: './resources/pages/geofence-list.html?v=1.3',
         name: 'geofence-list',
     },
+    {
+        path: '/geofence/',
+        componentUrl: './resources/pages/geofence.html?v=1.3',
+        name: 'geofence',
+    },
 
 
 

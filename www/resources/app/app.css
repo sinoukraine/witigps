@@ -341,6 +341,10 @@
     min-height: 100px;
     min-width: 100px;
 }
+.geofence-map-wrapper {
+    height: calc(100% - 165px);
+    min-height: 200px;
+}
 
 .leaflet-control-layers-toggle{
     background-image: url('../images/change-map.svg') !important;
