@@ -1,0 +1,358 @@
+<!--suppress JSAnnotator -->
+<template>
+    <div class="page " data-name="asset-status-live"> <!-- page-with-subnavbar -->
+        <!-- Top Navbar -->
+        <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner">
+                <div class="left">
+                    <a href="#" class="link icon-only back" >
+                        <i class="if-not-ios f7-icons icon-header-arrow-back"></i>
+                        <i class="if-ios icon icon-back"></i>
+                    </a>
+                </div>
+                <div class="title sliding">
+                    {{Name}}
+                </div>
+                <div class="right">
+                    {{#if LiveAsset}}
+                    <a href="/asset-edit/?imei={{IMEI}}" class="link icon-only ">
+                        <i class="f7-icons icon-header-edit"></i>
+                    </a>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+        {{#if LiveAsset}}
+        <div class="toolbar tabbar toolbar-top">
+            <div class="toolbar-inner">
+                <a href="#" class="tab-link tab-link-active">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG00}}</a>
+                <a href="/asset-alarm/?imei={{IMEI}}&tabs=true" class="tab-link">{{@global.LANGUAGE.ASSET_ALARM_MSG00}}</a>
+                <a href="#" class="tab-link">{{@global.LANGUAGE.ASSET_PLAYBACK_MSG00}}</a>
+                <a href="/asset-track/?imei={{IMEI}}" class="tab-link">{{@global.LANGUAGE.ASSET_TRACK_MSG00}}</a>
+            </div>
+        </div>
+        {{/if}}
+        <div class="toolbar toolbar-bottom ">
+            <div class="toolbar-inner ">
+                {{#if LiveAsset}}
+                <a href="#" class="link button width-100 color-white"><i class="f7-icons icon-live-report-thief margin-right"></i> {{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG07}}</a>
+                {{else}}
+                <a href="#" class="link button width-100 color-white"><i class="f7-icons icon-header-refresh margin-right"></i> {{@global.LANGUAGE.COM_MSG057}}</a>
+                {{/if}}
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div class="block">
+                <div class="row no-gap">
+                    <div class="col text-align-center">
+                        <i class="f7-icons icon-live-date text-color-lightgray"></i>
+                        <p class="text-color-gray no-margin-bottom">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG01}}</p>
+                        <p class="text-color-black no-margin">{{PositionTime}}</p>
+                    </div>
+                    <div class="col text-align-center">
+                        <i class="f7-icons icon-status-speed text-color-lightgray"></i>
+                        <p class="text-color-gray no-margin-bottom">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG02}}</p>
+                        <p class="text-color-black no-margin">{{Speed}}</p>
+                    </div>
+                    <div class="col text-align-center">
+                        <i class="f7-icons icon-live-mileage text-color-lightgray"></i>
+                        <p class="text-color-gray no-margin-bottom">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG03}}</p>
+                        <p class="text-color-black no-margin">{{Mileage}}</p>
+                    </div>
+                </div>
+            </div>
+
+            {{#if LiveAsset}}
+            <div class="list no-margin " >
+                <ul>
+                    <li class="item-content">
+                        <div class="item-media {{#if GeolockActive}} text-color-green {{else}} text-color-lightgray {{/if}}">
+                            <i class="f7-icons icon-live-geolock"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG004}}">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG04}}  <span class="badge color-lightblue">?</span></div>
+                            <div class="item-after">
+                                <label class="toggle color-green toggle-Geolock">
+                                    <input type="checkbox" name="Geolock" {{#if GeolockActive}} checked {{/if}}>
+                                    <span class="toggle-icon"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </li>
+                    {{#if IsImmobilisationSupported}}
+                    <li class="item-content">
+                        <div class="item-media {{#if ImmobilisationActive}} text-color-red {{else}} text-color-lightgray {{/if}}">
+                            <i class="f7-icons icon-live-immobilisation"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG005}}">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG05}}  <span class="badge color-lightblue">?</span></div>
+                            <div class="item-after">
+                                <label class="toggle color-green toggle-Immobilisation">
+                                    <input type="checkbox" name="Immobilisation" {{#if ImmobilisationActive}} checked {{/if}}>
+                                    <span class="toggle-icon"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </li>
+                    {{/if}}
+                    {{#if IsLockDoorSupported}}
+                    <li class="item-content">
+                        <div class="item-media {{#if LockDoorActive}} text-color-red {{else}} text-color-lightgray {{/if}}">
+                            <i class="f7-icons icon-live-lock-door"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG006}}">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG06}}  <span class="badge color-lightblue">?</span></div>
+                            <div class="item-after">
+                                <label class="toggle color-green toggle-LockDoor">
+                                    <input type="checkbox" name="LockDoor" {{#if LockDoorActive}} checked {{/if}}>
+                                    <span class="toggle-icon"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </li>
+                    {{/if}}
+                </ul>
+            </div>
+            {{/if}}
+
+            <div class="list no-margin-top no-hairlines" >
+                <ul class="row no-gap">
+                    <li class="item-content col-100">
+                        <div class="item-media text-color-lightgray">
+                            <i class="f7-icons icon-live-address"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title white-space-normal">
+                                {{Address}}
+                                <div class="item-footer">
+                                    {{Coords}}
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG007}}">
+                        <div class="item-media {{#js_if 'this.Acc === "ON" '}} text-color-green {{else}} text-color-red {{/js_if}}">
+                            <i class="f7-icons icon-status-acc2"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title">{{Acc}}</div>
+                        </div>
+                    </li>
+
+                    {{#if Acc2}}
+                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG008}}">
+                        <div class="item-media text-color-lightgray ">
+                            <i class="f7-icons icon-live-input"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title">{{Acc2}}</div>
+                        </div>
+                    </li>
+                    {{/if Acc2}}
+                    {{#if Fuel}}
+                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG016}}">
+                        <div class="item-media text-color-lightgray ">
+                            <i class="f7-icons icon-live-fuel"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title">{{Fuel}}</div>
+                        </div>
+                    </li>
+                    {{/if Fuel}}
+                    {{#if Voltage}}
+                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG011}}">
+                        <div class="item-media text-color-lightgray ">
+                            <i class="f7-icons icon-live-voltag"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title" >{{Voltage}}</div>
+                        </div>
+                    </li>
+                    {{/if Voltage}}
+                    {{#if Battery}}
+                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG010}}">
+                        <div class="item-media text-color-lightgray ">
+                            <i class="f7-icons icon-live-battery"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title ">{{Battery}}</div>
+                        </div>
+                    </li>
+                    {{/if Battery}}
+                    {{#if Heartrate}}
+                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG018}}">
+                        <div class="item-media text-color-lightgray ">
+                            <i class="f7-icons icon-live-hearth"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title" >{{Heartrate}}</div>
+                        </div>
+                    </li>
+                    {{/if Heartrate}}
+                    {{#if Temperature}}
+                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG019}}">
+                        <div class="item-media text-color-lightgray ">
+                            <i class="f7-icons icon-live-temperature"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title" >{{Temperature}}</div>
+                        </div>
+                    </li>
+                    {{/if Temperature}}
+                    {{#if Direction}}
+                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG015}}<br>{{Direction}}">
+                        <div class="item-media text-color-lightgray ">
+                            <i class="f7-icons icon-live-direction"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title" >{{Direction}}</div>
+                        </div>
+                    </li>
+                    {{/if Direction}}
+                    {{#if EngineHours}}
+                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG020}}">
+                        <div class="item-media text-color-lightgray ">
+                            <i class="f7-icons icon-live-engine-hours"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title" >{{EngineHours}}</div>
+                        </div>
+                    </li>
+                    {{/if EngineHours}}
+                    {{#if StoppedDuration}}
+                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG021}}">
+                        <div class="item-media text-color-lightgray ">
+                            <i class="f7-icons icon-live-duration"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title" >{{StoppedDuration}}</div>
+                        </div>
+                    </li>
+                    {{/if StoppedDuration}}
+
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</template>
+
+
+<script>
+    // script must return component object
+    return {
+        data: function () {
+            let self = this;
+            let imei = decodeURIComponent(self.$route.query.imei);
+            let asset = POSINFOASSETLIST[imei]; //self.$app.methods.getFromStorage('assetList')[imei];
+            let afs = Protocol.Helper.getAssetStateInfo(asset);
+
+            let ret = {
+                Name: asset.Name,
+                IMEI: asset.IMEI,
+                LiveAsset: asset.SolutionType.toLowerCase() !== 'protect' && asset.SolutionType.toLowerCase() !== 'loc8',
+
+                PositionTime: asset.posInfo.positionTime ? asset.posInfo.positionTime.format(window.COM_TIMEFORMAT) : LANGUAGE.COM_MSG031,
+                Speed: Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit),
+                Mileage: afs.mileage ? afs.mileage.value : LANGUAGE.COM_MSG031,
+                EngineHours: afs.mileage ? afs.engineHours.value : LANGUAGE.COM_MSG031,
+                Direction: Protocol.Helper.getDirectionCardinal(asset.posInfo.direct) + ' (' + asset.posInfo.direct + '&deg;)',
+
+                GeolockActive: afs.geolock ? afs.geolock.value : false,
+                ImmobilisationActive: afs.immob ? afs.immob.value : false,
+                LockDoor: afs.lockdoor ? afs.lockdoor.value : false,
+                StoppedDuration: afs.stopped ? afs.stopped.duration : false,
+                Temperature: afs.temperature ? afs.temperature.value : false,
+                Heartrate: afs.heartrate ? afs.heartrate.value : false,
+                Fuel: afs.fuel ? afs.fuel.value : false,
+                Battery: afs.battery ? afs.battery.value : false,
+                Voltage: afs.voltage ? afs.voltage.value : false,
+                Acc2: afs.acc2 ? afs.acc2.value : false,
+                Acc: afs.acc ? afs.acc.value : false,
+
+                Address: asset.lastQueryPosinfo && asset.lastQueryPosinfo.address ? asset.lastQueryPosinfo.address : LANGUAGE.COM_MSG004,
+                Coords: 'GPS: ' + Protocol.Helper.convertDMS(asset.posInfo.lat, asset.posInfo.lng),
+
+                IsImmobilisationSupported: (parseInt(asset._FIELD_INT2) & 1) > 0,
+                IsLockDoorSupported: (parseInt(asset._FIELD_INT2) & 1) > 0,
+            };
+
+            return ret;
+        },
+        methods: {
+            UpdateData: function () {
+                let self = this;
+
+                let asset = POSINFOASSETLIST[self.IMEI];
+                let afs = Protocol.Helper.getAssetStateInfo(asset);
+
+                self.$setState({
+                    PositionTime: asset.posInfo.positionTime ? asset.posInfo.positionTime.format(window.COM_TIMEFORMAT) : LANGUAGE.COM_MSG031,
+                    Speed: Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit),
+                    Mileage: afs.mileage ? afs.mileage.value : LANGUAGE.COM_MSG031,
+                    EngineHours: afs.mileage ? afs.engineHours.value : LANGUAGE.COM_MSG031,
+                    Direction: Protocol.Helper.getDirectionCardinal(asset.posInfo.direct) + ' (' + asset.posInfo.direct + '&deg;)',
+
+                    GeolockActive: afs.geolock ? afs.geolock.value : false,
+                    ImmobilisationActive: afs.immob ? afs.immob.value : false,
+                    LockDoor: afs.lockdoor ? afs.lockdoor.value : false,
+                    StoppedDuration: afs.stopped ? afs.stopped.duration : false,
+                    Temperature: afs.temperature ? afs.temperature.value : false,
+                    Heartrate: afs.heartrate ? afs.heartrate.value : false,
+                    Fuel: afs.fuel ? afs.fuel.value : false,
+                    Battery: afs.battery ? afs.battery.value : false,
+                    Voltage: afs.voltage ? afs.voltage.value : false,
+                    Acc2: afs.acc2 ? afs.acc2.value : false,
+                    Acc: afs.acc ? afs.acc.value : false,
+
+                    Address: asset.lastQueryPosinfo && asset.lastQueryPosinfo.address ? asset.lastQueryPosinfo.address : LANGUAGE.COM_MSG004,
+                    Coords: 'GPS: ' + Protocol.Helper.convertDMS(asset.posInfo.lat, asset.posInfo.lng),
+
+                    IsImmobilisationSupported: (parseInt(asset._FIELD_INT2) & 1) > 0,
+                    IsLockDoorSupported: (parseInt(asset._FIELD_INT2) & 1) > 0,
+                });
+
+                if ( !asset.lastQueryPosinfo ||
+                    Math.floor(asset.posInfo.lat * 10000) / 10000 !== asset.lastQueryPosinfo.lat ||
+                    Math.floor(asset.posInfo.lng * 10000) / 10000 !== asset.lastQueryPosinfo.lng )
+                {
+                    let latlng = {
+                        lat: asset.posInfo.lat,
+                        lng: asset.posInfo.lng
+                    };
+                    Protocol.Helper.getAddressByGeocoder(latlng, function(address) {
+                        asset.lastQueryPosinfo = { lat: Math.floor(latlng.lat * 10000) / 10000, lng: Math.floor(latlng.lng * 10000) / 10000, address: address };
+                        self.$setState({Address: address})
+                    });
+                }
+            }
+        },
+
+        on: {
+            pageInit: function (e, page) {
+                let self = this;
+
+                let asset = POSINFOASSETLIST[self.IMEI];
+                let latlng = {
+                    lat: asset.posInfo.lat,
+                    lng: asset.posInfo.lng
+                };
+                Protocol.Helper.getAddressByGeocoder(latlng, function(address) {
+                    asset.lastQueryPosinfo = { lat: Math.floor(latlng.lat * 10000) / 10000, lng: Math.floor(latlng.lng * 10000) / 10000, address: address };
+                    self.$setState({Address: address})
+                });
+
+                //self.UpdateInterval = setInterval(self.UpdateData, 30 * 1000);
+
+                AssetUpdateEvents.on('updateReceived', self.UpdateData);
+            },
+
+            pageBeforeRemove: function () {
+                AssetUpdateEvents.off('updateReceived', this.UpdateData);
+            }
+
+        }
+    };
+</script>

@@ -37,6 +37,9 @@
         },
         "cordova-launch-review": {
             "PACKAGE_NAME": "com.sinopacific.quiktrak"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "com.sinopacific.quiktrak2"
         }
     },
     "dependent_plugins": {}

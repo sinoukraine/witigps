@@ -1,19 +1,19 @@
 @charset "UTF-8";
 
 @font-face {
-  font-family: "quiktrak";
-  src:url("fonts/quiktrak.eot");
-  src:url("fonts/quiktrak.eot?#iefix") format("embedded-opentype"),
-    url("fonts/quiktrak.woff") format("woff"),
-    url("fonts/quiktrak.ttf") format("truetype"),
-    url("fonts/quiktrak.svg#quiktrak") format("svg");
+  font-family: "quiktrak-new";
+  src:url("fonts/quiktrak-new.eot");
+  src:url("fonts/quiktrak-new.eot?#iefix") format("embedded-opentype"),
+    url("fonts/quiktrak-new.woff") format("woff"),
+    url("fonts/quiktrak-new.ttf") format("truetype"),
+    url("fonts/quiktrak-new.svg#quiktrak-new") format("svg");
   font-weight: normal;
   font-style: normal;
 
 }
 
 [data-icon]:before {
-  font-family: "quiktrak" !important;
+  font-family: "quiktrak-new" !important;
   content: attr(data-icon);
   font-style: normal !important;
   font-weight: normal !important;
@@ -27,7 +27,7 @@
 
 [class^="icon-"]:before,
 [class*=" icon-"]:before {
-  font-family: "quiktrak" !important;
+  font-family: "quiktrak-new" !important;
   font-style: normal !important;
   font-weight: normal !important;
   font-variant: normal !important;
@@ -38,168 +38,288 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-data-acc:before {
+.icon-geofence-active:before {
   content: "\61";
 }
-.icon-data-address:before {
+.icon-geofence-edit:before {
   content: "\62";
 }
-.icon-data-battery:before {
+.icon-geofence-remove:before {
   content: "\63";
 }
-.icon-data-direction:before {
+.icon-header-added:before {
   content: "\64";
 }
-.icon-data-fuel:before {
+.icon-header-alarm:before {
   content: "\65";
 }
-.icon-data-id:before {
+.icon-header-apply:before {
   content: "\66";
 }
-.icon-data-speed:before {
+.icon-header-arrow-back:before {
   content: "\67";
 }
-.icon-data-status:before {
+.icon-header-delete:before {
   content: "\68";
 }
-.icon-data-temperature:before {
+.icon-header-edit:before {
   content: "\69";
 }
-.icon-data-voltage:before {
+.icon-header-filter:before {
   content: "\6a";
 }
-.icon-header-add:before {
+.icon-header-menu:before {
   content: "\6b";
 }
-.icon-header-alarm:before {
+.icon-header-menu2:before {
   content: "\6c";
 }
-.icon-header-alarm2:before {
+.icon-header-play:before {
   content: "\6d";
 }
-.icon-header-apply:before {
+.icon-header-refresh:before {
   content: "\6e";
 }
-.icon-header-arrow-back:before {
+.icon-header-stop:before {
   content: "\6f";
 }
-.icon-header-delete:before {
+.icon-live-acc:before {
   content: "\70";
 }
-.icon-header-edit:before {
+.icon-live-address:before {
   content: "\71";
 }
-.icon-header-menu:before {
+.icon-live-arrow:before {
   content: "\72";
 }
-.icon-header-pause:before {
+.icon-live-asset:before {
   content: "\73";
 }
-.icon-header-play:before {
+.icon-live-attributes:before {
   content: "\74";
 }
-.icon-header-search:before {
+.icon-live-battery:before {
   content: "\75";
 }
-.icon-header-stop:before {
+.icon-live-color:before {
   content: "\76";
 }
-.icon-header-track:before {
+.icon-live-date:before {
   content: "\77";
 }
-.icon-menu-alarms:before {
+.icon-live-direction:before {
   content: "\78";
 }
-.icon-menu-geofence:before {
+.icon-live-distance:before {
   content: "\79";
 }
-.icon-menu-home:before {
+.icon-live-duration:before {
   content: "\7a";
 }
-.icon-menu-logout:before {
+.icon-live-email:before {
   content: "\41";
 }
-.icon-menu-profile:before {
+.icon-live-engine-hours:before {
   content: "\42";
 }
-.icon-menu-support:before {
+.icon-live-fuel:before {
   content: "\43";
 }
-.icon-other-acc:before {
+.icon-live-full-screen:before {
   content: "\44";
 }
-.icon-other-active:before {
+.icon-live-geolock:before {
   content: "\45";
 }
-.icon-other-data:before {
+.icon-live-hearth:before {
   content: "\46";
 }
-.icon-other-distance:before {
+.icon-live-hint:before {
   content: "\47";
 }
-.icon-other-edit:before {
+.icon-live-id:before {
   content: "\48";
 }
-.icon-other-pin-map:before {
-  content: "\4a";
-}
-.icon-other-position:before {
-  content: "\4b";
-}
-.icon-other-remove:before {
-  content: "\4c";
-}
-.icon-other-satellite:before {
-  content: "\4d";
-}
-.icon-other-signal:before {
-  content: "\4e";
-}
-.icon-other-speed:before {
-  content: "\4f";
-}
-.icon-password-eye:before {
-  content: "\50";
-}
-.icon-ping1:before {
-  content: "\51";
-}
-.icon-settings-password:before {
-  content: "\52";
-}
-.icon-settings-profile:before {
-  content: "\53";
-}
-.icon-stopped-time:before {
-  content: "\54";
-}
-.icon-engine-hours:before {
-  content: "\55";
-}
-.icon-other-geolock:before {
-  content: "\56";
-}
-.icon-other-input:before {
-  content: "\58";
-}
-.icon-other-menu-geofence:before {
-  content: "\57";
-}
-.icon-other-lock:before {
-  content: "\59";
-}
-.icon-other-satellite-1:before {
+.icon-live-immobilisation:before {
   content: "\49";
 }
-.icon-other-signal-1:before {
+.icon-live-initial:before {
+  content: "\4a";
+}
+.icon-live-input:before {
+  content: "\4b";
+}
+.icon-live-loc82:before {
+  content: "\4c";
+}
+.icon-live-lock-door:before {
+  content: "\4d";
+}
+.icon-live-mileage:before {
+  content: "\4f";
+}
+.icon-live-mobile:before {
+  content: "\50";
+}
+.icon-live-model:before {
+  content: "\51";
+}
+.icon-live-name:before {
+  content: "\52";
+}
+.icon-live-no-photo:before {
+  content: "\53";
+}
+.icon-live-no-plan:before {
+  content: "\54";
+}
+.icon-live-password:before {
+  content: "\55";
+}
+.icon-live-phone:before {
+  content: "\56";
+}
+.icon-live-protect2:before {
+  content: "\57";
+}
+.icon-live-report-thief:before {
+  content: "\58";
+}
+.icon-live-satellite:before {
+  content: "\59";
+}
+.icon-live-signal:before {
   content: "\5a";
 }
-.icon-menu-recharge:before {
+.icon-live-speed:before {
   content: "\30";
 }
-.icon-other-route:before {
+.icon-live-stopped:before {
   content: "\31";
 }
-.icon-other-hearth:before {
+.icon-live-temperature:before {
   content: "\32";
+}
+.icon-live-track2:before {
+  content: "\33";
+}
+.icon-live-trip:before {
+  content: "\34";
+}
+.icon-live-unit:before {
+  content: "\35";
+}
+.icon-live-voltag:before {
+  content: "\37";
+}
+.icon-live-watch2:before {
+  content: "\38";
+}
+.icon-live-zone:before {
+  content: "\39";
+}
+.icon-menu-alarms:before {
+  content: "\21";
+}
+.icon-menu-call:before {
+  content: "\22";
+}
+.icon-menu-credits:before {
+  content: "\23";
+}
+.icon-menu-geofence:before {
+  content: "\24";
+}
+.icon-menu-home:before {
+  content: "\25";
+}
+.icon-menu-logout:before {
+  content: "\26";
+}
+.icon-menu-profile:before {
+  content: "\27";
+}
+.icon-menu-refer:before {
+  content: "\28";
+}
+.icon-menu-reports:before {
+  content: "\29";
+}
+.icon-menu-support:before {
+  content: "\2a";
+}
+.icon-other-route:before {
+  content: "\2b";
+}
+.icon-other-update:before {
+  content: "\2c";
+}
+.icon-other-view-password:before {
+  content: "\2d";
+}
+.icon-pin-activity:before {
+  content: "\2e";
+}
+.icon-pin-loc8:before {
+  content: "\2f";
+}
+.icon-pin-protect:before {
+  content: "\3a";
+}
+.icon-pin-track:before {
+  content: "\3b";
+}
+.icon-pin-watch:before {
+  content: "\3c";
+}
+.icon-protect-geolock3:before {
+  content: "\3e";
+}
+.icon-protect-immobilisation3:before {
+  content: "\3f";
+}
+.icon-protect-position3:before {
+  content: "\40";
+}
+.icon-protect-status3:before {
+  content: "\5b";
+}
+.icon-status-acc2:before {
+  content: "\5d";
+}
+.icon-status-battery2:before {
+  content: "\5e";
+}
+.icon-status-date:before {
+  content: "\5f";
+}
+.icon-status-engine-hours:before {
+  content: "\60";
+}
+.icon-status-imei:before {
+  content: "\7b";
+}
+.icon-status-mileage:before {
+  content: "\7c";
+}
+.icon-status-power:before {
+  content: "\7d";
+}
+.icon-status-relay:before {
+  content: "\7e";
+}
+.icon-status-satellite2:before {
+  content: "\5c";
+}
+.icon-status-signal2:before {
+  content: "\e000";
+}
+.icon-status-speed:before {
+  content: "\e001";
+}
+.icon-status-tower:before {
+  content: "\e002";
+}
+.icon-status-voltage2:before {
+  content: "\e003";
 }
