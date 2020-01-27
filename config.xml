@@ -70,6 +70,9 @@
     <plugin spec="https://github.com/phonegap/phonegap-mobile-accessibility.git" source="git" />
     <plugin name="cordova-launch-review" source="npm" spec="3.1.1" />
     <plugin name="cordova-plugin-inappbrowser" source="npm" spec="3.0.0"  />
+    <plugin name="cordova-plugin-crosswalk-webview-v3" source="npm" spec="3.0.2"  />
+
+    
     
 
     <edit-config target="NSCameraUsageDescription" file="*-Info.plist" mode="merge">
