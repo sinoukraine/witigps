@@ -176,7 +176,7 @@
                             <div class="item-inner">
                                 <div class="item-title item-floating-label item-label">{{@global.LANGUAGE.ASSET_EDIT_MSG22}}</div>
                                 <div class="item-input-wrap">
-                                    <input type="tel" name="MaxSpeed" placeholder="{{@global.LANGUAGE.ASSET_EDIT_MSG22}}" value="{{MaxSpeed}}" maxlength="4" pattern="[0-9]*" data-error-message="{{@global.LANGUAGE.PROMPT_MSG022}}"  validate >
+                                    <input type="tel" name="MaxSpeed" placeholder="{{@global.LANGUAGE.ASSET_EDIT_MSG22}}" value="{{MaxSpeed}}" maxlength="6" pattern="[0-9.]*" data-error-message="{{@global.LANGUAGE.PROMPT_MSG022}}"  validate >
                                 </div>
                             </div>
                         </div>
@@ -237,6 +237,10 @@
             let assetImg = self.$app.methods.getAssetImg(asset, {'assetEdit':true});
             let solutiontypeIcon = Protocol.Helper.getSolutionTypeIcon(asset.SolutionType);
 
+            if(asset.MaxSpeed){
+                asset.MaxSpeed = Protocol.Helper.getSpeedValue(asset.Unit, asset.MaxSpeed);
+            }
+
             return {
                 ...asset,
                 AssetImg: assetImg,
@@ -251,8 +255,6 @@
                 self.$app.preloader.show();
                 self.$app.request.promise.post(API_URL.EDIT_DEVICE, data, 'json')
                     .then(function (result) {
-                        self.$app.preloader.hide();
-
                         if(result.data.MajorCode === '000') {
                             let device = self.$app.methods.setAssetList({device: data});
                             if (VirtualAssetListMain){
@@ -264,8 +266,10 @@
                             self.$app.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
                         }
                     })
-                    .catch(function (err) {
+                    .finally(function () {
                         self.$app.preloader.hide();
+                    })
+                    .catch(function (err) {
                         if (err && err.status === 404){
                             self.$app.dialog.alert(LANGUAGE.PROMPT_MSG002);
                         }else{
@@ -643,11 +647,16 @@
 
                     };
 
+                    if(data.MaxSpeed){
+                        data.MaxSpeed = Protocol.Helper.getSpeedValueInKM(data.speedUnit, data.MaxSpeed)
+                    }
+
+
                     let assetImg = page.$el.find('.user-img');// $$('.top-asset-img .item_asset_img');
                     if (assetImg.length && assetImg.data('name')) {
                         data.icon = assetImg.data('name');
                     }
-                     console.log(data);
+                     //console.log(data);
                     self.saveAssetDetails(data);
 
                     return false;

@@ -31,7 +31,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="item-link item-content panel-close">
+                            <a href="/account-settings/" class="item-link item-content panel-close">
                                 <div class="item-media text-color-lightgray"><i class="f7-icons icon-menu-profile "></i></div>
                                 <div class="item-inner">
                                     <div class="item-title">{{@global.LANGUAGE.MENU_MSG01}}</div>
@@ -63,6 +63,15 @@
                             </a>
                         </li>
                         <li>
+                            <a href="/contact-list/" class="item-link item-content panel-close">
+                                <div class="item-media text-color-lightgray"><i class="f7-icons icon-contacts "></i></div>
+                                <div class="item-inner">
+                                    <div class="item-title">{{@global.LANGUAGE.MENU_MSG10}}</div>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li>
                             <a href="#" class="item-link item-content panel-close">
                                 <div class="item-media text-color-lightgray"><i class="f7-icons icon-menu-credits "></i></div>
                                 <div class="item-inner">
@@ -71,7 +80,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="item-link item-content panel-close">
+                            <a href="{{SupportUrl}}" target="_blank" class="item-link item-content panel-close external">
                                 <div class="item-media text-color-lightgray"><i class="f7-icons icon-menu-support "></i></div>
                                 <div class="item-inner">
                                     <div class="item-title">{{@global.LANGUAGE.MENU_MSG06}}</div>
@@ -102,13 +111,39 @@
 
             let userInfo = self.$app.methods.getFromStorage('userInfo');
 
+            let paramsForSupportUrl = {
+                service: AppDetails.supportCode,
+            };
+            if (userInfo.FirstName) {
+                paramsForSupportUrl.name = userInfo.FirstName.trim();
+            }
+            if (userInfo.SubName) {
+                paramsForSupportUrl.name = paramsForSupportUrl.name + ' ' + userInfo.SubName.trim();
+                paramsForSupportUrl.name = paramsForSupportUrl.name.trim();
+            }
+            if (localStorage.ACCOUNT) {
+                paramsForSupportUrl.loginName = localStorage.ACCOUNT.trim();
+                paramsForSupportUrl.loginName = encodeURIComponent(paramsForSupportUrl.loginName);
+            }
+            if (userInfo.EMail) {
+                paramsForSupportUrl.email = userInfo.EMail.trim();
+                paramsForSupportUrl.email = encodeURIComponent(paramsForSupportUrl.email);
+            }
+            if (userInfo.Mobile) {
+                paramsForSupportUrl.phone = userInfo.Mobile.trim();
+                paramsForSupportUrl.phone = encodeURIComponent(paramsForSupportUrl.phone);
+            }
+            if (paramsForSupportUrl.name) {
+                paramsForSupportUrl.name = encodeURIComponent(paramsForSupportUrl.name);
+            }
             return {
                 //Initials: 'UN',
                 Logo: self.$app.data.logo,
                 FirstName: userInfo && userInfo.FirstName ? userInfo.FirstName : 'User',
                 LastName: userInfo && userInfo.SurName ? userInfo.SurName : 'Name',
                 Email: userInfo && userInfo.Email ? userInfo.Email : 'test@mail.com',
-                Remaining: userInfo && userInfo.SMSTimes ? userInfo.SMSTimes : '0'
+                Remaining: userInfo && userInfo.SMSTimes ? userInfo.SMSTimes : '0',
+                SupportUrl: API_URL.URL_SUPPORT + '?' + self.$app.utils.serializeObject(paramsForSupportUrl),
                 //test: self.$app.utils.id()
             };
         },

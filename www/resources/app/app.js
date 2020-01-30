@@ -37,8 +37,17 @@ API_URL.GEOFENCE_DELETE = API_DOMIAN1 + "Device/FenceDelete";
 
 API_URL.URL_ROUTE = "https://www.google.com/maps/dir/?api=1&destination={0},{1}";
 API_URL.URL_ROUTE_IOS = "maps://maps.apple.com/maps?daddr={0},{1}";
+API_URL.URL_SUPPORT = "https://support.quiktrak.eu/";
+API_URL.URL_REPORT_THEFT = "https://forms.quiktrak.com.au/report-theft/";
 
 API_URL.GET_BALANCE = API_DOMIAN3 + "Balance";
+API_URL.EDIT_ACCOUNT = API_DOMIAN3 + "AccountEdit";
+API_URL.RESET_PASSWORD = API_DOMIAN1 + "User/Password";
+
+API_URL.GET_CONTACT_USERS_LIST = API_DOMIAN1 + "User/GetList";
+API_URL.CONTACT_USER_ADD = API_DOMIAN1 + "User/Add";
+API_URL.CONTACT_USER_EDIT = API_DOMIAN1 + "User/Edit";
+API_URL.CONTACT_USER_DELETE = API_DOMIAN1 + "User/Delete";
 
 let AppDetails = {
     name: 'QuikTrak-app',
@@ -48,7 +57,7 @@ let AppDetails = {
     appleId: '1079168431',
 };
 
-let VirtualAssetListMain = false;
+//let VirtualAssetListMain = false;
 let UpdateAssetsPosInfoTimer = false;
 let POSINFOASSETLIST = {};
 let StreetViewService = false;
@@ -61,12 +70,6 @@ const LoginEvents = new Framework7.Events();
 // Dom7
 const $$ = Dom7;
 
-// Theme
-let theme = 'md';
-if (Framework7.device.ios) {
-    theme = 'ios';
-}
-
 let htmlTemplate = $$('script#loginScreenTemplate').html();
 let compiledTemplate = Template7.compile(htmlTemplate);
 $$('#app').append(compiledTemplate());
@@ -76,7 +79,7 @@ const app = new Framework7({
     id: 'com.sinopacific.quiktrak',
     name: 'QuikTrak',
     root: '#app',
-    theme: theme,
+    theme: Framework7.device.ios ? 'ios' : 'md',
     view: {
         //stackPages: true,
     },
@@ -282,9 +285,11 @@ const app = new Framework7({
                         self.data.MinorToken = result.data.Data.MinorToken;
                         self.data.MajorToken = result.data.Data.MajorToken;
 
+                        self.methods.setInStorage({name:'contactList', data:result.data.Data.ContactList });
                         let assetListObj = self.methods.setAssetList({list: result.data.Data.AssetArray});
 
                         self.methods.setAccountSolutions(assetListObj);
+
 
                         self.data.NewImageTimestamp = new Date().getTime();
 
@@ -383,11 +388,11 @@ const app = new Framework7({
                 })
                 .catch(function (err) {
                     console.log(err);
-                    if (err && err.status === 404){
+                    /*if (err && err.status === 404){
                         self.dialog.alert(LANGUAGE.PROMPT_MSG002);
                     }else{
                         self.dialog.alert(LANGUAGE.PROMPT_MSG003);
-                    }
+                    }*/
                 });
         },
         getGeofenceList: function(callback){
@@ -451,6 +456,13 @@ const app = new Framework7({
                             ret = {};
                         }
                         break;
+
+                    case 'contactList':
+                        str = localStorage.getItem("COM.QUIKTRAK.NEW.CONTACTLIST");
+                        if(str) {
+                            ret = JSON.parse(str);
+                        }
+                        break;
                    /* case 'groupList':
                         str = localStorage.getItem("COM.QUIKTRAK.NEW.GROUPLIST");
                         if(str) {
@@ -465,12 +477,7 @@ const app = new Framework7({
                         }
                         break;
 
-                    case 'contactList':
-                        str = localStorage.getItem("COM.QUIKTRAK.NEW.CONTACTLIST");
-                        if(str) {
-                            ret = JSON.parse(str);
-                        }
-                        break;
+
 
 
 
@@ -572,13 +579,14 @@ const app = new Framework7({
                         localStorage.setItem("COM.QUIKTRAK.NEW.MAPSETTINGS", JSON.stringify(params.data));
                         break;
 
+                    case 'contactList':
+                        localStorage.setItem("COM.QUIKTRAK.NEW.CONTACTLIST", JSON.stringify(params.data));
+                        break;
                     /*case 'groupList':
                         localStorage.setItem("COM.QUIKTRAK.NEW.GROUPLIST", JSON.stringify(params.data));
                         break;
 
-                    case 'contactList':
-                        localStorage.setItem("COM.QUIKTRAK.NEW.CONTACTLIST", JSON.stringify(params.data));
-                        break;
+
 
                     case 'usersList':
                         localStorage.setItem("COM.QUIKTRAK.NEW.USERSLIST", JSON.stringify(params.data));
@@ -1237,12 +1245,12 @@ const app = new Framework7({
         filterVirtualAssetList: function (list, type) {
             let self = this;
 
-            if (type === 'all'){
+            /*if (type === 'all'){
                 list.resetFilter();
-            }else{
+            }else{*/
                 let filteredListIndexes = self.methods.filterAssetList(list.items, type);
                 list.filterItems(filteredListIndexes);
-            }
+            //}
 
             list.$el.data('filter-type', type);
         },
@@ -1281,6 +1289,49 @@ const app = new Framework7({
                 itemIndexToShow.reverse();
             }
             return itemIndexToShow;
+        },
+        sortContactList: function(list){
+            var self = this;
+            if (list && list.length) {
+                for (var i = list.length - 1; i >= 0; i--) {
+                    list[i].FullName = list[i].FirstName + ' ' + list[i].SubName;
+                    list[i].FullName.trim();
+                }
+                list.sort(function(a,b){
+                    if(a.FullName.toLowerCase() < b.FullName.toLowerCase()) return -1;
+                    if(a.FullName.toLowerCase() > b.FullName.toLowerCase()) return 1;
+                    return 0;
+                });
+            }
+            return list;
+        },
+        countItemsBySolution: function(items){
+            let ret = {
+                All: 0,
+                Live: 0,
+                Loc8: 0,
+                Protect: 0,
+            };
+            if(items && items.length){
+                for (let i = 0; i < items.length; i++) {
+                    let type = items[i].SolutionType ? items[i].SolutionType.toLowerCase() : '';
+                    switch (type){
+                        case 'protect':
+                            ret.Protect++;
+                            break;
+
+                        case 'loc8':
+                            ret.Loc8++;
+                            break;
+
+                        case 'track': case 'watch':
+                            ret.Live++;
+                            break;
+                    }
+                }
+                ret.All = items.length;
+            }
+            return ret;
         },
         showToast: function(text){
             this.toast.create({

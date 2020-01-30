@@ -26,13 +26,12 @@
         </div>
         <div class="toolbar tabbar toolbar-top">
             <div class="toolbar-inner">
-                <a @click="FilterAssetList" href="#tab1" data-type="all" class="tab-link tab-link-active">{{@global.LANGUAGE.HOME_MSG01}}</a>
-                <a @click="FilterAssetList" href="#tab2" data-type="live" class="tab-link">Live</a>
-                <a @click="FilterAssetList" href="#tab3" data-type="loc8" class="tab-link">Loc8</a>
-                <a @click="FilterAssetList" href="#tab4" data-type="protect" class="tab-link">Protect</a>
+                <a @click="FilterAssetList" href="#tab1" data-type="all" class="tab-link flex-direction-row tab-link-active">{{@global.LANGUAGE.HOME_MSG01}}<span class="badge color-darkgray margin-left-quarter">{{AssetsCount.All}}</span></a>
+                <a @click="FilterAssetList" href="#tab2" data-type="live" class="tab-link flex-direction-row">Live<span class="badge color-darkgray margin-left-quarter">{{AssetsCount.Live}}</span></a>
+                <a @click="FilterAssetList" href="#tab3" data-type="loc8" class="tab-link flex-direction-row">Loc8<span class="badge color-darkgray margin-left-quarter">{{AssetsCount.Loc8}}</span></a>
+                <a @click="FilterAssetList" href="#tab4" data-type="protect" class="tab-link flex-direction-row">Protect<span class="badge color-darkgray margin-left-quarter">{{AssetsCount.Protect}}</span></a>
             </div>
         </div>
-
         <form class="searchbar searchbar-init searchbar-home " data-search-container=".assetList" data-search-item="li" data-search-in=".item-title" >
             <div class="searchbar-inner">
                 <div class="searchbar-input-wrap">
@@ -134,7 +133,15 @@
     // script must return component object
     return {
         data: function () {
-            let ret = {};
+            let ret = {
+                AssetsCount: {
+                    All: 0,
+                    Live: 0,
+                    Loc8: 0,
+                    Protect: 0,
+                }
+
+            };
 
             return ret;
         },
@@ -150,6 +157,7 @@
                     el: listEl,
                     items : [],
                     cache: false,
+                    showFilteredItemsOnly: true,
                     searchAll: function (query, items) {
                         let filterType = this.el.data('filter-type');
                         let filteredListIndexes = self.$app.methods.filterAssetList(items, filterType);
@@ -158,6 +166,7 @@
                         for (let i = 0; i < filteredListIndexes.length; i++) {
                             if (items[filteredListIndexes[i]].Name.toLowerCase().indexOf(query.toLowerCase()) >= 0 || query.trim() === '') found.push(filteredListIndexes[i]);
                         }
+
                         return found; //return array with mathced indexes
                     },
                     height: function(item){
@@ -185,7 +194,6 @@
                                 Math.floor(POSINFOASSETLIST[item.IMEI].posInfo.lng * 10000) / 10000 !== POSINFOASSETLIST[item.IMEI].lastQueryPosinfo.lng )
                             {
                                 //console.log(POSINFOASSETLIST[item.IMEI].lastQueryPosinfo, index);
-
                                 let latlng = {
                                     lat: POSINFOASSETLIST[item.IMEI].posInfo.lat,
                                     lng: POSINFOASSETLIST[item.IMEI].posInfo.lng
@@ -194,10 +202,12 @@
                                 Protocol.Helper.getAddressByGeocoder(latlng, function(address) {
                                     POSINFOASSETLIST[item.IMEI].lastQueryPosinfo = { lat: Math.floor(latlng.lat * 10000) / 10000, lng: Math.floor(latlng.lng * 10000) / 10000, address: address };
                                     //console.log(item.IMEI);
-                                    self.$app.utils.nextTick(function() {
+
+                                    self.$el.find("[data-id='address-value-"+item.IMEI+"']").text(address);
+                                    /*self.$app.utils.nextTick(function() {
                                         //console.log(index);
                                         self.VirtualAssetListMain.replaceItem(index, item);
-                                    }, 1500);
+                                    }, 1500);*/
 
 
                                 });
@@ -348,7 +358,7 @@
             },
             FilterAssetList: function (e) {
                 let self = this;
-                let filterType = $$(e.target).data('type');
+                let filterType = $$(e.target).closest('.tab-link').data('type');
                 self.$app.methods.filterVirtualAssetList(self.VirtualAssetListMain, filterType);
             },
             OpenSortingModal: function (e) {
@@ -447,6 +457,7 @@
 
                 LoginEvents.on('signedIn', function (items){
                     self.$setState({
+                        AssetsCount: self.$app.methods.countItemsBySolution(items),
                         LoginDone: true
                     });
                     self.VirtualAssetListMain.replaceAllItems(items);
@@ -462,11 +473,20 @@
                 let self = this;
 
                 let searchbar = self.$app.searchbar.get('.searchbar-home');
-                searchbar.on('search', function (searchbar, query, previousQuery) {
+                /*searchbar.on('search', function (searchbar, query, previousQuery) {
                     if(query.trim() === ''){
                         self.$app.methods.filterVirtualAssetList(this.virtualList, this.virtualList.$el.data('filter-type'));
                     }
+                });*/
+                searchbar.on('clear', function (searchbar, query, previousQuery) {
+                    console.log('clear called');
+                    self.$app.methods.filterVirtualAssetList(this.virtualList, this.virtualList.$el.data('filter-type'));
+                    /*if(query.trim() === ''){
+                        self.$app.methods.filterVirtualAssetList(this.virtualList, this.virtualList.$el.data('filter-type'));
+                    }*/
                 });
+
+
 
             },
             pageAfterOut: function () {

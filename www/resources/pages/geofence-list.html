@@ -20,19 +20,22 @@
                     </a>
 
                 </div>
+                <div class="subnavbar">
+                    <form class="searchbar searchbar-geofences">
+                        <div class="searchbar-inner">
+                            <div class="searchbar-input-wrap">
+                                <input type="search" placeholder="{{@global.LANGUAGE.COM_MSG002}}" title="{{@global.LANGUAGE.COM_MSG002}}">
+                                <i class="searchbar-icon"></i>
+                                <span class="input-clear-button"></span>
+                            </div>
+                            <span class="searchbar-disable-button text-color-gray">{{@global.LANGUAGE.COM_MSG001}}</span>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
-        <form class="searchbar searchbar-geofences">
-            <div class="searchbar-inner">
-                <div class="searchbar-input-wrap">
-                    <input type="search" placeholder="{{@global.LANGUAGE.COM_MSG002}}" title="{{@global.LANGUAGE.COM_MSG002}}">
-                    <i class="searchbar-icon"></i>
-                    <span class="input-clear-button"></span>
-                </div>
-                <span class="searchbar-disable-button text-color-gray">{{@global.LANGUAGE.COM_MSG001}}</span>
-            </div>
-        </form>
+
 
         <div class="page-content">
             <div class="searchbar-backdrop"></div>
@@ -117,16 +120,19 @@
                     items : geofenceList,
                     //cache: false,
                     searchAll: function (query, items) {
-                        var found = [];
-                        for (var i = 0; i < items.length; i++) {
+                        let found = [];
+                        for (let i = 0; i < items.length; i++) {
                             if (items[i].Name.toLowerCase().indexOf(query.toLowerCase()) >= 0 || query.trim() === '') found.push(i);
                         }
                         return found; //return array with mathced indexes
                     },
                     height: function (item){
                         let ret = 73;
-                        if(item && item.Address && item.Address.length > 55){
-                            if (item.Address.length > 55){
+
+                        if(item){
+                            if(!item.Address){
+                                ret = 53;
+                            }else if(item.Address.length > 55){
                                 ret = 93;
                             }else if(item.Address.length > 95){
                                 ret = 113;
@@ -136,7 +142,7 @@
                     },
                     renderItem: function (item, index) {
                         let ret = `
-                        <li data-index="${index}" data-code="${item.Code}" data-state="${item.State}">
+                        <li data-index="${index}" data-code="${item.Code}" data-state="${item.State}" data-name="${item.Name}">
                             <a href="#" class="link ripple-color-red item-menu-button bigger-touch-area geofenceMenu">
                                 <i class="f7-icons icon-header-menu2 size-18"></i>
                             </a>
@@ -162,14 +168,141 @@
             },
             initSearchForm: function () {
                 let self = this;
-                self.$app.utils.nextFrame(()=>{
+                self.$tick().then(() => {
                     self.Searchbar = self.$app.searchbar.create({
                         el: self.$el.find('.searchbar-geofences'),
                         searchContainer: self.$el.find('.geofenceList'),
                         searchIn: '.item-title',
                     });
                 })
-            }
+            },
+            changeGeofenceState: function(code, state){
+                let self = this;
+                let geofence = self.$app.methods.getFromStorage('geofenceList')[code];
+
+                let assetCodes = '';
+                if(geofence.SelectedAssetList && geofence.SelectedAssetList.length){
+                    for (let i = 0; i < geofence.SelectedAssetList.length; i++) {
+                        assetCodes +=geofence.SelectedAssetList[i].AsCode+',';
+                    }
+                    assetCodes = assetCodes.slice(0, -1);
+                }
+
+                let alertTypes = Protocol.Helper.getGoefenceAlarmTypes(geofence.Alerts);
+                let alerts = '';
+                for (let i = 0; i < alertTypes.length; i++) {
+                    if(alertTypes[i].State){
+                        alerts += alertTypes[i].Val+',';
+                    }
+                }
+                alerts = alerts.slice(0, -1);
+
+                let days = '';
+                if(geofence.Week && geofence.Week.length){
+                    for (let i = 0; i < geofence.Week.length; i++) {
+                        days += geofence.Week[i].Week+',';
+                    }
+                    days = days.slice(0, -1);
+                }
+
+                let contactCodes = '';
+                if(geofence.ContactList && geofence.ContactList.length){
+                    for (let i = 0; i < geofence.ContactList.length; i++) {
+                        contactCodes += geofence.ContactList[i].Code+',';
+                    }
+                    contactCodes = contactCodes.slice(0, -1);
+                }
+
+
+                let data = {
+                    MinorToken: self.$app.data.MinorToken,
+                    MajorToken: self.$app.data.MajorToken,
+                    Code: code,
+                    AlertConfigState: state ? 1 : 0,
+                    Name: geofence.Name,
+                    Lat: geofence.Lat ? geofence.Lat : 0,
+                    Lng: geofence.Lng ? geofence.Lng : 0,
+                    Radius: geofence.Radius ? geofence.Radius : 0,
+                    Address: geofence.Address ? geofence.Address : '',
+                    GeoPolygon: geofence.GeoPolygon ? geofence.GeoPolygon : false,
+                    Inverse: geofence.Inverse,
+                    Share: geofence.Share,
+                    GeoType: geofence.GeoType,
+                    CycleType: geofence.CycleType,
+                    DelayTime: 0,
+                    Days: days,
+                    BeginTime: geofence.Week && geofence.Week[0] && geofence.Week[0].BeginTime ? geofence.Week[0].BeginTime : '',
+                    EndTime: geofence.Week && geofence.Week[0] && geofence.Week[0].EndTime ? geofence.Week[0].EndTime : '',
+                    ContactCodes: contactCodes,
+                    AssetCodes: assetCodes,
+                    Alerts: alerts,
+                };
+
+                self.$app.preloader.show();
+                self.$app.request.promise.post(API_URL.GEOFENCE_EDIT, data, 'json')
+                    .then(function (result) {
+                        if(result.data.MajorCode === '000') {
+                            mainView.router.refreshPage();
+                        }else if(result.data.MajorCode === '100' && result.data.MinorCode === '1003'){
+                            self.$app.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
+                        }else{
+                            self.$app.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
+                        }
+                    })
+                    .finally(function () {
+                        self.$app.preloader.hide();
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                        if (err && err.status === 404){
+                            self.$app.dialog.alert(LANGUAGE.PROMPT_MSG002);
+                        }else{
+                            self.$app.dialog.alert(LANGUAGE.PROMPT_MSG003);
+                        }
+                    });
+            },
+            deleteGeofence: function(code, name){
+                let self = this;
+                if (code) {
+                    let text = LANGUAGE.PROMPT_MSG049 +' '+ name +'.'+' '+LANGUAGE.PROMPT_MSG050;
+                    self.$app.dialog.confirm(text,
+                        function(){
+                            let data = {
+                                MinorToken: self.$app.data.MinorToken,
+                                MajorToken: self.$app.data.MajorToken,
+                                Code: code
+                            };
+
+                            self.$app.preloader.show();
+                            self.$app.request.promise.post(API_URL.GEOFENCE_DELETE, data, 'json')
+                                .then(function (result) {
+                                    if(result.data.MajorCode === '000') {
+                                        mainView.router.refreshPage();
+                                    }else if(result.data.MajorCode == '100' && result.data.MinorCode == '1003'){
+                                        self.$app.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
+                                    }else{
+                                        self.$app.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
+                                    }
+                                })
+                                .finally(function () {
+                                    self.$app.preloader.hide();
+                                })
+                                .catch(function (err) {
+                                    console.log(err);
+                                    if (err && err.status === 404){
+                                        self.$app.dialog.alert(LANGUAGE.PROMPT_MSG002);
+                                    }else{
+                                        self.$app.dialog.alert(LANGUAGE.PROMPT_MSG003);
+                                    }
+                                });
+                        },
+                        function(){
+                            // cancel
+                        }
+                    );
+
+                }
+            },
         },
 
         on: {
@@ -179,11 +312,11 @@
                 self.$app.methods.getGeofenceList(self.initList);
 
                 page.$el.find('.geofenceList').on('click', '.geofenceMenu', function () {
-                    var parentLi = $$(this).closest('li');
-                    var geofenceCode = parentLi.data('code');
-                    var listIndex = parentLi.data('index');
+                    let parentLi = $$(this).closest('li');
+                    let geofenceCode = parentLi.data('code');
+                    let geofenceName = parentLi.data('name');
 
-                    var state = false;
+                    let state = false;
                     if (parentLi.data('state') === '1') {
                         state = true;
                     }
@@ -191,17 +324,14 @@
                     self.$app.actions.create({
                         buttons: [
                             {
-                                text: `<div class="action_button_wrapper">
+                                text: `<a href="/geofence/?code=${geofenceCode}" class="action_button_wrapper">
                                     <div class="action_button_block action_button_media text-color-lightgray">
                                         <i class="f7-icons icon-geofence-edit size-18"></i>
                                     </div>
-                                    <div class="action_button_block action_button_text">
+                                    <div class="action_button_block action_button_text text-color-black">
                                         ${ LANGUAGE.ASSET_EDIT_MSG00 }
                                     </div>
-                                </div>`,
-                                onClick: function() {
-                                    //editGeofence(geofenceCode);
-                                }
+                                </a>`,
                             },
                             {
                                 text: `<div class="action_button_wrapper">
@@ -211,17 +341,13 @@
                                     <div class="action_button_block action_button_text">
                                         ${ LANGUAGE.COM_MSG059}
                                     </div>
-                                    <label class="toggle color-green">
+                                    <div class="toggle color-green">
                                         <input type="checkbox" name="checkbox-active" ${ state ? 'checked="checked"' : '' }>
                                         <span class="toggle-icon"></span>
-                                    </label>
+                                    </div>
                                 </div>`,
                                 onClick: function() {
-                                    /*var stateNew = 1;
-                                    if (parentLi.data('state') == 1) {
-                                        stateNew = 0;
-                                    }
-                                    changeGeofenceState(arrGeofenceList[parentLi.data('index')], stateNew);*/
+                                    self.changeGeofenceState(geofenceCode, !state);
                                 }
                             },
                             {
@@ -235,9 +361,7 @@
                                 </div>`,
                                 color: 'red',
                                 onClick: function() {
-                                    /*App.confirm(LANGUAGE.PROMPT_MSG011, function() {
-                                        deleteGeofence(geofenceCode, listIndex);
-                                    });*/
+                                    self.deleteGeofence(geofenceCode, geofenceName);
                                 }
                             },
                         ]
