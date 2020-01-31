@@ -115,6 +115,13 @@
     background: #E3072B;
 }*/
 
+.color-darkgray {
+    --f7-theme-color: #333333;
+    --f7-theme-color-rgb: 51,51,51;
+    --f7-theme-color-shade: #292929;
+    --f7-theme-color-tint: #404040;
+}
+
 .bg-color-lightgray{
     --f7-theme-color-bg-color: #E6E6E6;
 }
@@ -141,7 +148,7 @@
 }
 .icon-status-fix {
     position: absolute;
-    bottom: 10px;
+    bottom: 15px;
     right: 0;
     color: #c1c1c1;
     font-size: 10px;
@@ -164,6 +171,14 @@
 }
 .fake-icon{
     opacity: 0;
+}
+.line-height-icon-fix{
+    line-height: .8;
+}
+.icon-container {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
 }
 .item-menu-button{
     position: absolute;
@@ -212,6 +227,15 @@
 .text-transform-uppercase{
     text-transform: uppercase;
 }
+.margin-left-quarter {
+    margin-left: calc(var(--f7-typography-margin)/ 4)!important;
+}
+.z-index-0{
+    z-index: 0;
+}
+.overflow-hidden{
+    overflow: hidden;
+}
 .only-2-rows{
     overflow: hidden;
     text-overflow: hidden;
@@ -234,6 +258,78 @@
     -webkit-box-shadow: 0px 3px 3px 0px rgba(0,0,0,.15);
     -moz-box-shadow: 0px 3px 3px 0px rgba(0,0,0,.15);
     box-shadow: 0px 3px 3px 0px rgba(0,0,0,.15);
+}
+
+.smart-select .input-invalid~.item-input-error-message {
+    display: block;
+    top: auto;
+    bottom: 0;
+    left: 72px;
+}
+.ios .smart-select .input-invalid~.item-input-error-message{
+    position: absolute;
+    left: 58px;
+    margin-bottom: 0;
+}
+
+
+.input-search-button {
+    position: absolute;
+    top: 50%;
+    border-radius: 50%;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: 0;
+    z-index: 1;
+    cursor: pointer;
+    right: 0;
+    width: 25px;
+    height: 25px;
+    bottom: 6px;
+    margin-top: 0;
+    top: auto;
+}
+.find-address-results{
+    position: absolute;
+    z-index: 13500;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 180px;
+    overflow: auto;
+    padding: 5px 0;
+
+    background: #fff;
+    border-radius: 4px;
+    -webkit-box-shadow: 0px 5px 5px -3px rgba(0,0,0,.2), 0px 8px 10px 1px rgba(0,0,0,.14), 0px 3px 14px 2px rgba(0,0,0,.12);
+    box-shadow: 0px 5px 5px -3px rgba(0,0,0,.2), 0px 8px 10px 1px rgba(0,0,0,.14), 0px 3px 14px 2px rgba(0,0,0,.12);
+
+    opacity: 0;
+    display: none;
+    -webkit-transform: scale(.85,.6);
+    transform: scale(.85,.6);
+    -webkit-transition-property: opacity,border-radius,-webkit-transform;
+    transition-property: opacity,border-radius,-webkit-transform;
+    transition-property: opacity,transform,border-radius;
+    transition-property: opacity,transform,border-radius,-webkit-transform;
+}
+.find-address-results.show{
+    display: block;
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+.find-address-results ul{
+    margin: 0!important;
+    padding: 0!important;
+}
+.find-address-results ul li{
+    padding: 8px;
+    cursor: pointer;
+}
+.find-address-results ul li:hover{
+    background: rgba(0,0,0,.1);
 }
 /*PANEL LEFT*/
 
@@ -340,6 +436,10 @@
     height: 100%;
     min-height: 100px;
     min-width: 100px;
+}
+.geofence-map-wrapper {
+    height: calc(100% - 165px);
+    min-height: 200px;
 }
 
 .leaflet-control-layers-toggle{
@@ -460,6 +560,9 @@ html .color-theme-custom .leaflet-control-layers-overlays label input[type=check
 html .color-theme-custom .leaflet-control-layers-overlays label input[type=checkbox]:checked + span i:after{
     opacity: 1;
 }
+.leaflet-left .leaflet-control.leaflet-draw {
+    margin-left: 14px;
+}
 html .fab-custom{
 
 }
@@ -521,7 +624,9 @@ html .fab-custom{
 }
 
 /*ACTION SHEET START*/
-.action_button_wrapper{
+
+.actions-modal .action_button_wrapper,
+.actions-modal a.action_button_wrapper{
     position: relative;
 
     box-sizing: border-box;
@@ -638,3 +743,12 @@ html .fab-custom{
     display: none;
 }
 /*ACTION SHEET END*/
+/*.card-content-border-radius{
+    border-radius: var(--f7-card-border-radius);
+}*/
+.card-content-divider {
+    width: 50px;
+    background: #fff;
+    height: 1px;
+    margin: auto;
+}

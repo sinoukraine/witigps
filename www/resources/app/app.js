@@ -189,9 +189,9 @@ const app = new Framework7({
                 if (StatusBar) {
                     StatusBar.styleDefault();
                 }
-                document.addEventListener("backbutton", self.backFix, false);
-                /*document.addEventListener("resume", onAppResume, false);
-                document.addEventListener("pause", onAppPause, false);*/
+                document.addEventListener("backbutton", self.methods.backFix, false);
+                //document.addEventListener("resume", onAppResume, false);
+                //document.addEventListener("pause", onAppPause, false);
             }
 
             if(localStorage.ACCOUNT && localStorage.PASSWORD) {
@@ -1509,9 +1509,9 @@ const mainView = app.views.create('.view-main', {
     stackPages: true
 });
 
-//document.addEventListener("deviceready", onDeviceReady, false);
+/*document.addEventListener("deviceready", onDeviceReady, false);
 
-/*function onDeviceReady() {
+function onDeviceReady() {
     app.data.AppDetails.appId = BuildInfo.packageName;
 
     //fix app images and text size
@@ -1525,9 +1525,9 @@ const mainView = app.views.create('.view-main', {
     document.addEventListener("backbutton", backFix, false);
     //document.addEventListener("resume", onAppResume, false);
     //document.addEventListener("pause", onAppPause, false);
-}*/
+}
 
-/*function backFix(event) {
+function backFix(event) {
     if (mainView.router.url === '/') {
         app.dialog.confirm(LANGUAGE.PROMPT_MSG044, function() {
             navigator.app.exitApp();

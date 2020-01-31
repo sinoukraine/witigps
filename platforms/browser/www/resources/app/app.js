@@ -6,6 +6,7 @@ const API_DOMIAN1 = "https://api.m2mglobaltech.com/QuikTrak/V1/";
 const API_DOMIAN2 = "https://api.m2mglobaltech.com/Quikloc8/V1/";
 const API_DOMIAN3 = "https://api.m2mglobaltech.com/QuikProtect/V1/Client/";
 
+
 const API_DOMIAN6 = "https://nomad.sinopacific.com.ua/";
 const API_DOMIAN7 = "https://nominatim.sinopacific.com.ua/";
 const API_DOMIAN8 = "https://nominatim.openstreetmap.org/";
@@ -37,10 +38,22 @@ API_URL.GEOFENCE_DELETE = API_DOMIAN1 + "Device/FenceDelete";
 
 API_URL.URL_ROUTE = "https://www.google.com/maps/dir/?api=1&destination={0},{1}";
 API_URL.URL_ROUTE_IOS = "maps://maps.apple.com/maps?daddr={0},{1}";
+API_URL.URL_SUPPORT = "https://support.quiktrak.eu/";
+API_URL.URL_REPORT_THEFT = "https://forms.quiktrak.com.au/report-theft/";
+API_URL.URL_UPGRADE = "https://app.quikprotect.co/activation2/";
 
 API_URL.GET_BALANCE = API_DOMIAN3 + "Balance";
+API_URL.EDIT_ACCOUNT = API_DOMIAN3 + "AccountEdit";
+API_URL.RESET_PASSWORD = API_DOMIAN1 + "User/Password";
 
-let VirtualAssetListMain = false;
+API_URL.GET_CONTACT_USERS_LIST = API_DOMIAN1 + "User/GetList";
+API_URL.CONTACT_USER_ADD = API_DOMIAN1 + "User/Add";
+API_URL.CONTACT_USER_EDIT = API_DOMIAN1 + "User/Edit";
+API_URL.CONTACT_USER_DELETE = API_DOMIAN1 + "User/Delete";
+
+
+
+//let VirtualAssetListMain = false;
 let UpdateAssetsPosInfoTimer = false;
 let POSINFOASSETLIST = {};
 let StreetViewService = false;
@@ -53,12 +66,6 @@ const LoginEvents = new Framework7.Events();
 // Dom7
 const $$ = Dom7;
 
-// Theme
-let theme = 'md';
-if (Framework7.device.ios) {
-    theme = 'ios';
-}
-
 let htmlTemplate = $$('script#loginScreenTemplate').html();
 let compiledTemplate = Template7.compile(htmlTemplate);
 $$('#app').append(compiledTemplate());
@@ -68,7 +75,7 @@ const app = new Framework7({
     id: 'com.sinopacific.quiktrak',
     name: 'QuikTrak',
     root: '#app',
-    theme: theme,
+    theme: Framework7.device.ios ? 'ios' : 'md',
     view: {
         //stackPages: true,
     },
@@ -89,6 +96,7 @@ const app = new Framework7({
         return {
             logo: 'resources/images/logo.svg',
             logoBlack: 'resources/images/logo-black.svg',
+            logoModal: 'resources/images/logo-black.svg',
             MaxMapPopupWidth: maxPopupWidth,
             PolygonCustomization: {
                 color: '#AA5959',
@@ -131,6 +139,13 @@ const app = new Framework7({
                     opacity: 0.4,
                 },
             },
+            AppDetails: {
+                name: 'QuikTrak-app',
+                code: 23,
+                supportCode: 3,
+                appId: '',
+                appleId: '1079168431',
+            },
             UTCOFFSET: moment().utcOffset(),
             AccountSolutionArray: [],
             CustomerType: '',
@@ -162,6 +177,22 @@ const app = new Framework7({
         },
         init: function () {
             let self = this;
+
+            if(window.hasOwnProperty("cordova")){
+                if (BuildInfo){
+                    self.data.AppDetails.appId = BuildInfo.packageName;
+                }
+                //fix app images and text size
+                if (window.MobileAccessibility) {
+                    window.MobileAccessibility.usePreferredTextZoom(false);
+                }
+                if (StatusBar) {
+                    StatusBar.styleDefault();
+                }
+                document.addEventListener("backbutton", self.methods.backFix, false);
+                //document.addEventListener("resume", onAppResume, false);
+                //document.addEventListener("pause", onAppPause, false);
+            }
 
             if(localStorage.ACCOUNT && localStorage.PASSWORD) {
                 self.methods.login();
@@ -274,9 +305,11 @@ const app = new Framework7({
                         self.data.MinorToken = result.data.Data.MinorToken;
                         self.data.MajorToken = result.data.Data.MajorToken;
 
+                        self.methods.setInStorage({name:'contactList', data:result.data.Data.ContactList });
                         let assetListObj = self.methods.setAssetList({list: result.data.Data.AssetArray});
 
                         self.methods.setAccountSolutions(assetListObj);
+
 
                         self.data.NewImageTimestamp = new Date().getTime();
 
@@ -375,11 +408,11 @@ const app = new Framework7({
                 })
                 .catch(function (err) {
                     console.log(err);
-                    if (err && err.status === 404){
+                    /*if (err && err.status === 404){
                         self.dialog.alert(LANGUAGE.PROMPT_MSG002);
                     }else{
                         self.dialog.alert(LANGUAGE.PROMPT_MSG003);
-                    }
+                    }*/
                 });
         },
         getGeofenceList: function(callback){
@@ -443,6 +476,13 @@ const app = new Framework7({
                             ret = {};
                         }
                         break;
+
+                    case 'contactList':
+                        str = localStorage.getItem("COM.QUIKTRAK.NEW.CONTACTLIST");
+                        if(str) {
+                            ret = JSON.parse(str);
+                        }
+                        break;
                    /* case 'groupList':
                         str = localStorage.getItem("COM.QUIKTRAK.NEW.GROUPLIST");
                         if(str) {
@@ -457,12 +497,7 @@ const app = new Framework7({
                         }
                         break;
 
-                    case 'contactList':
-                        str = localStorage.getItem("COM.QUIKTRAK.NEW.CONTACTLIST");
-                        if(str) {
-                            ret = JSON.parse(str);
-                        }
-                        break;
+
 
 
 
@@ -564,13 +599,14 @@ const app = new Framework7({
                         localStorage.setItem("COM.QUIKTRAK.NEW.MAPSETTINGS", JSON.stringify(params.data));
                         break;
 
+                    case 'contactList':
+                        localStorage.setItem("COM.QUIKTRAK.NEW.CONTACTLIST", JSON.stringify(params.data));
+                        break;
                     /*case 'groupList':
                         localStorage.setItem("COM.QUIKTRAK.NEW.GROUPLIST", JSON.stringify(params.data));
                         break;
 
-                    case 'contactList':
-                        localStorage.setItem("COM.QUIKTRAK.NEW.CONTACTLIST", JSON.stringify(params.data));
-                        break;
+
 
                     case 'usersList':
                         localStorage.setItem("COM.QUIKTRAK.NEW.USERSLIST", JSON.stringify(params.data));
@@ -799,9 +835,9 @@ const app = new Framework7({
                         let userInfo = self.methods.getFromStorage('userInfo');
                         userInfo.SMSTimes = result.data.Data.SMSTimes;
                         self.methods.setInStorage({name:'userInfo', data:userInfo });
-                        //self.methods.updateUserCredits(result.Data.SMSTimes);
+
                         if (alert) {
-                            self.methods.customDialog({text: LANGUAGE.COM_MSG003+': '+result.Data.SMSTimes});
+                            self.methods.customDialog({text: LANGUAGE.COM_MSG003+': '+result.data.Data.SMSTimes});
                         }
                     }
                     self.progressbar.hide();
@@ -815,6 +851,60 @@ const app = new Framework7({
                         self.dialog.alert(LANGUAGE.PROMPT_MSG003);
                     }
                 });
+        },
+        getPlaybackFilterEventsList: function(){
+            return [
+                {
+                    Name: LANGUAGE.ASSET_ALARM_MSG11,  //Ignition On
+                    Value: '1',
+                    IconBg: 'bg-color-green',
+                    Icon: 'icon-live-acc text-color-green f7-icons',
+                    IconColor: 'text-color-green',
+                    /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-green display-flex align-items-center justify-content-center'>
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-live-acc '></i> 
+                                </div>`,*/
+                },
+                {
+                    Name: LANGUAGE.ASSET_TRACK_MSG15,  //Stopped
+                    Value: '2',
+                    IconBg: 'bg-color-gray',
+                    Icon: 'icon-live-stopped text-color-gray f7-icons',
+                    IconColor: 'text-color-gray',
+                    /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-gray display-flex align-items-center justify-content-center'>
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-live-stopped '></i> 
+                                </div>`,*/
+                },
+                {
+                    Name: LANGUAGE.ASSET_ALARM_MSG12,  //Enter Geofence
+                    Value: '3',
+                    IconBg: 'bg-color-green',
+                    Icon: 'icon-menu-geofence text-color-green f7-icons',
+                    IconColor: 'text-color-green',
+                    /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-green display-flex align-items-center justify-content-center'>
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-menu-geofence '></i> 
+                                </div>`,*/
+                },
+                {
+                    Name: LANGUAGE.ASSET_ALARM_MSG13,  //Leave Geofence
+                    Value: '4',
+                    IconBg: 'bg-color-red',
+                    Icon: 'icon-menu-geofence text-color-red f7-icons',
+                    IconColor: 'text-color-red',
+                    /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-red display-flex align-items-center justify-content-center'>
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-menu-geofence '></i> 
+                                </div>`,*/
+                },
+                {
+                    Name: LANGUAGE.ASSET_ALARM_MSG36,  //Other Alarms
+                    Value: '5',
+                    IconBg: 'bg-color-red',
+                    Icon: 'icon-header-alarm text-color-red f7-icons',
+                    IconColor: 'text-color-red',
+                    /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-red display-flex align-items-center justify-content-center'>
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-header-alarm '></i> 
+                                </div>`,*/
+                },
+            ];
         },
         getMarkerIcon: function(params){
             let ret = Protocol.MarkerIcon[0];
@@ -1229,12 +1319,12 @@ const app = new Framework7({
         filterVirtualAssetList: function (list, type) {
             let self = this;
 
-            if (type === 'all'){
+            /*if (type === 'all'){
                 list.resetFilter();
-            }else{
+            }else{*/
                 let filteredListIndexes = self.methods.filterAssetList(list.items, type);
                 list.filterItems(filteredListIndexes);
-            }
+            //}
 
             list.$el.data('filter-type', type);
         },
@@ -1273,6 +1363,49 @@ const app = new Framework7({
                 itemIndexToShow.reverse();
             }
             return itemIndexToShow;
+        },
+        sortContactList: function(list){
+            var self = this;
+            if (list && list.length) {
+                for (var i = list.length - 1; i >= 0; i--) {
+                    list[i].FullName = list[i].FirstName + ' ' + list[i].SubName;
+                    list[i].FullName.trim();
+                }
+                list.sort(function(a,b){
+                    if(a.FullName.toLowerCase() < b.FullName.toLowerCase()) return -1;
+                    if(a.FullName.toLowerCase() > b.FullName.toLowerCase()) return 1;
+                    return 0;
+                });
+            }
+            return list;
+        },
+        countItemsBySolution: function(items){
+            let ret = {
+                All: 0,
+                Live: 0,
+                Loc8: 0,
+                Protect: 0,
+            };
+            if(items && items.length){
+                for (let i = 0; i < items.length; i++) {
+                    let type = items[i].SolutionType ? items[i].SolutionType.toLowerCase() : '';
+                    switch (type){
+                        case 'protect':
+                            ret.Protect++;
+                            break;
+
+                        case 'loc8':
+                            ret.Loc8++;
+                            break;
+
+                        case 'track': case 'watch':
+                            ret.Live++;
+                            break;
+                    }
+                }
+                ret.All = items.length;
+            }
+            return ret;
         },
         showToast: function(text){
             this.toast.create({
@@ -1343,6 +1476,15 @@ const app = new Framework7({
 
             }).open();
         },
+        backFix: function (event) {
+            if (mainView.router.url === '/') {
+                app.dialog.confirm(LANGUAGE.PROMPT_MSG044, function() {
+                    navigator.app.exitApp();
+                });
+            } else {
+                mainView.router.back();
+            }
+        }
     },
     routes: routes,
     popup: {
@@ -1367,9 +1509,32 @@ const mainView = app.views.create('.view-main', {
     stackPages: true
 });
 
+/*document.addEventListener("deviceready", onDeviceReady, false);
 
-/*function initSV(){
-    StreetViewService = new google.maps.StreetViewService();
+function onDeviceReady() {
+    app.data.AppDetails.appId = BuildInfo.packageName;
+
+    //fix app images and text size
+    if (window.MobileAccessibility) {
+        window.MobileAccessibility.usePreferredTextZoom(false);
+    }
+    if (StatusBar) {
+        StatusBar.styleDefault();
+    }
+
+    document.addEventListener("backbutton", backFix, false);
+    //document.addEventListener("resume", onAppResume, false);
+    //document.addEventListener("pause", onAppPause, false);
+}
+
+function backFix(event) {
+    if (mainView.router.url === '/') {
+        app.dialog.confirm(LANGUAGE.PROMPT_MSG044, function() {
+            navigator.app.exitApp();
+        });
+    } else {
+        mainView.router.back();
+    }
 }*/
 
 
