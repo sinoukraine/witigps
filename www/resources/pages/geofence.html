@@ -31,7 +31,7 @@
             <div class="list no-hairline-bottom no-hairline-top no-margin-top">
                 <ul>
                     <li>
-                        <a key="key-asset-list" class="item-link smart-select smart-select-asset-list" data-open-in="page" data-form-color-theme="green" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG02}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-page-title = "{{@global.LANGUAGE.COM_MSG065}}" >
+                        <a key="key-asset-list" class="item-link smart-select smart-select-asset-list" data-open-in="popup" data-form-color-theme="green" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG02}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-page-title = "{{@global.LANGUAGE.COM_MSG065}}" >
                             <select name="Assets" multiple required validate>
                                 {{#AssetList}}
                                     <option value="{{IMEI}}" {{#if AssetSelected}}selected{{/if}}>{{Name}}</option>
@@ -612,6 +612,7 @@
                         el: AssetListSSEl,
                         openIn: 'popup',
                         formColorTheme: 'green',
+                        popupPush: true,
                         searchbar: true,
                         searchbarPlaceholder: LANGUAGE.COM_MSG002,
                         appendSearchbarNotFound: LANGUAGE.PROMPT_MSG000,
@@ -625,6 +626,7 @@
                     self.NotifyListSelect = self.$app.smartSelect.create({
                         el: NotifyListSSEl,
                         openIn: 'popup',
+                        popupPush: true,
                         formColorTheme: 'green',
                         searchbar: true,
                         searchbarPlaceholder: LANGUAGE.COM_MSG002,

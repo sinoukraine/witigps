@@ -37,7 +37,7 @@
     <icon src="icon.png" />
     <preference name="loadUrlTimeoutValue" value="700000" />
     <preference name="DisallowOverscroll" value="true" />
-    <preference name="Orientation" value="portrait" />
+    <preference name="Orientation" value="any" />
     <preference name="android-minSdkVersion" value="19" />
     <preference name="android-targetSdkVersion" value="28" />
     <preference name="multiDexEnabled" value="true" />
@@ -45,4 +45,5 @@
     <preference name="StatusBarOverlaysWebView" value="false" />
     <preference name="StatusBarStyle" value="blacktranslucent" />
     <preference name="phonegap-version" value="cli-9.0.0" />
+    <preference name="Fullscreen" value="true" />
 </widget>
