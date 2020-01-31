@@ -36,7 +36,7 @@
 
     <preference name="loadUrlTimeoutValue" value="700000" />
     <preference name="DisallowOverscroll" value="true" />
-    <preference name="Orientation" value="portrait" />
+    <preference name="Orientation" value="any" />
     <preference name="android-minSdkVersion" value="19" />
     <!-- <preference name="android-maxSdkVersion" value="27" /> -->
     <preference name="android-targetSdkVersion" value="28" />
