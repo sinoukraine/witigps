@@ -250,10 +250,58 @@
                     self.Geofences.length = 0;
                 }
             },
-            showMapControlls: function(){
+            showMapControlls: function(e){
                 let self = this;
                 let mapSettingsObg = self.$app.methods.getFromStorage('mapSettings');
-                self.$app.actions.create({
+
+                let content =   `<div class="popover menu-popover" >
+                                        <div class="popover-inner">
+                                            <div class="list no-hairlines no-hairlines-between">
+                                                <ul>
+                                                    <li class="item-content changeGeofenceState popover-close">
+                                                        <div class="item-media ${ mapSettingsObg && mapSettingsObg.showGeofences ?  'text-color-green' : 'text-color-lightgray'} ">
+                                                            <i class="f7-icons icon-menu-geofence "></i>
+                                                        </div>
+                                                        <div class="item-inner">
+                                                            <div class="item-title ">${ LANGUAGE.COM_MSG062 }</div>
+                                                            <div class="item-after">
+                                                                <div class="toggle color-green">
+                                                                    <input type="checkbox" name="checkbox-map-settings" value="showGeofences" ${ mapSettingsObg && mapSettingsObg.showGeofences ?  'checked' : '' }>
+                                                                    <span class="toggle-icon"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>`;
+
+                self.$app.popover.create({
+                    backdrop: false,
+                    closeByOutsideClick: true,
+                    targetEl: e.target,
+                    content: content,
+                    on: {
+                        opened: function(popover){
+                            let GeofencesState = popover.$el.find('.changeGeofenceState');
+
+                            GeofencesState.on('click', function () {
+                                let input = $$(this).find('input[name="checkbox-map-settings"]');
+                                let newState = !input.prop( "checked" );
+                                mapSettingsObg[input.val()] = newState;
+                                self.$app.methods.setInStorage({name: 'mapSettings', data: mapSettingsObg});
+                                newState ? self.showGeofences(self.Map) : self.hideGeofences(self.Map);
+                            });
+                        },
+                        closed: function(popover){
+                            popover.destroy();
+                        }
+                    }
+                }).open();
+
+
+                /*self.$app.actions.create({
                     buttons: [
                         {
                             text: `
@@ -279,7 +327,7 @@
                             }
                         },
                     ]
-                }).open();
+                }).open();*/
             },
         },
 

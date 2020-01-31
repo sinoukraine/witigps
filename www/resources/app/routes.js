@@ -16,7 +16,7 @@ var routes = [
     },
     {
         path: '/asset-status-live/',
-        componentUrl: './resources/pages/asset-status-live.html?v=1.3',
+        componentUrl: './resources/pages/asset-status-live.html?v=1.4',
         name: 'asset-status-live',
         options: {
             transition: 'f7-cover',
@@ -39,6 +39,14 @@ var routes = [
         },
     },
     {
+        path: '/asset-upgrade/',
+        componentUrl: './resources/pages/asset-upgrade.html?v=1.4',
+        name: 'asset-upgrade',
+        options: {
+            transition: 'f7-cover',
+        },
+    },
+    {
         path: '/asset-alarm/',
         componentUrl: './resources/pages/asset-alarm.html?v=1.3',
         name: 'asset-alarm',
@@ -50,6 +58,14 @@ var routes = [
         path: '/asset-track/',
         componentUrl: './resources/pages/asset-track.html?v=1.4',
         name: 'asset-track',
+        options: {
+            transition: 'f7-cover',
+        },
+    },
+    {
+        path: '/asset-playback/',
+        componentUrl: './resources/pages/asset-playback.html?v=1.3',
+        name: 'asset-playback',
         options: {
             transition: 'f7-cover',
         },
@@ -90,6 +106,14 @@ var routes = [
         path: '/contact/',
         componentUrl: './resources/pages/contact.html?v=1.3',
         name: 'contact',
+        options: {
+            transition: 'f7-cover',
+        },
+    },
+    {
+        path: '/recharge-credits/',
+        componentUrl: './resources/pages/recharge-credits.html?v=1.3',
+        name: 'recharge-credits',
         options: {
             transition: 'f7-cover',
         },

@@ -6,6 +6,7 @@ const API_DOMIAN1 = "https://api.m2mglobaltech.com/QuikTrak/V1/";
 const API_DOMIAN2 = "https://api.m2mglobaltech.com/Quikloc8/V1/";
 const API_DOMIAN3 = "https://api.m2mglobaltech.com/QuikProtect/V1/Client/";
 
+
 const API_DOMIAN6 = "https://nomad.sinopacific.com.ua/";
 const API_DOMIAN7 = "https://nominatim.sinopacific.com.ua/";
 const API_DOMIAN8 = "https://nominatim.openstreetmap.org/";
@@ -39,6 +40,7 @@ API_URL.URL_ROUTE = "https://www.google.com/maps/dir/?api=1&destination={0},{1}"
 API_URL.URL_ROUTE_IOS = "maps://maps.apple.com/maps?daddr={0},{1}";
 API_URL.URL_SUPPORT = "https://support.quiktrak.eu/";
 API_URL.URL_REPORT_THEFT = "https://forms.quiktrak.com.au/report-theft/";
+API_URL.URL_UPGRADE = "https://app.quikprotect.co/activation2/";
 
 API_URL.GET_BALANCE = API_DOMIAN3 + "Balance";
 API_URL.EDIT_ACCOUNT = API_DOMIAN3 + "AccountEdit";
@@ -49,13 +51,7 @@ API_URL.CONTACT_USER_ADD = API_DOMIAN1 + "User/Add";
 API_URL.CONTACT_USER_EDIT = API_DOMIAN1 + "User/Edit";
 API_URL.CONTACT_USER_DELETE = API_DOMIAN1 + "User/Delete";
 
-let AppDetails = {
-    name: 'QuikTrak-app',
-    code: 23,
-    supportCode: 3,
-    appId: '',
-    appleId: '1079168431',
-};
+
 
 //let VirtualAssetListMain = false;
 let UpdateAssetsPosInfoTimer = false;
@@ -100,6 +96,7 @@ const app = new Framework7({
         return {
             logo: 'resources/images/logo.svg',
             logoBlack: 'resources/images/logo-black.svg',
+            logoModal: 'resources/images/logo-black.svg',
             MaxMapPopupWidth: maxPopupWidth,
             PolygonCustomization: {
                 color: '#AA5959',
@@ -142,6 +139,13 @@ const app = new Framework7({
                     opacity: 0.4,
                 },
             },
+            AppDetails: {
+                name: 'QuikTrak-app',
+                code: 23,
+                supportCode: 3,
+                appId: '',
+                appleId: '1079168431',
+            },
             UTCOFFSET: moment().utcOffset(),
             AccountSolutionArray: [],
             CustomerType: '',
@@ -173,6 +177,22 @@ const app = new Framework7({
         },
         init: function () {
             let self = this;
+
+            if(window.hasOwnProperty("cordova")){
+                if (BuildInfo){
+                    self.data.AppDetails.appId = BuildInfo.packageName;
+                }
+                //fix app images and text size
+                if (window.MobileAccessibility) {
+                    window.MobileAccessibility.usePreferredTextZoom(false);
+                }
+                if (StatusBar) {
+                    StatusBar.styleDefault();
+                }
+                document.addEventListener("backbutton", self.backFix, false);
+                /*document.addEventListener("resume", onAppResume, false);
+                document.addEventListener("pause", onAppPause, false);*/
+            }
 
             if(localStorage.ACCOUNT && localStorage.PASSWORD) {
                 self.methods.login();
@@ -815,9 +835,9 @@ const app = new Framework7({
                         let userInfo = self.methods.getFromStorage('userInfo');
                         userInfo.SMSTimes = result.data.Data.SMSTimes;
                         self.methods.setInStorage({name:'userInfo', data:userInfo });
-                        //self.methods.updateUserCredits(result.Data.SMSTimes);
+
                         if (alert) {
-                            self.methods.customDialog({text: LANGUAGE.COM_MSG003+': '+result.Data.SMSTimes});
+                            self.methods.customDialog({text: LANGUAGE.COM_MSG003+': '+result.data.Data.SMSTimes});
                         }
                     }
                     self.progressbar.hide();
@@ -831,6 +851,60 @@ const app = new Framework7({
                         self.dialog.alert(LANGUAGE.PROMPT_MSG003);
                     }
                 });
+        },
+        getPlaybackFilterEventsList: function(){
+            return [
+                {
+                    Name: LANGUAGE.ASSET_ALARM_MSG11,  //Ignition On
+                    Value: '1',
+                    IconBg: 'bg-color-green',
+                    Icon: 'icon-live-acc text-color-green f7-icons',
+                    IconColor: 'text-color-green',
+                    /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-green display-flex align-items-center justify-content-center'>
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-live-acc '></i> 
+                                </div>`,*/
+                },
+                {
+                    Name: LANGUAGE.ASSET_TRACK_MSG15,  //Stopped
+                    Value: '2',
+                    IconBg: 'bg-color-gray',
+                    Icon: 'icon-live-stopped text-color-gray f7-icons',
+                    IconColor: 'text-color-gray',
+                    /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-gray display-flex align-items-center justify-content-center'>
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-live-stopped '></i> 
+                                </div>`,*/
+                },
+                {
+                    Name: LANGUAGE.ASSET_ALARM_MSG12,  //Enter Geofence
+                    Value: '3',
+                    IconBg: 'bg-color-green',
+                    Icon: 'icon-menu-geofence text-color-green f7-icons',
+                    IconColor: 'text-color-green',
+                    /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-green display-flex align-items-center justify-content-center'>
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-menu-geofence '></i> 
+                                </div>`,*/
+                },
+                {
+                    Name: LANGUAGE.ASSET_ALARM_MSG13,  //Leave Geofence
+                    Value: '4',
+                    IconBg: 'bg-color-red',
+                    Icon: 'icon-menu-geofence text-color-red f7-icons',
+                    IconColor: 'text-color-red',
+                    /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-red display-flex align-items-center justify-content-center'>
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-menu-geofence '></i> 
+                                </div>`,*/
+                },
+                {
+                    Name: LANGUAGE.ASSET_ALARM_MSG36,  //Other Alarms
+                    Value: '5',
+                    IconBg: 'bg-color-red',
+                    Icon: 'icon-header-alarm text-color-red f7-icons',
+                    IconColor: 'text-color-red',
+                    /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-red display-flex align-items-center justify-content-center'>
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-header-alarm '></i> 
+                                </div>`,*/
+                },
+            ];
         },
         getMarkerIcon: function(params){
             let ret = Protocol.MarkerIcon[0];
@@ -1402,6 +1476,15 @@ const app = new Framework7({
 
             }).open();
         },
+        backFix: function (event) {
+            if (mainView.router.url === '/') {
+                app.dialog.confirm(LANGUAGE.PROMPT_MSG044, function() {
+                    navigator.app.exitApp();
+                });
+            } else {
+                mainView.router.back();
+            }
+        }
     },
     routes: routes,
     popup: {
@@ -1426,10 +1509,10 @@ const mainView = app.views.create('.view-main', {
     stackPages: true
 });
 
-document.addEventListener("deviceready", onDeviceReady, false);
+//document.addEventListener("deviceready", onDeviceReady, false);
 
-function onDeviceReady() {
-    AppDetails.appId = BuildInfo.packageName;
+/*function onDeviceReady() {
+    app.data.AppDetails.appId = BuildInfo.packageName;
 
     //fix app images and text size
     if (window.MobileAccessibility) {
@@ -1440,11 +1523,11 @@ function onDeviceReady() {
     }
 
     document.addEventListener("backbutton", backFix, false);
-    /*document.addEventListener("resume", onAppResume, false);
-    document.addEventListener("pause", onAppPause, false);*/
-}
+    //document.addEventListener("resume", onAppResume, false);
+    //document.addEventListener("pause", onAppPause, false);
+}*/
 
-function backFix(event) {
+/*function backFix(event) {
     if (mainView.router.url === '/') {
         app.dialog.confirm(LANGUAGE.PROMPT_MSG044, function() {
             navigator.app.exitApp();
@@ -1452,7 +1535,7 @@ function backFix(event) {
     } else {
         mainView.router.back();
     }
-}
+}*/
 
 
 $$('body').on('submit', '[name="login-form"]', function (e) {

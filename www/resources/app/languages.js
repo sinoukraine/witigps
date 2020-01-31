@@ -69,6 +69,14 @@ window.LanguagePackages= {
 		"COM_MSG063": "State",
 		"COM_MSG064": "Remove",
 		"COM_MSG065": "Selected Assets",
+		"COM_MSG066": "Buy Now",
+		"COM_MSG067": "Yes",
+		"COM_MSG068": "No",
+		"COM_MSG069": "Сredits",
+		"COM_MSG070": "Monthly",
+		"COM_MSG071": "Yearly",
+		"COM_MSG072": "inc GST",
+		"COM_MSG073": "Upgrade Now",
 
 
 		"PROMPT_MSG000": "Nothing found",
@@ -135,13 +143,9 @@ window.LanguagePackages= {
 		"PROMPT_MSG058": "User has been deleted",
 		"PROMPT_MSG059": "User with such Email address already exists",
 		"PROMPT_MSG060": "You are going to delete user",
-
-
-
-
-
-
-
+		"PROMPT_MSG061": "Buy more credits to check Status and Location of your Protect and Loc8 Assets by demand.",
+		"PROMPT_MSG062": "Was your payment successful?",
+		"PROMPT_MSG063": "Upgrade for LIVE tracking and Alarm notifications. When knowing where your asset is at all times and historically is important our upgrade options will provide you a cost effective and valuable solution.",
 
 		"HOME_MSG00": "Home",
 		"HOME_MSG01": "All",
@@ -163,6 +167,8 @@ window.LanguagePackages= {
 		"LOGIN_MSG01": "Password",
 		"LOGIN_MSG02": "Sign In",
 		"LOGIN_MSG03": "Forgot Password?",
+
+		"CREDIT_RECHARGE_MSG00": "Renewal",
 
 		"ACCOUNT_SETTINGS_MSG00": "Profile",
 		"ACCOUNT_SETTINGS_MSG01": "Password",
@@ -234,6 +240,7 @@ window.LanguagePackages= {
 		"ASSET_ALARM_MSG33": "hours",
 		"ASSET_ALARM_MSG34": "Positive Input On",
 		"ASSET_ALARM_MSG35": "Positive Input Off",
+		"ASSET_ALARM_MSG36": "Other Alarm",
 
 		"GEOFENCES_MSG00": "Circle",
 		"GEOFENCES_MSG01": "Polygon",
@@ -259,12 +266,16 @@ window.LanguagePackages= {
 		"REPORT_THEFT_MSG00": "Please follow the below steps when reporting your stolen asset.",
 		"REPORT_THEFT_MSG01": "1. Contact police to report the incident. You will be provided with an incident report number.",
 		"REPORT_THEFT_MSG02": "2. Login to your account to monitor the live location of your asset, you can provide the police with the exact location of your asset to speed up the recovery process.",
-		"REPORT_THEFT_MSG03": "3. Click Create report to lodge report theft. This will formulate a complete report to be used for insurance, personal and/or police information.",
+		"REPORT_THEFT_MSG03": "3. Click <a href='{0}' target='_blank' class='external'>CREATE REPORT</a> to lodge report theft. This will formulate a complete report to be used for insurance, personal and/or police information.",
 		"REPORT_THEFT_MSG04": "Create Report",
 
 
 
 		"ASSET_PLAYBACK_MSG00": "PlayBack",
+		"ASSET_PLAYBACK_MSG01": "Show Optimized",
+		"ASSET_PLAYBACK_MSG02": "Events",
+		"ASSET_PLAYBACK_MSG03": "Start Date and Time",
+		"ASSET_PLAYBACK_MSG04": "End Date and Time",
 
 		"ASSET_TRACK_MSG00": "Track",
 		"ASSET_TRACK_MSG01": "Asset Name",

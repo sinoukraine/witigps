@@ -172,6 +172,14 @@
 .fake-icon{
     opacity: 0;
 }
+.line-height-icon-fix{
+    line-height: .8;
+}
+.icon-container {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+}
 .item-menu-button{
     position: absolute;
     top: 10px;
@@ -224,6 +232,9 @@
 }
 .z-index-0{
     z-index: 0;
+}
+.overflow-hidden{
+    overflow: hidden;
 }
 .only-2-rows{
     overflow: hidden;
@@ -732,3 +743,12 @@ html .fab-custom{
     display: none;
 }
 /*ACTION SHEET END*/
+/*.card-content-border-radius{
+    border-radius: var(--f7-card-border-radius);
+}*/
+.card-content-divider {
+    width: 50px;
+    background: #fff;
+    height: 1px;
+    margin: auto;
+}

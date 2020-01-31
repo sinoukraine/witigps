@@ -2,17 +2,15 @@
 <template>
     <div class="panel panel-left panel-cover panel-init">
         <div class="page" data-name="panel-left">
+
             <div class="toolbar toolbar-bottom bg-color-lightgray no-hairline no-shadow">
                 <div class="toolbar-inner">
-                    <a href="#" class="link width-100 text-color-black">{{@global.LANGUAGE.COM_MSG003}}: {{Remaining}}</a>
+                    <a href="/recharge-credits/" class="link width-100 text-color-black">{{@global.LANGUAGE.COM_MSG003}}: {{Remaining}}</a>
                 </div>
             </div>
             <div class="page-content">
                 <div class="panel-header bg-custom bg-header">
                     <div class="block no-margin padding">
-                        <!--<div class="user-img bg-color-white color-custom display-flex justify-content-center align-items-center ">
-                            <span class="size-24">{{Initials}}</span>
-                        </div>-->
                         <div class="logo">
                             <img src="{{Logo}}" alt="">
                         </div>
@@ -72,7 +70,7 @@
                         </li>
 
                         <li>
-                            <a href="#" class="item-link item-content panel-close">
+                            <a href="/recharge-credits/" class="item-link item-content panel-close">
                                 <div class="item-media text-color-lightgray"><i class="f7-icons icon-menu-credits "></i></div>
                                 <div class="item-inner">
                                     <div class="item-title">{{@global.LANGUAGE.MENU_MSG05}}</div>
@@ -112,7 +110,7 @@
             let userInfo = self.$app.methods.getFromStorage('userInfo');
 
             let paramsForSupportUrl = {
-                service: AppDetails.supportCode,
+                service: self.$root.AppDetails.supportCode,
             };
             if (userInfo.FirstName) {
                 paramsForSupportUrl.name = userInfo.FirstName.trim();

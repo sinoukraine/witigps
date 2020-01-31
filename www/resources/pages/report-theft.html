@@ -30,7 +30,7 @@
                     <!--<div class="block-header">{{@global.LANGUAGE.REPORT_THEFT_MSG00}}</div>-->
                     <p>{{@global.LANGUAGE.REPORT_THEFT_MSG01}}</p>
                     <p>{{@global.LANGUAGE.REPORT_THEFT_MSG02}}</p>
-                    <p>{{@global.LANGUAGE.REPORT_THEFT_MSG03}}</p>
+                    <p>{{PWithLink}}</p>
                 </div>
                 
             </div>
@@ -65,6 +65,7 @@
                 }
             }
             ret.url = API_URL.URL_REPORT_THEFT + '?' + self.$app.utils.serializeObject(param);
+            ret.PWithLink = LANGUAGE.REPORT_THEFT_MSG03.format(ret.url);
             return ret;
         },
         methods: {
