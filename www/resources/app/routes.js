@@ -71,6 +71,14 @@ var routes = [
         },
     },
     {
+        path: '/asset-playback-show/',
+        componentUrl: './resources/pages/asset-playback-show.html?v=1.3',
+        name: 'asset-playback-show',
+        options: {
+            transition: 'f7-cover',
+        },
+    },
+    {
         path: '/geofence-list/',
         componentUrl: './resources/pages/geofence-list.html?v=1.3',
         name: 'geofence-list',

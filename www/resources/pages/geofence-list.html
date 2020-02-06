@@ -6,9 +6,13 @@
             <div class="navbar-bg"></div>
             <div class="navbar-inner">
                 <div class="left">
-                    <a href="#" class="link icon-only back" >
+                    <!--<a href="#" class="link icon-only back" >
                         <i class="if-not-ios f7-icons icon-header-arrow-back"></i>
                         <i class="if-ios icon icon-back"></i>
+                    </a>-->
+                    <a href="/panel-left/" class="link icon-only " >
+                        <i class="if-not-ios f7-icons icon-header-menu"></i>
+                        <i class="if-ios icon material-icons">menu</i>
                     </a>
                 </div>
                 <div class="title sliding">
@@ -142,20 +146,22 @@
                     },
                     renderItem: function (item, index) {
                         let ret = `
-                        <li data-index="${index}" data-code="${item.Code}" data-state="${item.State}" data-name="${item.Name}">
-                            <a href="#" class="link ripple-color-red item-menu-button bigger-touch-area geofenceMenu">
-                                <i class="f7-icons icon-header-menu2 size-18"></i>
-                            </a>
-                            <a href="/geofence/?code=${item.Code}" class="item-link item-content">
-                                <div class="item-inner">
-                                    <div class="item-title-row">
-                                        <div class="item-title text-transform-uppercase">${item.Name}</div>
-                                        <div class="item-after"><i class="f7-icons icon-header-menu2 fake-icon"></i></div>
+                            <li data-index="${index}" data-code="${item.Code}" data-state="${item.State}" data-name="${item.Name}">`;
+                        if (item.CustomerCode === self.$root.MajorToken){
+                            ret+=`  <a href="#" class="link color-custom ripple-color-red item-menu-button bigger-touch-area geofenceMenu">
+                                        <i class="f7-icons icon-header-menu2 size-18"></i>
+                                    </a>`;
+                        }
+                        ret+=`  <a href="/geofence/?code=${item.Code}" class="item-link item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title-row">
+                                            <div class="item-title text-transform-uppercase">${item.Name}</div>
+                                            <div class="item-after"><i class="f7-icons icon-header-menu2 fake-icon"></i></div>
+                                        </div>
+                                        <div class="item-text">${item.Address}</div>
                                     </div>
-                                    <div class="item-text">${item.Address}</div>
-                                </div>
-                            </a>
-                        </li>`;
+                                </a>
+                            </li>`;
                         return ret;
                     },
                     emptyTemplate: `<li class="item-content">${LANGUAGE.COM_MSG040}</li>`

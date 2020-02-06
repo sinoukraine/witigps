@@ -26,10 +26,10 @@
         </div>
         <div class="toolbar tabbar toolbar-top">
             <div class="toolbar-inner">
-                <a @click="FilterAssetList" href="#tab1" data-type="all" class="tab-link flex-direction-row tab-link-active">{{@global.LANGUAGE.HOME_MSG01}}<span class="badge color-darkgray margin-left-quarter">{{AssetsCount.All}}</span></a>
-                <a @click="FilterAssetList" href="#tab2" data-type="live" class="tab-link flex-direction-row">Live<span class="badge color-darkgray margin-left-quarter">{{AssetsCount.Live}}</span></a>
-                <a @click="FilterAssetList" href="#tab3" data-type="loc8" class="tab-link flex-direction-row">Loc8<span class="badge color-darkgray margin-left-quarter">{{AssetsCount.Loc8}}</span></a>
-                <a @click="FilterAssetList" href="#tab4" data-type="protect" class="tab-link flex-direction-row">Protect<span class="badge color-darkgray margin-left-quarter">{{AssetsCount.Protect}}</span></a>
+                <a @click="FilterAssetList" href="#tab1" data-type="all" class="tab-link flex-direction-row tab-link-active">{{@global.LANGUAGE.HOME_MSG01}}<span class="badge color-custom margin-left-quarter">{{AssetsCount.All}}</span></a>
+                <a @click="FilterAssetList" href="#tab2" data-type="live" class="tab-link flex-direction-row">Live<span class="badge color-custom margin-left-quarter">{{AssetsCount.Live}}</span></a>
+                <a @click="FilterAssetList" href="#tab3" data-type="loc8" class="tab-link flex-direction-row">Loc8<span class="badge color-custom margin-left-quarter">{{AssetsCount.Loc8}}</span></a>
+                <a @click="FilterAssetList" href="#tab4" data-type="protect" class="tab-link flex-direction-row">Protect<span class="badge color-custom margin-left-quarter">{{AssetsCount.Protect}}</span></a>
             </div>
         </div>
         <form class="searchbar searchbar-init searchbar-home " data-search-container=".assetList" data-search-item="li" data-search-in=".item-title" >
@@ -152,10 +152,19 @@
             initVirtualAssetList: function () {
                 let self = this;
                 let listEl = self.$el.find('.assetList');
+                let assetListObj = self.$app.methods.getFromStorage('assetList');
+                let assetList = [];
+                if(!self.$app.methods.isObjEmpty(assetListObj)){
+                    let keys = Object.keys(assetListObj);
+                    for (const key of keys) {
+                        assetList.push(assetListObj[key]);
+                    }
+                    assetList = self.$app.methods.sortAssetList(assetList, 'state', 'asc');
+                }
 
                 self.VirtualAssetListMain = self.$app.virtualList.create({
                     el: listEl,
-                    items : [],
+                    items : assetList,
                     cache: false,
                     showFilteredItemsOnly: true,
                     searchAll: function (query, items) {
@@ -187,13 +196,12 @@
                         let assetImg = self.$app.methods.getAssetImg(item, {'assetList':true});
                         let solutiontype = item.SolutionType ? item.SolutionType : LANGUAGE.COM_MSG039;
                         let solutiontypeIcon = Protocol.Helper.getSolutionTypeIcon(solutiontype);
-                        //console.log(item.IMEI);
+
                         if(!self.$app.methods.isObjEmpty(POSINFOASSETLIST[item.IMEI]) && !self.$app.methods.isObjEmpty(afs) && afs.stats ){
                             if ( !POSINFOASSETLIST[item.IMEI].lastQueryPosinfo ||
                                 Math.floor(POSINFOASSETLIST[item.IMEI].posInfo.lat * 10000) / 10000 !== POSINFOASSETLIST[item.IMEI].lastQueryPosinfo.lat ||
                                 Math.floor(POSINFOASSETLIST[item.IMEI].posInfo.lng * 10000) / 10000 !== POSINFOASSETLIST[item.IMEI].lastQueryPosinfo.lng )
                             {
-                                //console.log(POSINFOASSETLIST[item.IMEI].lastQueryPosinfo, index);
                                 let latlng = {
                                     lat: POSINFOASSETLIST[item.IMEI].posInfo.lat,
                                     lng: POSINFOASSETLIST[item.IMEI].posInfo.lng
@@ -201,15 +209,7 @@
 
                                 Protocol.Helper.getAddressByGeocoder(latlng, function(address) {
                                     POSINFOASSETLIST[item.IMEI].lastQueryPosinfo = { lat: Math.floor(latlng.lat * 10000) / 10000, lng: Math.floor(latlng.lng * 10000) / 10000, address: address };
-                                    //console.log(item.IMEI);
-
                                     self.$el.find("[data-id='address-value-"+item.IMEI+"']").text(address);
-                                    /*self.$app.utils.nextTick(function() {
-                                        //console.log(index);
-                                        self.VirtualAssetListMain.replaceItem(index, item);
-                                    }, 1500);*/
-
-
                                 });
                             }
 
@@ -338,8 +338,6 @@
                                 </li>
                             `;
                         }
-
-
                         return ret;
                     },
                     //emptyTemplate: `<li class="item-content">${LANGUAGE.COM_MSG040}</li>`
@@ -352,9 +350,15 @@
                     if (!POSINFOASSETLIST[IMEI] || !POSINFOASSETLIST[IMEI].SolutionType || POSINFOASSETLIST[IMEI].SolutionType.toLowerCase() !== "track" && POSINFOASSETLIST[IMEI].SolutionType.toLowerCase() !== "watch" ){
                         mainView.router.navigate('/asset-protect/?imei='+IMEI);
                     }else{
-                        mainView.router.navigate('/asset-status-live/?imei='+IMEI);
+                        mainView.router.navigate('/asset-status-live/?tabs=true&imei='+IMEI);
                     }
-                })
+                });
+                self.$app.utils.nextFrame(()=>{
+                    if(!self.$app.methods.isObjEmpty(assetList)){
+                        LoginEvents.emit('signedIn', assetList);
+                    }
+                });
+
             },
             FilterAssetList: function (e) {
                 let self = this;
@@ -447,7 +451,8 @@
 
                 page.$el.find('.ptr-content').on('ptr:refresh', function (e) {
                     let assetList = self.$app.methods.getFromStorage('assetList');
-                    self.$app.progressbar.show('gray');
+                    self.$app.progressbar.show('custom');
+                    //console.log(assetList)
                     self.$app.methods.getAssetListPosInfo(assetList, true, function () {
                         self.$app.ptr.done();
                         self.$app.progressbar.hide();
@@ -456,6 +461,7 @@
                 });
 
                 LoginEvents.on('signedIn', function (items){
+                    //e.log('here');
                     self.$setState({
                         AssetsCount: self.$app.methods.countItemsBySolution(items),
                         LoginDone: true
@@ -473,25 +479,10 @@
                 let self = this;
 
                 let searchbar = self.$app.searchbar.get('.searchbar-home');
-                /*searchbar.on('search', function (searchbar, query, previousQuery) {
-                    if(query.trim() === ''){
-                        self.$app.methods.filterVirtualAssetList(this.virtualList, this.virtualList.$el.data('filter-type'));
-                    }
-                });*/
                 searchbar.on('clear', function (searchbar, query, previousQuery) {
-                    console.log('clear called');
                     self.$app.methods.filterVirtualAssetList(this.virtualList, this.virtualList.$el.data('filter-type'));
-                    /*if(query.trim() === ''){
-                        self.$app.methods.filterVirtualAssetList(this.virtualList, this.virtualList.$el.data('filter-type'));
-                    }*/
                 });
 
-
-
-            },
-            pageAfterOut: function () {
-               //AssetUpdateEvents.off('updateReceived', self.VirtualAssetListMain.update)
-                // page has left the view
             },
             pageBeforeRemove: function () {
                 AssetUpdateEvents.off('updateReceived', this.UpdateData);

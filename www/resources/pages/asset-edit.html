@@ -15,7 +15,7 @@
                     {{@global.LANGUAGE.ASSET_EDIT_MSG00}}
                 </div>
                 <div class="right">
-                    <label for="submit-form" class="link icon-only">
+                    <label for="submit-form-asset-edit" class="link icon-only">
                         <i class="f7-icons icon-header-apply"></i>
                     </label>
                 </div>
@@ -23,7 +23,7 @@
         </div>
 
         <form class="page-content" name="AssetEditForm">
-            <input type="submit" id="submit-form" class="display-none" />
+            <input type="submit" id="submit-form-asset-edit" class="display-none" />
             <input type="file" hidden name="AssetImageInput" id="AssetImageInput" accept="image/*">
             <div class="block asset-image-big-wrapper text-align-center">
                 <a @click="showUploadPhotoOptions" href="#" class="link">
@@ -150,7 +150,24 @@
                         </div>
                     </li>
                     <li>
-                        <a class="item-link smart-select smart-select-init custom-smart-select" data-open-in="sheet" data-close-on-select="true" data-form-color-theme="green" data-sheet-push="true">
+                        <a class="item-link smart-select smart-select-init" data-open-in="sheet" data-close-on-select="true" data-form-color-theme="green" data-sheet-push="true">
+                            <select name="AssetType" >
+                                {{#AssetTypes}}
+                                <option value="{{this}}" {{#js_if "this == ../AssetType "}} selected {{/js_if}}>{{this}}</option>
+                                {{/AssetTypes}}
+                            </select>
+                            <div class="item-content">
+                                <div class="item-media text-color-lightgray">
+                                    <!-- <i class="f7-icons icon-speed"></i>-->
+                                </div>
+                                <div class="item-inner">
+                                    <div class="item-title">{{@global.LANGUAGE.ASSET_EDIT_MSG23}}</div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="item-link smart-select smart-select-init" data-open-in="sheet" data-close-on-select="true" data-form-color-theme="green" data-sheet-push="true">
                             <select name="Unit" >
                                 <option value="KPH" {{#js_if "this.Unit == 'KPH' "}} selected {{/js_if}}>km/h</option>
                                 <option value="MPH" {{#js_if "this.Unit == 'MPH' "}} selected {{/js_if}}>mile/h</option>
@@ -236,6 +253,7 @@
             let asset = self.$app.methods.getFromStorage('assetList')[imei];
             let assetImg = self.$app.methods.getAssetImg(asset, {'assetEdit':true});
             let solutiontypeIcon = Protocol.Helper.getSolutionTypeIcon(asset.SolutionType);
+            let assetTypes = self.$app.methods.getFromStorage('assetTypes');
 
             if(asset.MaxSpeed){
                 asset.MaxSpeed = Protocol.Helper.getSpeedValue(asset.Unit, asset.MaxSpeed);
@@ -245,6 +263,7 @@
                 ...asset,
                 AssetImg: assetImg,
                 SolutionTypeIcon: solutiontypeIcon,
+                AssetTypes: assetTypes,
             };
 
         },
@@ -257,10 +276,10 @@
                     .then(function (result) {
                         if(result.data.MajorCode === '000') {
                             let device = self.$app.methods.setAssetList({device: data});
-                            if (VirtualAssetListMain){
+                            /*if (VirtualAssetListMain){
                                 let index = VirtualAssetListMain.items.findIndex(item => item.IMEI === device.IMEI);
                                 VirtualAssetListMain.replaceItem(index, device);
-                            }
+                            }*/
                              mainView.router.back({force: true, ignoreCache: true});
                         }else{
                             self.$app.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
@@ -270,6 +289,7 @@
                         self.$app.preloader.hide();
                     })
                     .catch(function (err) {
+                        console.log(err);
                         if (err && err.status === 404){
                             self.$app.dialog.alert(LANGUAGE.PROMPT_MSG002);
                         }else{
@@ -282,7 +302,30 @@
                 self.$app.actions.create({
                     buttons: [
                         {
-                            text: LANGUAGE.PROMPT_MSG025,
+                            //text: LANGUAGE.COM_MSG074,
+                            text: `<div class="action_button_wrapper">
+                                    <div class="action_button_block action_button_media text-color-lightgray">
+                                        <i class="f7-icons icon-takep-hoto size-18"></i>
+                                    </div>
+                                    <div class="action_button_block action_button_text">
+                                        ${ LANGUAGE.COM_MSG074 }
+                                    </div>
+                                </div>`,
+                            onClick: function () {
+                                //app.dialog.alert('Button1 clicked');
+                               // $$('#AssetImageInput').click();
+                            }
+                        },
+                        {
+                            //text: LANGUAGE.PROMPT_MSG025,
+                            text: `<div class="action_button_wrapper">
+                                    <div class="action_button_block action_button_media text-color-lightgray">
+                                        <i class="f7-icons icon-upload-file size-18"></i>
+                                    </div>
+                                    <div class="action_button_block action_button_text">
+                                        ${ LANGUAGE.PROMPT_MSG025 }
+                                    </div>
+                                </div>`,
                             onClick: function () {
                                 //app.dialog.alert('Button1 clicked');
                                 $$('#AssetImageInput').click();
@@ -290,14 +333,30 @@
                         },
 
                         {
-                            text: LANGUAGE.PROMPT_MSG026,
+                            //text: LANGUAGE.PROMPT_MSG026,
+                            text: `<div class="action_button_wrapper">
+                                    <div class="action_button_block action_button_media text-color-lightgray">
+                                        <i class="f7-icons icon-upload-icon size-18"></i>
+                                    </div>
+                                    <div class="action_button_block action_button_text">
+                                        ${ LANGUAGE.PROMPT_MSG026 }
+                                    </div>
+                                </div>`,
                             onClick: function () {
                                 self.loadIconsModal();
                                 //app.dialog.alert('Button2 clicked');
                             }
                         },
                         {
-                            text: LANGUAGE.COM_MSG001,
+                            //text: LANGUAGE.COM_MSG001,
+                            text: `<div class="action_button_wrapper">
+                                    <div class="action_button_block action_button_media text-color-red">
+                                        <i class="f7-icons icon-close size-16"></i>
+                                    </div>
+                                    <div class="action_button_block action_button_text">
+                                        ${ LANGUAGE.COM_MSG001 }
+                                    </div>
+                                </div>`,
                             color: 'red',
                         },
                     ]
@@ -424,7 +483,7 @@
                             '<div class="item-media"><i class="icon color-red size-25 asset-icon-'+value.fontName+'"></i></div>';
                     }else{
                         iconTemplate +=         '<input type="radio" name="radio-icon" data-file-name="'+value.fileName+'" data-font-name="'+value.fontName+'" >'+
-                            '<div class="item-media"><i class="icon size-25 asset-icon-'+value.fontName+'"></i></div>';
+                            '<div class="item-media text-color-lightgray"><i class="icon size-25 asset-icon-'+value.fontName+'"></i></div>';
                     }
                     iconTemplate +=         '<div class="item-inner">'+
                         '<div class="item-title-row">'+
@@ -644,6 +703,7 @@
                         attr3: page.$el.find('input[name="Describe3"]').val(),
                         attr4: page.$el.find('input[name="Describe4"]').val(),
                         MaxSpeed: page.$el.find('input[name="MaxSpeed"]').val(),
+                        AssetType: page.$el.find('[name="AssetType"]').val(),
 
                     };
 

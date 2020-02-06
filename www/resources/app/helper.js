@@ -68,67 +68,18 @@ let Protocol = {
             iconAnchor:   [16, 31], // point of the icon which will correspond to marker's location
             popupAnchor:  [0, -32] // point from which the popup should open relative to the iconAnchor
         }),
-        /*
         L.icon({
-            iconUrl: 'resources/images/marker.svg',                       
-            iconSize:     [60, 60], // size of the icon                        
-            iconAnchor:   [17, 55], // point of the icon which will correspond to marker's location                        
-            popupAnchor:  [0, -60] // point from which the popup should open relative to the iconAnchor
-        }),
-        L.icon({
-            iconUrl: 'resources/images/marker2.svg',                       
-            iconSize:     [60, 60], // size of the icon                        
-            iconAnchor:   [17, 55], // point of the icon which will correspond to marker's location                        
-            popupAnchor:  [0, -60] // point from which the popup should open relative to the iconAnchor
-        }),
-        L.icon({
-            iconUrl: 'resources/images/marker3.svg',                       
-            iconSize:     [40, 40], // size of the icon                        
-            iconAnchor:   [20, 39], // point of the icon which will correspond to marker's location                        
-            popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
-        }),
-        L.icon({
-            iconUrl: 'resources/images/info-pin.svg',                       
-            iconSize:     [32, 32], // size of the icon                        
-            iconAnchor:   [16, 31], // point of the icon which will correspond to marker's location                        
-            popupAnchor:  [0, -32] // point from which the popup should open relative to the iconAnchor      
-        }),
-        L.icon({
-            iconUrl: 'resources/images/pin-alarm.svg',                       
-            iconSize:     [32, 32], // size of the icon                        
-            iconAnchor:   [16, 31], // point of the icon which will correspond to marker's location                        
-            popupAnchor:  [0, -32] // point from which the popup should open relative to the iconAnchor      
-        }),
-        L.icon({
-            iconUrl: 'resources/images/pin-accon.svg',                       
-            iconSize:     [32, 32], // size of the icon                        
-            iconAnchor:   [16, 31], // point of the icon which will correspond to marker's location                        
-            popupAnchor:  [0, -32] // point from which the popup should open relative to the iconAnchor      
-        }),        
-        L.icon({
-            iconUrl: 'resources/images/pin-stopped.svg',                       
-            iconSize:     [32, 32], // size of the icon                        
-            iconAnchor:   [16, 31], // point of the icon which will correspond to marker's location                        
-            popupAnchor:  [0, -32] // point from which the popup should open relative to the iconAnchor      
-        }),
-        L.icon({
-            iconUrl: 'resources/images/pin-out-geofence.svg',                       
-            iconSize:     [32, 32], // size of the icon                        
-            iconAnchor:   [16, 31], // point of the icon which will correspond to marker's location                        
-            popupAnchor:  [0, -32] // point from which the popup should open relative to the iconAnchor      
-        }),
-        L.icon({
-            iconUrl: 'resources/images/pin-in-geofence.svg',                       
-            iconSize:     [32, 32], // size of the icon                        
-            iconAnchor:   [16, 31], // point of the icon which will correspond to marker's location                        
-            popupAnchor:  [0, -32] // point from which the popup should open relative to the iconAnchor      
-        }),
-        L.icon({
-            iconUrl: 'resources/images/search-address-pin.svg',
+            iconUrl: 'resources/images/markers/pin-geo-in.svg',
             iconSize:     [32, 32], // size of the icon
             iconAnchor:   [16, 31], // point of the icon which will correspond to marker's location
             popupAnchor:  [0, -32] // point from which the popup should open relative to the iconAnchor
-        }),*/
+        }),
+        L.icon({
+            iconUrl: 'resources/images/markers/pin-geo-out.svg',
+            iconSize:     [32, 32], // size of the icon
+            iconAnchor:   [16, 31], // point of the icon which will correspond to marker's location
+            popupAnchor:  [0, -32] // point from which the popup should open relative to the iconAnchor
+        }),
         
     ],
     TrackingInterval: [
@@ -974,9 +925,9 @@ let Protocol = {
 
             let mapOverlays = {
                 '<i class="icon-checkbox"></i>SeaMarks': layerSeaMark,
-                '<i class="icon-checkbox"></i>Grid': layerGrid2,                     
+                '<i class="icon-checkbox"></i>Grid': layerGrid2,
             };
-           
+
             L.control.layers(layers, mapOverlays).addTo(map);               
 
             return map;
@@ -1085,7 +1036,7 @@ let Protocol = {
                             ret.voltage.value =  Math.round(asset.posInfo.Voltage*10)/10 + '&nbsp;V';
                         }
                         else{
-                            ret.voltage.value = (asset.posInfo.alt > 50? LANGUAGE.COM_MSG031 : ""+ Math.round(asset.posInfo.alt*10)/10 + '&nbsp;V');
+                            ret.voltage.value = (asset.posInfo.alt > 50 || !asset.posInfo.alt ? LANGUAGE.COM_MSG031 : ""+ Math.round(asset.posInfo.alt*10)/10 + '&nbsp;V');
                         }
                     }
                     if(asset.haveFeature("Mileage")) {
@@ -1301,6 +1252,7 @@ Protocol.Common = JClass({
         this.FuelEconomy = arg.FuelEconomy;
         this.EngineCapacity = arg.EngineCapacity;
         this.OffroadTaxCredit = arg.OffroadTaxCredit;
+        this.AssetType = arg.AssetType;
 
         /*this.Id = arg.Id;
         this.IMEI = arg.IMEI;

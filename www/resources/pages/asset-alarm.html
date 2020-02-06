@@ -7,14 +7,21 @@
             <div class="navbar-bg"></div>
             <div class="navbar-inner">
                 <div class="left">
+                    {{#if Tabs}}
+                    <a href="/panel-left/" class="link icon-only " >
+                        <i class="if-not-ios f7-icons icon-header-menu"></i>
+                        <i class="if-ios icon material-icons">menu</i>
+                    </a>
+                    {{else}}
                     <a href="#" class="link icon-only back">
                         <i class="if-not-ios f7-icons icon-header-arrow-back"></i>
                         <i class="if-ios icon icon-back"></i>
                     </a>
+                    {{/if}}
                 </div>
                 <div class="title sliding">{{Name}}</div>
                 <div class="right">
-                    <label for="submit-form" class="link icon-only">
+                    <label for="submit-form-alarm" class="link icon-only">
                         <i class="f7-icons icon-header-apply"></i>
                     </label>
                 </div>
@@ -24,17 +31,17 @@
         {{#if Tabs}}
         <div class="toolbar tabbar toolbar-top">
             <div class="toolbar-inner">
-                <a href="/asset-status-live/?imei={{IMEI}}" class="tab-link ">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG00}}</a>
+                <a href="/asset-status-live/?imei={{IMEI}}&tabs=true" class="tab-link ">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG00}}</a>
                 <a href="#" class="tab-link tab-link-active">{{@global.LANGUAGE.ASSET_ALARM_MSG00}}</a>
                 <a href="/asset-playback/?imei={{IMEI}}" class="tab-link">{{@global.LANGUAGE.ASSET_PLAYBACK_MSG00}}</a>
-                <a href="/asset-track/?imei={{IMEI}}" class="tab-link">{{@global.LANGUAGE.ASSET_TRACK_MSG00}}</a>
+                <a href="/asset-track/?imei={{IMEI}}&tabs=true" class="tab-link">{{@global.LANGUAGE.ASSET_TRACK_MSG00}}</a>
             </div>
         </div>
         {{/if}}
 
         <!-- Scrollable page content-->
         <form name="AssetAlarmForm" class="page-content">
-            <input type="submit" id="submit-form" class="display-none" />
+            <input type="submit" id="submit-form-alarm" class="display-none" />
 
             {{#if ShowAdditionalBlocks}}
             <div key="IgnoreBetween" class="list no-hairline-bottom no-hairline-top no-margin-top">

@@ -22,6 +22,7 @@ const API_DOMIAN9 = "https://upload.quiktrak.co/";
 const API_URL = {};
 
 API_URL.LOGIN = API_DOMIAN2 + "user/Auth2";
+API_URL.LOGOUT = API_DOMIAN3 + "Logoff";
 API_URL.GET_ALL_POSITIONS = API_DOMIAN1 + "Device/GetPosInfos2";
 API_URL.PHOTO_UPLOAD = API_DOMIAN9 + "image/Upload";
 API_URL.EDIT_DEVICE = API_DOMIAN1 + "Device/Edit";
@@ -51,10 +52,16 @@ API_URL.CONTACT_USER_ADD = API_DOMIAN1 + "User/Add";
 API_URL.CONTACT_USER_EDIT = API_DOMIAN1 + "User/Edit";
 API_URL.CONTACT_USER_DELETE = API_DOMIAN1 + "User/Delete";
 
+API_URL.GET_PLAYBACK_ARR = API_DOMIAN1 + "Device/GetHisPosArray2";
+API_URL.GET_PLAYBACK_ARR_OPTIMISED = "https://osrm.sinopacific.com.ua/playback/v2";
+API_URL.GET_ADDRESSES_FROM_ARRAY = "https://ss.sinopacific.com.ua/geocode/reverse/v1/";
+API_URL.GET_PLAYBACK_REPORT_ON_MAIL = API_DOMIAN6 + "api/v2/reports/Playback";
 
+API_URL.GET_REPORT_TRIP = API_DOMIAN1 + "Report/GetTripReport";
 
 //let VirtualAssetListMain = false;
 let UpdateAssetsPosInfoTimer = false;
+let UpdateNotificationsTimer = false;
 let POSINFOASSETLIST = {};
 let StreetViewService = false;
 
@@ -153,7 +160,7 @@ const app = new Framework7({
     },
     on: {
         routerAjaxStart: function () {
-            this.progressbar.show('gray');
+            this.progressbar.show('custom');
         },
         routerAjaxComplete: function () {
             this.progressbar.hide();
@@ -218,6 +225,15 @@ const app = new Framework7({
             }
             return null;
         },
+        reverseArry: function(arry){
+            let newArry = [];
+            let i = null;
+            for (i = arry.length - 1; i >= 0; i -= 1)
+            {
+                newArry.push(arry[i]);
+            }
+            return newArry;
+        },
         isObjEmpty: function(obj) {
             // null and undefined are "empty"
             if (obj == null) return true;
@@ -241,20 +257,82 @@ const app = new Framework7({
 
             return true;
         },
+        convertTimZoneValToZZformat: function(val){
+            let ret = '';
+            val >= 0 ? ret='+' : ret='-';
+            if (val < 10 && val >= 0 ||
+                val < 0 && val > -10){
+                ret+='0';
+            }
+
+            val = Math.abs(val);
+            if(Number.isInteger(val)){
+                ret += val;
+            }else{
+                ret += parseInt(val);
+                ret += parseInt(val.toString().split('.')[1]) / 100 * 60;
+            }
+            ret = ret.padEnd(5,'0');
+
+            return ret;
+        },
+        findTimeZoneNameByOffset: function(offset){
+            let ret = '';
+            let index = moment.tz.names().findIndex(timezoneName => moment.tz(timezoneName).format('ZZ') === offset);
+            if (index !== -1){
+                ret = moment.tz.names()[index];
+            }
+            return ret;
+        },
         hideKeyboard: function() {
             document.activeElement.blur();
             $$("input").blur();
         },
         clearUserInfo: function(){
             let self = this;
+
+            let deviceToken = localStorage.PUSH_DEVICE_TOKEN;
+            let mobileToken = localStorage.PUSH_MOBILE_TOKEN;
+            let notifications = self.methods.getFromStorage('notifications');
+            let mapSettings = self.methods.getFromStorage('mapSettings');
+
+            localStorage.clear();
             POSINFOASSETLIST = {};
-            /*if(VirtualAssetListMain){
-                VirtualAssetListMain.deleteAllItems();
-            }*/
+
+            if (notifications) {
+                localStorage.setItem("COM.QUIKTRAK.NEW.NOTIFICATIONS", JSON.stringify(notifications));
+            }
+            if (mapSettings) {
+                self.methods.setInStorage({ name: 'mapSettings', data: mapSettings });
+            }
+            if (deviceToken) {
+                localStorage.PUSH_DEVICE_TOKEN = deviceToken;
+            }
+            if (mobileToken) {
+                localStorage.PUSH_MOBILE_TOKEN = mobileToken;
+            }
+
+            if (UpdateAssetsPosInfoTimer) {
+                clearInterval(UpdateAssetsPosInfoTimer);
+            }
+            if (UpdateNotificationsTimer) {
+                clearInterval(UpdateNotificationsTimer);
+            }
+
+            let data = {
+                MinorToken: self.data.MinorToken,
+                deviceToken: deviceToken,
+                mobileToken: mobileToken,
+            };
+            self.request.promise.get(API_URL.LOGOUT, data, 'json')
+                .then(function (result) {
+                    console.log(result);
+                });
+
             self.utils.nextTick(()=>{
                 LoginEvents.emit('signedOut');
+                mainView.router.back('/',{force: true});
             }, 1000);
-
 
         },
         logout: function(){
@@ -306,6 +384,8 @@ const app = new Framework7({
                         self.data.MajorToken = result.data.Data.MajorToken;
 
                         self.methods.setInStorage({name:'contactList', data:result.data.Data.ContactList });
+                        self.methods.setInStorage({name:'solutions', data:result.data.Data.Solutions });
+                        self.methods.setInStorage({name:'assetTypes', data:result.data.Data.AssetTypes });
                         let assetListObj = self.methods.setAssetList({list: result.data.Data.AssetArray});
 
                         self.methods.setAccountSolutions(assetListObj);
@@ -355,6 +435,7 @@ const app = new Framework7({
                 codes = codes.slice(0, -1);
             }
 
+
             let url = self.utils.serializeObject({MinorToken: self.data.MinorToken, MajorToken: self.data.MajorToken});
 
             url = API_URL.GET_ALL_POSITIONS + '?' + url;
@@ -383,8 +464,9 @@ const app = new Framework7({
                                         POSINFOASSETLIST[imei].initPosInfo(posData);
                                     }
                                 }
-                                let sortedList = self.methods.sortAssetList(assetList, 'state', 'asc');
-                                LoginEvents.emit('signedIn', sortedList);
+
+                                assetList = self.methods.sortAssetList(assetList, 'state', 'asc');
+
                                 //VirtualAssetListMain.replaceAllItems(sortedList);
                             }else{
                                 for (let i = result.data.Data.length - 1; i >= 0; i--) {
@@ -398,12 +480,13 @@ const app = new Framework7({
                                 AssetUpdateEvents.emit('updateReceived');
                             }
                         }
-                        if (!update) {
-                            self.dialog.close();
-                        }
-                        if (callback instanceof Function) {
-                            callback();
-                        }
+                    }
+                    if (!update) {
+                        self.dialog.close();
+                        LoginEvents.emit('signedIn', assetList);
+                    }
+                    if (callback instanceof Function) {
+                        callback();
                     }
                 })
                 .catch(function (err) {
@@ -416,7 +499,7 @@ const app = new Framework7({
                 });
         },
         getGeofenceList: function(callback){
-            var self = this;
+            let self = this;
             self.request.promise.post(API_URL.GET_GEOFENCE_LIST, {MajorToken: self.data.MajorToken, MinorToken: self.data.MinorToken}, 'json')
                 .then(function (result) {
                     if(result.data.MajorCode === '000' ) {
@@ -433,6 +516,9 @@ const app = new Framework7({
                 })
                 .catch(function (err) {
                     console.log(err);
+                    if (callback instanceof Function){
+                        callback({});
+                    }
                     if (err && err.status === 404){
                         self.dialog.alert(LANGUAGE.PROMPT_MSG002);
                     }else{
@@ -483,6 +569,42 @@ const app = new Framework7({
                             ret = JSON.parse(str);
                         }
                         break;
+
+                    case 'notifications':
+                        str = localStorage.getItem("COM.QUIKTRAK.NEW.NOTIFICATIONS");
+                        if(str) {
+                            ret = JSON.parse(str);
+                        }else{
+                            ret = {};
+                        }
+                        break;
+                    case 'solutions':
+                        str = localStorage.getItem("COM.QUIKTRAK.NEW.SOLUTIONS");
+                        if(str) {
+                            ret = JSON.parse(str);
+                        }
+                        break;
+
+                    case 'assetTypes':
+                        str = localStorage.getItem("COM.QUIKTRAK.NEW.ASSETTYPES");
+                        if(str) {
+                            ret = JSON.parse(str);
+                        }
+                        break;
+                    case 'historyArray':
+                        str = localStorage.getItem("COM.QUIKTRAK.NEW.HISTORYARRAY");
+                        if(str) {
+                            ret = JSON.parse(str);
+                        }
+                        break;
+
+                    case 'historyEvents':
+                        str = localStorage.getItem("COM.QUIKTRAK.NEW.EVENTSARRAY");
+                        if(str) {
+                            ret = JSON.parse(str);
+                        }
+                        break;
+
                    /* case 'groupList':
                         str = localStorage.getItem("COM.QUIKTRAK.NEW.GROUPLIST");
                         if(str) {
@@ -511,28 +633,9 @@ const app = new Framework7({
                         }
                         break;
 
-                    case 'notifications':
-                        str = localStorage.getItem("COM.QUIKTRAK.NEW.NOTIFICATIONS");
-                        if(str) {
-                            ret = JSON.parse(str);
-                        }else{
-                            ret = {};
-                        }
-                        break;
 
-                    case 'historyArray':
-                        str = localStorage.getItem("COM.QUIKTRAK.NEW.HISTORYARRAY");
-                        if(str) {
-                            ret = JSON.parse(str);
-                        }
-                        break;
 
-                    case 'historyEvents':
-                        str = localStorage.getItem("COM.QUIKTRAK.NEW.EVENTSARRAY");
-                        if(str) {
-                            ret = JSON.parse(str);
-                        }
-                        break;
+
 
                     case 'reportData':
                         str = localStorage.getItem("COM.QUIKTRAK.NEW.REPORTDATA");
@@ -550,12 +653,7 @@ const app = new Framework7({
                         }
                         break;
 
-                    case 'solutions':
-                        str = localStorage.getItem("COM.QUIKTRAK.NEW.SOLUTIONS");
-                        if(str) {
-                            ret = JSON.parse(str);
-                        }
-                        break;
+
 
                     case 'alertList':
                         str = localStorage.getItem("COM.QUIKTRAK.NEW.ALERTLIST");
@@ -602,6 +700,25 @@ const app = new Framework7({
                     case 'contactList':
                         localStorage.setItem("COM.QUIKTRAK.NEW.CONTACTLIST", JSON.stringify(params.data));
                         break;
+
+                    case 'assetTypes':
+                        localStorage.setItem("COM.QUIKTRAK.NEW.ASSETTYPES", JSON.stringify(params.data));
+                        break;
+                    case 'solutions':
+                        localStorage.setItem("COM.QUIKTRAK.NEW.SOLUTIONS", JSON.stringify(params.data));
+                        break;
+                    case 'historyArray':
+                        let HistoryArray = self.methods.parsePlaybackHystoryArr(params.data);
+
+                        localStorage.setItem("COM.QUIKTRAK.NEW.HISTORYARRAY", JSON.stringify(HistoryArray));
+                        break;
+
+                    case 'historyEvents':
+                        let EventsArray = self.methods.parsePlaybackEventsArr(params.data);
+
+                        localStorage.setItem("COM.QUIKTRAK.NEW.EVENTSARRAY", JSON.stringify(EventsArray));
+                        break;
+
                     /*case 'groupList':
                         localStorage.setItem("COM.QUIKTRAK.NEW.GROUPLIST", JSON.stringify(params.data));
                         break;
@@ -619,17 +736,7 @@ const app = new Framework7({
                         break;
 
 
-                    case 'historyArray':
-                        let HistoryArray = self.methods.parsePlaybackHystoryArr(params.data);
 
-                        localStorage.setItem("COM.QUIKTRAK.NEW.HISTORYARRAY", JSON.stringify(HistoryArray));
-                        break;
-
-                    case 'historyEvents':
-                        let EventsArray = self.methods.parsePlaybackEventsArr(params.data);
-
-                        localStorage.setItem("COM.QUIKTRAK.NEW.EVENTSARRAY", JSON.stringify(EventsArray));
-                        break;
 
                     case 'reportData':
                         localStorage.setItem("COM.QUIKTRAK.NEW.REPORTDATA", JSON.stringify(params.data));
@@ -712,6 +819,7 @@ const app = new Framework7({
                         FuelEconomy: params.list[i][index++],
                         EngineCapacity: params.list[i][index++],
                         OffroadTaxCredit: params.list[i][index++],
+                        AssetType: params.list[i][index++],
 
                     };
                     /*if (POSINFOASSETLIST && POSINFOASSETLIST[params[i][1]]) {
@@ -757,6 +865,10 @@ const app = new Framework7({
                     if (params.device.OffroadTaxCredit) {
                         POSINFOASSETLIST[params.device.IMEI].OffroadTaxCredit = list[params.device.IMEI].OffroadTaxCredit = params.device.OffroadTaxCredit;
                     }
+                    if (params.device.AssetType) {
+                        POSINFOASSETLIST[params.device.IMEI].AssetType = list[params.device.IMEI].AssetType = params.device.AssetType;
+                    }
+
                     ret = list[params.device.IMEI];
                 }else{
                     list[params.device.IMEI].Name = params.device.name;
@@ -792,6 +904,9 @@ const app = new Framework7({
                     if (params.device.OffroadTaxCredit) {
                         list[params.device.IMEI].OffroadTaxCredit = params.device.OffroadTaxCredit;
                     }
+                    if (params.device.AssetType) {
+                        list[params.device.IMEI].AssetType = params.device.AssetType;
+                    }
                 }
 
                 localStorage.setItem("COM.QUIKTRAK.NEW.ASSETLIST", JSON.stringify(list));
@@ -802,6 +917,63 @@ const app = new Framework7({
 
             //console.log(ary);
             return ret;
+        },
+        parsePlaybackHystoryArr: function(arry){
+            let self = this;
+            let newArry = [];
+            if (arry && arry.length) {
+                for (let i = arry.length - 1; i >= 0; i--) {
+                    if ( JSON.stringify(arry[i]) !== JSON.stringify(arry[i-1]) ) {
+                        let index = 0;
+                        let point = {
+                            positionTime: arry[i][index++],
+                            lat: arry[i][index++],
+                            lng: arry[i][index++],
+                            direct: arry[i][index++],
+                            speed: arry[i][index++],
+                            timeSpan: arry[i][index++],
+                            mileage: arry[i][index++],
+                            alerts: arry[i][index++],
+                            status: arry[i][index++],
+                        };
+                        newArry.push(point);
+                    }
+                }
+                newArry = self.methods.reverseArry(newArry);
+            }
+            return newArry;
+        },
+        parsePlaybackEventsArr: function(arry){
+            let self = this;
+            let newArry = [];
+            if (arry && arry.length) {
+                for (let i = arry.length - 1; i >= 0; i--) {
+                    if ( JSON.stringify(arry[i]) !== JSON.stringify(arry[i-1]) ) {
+                        let index = 0;
+                        let point = {
+                            assetID: arry[i][index++],
+                            eventClass: arry[i][index++],
+                            eventType: arry[i][index++],
+                            state: arry[i][index++],
+                            otherCode: arry[i][index++],
+                            otherCode2: arry[i][index++],
+                            contactCode: arry[i][index++],
+                            beginTime: arry[i][index++],
+                            endTime: arry[i][index++],
+                            positionType: arry[i][index++],
+                            lat: arry[i][index++],
+                            lng: arry[i][index++],
+                            alt: arry[i][index++],
+                            alerts: arry[i][index++],
+                            status: arry[i][index++],
+                            content: arry[i][index++],
+                        };
+                        newArry.push(point);
+                    }
+                }
+                newArry = self.methods.reverseArry(newArry);
+            }
+            return newArry;
         },
         setAccountSolutions: function(assetList){
             let self = this;
@@ -960,7 +1132,7 @@ const app = new Framework7({
                 if (params.Icon && pattern.test(params.Icon)) {
                     assetImg = `<img class="user-img" src="${API_DOMIAN9}Attachment/images/${params.Icon}?${ self.data.NewImageTimestamp }" alt="">`;
                 }else if(params.Icon && params.Icon.substring(0,3) == pattern2){
-                    assetImg = '<div class="user-img bg-custom display-flex justify-content-center align-items-center"><div class="text-align-center vertical-center size-28 "><i class="icon text-color-white asset-icon-'+params.Icon.replace(regex, '-').replace(regex2, '')+'"></i></div></div>';
+                    assetImg = '<div class="user-img bg-color-custom display-flex justify-content-center align-items-center"><div class="text-align-center vertical-center size-28 "><i class="icon text-color-white asset-icon-'+params.Icon.replace(regex, '-').replace(regex2, '')+'"></i></div></div>';
 
                 }else if (params.Name) {
                     params.Name = $.trim(params.Name);
@@ -980,19 +1152,19 @@ const app = new Framework7({
                                 }
                             }
                         }
-                        assetImg = '<div class="user-img bg-custom text-color-white display-flex justify-content-center align-items-center"><span class="size-24">'+one+two+'</span></div>';
+                        assetImg = '<div class="user-img bg-color-custom text-color-white display-flex justify-content-center align-items-center"><span class="size-24">'+one+two+'</span></div>';
                     }else{
-                        assetImg = '<div class="user-img bg-custom text-color-white display-flex justify-content-center align-items-center"><span class="size-24">'+params.Name[0]+params.Name[1]+'</span></div>';
+                        assetImg = '<div class="user-img bg-color-custom text-color-white display-flex justify-content-center align-items-center"><span class="size-24">'+params.Name[0]+params.Name[1]+'</span></div>';
                     }
 
                 }else if(params.IMEI){
-                    assetImg = '<div class="user-img bg-custom text-color-white display-flex justify-content-center align-items-center"><span class="size-24">'+params.IMEI[0]+params.IMEI[1]+'</span></div>';
+                    assetImg = '<div class="user-img bg-color-custom text-color-white display-flex justify-content-center align-items-center"><span class="size-24">'+params.IMEI[0]+params.IMEI[1]+'</span></div>';
                 }
             }else if (params && imgFor.assetEdit) {
                 if (params.Icon && pattern.test(params.Icon)) {
                     assetImg = `<img class="user-img" data-name="${params.Icon}" src="${API_DOMIAN9}Attachment/images/${params.Icon+'?'+ self.data.NewImageTimestamp}" alt="">`;
                 }else if(params.Icon && params.Icon.substring(0,3) == pattern2){
-                    assetImg = '<div class="user-img bg-custom display-flex justify-content-center align-items-center"><div class="text-align-center vertical-center size-75 "><i class="icon text-color-white asset-icon-'+params.Icon.replace(regex, '-').replace(regex2, '')+'"></i></div></div>';
+                    assetImg = '<div class="user-img bg-color-custom display-flex justify-content-center align-items-center"><div class="text-align-center vertical-center size-75 "><i class="icon text-color-white asset-icon-'+params.Icon.replace(regex, '-').replace(regex2, '')+'"></i></div></div>';
                 }else{
                     assetImg = `<img class="user-img" src="resources/images/no-photo.svg" alt="">`;
                 }
@@ -1152,6 +1324,175 @@ const app = new Framework7({
             }
             return markerData;
         },
+        getMarkerDataTablePB: function (asset, point){
+            let markerData = '';
+            if (asset) {
+                let assetFeaturesStatus = Protocol.Helper.getAssetStateInfo(asset);
+                if (assetFeaturesStatus && assetFeaturesStatus.stats) {
+                    let speed = 0;
+                    let mileage = '-';
+                    let direct = point.direct;
+                    let deirectionCardinal = Protocol.Helper.getDirectionCardinal(direct);
+                    if (typeof asset.Unit !== "undefined" && typeof asset.posInfo.speed !== "undefined") {
+                        speed = Protocol.Helper.getSpeedValue(asset.Unit, point.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
+                    }
+                    if (typeof asset.Unit !== "undefined" && typeof asset.posInfo.mileage !== "undefined" && asset.posInfo.mileage != '-') {
+                        mileage = (Protocol.Helper.getMileageValue(asset.Unit, point.mileage) + parseInt(asset.InitMileage) + parseInt(asset._FIELD_FLOAT7)) + '&nbsp;' + Protocol.Helper.getMileageUnit(asset.Unit);
+                    }
+                    let time = moment(point.positionTime,'X').format(window.COM_TIMEFORMAT);
+                    let customAddress = !point.customAddress ? LANGUAGE.COM_MSG004 : point.customAddress;
+
+                    markerData += '<table cellpadding="0" cellspacing="0" border="0" class="marker-data-table">';
+                    markerData +=   '<tr>';
+                    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG01+'</td>';
+                    markerData +=       '<td class="marker-data-value">'+asset.Name+'</td>';
+                    markerData +=   '</tr>';
+                    markerData +=   '<tr>';
+                    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG03+'</td>';
+                    markerData +=       '<td class="marker-data-value">'+time+'</td>';
+                    markerData +=   '</tr>';
+                    markerData +=   '<tr>';
+                    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG04+'</td>';
+                    markerData +=       '<td class="marker-data-value">'+mileage+'</td>';
+                    markerData +=   '</tr>';
+                    markerData +=   '<tr>';
+                    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG05+'</td>';
+                    markerData +=       '<td class="marker-data-value">'+speed+'</td>';
+                    markerData +=   '</tr>';
+                    markerData +=   '<tr>';
+                    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG10+'</td>';
+                    markerData +=       '<td class="marker-data-value">'+deirectionCardinal+' ('+direct+'&deg;)</td>';
+                    markerData +=   '</tr>';
+
+                    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG12+'</td>';
+                    markerData +=       '<td class="marker-data-value marker-address">'+customAddress+'</td>';
+                    markerData +=   '</tr>';
+
+                    markerData += '</table>';
+                }
+            }
+            return markerData;
+        },
+        getPlaybackMarkerDataTableInfoPin: function(point, additionaDataObj = {}){
+            let self = this;
+            let markerData = '';
+
+            /*let beginTime = moment(point.beginTime).format(window.COM_TIMEFORMAT);
+            beginTime = moment.utc(beginTime).toDate();
+            beginTime = moment(beginTime).local().format(window.COM_TIMEFORMAT);
+            let endTime = moment(point.endTime).format(window.COM_TIMEFORMAT);
+            endTime = moment.utc(endTime).toDate();
+            endTime = moment(endTime).local().format(window.COM_TIMEFORMAT);*/
+            let beginTime = moment(point.beginTime).add(self.data.UTCOFFSET,'minutes').format(window.COM_TIMEFORMAT);
+            let endTime = moment(point.endTime).add(self.data.UTCOFFSET,'minutes').format(window.COM_TIMEFORMAT);
+
+
+            let dateDifference = Protocol.Helper.getDifferenceBTtwoDates(point.beginTime,point.endTime);
+            let duration = moment.duration(dateDifference, "milliseconds").format('d[d] h[h] m[m] s[s]');
+            let fenceName = '';
+
+            markerData += '<table cellpadding="0" cellspacing="0" border="0" class="marker-data-table">';
+            switch (point.eventClass){
+                case 1:
+                    switch(point.eventType){
+                        case 8:
+                            markerData +=   '<tr>';
+                            markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_PLAYBACK_MSG18+'</td>';
+                            markerData +=       '<td class="marker-data-value">'+LANGUAGE.ASSET_ALARM_MSG12+'</td>';
+                            markerData +=   '</tr>';
+                            if (additionaDataObj.GeofenceList && additionaDataObj.GeofenceList.length) {
+                                fenceName = self.methods.getGeofenceName(point.otherCode, additionaDataObj.GeofenceList);
+                                if (fenceName) {
+                                    markerData +=   '<tr>';
+                                    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.GEOFENCES_MSG05+'</td>';
+                                    markerData +=       '<td class="marker-data-value">'+fenceName+'</td>';
+                                    markerData +=   '</tr>';
+                                }
+                            }
+                            break;
+
+                        case 16:
+                            markerData +=   '<tr>';
+                            markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_PLAYBACK_MSG18+'</td>';
+                            markerData +=       '<td class="marker-data-value">'+LANGUAGE.ASSET_ALARM_MSG13+'</td>';
+                            markerData +=   '</tr>';
+                            if (additionaDataObj.GeofenceList && additionaDataObj.GeofenceList.length) {
+                                fenceName = self.methods.getGeofenceName(point.otherCode, additionaDataObj.GeofenceList);
+                                if (fenceName) {
+                                    markerData +=   '<tr>';
+                                    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.GEOFENCES_MSG05+'</td>';
+                                    markerData +=       '<td class="marker-data-value">'+fenceName+'</td>';
+                                    markerData +=   '</tr>';
+                                }
+                            }
+                            break;
+
+                        default:
+                            markerData +=   '<tr>';
+                            markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_PLAYBACK_MSG18+'</td>';
+                            $.each(Protocol.PositionAlerts,function(key,val){
+                                if (val === point.eventType) {
+                                    markerData +=       '<td class="marker-data-value">'+key+'</td>';
+                                }
+                            });
+                            markerData +=   '</tr>';
+                    }
+                    break;
+
+                case 2:     // ACC
+                    markerData +=   '<tr>';
+                    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG06+'</td>';    //Ignition
+                    if (point.eventType === 0) {
+                        markerData +=       '<td class="marker-data-value">'+LANGUAGE.COM_MSG050+'</td>'; //off
+                    }else{
+                        markerData +=       '<td class="marker-data-value">'+LANGUAGE.COM_MSG049+'</td>'; //on
+                    }
+                    markerData +=   '</tr>';
+                    break;
+
+                case 4:     // ACTIVE
+                    markerData +=   '<tr>';
+                    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.COM_MSG079+'</td>';    //Activity
+                    if (point.eventType === 0) {
+                        markerData +=       '<td class="marker-data-value">'+LANGUAGE.ASSET_TRACK_MSG15+'</td>';   //Stopped
+                    }else{
+                        markerData +=       '<td class="marker-data-value">'+LANGUAGE.COM_MSG032+'</td>';  //Move
+                    }
+                    markerData +=   '</tr>';
+                    break;
+            }
+            if (beginTime === endTime) {
+                markerData +=   '<tr>';
+                markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_PLAYBACK_MSG19+'</td>';
+                markerData +=       '<td class="marker-data-value">'+beginTime+'</td>';
+                markerData +=   '</tr>';
+            }else{
+                markerData +=   '<tr>';
+                markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_PLAYBACK_MSG20+'</td>';
+                markerData +=       '<td class="marker-data-value">'+beginTime+'</td>';
+                markerData +=   '</tr>';
+                markerData +=   '<tr>';
+                markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_PLAYBACK_MSG21+'</td>';
+                markerData +=       '<td class="marker-data-value">'+endTime+'</td>';
+                markerData +=   '</tr>';
+            }
+
+            if (beginTime !== endTime) {
+                markerData +=   '<tr>';
+                markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_PLAYBACK_MSG22+'</td>';
+                markerData +=       '<td class="marker-data-value">'+duration+'</td>';
+                markerData +=   '</tr>';
+            }
+
+            markerData +=   '<tr>';
+            markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG12+'</td>';
+            markerData +=       '<td class="marker-data-value marker-address" data-popupIdAddress="'+point.index+'">'+LANGUAGE.COM_MSG004+'</td>';
+            markerData +=   '</tr>';
+
+            markerData += '</table>';
+
+            return markerData;
+        },
         getGeofenceDataTable: function(geofence, options){
             let self = this;
             let markerData = '';
@@ -1166,14 +1507,14 @@ const app = new Framework7({
                 if (options && options.geogroup) {
                     if (geofence.Assets && geofence.Assets.length) {
                         assignedAssetsCount = geofence.Assets.length;
-                        for (var i = geofence.Assets.length - 1; i >= 0; i--) {
+                        for (let i = geofence.Assets.length - 1; i >= 0; i--) {
                             assignedAssets += geofence.Assets[i].Name + ', ';
                         }
                     }
                 }else{
                     if (geofence.SelectedAssetList && geofence.SelectedAssetList.length) {
                         assignedAssetsCount = geofence.SelectedAssetList.length;
-                        for (var i = geofence.SelectedAssetList.length - 1; i >= 0; i--) {
+                        for (let i = geofence.SelectedAssetList.length - 1; i >= 0; i--) {
                             if (assetList[geofence.SelectedAssetList[i].IMEI]){
                                 assignedAssets += assetList[geofence.SelectedAssetList[i].IMEI].Name + ', ';
                             }else{
@@ -1190,7 +1531,7 @@ const app = new Framework7({
 
                 if (geofence.Week && geofence.Week.length) {
                     let daysOfWeek = Protocol.Helper.getDaysOffWeekArray();
-                    for (var i = 0; i < geofence.Week.length; i++) {
+                    for (let i = 0; i < geofence.Week.length; i++) {
                         IgnoreDays += geofence.Week.length > 2 ? daysOfWeek[geofence.Week[i].Week].displayAs + ', ' : daysOfWeek[geofence.Week[i].Week].name + ', ';
                     }
                     if (IgnoreDays) {
@@ -1365,9 +1706,9 @@ const app = new Framework7({
             return itemIndexToShow;
         },
         sortContactList: function(list){
-            var self = this;
+            let self = this;
             if (list && list.length) {
-                for (var i = list.length - 1; i >= 0; i--) {
+                for (let i = list.length - 1; i >= 0; i--) {
                     list[i].FullName = list[i].FirstName + ' ' + list[i].SubName;
                     list[i].FullName.trim();
                 }
@@ -1378,6 +1719,139 @@ const app = new Framework7({
                 });
             }
             return list;
+        },
+        formatPlaybackData: function(historyData, asset){
+            let formattedData = {};
+            if (historyData) {
+                let deirectionCardinal = Protocol.Helper.getDirectionCardinal(historyData.direct);
+
+                formattedData.Lat = historyData.lat;
+                formattedData.Lng = historyData.lng;
+                formattedData.Coords = parseFloat(historyData.lat).toFixed(5) + ', ' + parseFloat(historyData.lng).toFixed(5);
+                formattedData.DateTime = moment(historyData.positionTime,'X').format(window.COM_TIMEFORMAT);
+                formattedData.Speed = Protocol.Helper.getSpeedValue(asset.Unit, historyData.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
+                formattedData.Direction = deirectionCardinal+'('+historyData.direct+'&deg)';
+                formattedData.Mileage = (Protocol.Helper.getMileageValue(asset.Unit, historyData.mileage) + parseInt(asset.InitMileage) + parseInt(asset._FIELD_FLOAT7)) + '&nbsp;' + Protocol.Helper.getMileageUnit(asset.Unit);
+
+            }else{
+                console.log('data object is empty');
+            }
+            return formattedData;
+        },
+        formatPlaybackEventData: function(point={}, geofenceList){
+            let self = this;
+            /*point.BeginTimeLocal = moment(point.beginTime).format(window.COM_TIMEFORMAT);
+            point.BeginTimeLocal = moment.utc(point.BeginTimeLocal).toDate();
+            point.BeginTimeLocal = moment(point.BeginTimeLocal).local().format(window.COM_TIMEFORMAT);*/
+            point.BeginTimeLocal = moment(point.beginTime).add(self.data.UTCOFFSET,'minutes').format(window.COM_TIMEFORMAT);
+
+            switch (point.eventClass){
+                case 1:
+                    //point.IconBg = 'bg-color-red';
+                    point.Icon = 'icon-header-alarm';
+                    point.IconColor = 'text-color-orange';
+
+                    switch (point.eventType){
+                        case 8:
+                            point.EventName = LANGUAGE.ASSET_ALARM_MSG12;
+                            //point.IconBg = 'bg-color-green';
+                            point.Icon = 'icon-menu-geofence';
+                            point.IconColor = 'text-color-green';
+                            point.OtherName = self.methods.getGeofenceName(point.otherCode, geofenceList);
+                            break;
+                        case 16:
+                            point.EventName = LANGUAGE.ASSET_ALARM_MSG13;
+                            //point.IconBg = 'bg-color-red';
+                            point.Icon = 'icon-menu-geofence';
+                            point.IconColor = 'text-color-red';
+                            point.OtherName = self.methods.getGeofenceName(point.otherCode, geofenceList);
+                            break;
+                        default:
+                            $.each(Protocol.PositionAlerts,function(key,val){
+                                if (val === point.eventType) {
+                                    point.EventName = key;
+                                }
+                            });
+                    }
+                    break;
+
+                case 2:     // ACC
+                    point.Icon = 'icon-live-acc';
+                    if (point.eventType === 0) {
+                        //point.IconBg = 'bg-color-gray';
+                        point.EventName = LANGUAGE.ASSET_ALARM_MSG10;
+                        point.IconColor = 'text-color-gray';
+                    }else{
+                        //point.IconBg = 'bg-color-green';
+                        point.EventName = LANGUAGE.ASSET_ALARM_MSG11;
+                        point.IconColor = 'text-color-green';
+                    }
+                    break;
+
+                case 4:     // ACTIVE
+                    point.Icon = 'icon-live-model';
+                    point.Duration = Protocol.Helper.getDifferenceBTtwoDates(point.beginTime,point.endTime);
+                    point.Duration = moment.duration(point.Duration, "milliseconds").format('d[d] h[h] m[m] s[s]');
+                    if (point.eventType === 0) {
+                        //point.IconBg = 'bg-color-gray';
+                        point.EventName = LANGUAGE.ASSET_TRACK_MSG15;
+                        point.IconColor = 'text-color-gray';
+                    }else{
+                        //point.IconBg = 'bg-color-green';
+                        point.EventName = LANGUAGE.COM_MSG032;
+                        point.IconColor = 'text-color-green';
+                    }
+                    break;
+            }
+
+            return point;
+        },
+        sendReportPlaybackOnEmail: function(data, callbackFunc){
+            let self = this;
+
+            self.preloader.show();
+            self.request.postJSON(API_URL.GET_PLAYBACK_REPORT_ON_MAIL, data, function (result={}, xhr, status) {
+                    self.preloader.hide();
+                    console.log(result);
+
+                    callbackFunc();
+                },
+                function (xhr, status) {
+                    self.preloader.hide();
+
+                    if (!xhr){
+                        self.dialog.alert('Error occured at Send Report on Email ');
+                        return;
+                    }
+                    switch (xhr.status) {
+                        case 202:
+                            //self.methods.customNotification({text: LANGUAGE.PROMPT_MSG0109});
+                            callbackFunc();
+                            //self.DynamicSendOnEmailPopup.close();
+                            break;
+                        case 204:
+                            self.methods.customDialog({title: LANGUAGE.ASSET_PLAYBACK_MSG00, text: LANGUAGE.COM_MSG076});
+                            break;
+
+                        default:
+                            if (xhr.response){
+                                let response = self.methods.isJsonString(xhr.response);
+                                if (response && response.code === 500){
+                                    let messages = self.methods.isJsonString(response.message);
+                                    if(messages && messages.length){
+                                        for (let i = 0; i < messages.length; i++) {
+                                            if (messages[i].MajorCode === '100' && messages[i].MinorCode === '1002'){
+                                                self.methods.customDialog({title:  LANGUAGE.ASSET_PLAYBACK_MSG00, text: LANGUAGE.PROMPT_MSG066});
+                                                return;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            self.dialog.alert('Error occured at Send Report on Email ');
+                    }
+                },
+                'json');
         },
         countItemsBySolution: function(items){
             let ret = {
@@ -1506,7 +1980,7 @@ const mainView = app.views.create('.view-main', {
     //url: app.view.pushStateRoot ? app.view.pushStateRoot : '/',
     url: '/',
     //name: 'view-main',
-    stackPages: true
+    //stackPages: true
 });
 
 /*document.addEventListener("deviceready", onDeviceReady, false);

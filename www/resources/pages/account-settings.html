@@ -7,9 +7,13 @@
             <div class="navbar-bg"></div>
             <div class="navbar-inner">
                 <div class="left">
-                    <a href="#" class="link icon-only back" >
+                    <!--<a href="#" class="link icon-only back" >
                         <i class="if-not-ios f7-icons icon-header-arrow-back"></i>
                         <i class="if-ios icon icon-back"></i>
+                    </a>-->
+                    <a href="/panel-left/" class="link icon-only " >
+                        <i class="if-not-ios f7-icons icon-header-menu"></i>
+                        <i class="if-ios icon material-icons">menu</i>
                     </a>
                 </div>
                 <div class="title sliding">{{@global.LANGUAGE.MENU_MSG01}}</div>
@@ -40,7 +44,7 @@
         
         <div class="tabs-animated-wrap">
             <div class="tabs">
-                <form name="user-profile-form" class="page-content tab tab-active with-bottom-button" id="user-profile">
+                <form name="user-profile-form" class="page-content tab tab-active" id="user-profile">
                     <input type="submit" id="submit-form-user" class="display-none" />            
                     <div class="list no-margin-top no-hairline-bottom">
                         <ul> 
@@ -105,7 +109,7 @@
                                 </div>
                             </li>
                             <li >
-								<a class="item-link smart-select smart-select-init custom-smart-select-assets" data-open-in="popup" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG002}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" >
+								<a class="item-link smart-select smart-select-init custom-smart-select-assets" data-open-in="popup" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG002}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-form-color-theme="green">
 									<select name="TimeZone" required validate >
 										{{#TimeZoneList}}
 											<option value="{{Value}}" {{#if State }}selected{{/if}}>{{Name}}</option>

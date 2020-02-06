@@ -6,10 +6,17 @@
             <div class="navbar-bg"></div>
             <div class="navbar-inner">
                 <div class="left">
-                    <a href="#" class="link icon-only back" >
+                    {{#if Tabs}}
+                    <a href="/panel-left/" class="link icon-only " >
+                        <i class="if-not-ios f7-icons icon-header-menu"></i>
+                        <i class="if-ios icon material-icons">menu</i>
+                    </a>
+                    {{else}}
+                    <a href="#" class="link icon-only back">
                         <i class="if-not-ios f7-icons icon-header-arrow-back"></i>
                         <i class="if-ios icon icon-back"></i>
                     </a>
+                    {{/if}}
                 </div>
                 <div class="title sliding">
                     {{PageTitle}}
@@ -23,10 +30,19 @@
                     <a @click="showMapControlls" href="#" class="link icon-only ">
                         <i class="f7-icons icon-header-menu2"></i>
                     </a>
-
                 </div>
             </div>
         </div>
+        {{#if Tabs}}
+        <div class="toolbar tabbar toolbar-top">
+            <div class="toolbar-inner">
+                <a href="/asset-status-live/?imei={{IMEI}}&tabs=true" class="tab-link">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG00}}</a>
+                <a href="/asset-alarm/?imei={{IMEI}}&tabs=true" class="tab-link">{{@global.LANGUAGE.ASSET_ALARM_MSG00}}</a>
+                <a href="/asset-playback/?imei={{IMEI}}" class="tab-link">{{@global.LANGUAGE.ASSET_PLAYBACK_MSG00}}</a>
+                <a href="#" class="tab-link tab-link-active">{{@global.LANGUAGE.ASSET_TRACK_MSG00}}</a>
+            </div>
+        </div>
+        {{/if}}
         {{#unless ViewAll}}
         <div class="fab fab-left-bottom fab-custom with-borders {{#unless SVExist}}disabled{{/unless}}">
             <a @click="ShowStreetView" href="#" class="bg-color-darkgray elevation-hover-10" data-lat="{{Lat}}" data-lng="{{Lng}}">
@@ -52,11 +68,8 @@
         </div>
         {{/unless}}
 
-
-
         <div class="page-content">
             <div id="{{MapId}}" class="map"></div>
-
         </div>
 
     </div>
@@ -69,6 +82,7 @@
         data: function () {
             let self = this;
             let imei = decodeURIComponent(self.$route.query.imei);
+            let tabsFlag = self.$route.query.tabs;
 
             let asset = '';
             let viewAll = self.$route.query.all;
@@ -79,6 +93,7 @@
             let ret = {
                 PageTitle: !viewAll ? asset.Name : LANGUAGE.HOME_MSG02,
                 MapId: 'map-' + self.$app.utils.id(),
+                Tabs: !!tabsFlag,
                 //Name: asset.Name,
                 IMEI: !viewAll ? asset.IMEI : '',
                 LiveAsset: asset && asset.SolutionType.toLowerCase() !== 'protect' && asset.SolutionType.toLowerCase() !== 'loc8' || !!viewAll,
@@ -124,7 +139,7 @@
             GetLiveUpdate: function () {
                 let self = this;
                 let assetList = self.$app.methods.getFromStorage('assetList');
-                self.$app.progressbar.show('gray');
+                self.$app.progressbar.show('custom');
                 self.$app.methods.getAssetListPosInfo(assetList, true, function () {
                     self.$app.progressbar.hide();
                     self.$app.methods.showToast(LANGUAGE.PROMPT_MSG041);
@@ -299,35 +314,6 @@
                         }
                     }
                 }).open();
-
-
-                /*self.$app.actions.create({
-                    buttons: [
-                        {
-                            text: `
-                            <div class="action_button_wrapper">
-                                <div class="action_button_block action_button_media ${ mapSettingsObg && mapSettingsObg.showGeofences ? 'text-color-green' : 'text-color-lightgray' }">
-                                    <i class="f7-icons icon-menu-geofence size-18"></i>
-                                </div>
-                                <div class="action_button_block action_button_text">
-                                    ${ LANGUAGE.COM_MSG062 }
-                                </div>
-                                <div class="toggle color-green">
-                                    <input type="checkbox" name="checkbox-map-settings" value="showGeofences" ${ mapSettingsObg && mapSettingsObg.showGeofences ? 'checked' : '' }/>
-                                    <span class="toggle-icon"></span>
-                                </div>
-                            </div>`,
-                            onClick: function(parent) {
-                                console.log('clicked');
-                                let input = $$(parent.$el).find('input[name="checkbox-map-settings"]');
-                                let newState = !input.prop( "checked" );
-                                mapSettingsObg[input.val()] = newState;
-                                self.$app.methods.setInStorage({name: 'mapSettings', data: mapSettingsObg});
-                                newState ? self.showGeofences(self.Map) : self.hideGeofences(self.Map);
-                            }
-                        },
-                    ]
-                }).open();*/
             },
         },
 

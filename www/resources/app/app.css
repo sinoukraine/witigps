@@ -1,31 +1,26 @@
 :root {
-    --f7-bars-bg-color: #E3072B;
-    --f7-bars-bg-color-rgb: 227,7,43;
+    --f7-bars-bg-color: #333333;
+    --f7-bars-bg-color-rgb: 51,51,51;
 
     --f7-bars-link-color: #fff;
     --f7-bars-text-color: #fff;
-    --f7-theme-color: #E3072B;
-    --f7-bars-border-color:#E3072B;
+    --f7-theme-color: #333333;
+    --f7-bars-border-color:#333333;
 
     --f7-tabbar-link-active-color:#fff;
     --f7-tabbar-link-active-border-color:#fff;
     --f7-tabbar-link-inactive-color: rgba(255, 255, 255, 0.7);
 
-    --f7-navbar-bg-color: #E3072B;
+    --f7-navbar-bg-color: #333333;
     /*
     --f7-toolbar-bg-image: var(--f7-bars-bg-image);
     */
 
     /*START SEARCHBAR*/
-    /*
-  --f7-searchbar-bg-image: var(--f7-bars-bg-image);
-
-  --f7-searchbar-bg-color-rgb: var(--f7-bars-bg-color-rgb);
-  --f7-searchbar-border-color: var(--f7-bars-border-color);
-  */
 
     --f7-searchbar-bg-color: #F2F2F2;
     --f7-searchbar-bg-color-rgb: 242,242,242;
+    --f7-searchbar-border-color: #F2F2F2;
     --f7-searchbar-height: 44px;
     --f7-searchbar-inner-padding-left: 8px;
     --f7-searchbar-inner-padding-right: 8px;
@@ -71,12 +66,12 @@
 .ios .list .item-media{
     min-width: 25px;
 }
-.color-theme-custom {
+/*.color-theme-custom {
     --f7-theme-color: #E3072B;
     --f7-theme-color-rgb: 227,7,43;
     --f7-theme-color-shade: #92051b;
     --f7-theme-color-tint: #e4082a;
-}
+}*/
 .navbars~.page:not(.no-navbar)>.searchbar{
     top: calc(var(--f7-navbar-height) + var(--f7-toolbar-height) + var(--f7-safe-area-top));
 }
@@ -101,19 +96,28 @@
     justify-content: center;
 }
 
-.bg-custom{
-    background: #E3072B;
+.bg-color-custom{
+    background-color: #E3072B!important;
 }
-.color-custom{
-    color: #E3072B;
+.text-color-custom{
+    color: #E3072B!important;
 }
-
+.position-relative{
+    position: relative;
+}
 .tooltip-init{
     user-select: none
 }
 /*.color-theme-custom .navbar{
     background: #E3072B;
 }*/
+
+.color-custom {
+    --f7-theme-color: #E3072B;
+    --f7-theme-color-rgb: 227,7,43;
+    --f7-theme-color-shade: #b60622;
+    --f7-theme-color-tint: #f82c4d;
+}
 
 .color-darkgray {
     --f7-theme-color: #333333;
@@ -195,7 +199,7 @@
     font-size: 12px;
 }
 .size-14{
-    font-size: 12px;
+    font-size: 14px!important;
 }
 .size-16{
     font-size: 16px;
@@ -233,8 +237,14 @@
 .z-index-0{
     z-index: 0;
 }
+.margin-top--10{
+    margin-top: -10px;
+}
 .overflow-hidden{
     overflow: hidden;
+}
+.overflow-visible{
+    overflow: visible!important;
 }
 .only-2-rows{
     overflow: hidden;
@@ -242,6 +252,7 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     display: -webkit-box;
+    white-space: normal !important;
 }
 .white-space-normal{
     white-space: normal!important;
@@ -437,8 +448,12 @@
     min-height: 100px;
     min-width: 100px;
 }
-.geofence-map-wrapper {
+.geofence-map {
     height: calc(100% - 165px);
+    min-height: 200px;
+}
+.map-playback{
+    height: calc(100% - 140px);
     min-height: 200px;
 }
 
@@ -548,14 +563,14 @@ html .color-theme-custom .leaflet-control-layers-overlays label i{
     vertical-align: middle;
     margin-right: 8px;
 }
-html .color-theme-custom .leaflet-control-layers-overlays label i:after{
+/*html .color-theme-custom .leaflet-control-layers-overlays label i:after{
     content: '';
     position: absolute;
 
-}
+}*/
 html .color-theme-custom .leaflet-control-layers-overlays label input[type=checkbox]:checked + span i{
-    background-color: #f44336;
-    border-color: #f44336;
+    background-color: #4cd964;
+    border-color: #4cd964;
 }
 html .color-theme-custom .leaflet-control-layers-overlays label input[type=checkbox]:checked + span i:after{
     opacity: 1;

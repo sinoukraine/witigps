@@ -6,9 +6,13 @@
             <div class="navbar-bg"></div>
             <div class="navbar-inner">
                 <div class="left">
-                    <a href="#" class="link icon-only back" >
+                    <!--<a href="#" class="link icon-only back" >
                         <i class="if-not-ios f7-icons icon-header-arrow-back"></i>
                         <i class="if-ios icon icon-back"></i>
+                    </a>-->
+                    <a href="/panel-left/" class="link icon-only " >
+                        <i class="if-not-ios f7-icons icon-header-menu"></i>
+                        <i class="if-ios icon material-icons">menu</i>
                     </a>
                 </div>
                 <div class="title sliding">
@@ -23,13 +27,13 @@
                 </div>
             </div>
         </div>
-        {{#if LiveAsset}}
+        {{#if Tabs}}
         <div class="toolbar tabbar toolbar-top">
             <div class="toolbar-inner">
                 <a href="#" class="tab-link tab-link-active">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG00}}</a>
                 <a href="/asset-alarm/?imei={{IMEI}}&tabs=true" class="tab-link">{{@global.LANGUAGE.ASSET_ALARM_MSG00}}</a>
-                <a href="/asset-playback/?imei={{IMEI}}" class="tab-link">{{@global.LANGUAGE.ASSET_PLAYBACK_MSG00}}</a>
-                <a href="/asset-track/?imei={{IMEI}}" class="tab-link">{{@global.LANGUAGE.ASSET_TRACK_MSG00}}</a>
+                <a href="/asset-playback/?imei={{IMEI}}"  class="tab-link">{{@global.LANGUAGE.ASSET_PLAYBACK_MSG00}}</a>
+                <a href="/asset-track/?imei={{IMEI}}&tabs=true" class="tab-link">{{@global.LANGUAGE.ASSET_TRACK_MSG00}}</a>
             </div>
         </div>
         {{/if}}
@@ -132,6 +136,7 @@
                             </div>
                         </div>
                     </li>
+                    {{#if Acc}}
                     <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG007}}">
                         <div class="item-media {{#js_if 'this.Acc === "ON" '}} text-color-green {{else}} text-color-red {{/js_if}}">
                             <i class="f7-icons icon-status-acc2"></i>
@@ -140,6 +145,7 @@
                             <div class="item-title">{{Acc}}</div>
                         </div>
                     </li>
+                    {{/if Acc}}
 
                     {{#if Acc2}}
                     <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG008}}">
@@ -246,13 +252,15 @@
         data: function () {
             let self = this;
             let imei = decodeURIComponent(self.$route.query.imei);
+            let tabsFlag = self.$route.query.tabs;
             let asset = POSINFOASSETLIST[imei]; //self.$app.methods.getFromStorage('assetList')[imei];
             let afs = Protocol.Helper.getAssetStateInfo(asset);
-
+//console.log(afs);
             let ret = {
                 Name: asset.Name,
                 IMEI: asset.IMEI,
                 LiveAsset: asset.SolutionType.toLowerCase() !== 'protect' && asset.SolutionType.toLowerCase() !== 'loc8',
+                Tabs: !!tabsFlag,
 
                 PositionTime: asset.posInfo.positionTime ? asset.posInfo.positionTime.format(window.COM_TIMEFORMAT) : LANGUAGE.COM_MSG031,
                 Speed: Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit),
