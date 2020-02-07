@@ -349,6 +349,7 @@
     background-repeat: no-repeat;
     background-position: top right;
     background-size: cover;
+    position: relative;
 }
     .bg-header .logo{
         width: 100%;
@@ -356,7 +357,13 @@
         .bg-header .logo img{
             width: 100%;
         }
-
+.app-version{
+    position: absolute;
+    font-size: 10px;
+    bottom: 4px;
+    right: 6px;
+    //color: white;
+}
 /*LOGIN SCREEN*/
 .login-screen-content{
     --f7-list-bg-color: trasparent;

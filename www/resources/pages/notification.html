@@ -1,0 +1,366 @@
+<!--suppress JSAnnotator -->
+<template>
+<!-- Page, data-name contains page name which can be used in callbacks -->
+        <div class="page " data-name="notification" > <!-- page-with-subnavbar -->
+        <!-- Top Navbar -->
+            <div class="navbar">
+                <div class="navbar-bg"></div>
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a href="#" class="link icon-only back">
+                            <i class="if-not-ios f7-icons icon-header-arrow-back"></i>
+                            <i class="if-ios icon icon-back"></i>
+                        </a>
+                    </div>
+                    <div class="title sliding" title="{{NotificationData.alarm}}">{{NotificationData.alarm}}</div>
+                    <div class="right">
+                        <!-- <a href="#" class="link">
+                                             <i class="f7-icons icon-delete "></i>
+                                         </a>    -->                 
+                    </div>
+                    
+                    
+                </div>
+            </div>          
+            
+            <!-- Scrollable page content-->
+            <div class="page-content" > 
+                
+                {{#js_if "this.NotificationData.alarm == 'STATUS'"}}
+
+                    {{#if NotificationData.AssetImg}} 
+                        <div class="top-asset-image-wrapper">   
+                            {{NotificationData.AssetImg}}
+                        </div>
+                    {{/if}}  
+                    <div class="list margin-top-0">
+                        <ul>
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media text-color-lightgray">
+                                        <i class="f7-icons icon-name"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG14}}</div>
+                                        <div class="item-after">{{NotificationData.AssetName}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media text-color-lightgray">
+                                        <i class="f7-icons icon-date"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG01}}</div>
+                                        <div class="item-after">{{NotificationData.CreateDateTime}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media text-color-lightgray">
+                                        <i class="f7-icons icon-imei"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG04}}</div>
+                                        <div class="item-after">{{NotificationData.Imei}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media text-color-lightgray">
+                                        <!-- <i class="f7-icons icon-imei"></i> -->
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG05}}</div>
+                                        <div class="item-after">{{NotificationData.Imsi}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            {{#if NotificationData.Direction}} 
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media text-color-lightgray">
+                                        <i class="f7-icons icon-direction"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG02}}</div>
+                                        <div class="item-after">{{NotificationData.Direction}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            {{/if}}  
+                            {{#if NotificationData.Mileage}} 
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media text-color-lightgray">
+                                        <i class="f7-icons icon-mileage"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG03}}</div>
+                                        <div class="item-after">{{NotificationData.Mileage}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            {{/if}}  
+                            {{#if NotificationData.EngineHours}} 
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media text-color-lightgray">
+                                        <i class="f7-icons icon-engine"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG13}}</div>
+                                        <div class="item-after">{{NotificationData.EngineHours}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            {{/if}}  
+                            {{#if NotificationData.Acc}} 
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media {{NotificationData.AccColor}}">
+                                        <i class="f7-icons icon-ignition"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG06}}</div>
+                                        <div class="item-after {{NotificationData.AccColor}}">{{NotificationData.Acc}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            {{/if}}  
+                            {{#if NotificationData.Relay}} 
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media text-color-lightgray">
+                                        <i class="f7-icons icon-relay"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG07}}</div>
+                                        <div class="item-after">{{NotificationData.Relay}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            {{/if}}  
+                            {{#if NotificationData.Battery}} 
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media text-color-lightgray">
+                                        <i class="f7-icons icon-battery"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG08}}</div>
+                                        <div class="item-after">{{NotificationData.Battery}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            {{/if}}  
+                            {{#if NotificationData.Power}} 
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media text-color-lightgray">
+                                        <i class="f7-icons icon-power"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG09}}</div>
+                                        <div class="item-after">{{NotificationData.Power}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            {{/if}}  
+                            {{#if NotificationData.GPS}} 
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media text-color-lightgray">
+                                        <i class="f7-icons icon-gps"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG10}}</div>
+                                        <div class="item-after">{{NotificationData.GPS}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            {{/if}}  
+                            {{#if NotificationData.GSM}} 
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media text-color-lightgray">
+                                        <i class="f7-icons icon-gsm"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG11}}</div>
+                                        <div class="item-after">{{NotificationData.GSM}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            {{/if}}  
+                            {{#if NotificationData.GPRS}} 
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media text-color-lightgray">
+                                        <i class="f7-icons icon-gprs"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG12}}</div>
+                                        <div class="item-after">{{NotificationData.GPRS}}</div>
+                                    </div>
+                                </div>
+                            </li>   
+                            {{/if}}  
+                            {{#if NotificationData.Charger}} 
+                            <li>
+                                <div class="item-content">
+                                    <div class="item-media text-color-lightgray">
+                                        <i class="f7-icons icon-voltage"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title">{{@global.LANGUAGE.NOTIFICATIONS_MSG15}}</div>
+                                        <div class="item-after">{{NotificationData.Charger}}</div>
+                                    </div>
+                                </div>
+                            </li>
+                            {{/if}}                        
+                            
+                        </ul>                    
+                    </div>
+
+                {{else}}
+
+                                            
+
+
+                {{/js_if}}
+
+            </div>
+        </div>
+</template>
+
+<script>
+  // script must return component object
+    return {
+        data: function () {
+            let self = this;
+            let ret = {};
+
+            if(self.$route.query.id){
+                let account = localStorage.ACCOUNT;
+                let notifications = self.$app.methods.getFromStorage('notifications')[account];
+                if (notifications && notifications.length) {
+                    let notification = $.grep(notifications, function(obj){return obj.UniqueId === self.$route.query.id})[0];
+
+                    if (notification) {
+                        ret.NotificationData = self.$app.methods.formatStatusMessage(notification);
+                        ret.CustomAddress = LANGUAGE.COM_MSG004;
+
+                    }else{
+                        console.log('There is no notification with such id');
+                    }
+                }else{
+                    console.log('There is no notification list');
+                }
+            }else{
+                console.log('There is no notification id');
+            }
+
+
+            //console.log(ret);
+            return ret;
+        },
+        methods: {
+            /*addAssetMarker: function(params){
+                let self = this;
+                if (GroupMarkers) {
+                    GroupMarkers.clearLayers();
+                    if (MapTrack) {
+                        MapTrack.removeLayer(GroupMarkers);
+                    }        
+                }
+                GroupMarkers = L.markerClusterGroup({'maxClusterRadius':35,}); 
+                
+                if (params && params.Imei && parseFloat(params.Lat) && parseFloat(params.Lng)) {                        
+                    let point = L.marker([params.Lat,params.Lng], {icon: Protocol.MarkerIcon[2]});
+                    let markerData = self.$app.methods.getMarkerDataTable(false, params);
+                    point                            
+                        .bindPopup(markerData,{maxWidth:self.$app.data.MaxMapPopupWidth, closeButton: false})
+                        .on('popupopen', function (e) {                               
+                            if (!point.customAddress) {
+                                Protocol.Helper.getAddressByGeocoder({lat: params.Lat, lng: params.Lng},function(address){                           
+                                    point.customAddress = params.customAddress = address;
+                                    markerData = self.$app.methods.getMarkerDataTable(false, params);       
+                                    e.target.setPopupContent(markerData);                                        
+                                    e.popup.update();                                       
+                                }); 
+                            }                                 
+                        });
+                    if (self.$app.device.desktop) {
+                        point.bindTooltip(params.AssetName,{permanent: false, direction: 'right'});
+                    }
+                    point._custom_asset_imei = params.Imei;
+                    point.addTo(GroupMarkers);
+                    GroupMarkers.addTo(MapTrack);
+
+                    if (GroupMarkers.getBounds().isValid()) { 
+                        MapTrack.fitBounds(GroupMarkers.getBounds(),{padding:[16,16], maxZoom: 15});
+                    }
+                }                
+            },*/
+            
+        },
+        on: {
+            pageInit: function (e, page) { 
+                let self = this;
+                
+            },            
+            
+            pageBeforeIn: function(e, page){
+                let self = this;
+
+                /*let fabViewAll = $$('.fab-viewall');
+                if (MapTrack){
+                    MapTrack.removeLayer(AllMarkersGroup);                            
+                    if (fabViewAll && !fabViewAll.hasClass('disabled')) {
+                        fabViewAll.addClass('disabled');
+                    }                        
+                }
+                    
+                if (self.NotificationData) {
+                    self.$app.utils.nextTick(function(){
+                        self.addAssetMarker(self.NotificationData);
+                    },300);
+                    
+                    if (self.NotificationData.Lat && self.NotificationData.Lat) {
+                        Protocol.Helper.getAddressByGeocoder({lat: self.NotificationData.Lat, lng: self.NotificationData.Lng},function(address){
+                            self.$setState({
+                                CustomAddress: address
+                            });                    
+                        });
+                    }                        
+                }*/
+            },
+
+            pageBeforeOut: function (e, page) {
+                let self = this;
+                    
+                /*if (GroupMarkers) {
+                    GroupMarkers.clearLayers();
+                    if (MapTrack) {
+                        MapTrack.removeLayer(GroupMarkers);
+                    }
+                }
+                let fabViewAll = $$('.fab-viewall');
+                if (MapTrack && !MapTrack.hasLayer(AllMarkersGroup)) {
+                    if (AllMarkersGroup.getBounds().isValid()) {
+                        MapTrack.fitBounds(AllMarkersGroup.getBounds(),{padding:[16,16]});
+                        AllMarkersGroup.addTo(MapTrack);
+                    }
+                    if (fabViewAll && fabViewAll.hasClass('disabled')) {
+                        fabViewAll.removeClass('disabled');
+                    }
+                }*/
+                
+            },   
+        }
+    };
+</script>

@@ -10,6 +10,7 @@
             </div>
             <div class="page-content">
                 <div class="panel-header bg-custom bg-header">
+                    <span class="app-version text-color-white">{{AppVersion}}</span>
                     <div class="block no-margin padding">
                         <div class="logo">
                             <img src="{{Logo}}" alt="">
@@ -136,12 +137,13 @@
             }
             return {
                 //Initials: 'UN',
-                Logo: self.$app.data.logo,
+                Logo: self.$root.logo,
                 FirstName: userInfo && userInfo.FirstName ? userInfo.FirstName : 'User',
                 LastName: userInfo && userInfo.SurName ? userInfo.SurName : 'Name',
                 Email: userInfo && userInfo.Email ? userInfo.Email : 'test@mail.com',
                 Remaining: userInfo && userInfo.SMSTimes ? userInfo.SMSTimes : '0',
                 SupportUrl: API_URL.URL_SUPPORT + '?' + self.$app.utils.serializeObject(paramsForSupportUrl),
+                AppVersion: self.$root.appVersion ? 'v'+self.$root.appVersion : ''
                 //test: self.$app.utils.id()
             };
         },
