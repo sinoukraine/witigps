@@ -767,3 +767,7 @@ html .fab-custom{
     height: 1px;
     margin: auto;
 }
+
+.page.smart-select-page .list {
+    margin: 0;
+}

@@ -22,6 +22,10 @@
                         <a key="map-control" @click="showMapControlls" href="#" class="link icon-only ">
                             <i class="f7-icons icon-header-menu2"></i>
                         </a>
+                    {{else}}
+                        <a key="send-on-email" @click="showSendOnEmailModal" href="#" class="link icon-only ">
+                            <i class="f7-icons icon-live-email"></i>
+                        </a>
                     {{/js_if}}
                 </div>
             </div>
@@ -40,11 +44,18 @@
             <div class="tabs">
                 <div class="page-content tab tab-active " id="map-container">
                     <div class="map-playback position-relative">
+                        {{#unless OptimizedLoaded}}<div class="progressbar-infinite color-custom"></div>{{/unless}}
                         <div id="{{MapId}}" class="map "></div>
 
                         <div class="fab fab-left-bottom fab-custom with-borders {{#unless SVExist}}disabled{{/unless}}">
                             <a @click="ShowStreetView" href="#" class="bg-color-darkgray elevation-hover-10" data-lat="{{Lat}}" data-lng="{{Lng}}">
                                 <i class="pano-preview-img"></i>
+                            </a>
+                        </div>
+                        <div class="fab fab-right-bottom fab-custom ">
+                            <a href="#" class="bg-color-darkgray elevation-hover-10 flex-direction-column routeButton" data-lat="{{Lat}}" data-lng="{{Lng}}">
+                                <i class="f7-icons icon-other-route"></i>
+                                <div class="fab-text">{{@global.LANGUAGE.ASSET_TRACK_MSG20}}</div>
                             </a>
                         </div>
                     </div>
@@ -62,13 +73,13 @@
                                 </li>
                                 <li class="item-content margin-top--10">
                                     <div class="item-inner no-padding-top">
-                                        <div class="item-title">
+                                        <div class="item-title size-14">
                                             <div class="item-header text-color-gray">
                                                 {{@global.LANGUAGE.ASSET_PLAYBACK_MSG09}}
                                             </div>
                                             {{FirstPoint.DateTime}}
                                         </div>
-                                        <div class="item-title text-align-right">
+                                        <div class="item-title size-14 text-align-right">
                                             <div class="item-header text-color-gray">
                                                 {{@global.LANGUAGE.ASSET_PLAYBACK_MSG10}}
                                             </div>
@@ -89,28 +100,12 @@
                                         </div>
                                     </div>
                                 </li>
-                                <!--<li>
-                                    <a class="item-link smart-select smart-select-init" data-open-in="sheet" data-close-on-select="true" data-form-color-theme="green" data-sheet-push="true">
-                                        <select name="Events" multiple>
-                                            {{#PlaybackFilterEventsList}}
-                                            <option value="{{Value}}" data-option-icon="{{Icon}}" {{#if Selected}}selected{{/if}} >{{Name}}</option>
-                                            {{/PlaybackFilterEventsList}}
-                                        </select>
-                                        <div class="item-content">
-                                            <div class="item-media text-color-lightgray">
-                                                <i class="f7-icons icon-header-alarm"></i>
-                                            </div>
-                                            <div class="item-inner">
-                                                <div class="item-title ">{{@global.LANGUAGE.ASSET_PLAYBACK_MSG02}}</div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>-->
                             </ul>
                         </div>
                     </div>
                 </div>
                 <div class="page-content tab " id="activity">
+                    {{#unless EventAddressesLoaded}}<div class="progressbar-infinite color-custom"></div>{{/unless}}
                     <div class="list media-list no-hairlines no-margin-top">
                         <ul>
                             {{#EventsList}}
@@ -164,6 +159,7 @@
                 </div>
                 <div class="page-content tab " id="trips">
                     {{#unless TripsLoaded}}
+                    <div class="progressbar-infinite color-custom"></div>
                     <div key="skeleton-trips" class="list no-hairline-bottom no-hairline-top no-margin-top">
                         <ul>
                             {{#each '12'}}
@@ -250,7 +246,7 @@
                             <li>
                                 <div class="item-content">
                                     <div class="item-inner">
-                                        <div class="item-title">{{@gloabl.LANGUAGE.COM_MSG031}}</div>
+                                        <div class="item-title">{{@global.LANGUAGE.COM_MSG031}}</div>
                                     </div>
                                 </div>
                             </li>
@@ -262,6 +258,7 @@
 
                 <div class="page-content tab " id="summary">
                     {{#unless SummaryLoaded}}
+                        <div class="progressbar-infinite color-custom"></div>
                         <div key="skeleton-summary" class="list no-hairline-bottom no-hairline-top no-margin-top">
                             <ul>
                                 {{#each '123'}}
@@ -376,11 +373,10 @@
                 PlaybackTimer: false,
                 PlaybackRouteLayerGroup: false,
                 PlaybackRouteLayerGroupOptimized: false,
-                PlaybackMarkerGroup: false,
                 PlaybackMarker: false,
                 PlaybackEventsLayerGroup: false,
                 PlaybackEventsLayerSubGroups: {},
-                //PlaybackData: firstPoint,
+
                 PointsCount: historyArray.length-1,
                 FirstPoint: firstPoint,
                 LastPoint: lastPoint,
@@ -388,6 +384,8 @@
 
                 SummaryLoaded: false,
                 TripsLoaded: false,
+                OptimizedLoaded: false,
+                EventAddressesLoaded: false,
                 GeofenceList: geofenceListArr,
                 PlaybackFilterEventsList: playbackFilterEventsList,
                 PlaybackSelectedEvents: selectedEvents,
@@ -577,6 +575,14 @@
                                                             </div>
                                                         </a>
                                                     </li>
+                                                    <li class="item-content item-link sheet-close send-by-email">
+                                                        <div class="item-media text-color-lightgray">
+                                                            <i class="f7-icons icon-live-email"></i>
+                                                        </div>
+                                                        <div class="item-inner">
+                                                            <div class="item-title">${ LANGUAGE.COM_MSG078 }</div>
+                                                        </div>
+                                                    </li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -593,6 +599,7 @@
                             let GeofencesState = popover.$el.find('.changeGeofenceState');
                             let OptimizedState = popover.$el.find('.changeOptimizedRouteState');
                             let SmartSelectEventsEl = popover.$el.find('.smart-select-events');
+                            let sendByEmailEl = popover.$el.find('.send-by-email');
 
                             GeofencesState.on('click', function () {
                                 let input = $$(this).find('input[name="checkbox-map-settings"]');
@@ -604,7 +611,6 @@
                             OptimizedState.on('click', function () {
                                 let input = $$(this).find('input[name="checkbox-optimized-route"]');
                                 let newState = !input.prop( "checked" );
-
                                 if (!self.CantBeOptimised) {
                                     self.$setState({
                                         OptimizedRouteState: newState
@@ -651,6 +657,7 @@
                                     }
                                 }
                             });
+                            sendByEmailEl.on('click', self.showSendOnEmailModal);
                         },
                         closed: function(popover){
                             popover.destroy();
@@ -686,7 +693,7 @@
                     ]);
                 });
 
-                self.$app.progressbar.show('custom');
+                /*self.$app.progressbar.show('custom');*/
 
                 $.ajax({
                     type: "POST",
@@ -720,15 +727,11 @@
                             self.PlaybackRouteLayerGroupOptimized.addTo(self.Map);
                             self.Map.fitBounds(self.PlaybackRouteLayerGroupOptimized.getBounds());     // zoom the map to the polyline
                         }
-
-                        self.$app.progressbar.hide();
+                        self.$setState({
+                            OptimizedLoaded: true
+                        });
                     },
                     error: function (textStatus) {
-                        self.$app.progressbar.hide();
-                        setTimeout(function(){
-                            self.$app.progressbar.hide();
-                        }, 500);
-
                         console.log(textStatus);
                         if (self.OptimizedRouteState) {
                             self.$app.methods.customNotification({
@@ -737,7 +740,7 @@
                             });
                         }
 
-                        self.$setState({OptimizedRouteState: false, CantBeOptimised: true});
+                        self.$setState({OptimizedRouteState: false, CantBeOptimised: true, OptimizedLoaded: true});
                         self.showPlaybackRoute();
                     }
                 });
@@ -746,7 +749,8 @@
             showPlaybackRoute: function(){
                 let self = this;
 
-                if (self.PlaybackRouteLayerGroup && self.PlaybackMarkerGroup) {
+                //if (self.PlaybackRouteLayerGroup && self.PlaybackMarkerGroup) {
+                if (self.PlaybackRouteLayerGroup) {
                     if (self.OptimizedRouteState && self.PlaybackRouteLayerGroupOptimized) {
                         self.Map.addLayer(self.PlaybackRouteLayerGroupOptimized);
                         self.Map.fitBounds(self.PlaybackRouteLayerGroupOptimized.getBounds());
@@ -754,7 +758,8 @@
                         self.Map.addLayer(self.PlaybackRouteLayerGroup);
                         self.Map.fitBounds(self.PlaybackRouteLayerGroup.getBounds());
                     }
-                    self.Map.addLayer(self.PlaybackMarkerGroup);
+                    //self.Map.addLayer(self.PlaybackMarkerGroup);
+                    self.Map.addLayer(self.PlaybackMarker);
                     self.Map.addLayer(self.PlaybackEventsLayerGroup);
 
 
@@ -777,7 +782,12 @@
                     /*EVENTS POINTS ADDING*/
                     let historyEvents = self.$app.methods.getFromStorage('historyEvents');
 
-                    if (historyEvents && historyEvents.length) {
+                    if (!historyEvents || !historyEvents.length) {
+                        self.$setState({
+                            EventAddressesLoaded: true,
+                            EventsList: [],
+                        });
+                    }else{
                         self.PlaybackEventsLayerGroup = L.markerClusterGroup({'maxClusterRadius':35,});
                         let markerData = '';
                         let point = '';
@@ -785,7 +795,6 @@
                         let newEventsArr = [];
                         let newEventsArrLatLngs = [];
                         let pinDetails = {};
-
 
                         for (let i = self.PlaybackFilterEventsList.length - 1; i >= 0; i--) {
                             self.PlaybackEventsLayerSubGroups[self.PlaybackFilterEventsList[i].Value] = L.featureGroup.subGroup(self.PlaybackEventsLayerGroup).addTo(self.Map);
@@ -849,6 +858,7 @@
                                     }
                                 }
                                 self.$setState({
+                                    EventAddressesLoaded: true,
                                     EventsList: self.EventsList
                                 });
                             }
@@ -858,12 +868,24 @@
                     }
 
                     /*MARKER ADDING*/
-                    self.PlaybackMarkerGroup = L.markerClusterGroup({'maxClusterRadius':35,});
                     self.PlaybackMarker = L.marker([self.HistoryArray[0].lat, self.HistoryArray[0].lng], {icon: self.$app.methods.getMarkerIcon({asset: true, type: self.SolutionType})});
                     self.PlaybackMarker
-                        .bindPopup(self.$app.methods.getMarkerDataTablePB(asset, self.HistoryArray[0]), {maxWidth:self.$app.data.MaxMapPopupWidth, closeButton: false});
-                    self.PlaybackMarker.addTo(self.PlaybackMarkerGroup);
-                    self.PlaybackMarkerGroup.addTo(self.Map);
+                        .bindPopup(self.$app.methods.getMarkerDataTablePB(asset, self.HistoryArray[0]), {maxWidth:self.$app.data.MaxMapPopupWidth, closeButton: false})
+                        .on('popupopen', function (marker) {
+                            let index = self.RangeSliderPlayback.getValue();
+                            if(!self.HistoryArray[index].customAddress){
+                                Protocol.Helper.getAddressByGeocoder({lat: self.HistoryArray[index].lat, lng: self.HistoryArray[index].lng},function(address){
+                                    lastQueryPosinfo = {lat : Math.floor(self.HistoryArray[index].lat * 10000) / 10000, lng : Math.floor(self.HistoryArray[index].lng * 10000) / 10000, address: address };
+                                    self.HistoryArray[index].customAddress = address;
+                                    self.PlaybackMarker.setPopupContent(self.$app.methods.getMarkerDataTablePB(asset, self.HistoryArray[index]));
+                                    if (self.HistoryArray[index+1]) {
+                                        self.HistoryArray[index+1].customAddress = address;
+                                    }
+                                });
+                            }
+                        });
+                    self.PanoButtonUpdate([self.HistoryArray[0].lat, self.HistoryArray[0].lng]);
+                    self.PlaybackMarker.addTo(self.Map);
 
                     Protocol.Helper.getAddressByGeocoder({lat: asset.posInfo.lat, lng: asset.posInfo.lng},function(address){
                         self.HistoryArray[0].customAddress = address;
@@ -953,10 +975,17 @@
                 //console.log(data);
                 self.$app.request.promise.post(API_URL.GET_REPORT_TRIP, data, 'json')
                     .then(function (result) {
-                            if(result.data.MajorCode === '000' && result.data.Data && result.data.Data.length) {
-                                self.initSummaryList(result.data.Data[0].Total, result.data.Data[0].Details);
-                                self.initTripList(result.data.Data[0].Details);
+                            if(result.data.MajorCode === '000') {
+                                if(result.data.Data && result.data.Data.length){
+                                    self.initSummaryList(result.data.Data[0].Total, result.data.Data[0].Details);
+                                    self.initTripList(result.data.Data[0].Details);
+                                }else{
+                                    self.initSummaryList();
+                                    self.initTripList();
+                                }
+
                             }else{
+                                console.log('here');
                                 self.$app.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
                             }
                     })
@@ -968,9 +997,10 @@
             initTripList: function(tripsDetails=[]){
                 let self = this;
 
-                let startLatLngs = [];
-                let endLatLngs = [];
                 if (tripsDetails && tripsDetails.length){
+                    let startLatLngs = [];
+                    let endLatLngs = [];
+
                     for (let trip of tripsDetails) {
                         if (trip.StartTime) {
                             trip.StartTimeLocal = moment(trip.StartTime,'DD/MM/YYYY HH:mm:ss').add(self.$app.data.UTCOFFSET,'minutes').format(window.COM_TIMEFORMAT);
@@ -981,37 +1011,40 @@
                         startLatLngs.push([trip.StartLat,trip.StartLng]);
                         endLatLngs.push([trip.EndLat,trip.EndLng]);
                     }
+
+                    let promiseStartAddress = new Promise(function(resolve, reject) {
+                        self.getAddresses(startLatLngs, resolve, reject);
+                    });
+                    let promiseEndAddress = new Promise(function(resolve, reject) {
+                        self.getAddresses(endLatLngs, resolve, reject);
+                    });
+
+                    Promise.all([
+                        promiseStartAddress.catch(error => { return error }),
+                        promiseEndAddress.catch(error => { return error }),
+                    ]).then(values => {
+                        if (values[0] && values[1]){
+                            for (let i = tripsDetails.length - 1; i >= 0; i--) {
+                                if (values[0][i] && typeof values[0][i] === 'object' && values[0][i].display_name) {
+                                    tripsDetails[i].StartCustomAddress = values[0][i].display_name;
+                                }
+                                if (values[1][i] && typeof values[1][i] === 'object' && values[1][i].display_name) {
+                                    tripsDetails[i].EndCustomAddress = values[1][i].display_name;
+                                }
+                            }
+                            self.$setState({
+                                TripList: tripsDetails
+                            });
+                        }
+                    });
                 }
+
                 self.$setState({
                     TripsLoaded: true,
                     TripList: tripsDetails,
                 });
 
-                let promiseStartAddress = new Promise(function(resolve, reject) {
-                    self.getAddresses(startLatLngs, resolve, reject);
-                });
-                let promiseEndAddress = new Promise(function(resolve, reject) {
-                    self.getAddresses(endLatLngs, resolve, reject);
-                });
 
-                Promise.all([
-                    promiseStartAddress.catch(error => { return error }),
-                    promiseEndAddress.catch(error => { return error }),
-                ]).then(values => {
-                    if (values[0] && values[1]){
-                        for (let i = tripsDetails.length - 1; i >= 0; i--) {
-                            if (values[0][i] && typeof values[0][i] === 'object' && values[0][i].display_name) {
-                                tripsDetails[i].StartCustomAddress = values[0][i].display_name;
-                            }
-                            if (values[1][i] && typeof values[1][i] === 'object' && values[1][i].display_name) {
-                                tripsDetails[i].EndCustomAddress = values[1][i].display_name;
-                            }
-                        }
-                        self.$setState({
-                            TripList: tripsDetails
-                        });
-                    }
-                })
 
             },
             initSummaryList: function(totals={}, tripsDetails=[]){
@@ -1031,12 +1064,12 @@
                     {
                         Icon: 'icon-live-duration',
                         Name: LANGUAGE.ASSET_PLAYBACK_MSG15,
-                        Value: totals.Duration,
+                        Value: totals.Duration ? totals.Duration : LANGUAGE.COM_MSG083,
                     },
                     {
                         Icon: 'icon-live-distance',
                         Name: LANGUAGE.ASSET_PLAYBACK_MSG16,
-                        Value: totals.Distance +' '+ LANGUAGE.COM_MSG080,
+                        Value: totals.Distance ? totals.Distance +' '+ LANGUAGE.COM_MSG080 : LANGUAGE.COM_MSG083,
                     },
                 ];
                 if (tripsDetails && tripsDetails.length){
@@ -1103,6 +1136,141 @@
                     SummaryList: list
                 });
 
+            },
+            showSendOnEmailModal: function(){
+                var self = this;
+                if (self.DynamicSendOnEmailPopup && !self.DynamicSendOnEmailPopup.destroyed) {
+                    self.DynamicSendOnEmailPopup.close();
+                }
+                let content = `    <div class="popup popup-send-on-email" >
+									<div class="view">
+										<div class="page">
+											<div class="navbar">
+											    <div class="navbar-bg"></div>
+												<div class="navbar-inner">
+													<div class="left">
+													    <a href="#" class="link popup-close" data-popup=".popup-send-on-email">
+															<i class="f7-icons">close</i>
+														</a>
+                                                    </div>
+													<div class="title">${ LANGUAGE.COM_MSG078 }</div>
+													<div class="right">
+														<label for="submit-form-send-on-email" class="link icon-only">
+															<i class="f7-icons icon-header-apply"></i>
+														</label>
+													</div>
+												</div>
+											</div>
+											<form name="FormSendOnEmail" class="page-content bg-color-white " >
+												<input type="submit" id="submit-form-send-on-email" class="display-none" />
+												<div class="block">
+													<p>${ LANGUAGE.PROMPT_MSG073 }</p>
+												</div>
+												<div class="list ">
+													<ul>
+														<li >
+															<a class="item-link smart-select custom-smart-select smartSelectContactList" >
+																<select name="ContactList" multiple required validate>`;
+                if(self.ContactList && self.ContactList.length){
+                    for (let i = 0; i < self.ContactList.length; i++) {
+                        if(self.ContactList[i].EMail){
+                            content += 	`<option value="${ self.ContactList[i].Code }" data-display-as="${ self.ContactList[i].EMail }" >${ self.ContactList[i].FullName }(${ self.ContactList[i].EMail })</option>`;
+                        }
+                    }
+                }
+                content +=										`</select>
+																<div class="item-content ">
+																	<div class="item-media text-color-lightgray">
+																		<i class="f7-icons icon-live-email"></i>
+																	</div>
+																	<div class="item-inner">
+																		<div class="item-title">${ LANGUAGE.COM_MSG077 }</div>
+																	</div>
+																</div>
+															</a>
+														</li>
+													</ul>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+				`;
+                setTimeout(function(){
+                    self.DynamicSendOnEmailPopup = self.$app.popup.create({
+                        closeByBackdropClick: false,
+                        //animate: false,
+                        content: content,
+                        on: {
+                            open: function (popup) {
+                                let SmartSelectEl = popup.$el.find('.smartSelectContactList');
+                                let formEl = popup.$el.find('[name="FormSendOnEmail"]');
+                                let contactListEl = popup.$el.find('[name="ContactList"]');
+
+                                self.SmartSelectContactList = self.$app.smartSelect.create({
+                                    el: SmartSelectEl,
+                                    view: mainView,
+                                    openIn: 'popup',
+                                    formColorTheme: 'green',
+                                    searchbar: true,
+                                    searchbarPlaceholder: LANGUAGE.COM_MSG002,
+                                    appendSearchbarNotFound: LANGUAGE.PROMPT_MSG000,
+                                    pageTitle: LANGUAGE.COM_MSG077
+                                });
+
+                                formEl.on('submit', function (e) {
+                                    e.preventDefault();
+                                    let userInfo = self.$app.methods.getFromStorage('userInfo');
+                                    let contactCodes = contactListEl.val();
+                                    let recipients = [];
+                                    if(contactCodes.length && self.ContactList){
+                                        for (var i = contactCodes.length - 1; i >= 0; i--) {
+                                            recipients.push(self.ContactList.find(x => x.Code === contactCodes[i]).EMail);
+                                        }
+                                    }
+                                    let offsetZZformat = self.$app.methods.convertTimZoneValToZZformat(userInfo.TimeZone);
+                                    let data = {
+                                        Assets: [
+                                            {
+                                                Name: self.Name,
+                                                IMEI: self.IMEI,
+                                                Id: self.Id,
+                                                Make: self.Describe1,
+                                                Model: self.Describe2,
+                                                Color: self.Describe3,
+                                                Year: self.Describe4,
+                                                Registration: self.Registration,
+                                                EngineCapacity: self.EngineCapacity,
+                                            },
+                                        ],
+                                        DateFrom: self.PlaybackFrom, // UTC!
+                                        DateTo: self.PlaybackTo, // UTC!
+                                        extension: "pdf", // pdf, xlsx, json, html
+                                        MajorToken: self.$root.MajorToken,
+                                        MinorToken: self.$root.MinorToken,
+                                        Recipients: recipients,
+                                        displayTimeZone: self.$app.methods.findTimeZoneNameByOffset(offsetZZformat),
+                                    };
+
+                                    self.$app.methods.sendReportPlaybackOnEmail(data, function(){
+                                        //success
+                                        self.DynamicSendOnEmailPopup.close();
+                                        self.$app.methods.customNotification({text: LANGUAGE.PROMPT_MSG067});
+                                    });
+
+                                    return false;
+                                });
+                            },
+                            closed: function(popup){
+                                if (self.SmartSelectContactList) {
+                                    self.SmartSelectContactList.destroy();
+                                }
+                                popup.$el.remove();
+                                popup.destroy();
+                            },
+                        }
+                    }).open();
+                }, 200);
             },
 
             getPlaybackMapPinDetails: function(point={}){
@@ -1194,25 +1362,32 @@
                                 Lat: self.HistoryArray[val].lat,
                                 Lng: self.HistoryArray[val].lng,
                             });
+                            self.PanoButtonUpdate([self.HistoryArray[val].lat, self.HistoryArray[val].lng]);
 
                             if(lastQueryPosinfo && Math.floor(self.HistoryArray[val].lat * 10000) / 10000 === lastQueryPosinfo.lat && Math.floor(self.HistoryArray[val].lng * 10000) / 10000 === lastQueryPosinfo.lng ){
                                 self.HistoryArray[val].customAddress = lastQueryPosinfo.address;
                                 self.PlaybackMarker.setPopupContent(self.$app.methods.getMarkerDataTablePB(asset, self.HistoryArray[val]));
                             }else{
-                                Protocol.Helper.getAddressByGeocoder({lat: self.HistoryArray[val].lat, lng: self.HistoryArray[val].lng},function(address){
-                                    lastQueryPosinfo = {lat : Math.floor(self.HistoryArray[val].lat * 10000) / 10000, lng : Math.floor(self.HistoryArray[val].lng * 10000) / 10000, address: address };
-                                    self.HistoryArray[val].customAddress = address;
-                                    self.PlaybackMarker.setPopupContent(self.$app.methods.getMarkerDataTablePB(asset, self.HistoryArray[val]));
-                                    if (self.HistoryArray[val+1]) {
-                                        self.HistoryArray[val+1].customAddress = address;
-                                    }
-                                });
+                                if(self.PlaybackMarker.isPopupOpen()){
+                                    Protocol.Helper.getAddressByGeocoder({lat: self.HistoryArray[val].lat, lng: self.HistoryArray[val].lng},function(address){
+                                        lastQueryPosinfo = {lat : Math.floor(self.HistoryArray[val].lat * 10000) / 10000, lng : Math.floor(self.HistoryArray[val].lng * 10000) / 10000, address: address };
+                                        self.HistoryArray[val].customAddress = address;
+                                        self.PlaybackMarker.setPopupContent(self.$app.methods.getMarkerDataTablePB(asset, self.HistoryArray[val]));
+                                        if (self.HistoryArray[val+1]) {
+                                            self.HistoryArray[val+1].customAddress = address;
+                                        }
+                                    });
+                                }
                             }
                         }
                     }
                 });
                 self.RangeSliderSpeed = self.$app.range.create({
-                    el: rangeSliderSpeedEl
+                    el: rangeSliderSpeedEl,
+                    label: true,
+                    formatLabel: function (value) {
+                        return 'x'+parseFloat(value);
+                    }
                 });
 
 
@@ -1224,17 +1399,7 @@
                     self.$setState({
                         CurrentActiveTab: this.id
                     });
-                    /*if (this.id === 'map-container') {
-
-                    }else if(this.id === 'summary'){
-
-                    }else if(this.id === 'trips'){
-
-                    }else{
-
-                    }*/
                 });
-
 
 
             },

@@ -26,6 +26,8 @@ API_URL.LOGOUT = API_DOMIAN3 + "Logoff";
 API_URL.GET_ALL_POSITIONS = API_DOMIAN1 + "Device/GetPosInfos2";
 API_URL.PHOTO_UPLOAD = API_DOMIAN9 + "image/Upload";
 API_URL.EDIT_DEVICE = API_DOMIAN1 + "Device/Edit";
+API_URL.URL_REFRESH_TOKEN = API_DOMIAN1 + "User/RefreshToken";
+API_URL.GET_NEW_NOTIFICATIONS = API_DOMIAN2 +"asset/Alarms";
 
 API_URL.SET_ALARM_LOC8 = API_DOMIAN2 + "asset/AlarmOptions";
 API_URL.SET_ALARM_PROTECT = API_DOMIAN3 + "AlarmOptions2";
@@ -64,6 +66,7 @@ let UpdateAssetsPosInfoTimer = false;
 let UpdateNotificationsTimer = false;
 let POSINFOASSETLIST = {};
 let StreetViewService = false;
+let push = null;
 
 
 // Create another event bus
@@ -152,6 +155,7 @@ const app = new Framework7({
                 supportCode: 3,
                 appId: '',
                 appleId: '1079168431',
+                appVersion: '',
             },
             UTCOFFSET: moment().utcOffset(),
             AccountSolutionArray: [],
@@ -168,18 +172,9 @@ const app = new Framework7({
         connection: function(isOnline){
             let self = this;
             if (isOnline) {
-                self.notification.create({
-                    title: self.name, // 'Connection established',
-                    //subtitle: 'Connection established',
-                    text: 'Connection established',
-                    closeOnClick: true,
-                }).open();
+                self.methods.showToast(LANGUAGE.COM_MSG087);
             } else {
-                self.notification.create({
-                    title: self.name,// 'Lost connection',
-                    text: 'Lost connection',
-                    closeOnClick: true,
-                }).open();
+                self.methods.showToast(LANGUAGE.COM_MSG088);
             }
         },
         init: function () {
@@ -188,6 +183,10 @@ const app = new Framework7({
             if(window.hasOwnProperty("cordova")){
                 if (BuildInfo){
                     self.data.AppDetails.appId = BuildInfo.packageName;
+                    if (BuildInfo.version){
+                        //$$('.appVersion').text("v" + BuildInfo.version);
+                        self.data.AppDetails.appVersion = BuildInfo.version;
+                    }
                 }
                 //fix app images and text size
                 if (window.MobileAccessibility) {
@@ -196,8 +195,12 @@ const app = new Framework7({
                 if (StatusBar) {
                     StatusBar.styleDefault();
                 }
+
+                self.methods.setupPush();
+                self.methods.getPlusInfo();
+
                 document.addEventListener("backbutton", self.methods.backFix, false);
-                //document.addEventListener("resume", onAppResume, false);
+                document.addEventListener("resume", self.methods.onAppResume, false);
                 //document.addEventListener("pause", onAppPause, false);
             }
 
@@ -288,6 +291,33 @@ const app = new Framework7({
             document.activeElement.blur();
             $$("input").blur();
         },
+        guid: function () {
+            function S4() {
+                return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+            }
+            return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+        },
+        getPlusInfo: function () {
+            let uid = this.methods.guid();
+            if (window.device) {
+                if (!localStorage.PUSH_MOBILE_TOKEN) {
+                    localStorage.PUSH_MOBILE_TOKEN = uid;
+                }
+                localStorage.PUSH_APP_KEY = BuildInfo.packageName;
+                localStorage.PUSH_APPID_ID = BuildInfo.packageName;
+                localStorage.DEVICE_TYPE = device.platform;
+            } else {
+                if (!localStorage.PUSH_MOBILE_TOKEN)
+                    localStorage.PUSH_MOBILE_TOKEN = uid;
+                if (!localStorage.PUSH_APP_KEY)
+                    localStorage.PUSH_APP_KEY = uid;
+                if (!localStorage.PUSH_DEVICE_TOKEN)
+                    localStorage.PUSH_DEVICE_TOKEN = uid;
+                //localStorage.PUSH_DEVICE_TOKEN = "75ba1639-92ae-0c4c-d423-4fad1e48a49d"
+                localStorage.PUSH_APPID_ID = 'android.app.quiktrak.eu.quiktrak.new';
+                localStorage.DEVICE_TYPE = "android.app.quiktrak.eu.quiktrak.new";
+            }
+        },
         clearUserInfo: function(){
             let self = this;
 
@@ -348,7 +378,7 @@ const app = new Framework7({
         },
         login: function(form){
             let self = this;
-            //self.methods.getPlusInfo();
+            self.methods.getPlusInfo();
 
             let account = $$("input[name='username']");
             let password = $$("input[name='password']");
@@ -359,10 +389,10 @@ const app = new Framework7({
                 account: account.val() ? account.val() : localStorage.ACCOUNT,
                 password: password.val() ? password.val() : localStorage.PASSWORD,
 
-                /*appKey: localStorage.PUSH_APP_KEY,
+                appKey: localStorage.PUSH_APP_KEY,
                 mobileToken: localStorage.PUSH_MOBILE_TOKEN,
                 deviceToken: localStorage.PUSH_DEVICE_TOKEN,
-                deviceType: localStorage.DEVICE_TYPE,*/
+                deviceType: localStorage.DEVICE_TYPE,
             };
 
             self.dialog.progress();
@@ -918,6 +948,314 @@ const app = new Framework7({
             //console.log(ary);
             return ret;
         },
+        getNewNotifications: function(params, callbackFunc){
+            let self = this;
+
+            let MinorToken = !self.data.MinorToken ? '': self.data.MinorToken;
+            let deviceToken = !localStorage.PUSH_DEVICE_TOKEN ? '' : localStorage.PUSH_DEVICE_TOKEN;
+
+            if (MinorToken && deviceToken) {
+                let data = {
+                    MinorToken: self.data.MinorToken,
+                    deviceToken: deviceToken,
+                };
+
+                if (params && params.showLoader === true) {
+                    self.preloader.show();
+                }
+                self.request.get(API_URL.GET_NEW_NOTIFICATIONS, data, function (result, xhr, status) {
+                        if (params && params.showLoader === true) {
+                            self.preloader.hide();
+                        }
+                        if (callbackFunc instanceof Function) {
+                            callbackFunc();
+                        }
+
+                        //console.log(result);
+                        if(result && result.MajorCode === '000') {
+                            let data = result.Data;
+
+                            if (Array.isArray(data) && data.length > 0) {
+                                self.methods.setNotificationList(result.Data);
+                            }
+
+                            if (params && params.loadPageNotification === true) {
+                                let user = localStorage.ACCOUNT;
+                                let notList = self.methods.getFromStorage('notifications');
+                                if (notList && notList[user] && notList[user].length > 0 || Array.isArray(data) && data.length > 0) {
+
+                                    if (mainView.history && mainView.history.length && mainView.history.indexOf('/notifications/') !== -1) {
+                                        mainView.router.back('/notifications/',{ignoreCache: true, force: true});
+                                    }else{
+                                        mainView.router.navigate('/notifications/');
+                                    }
+
+                                }else{
+                                    self.methods.customNotification({title: LANGUAGE.PROMPT_MSG076});
+
+                                    /*let notificationsIconEl = $$('.openNotificationsPageLink i');
+                                    if (notificationsIconEl && notificationsIconEl.length) {
+                                        notificationsIconEl.empty();
+                                    }*/
+                                }
+                            }
+
+                        }else {
+                            console.log(result);
+                        }
+                    },
+                    function (xhr, status) {
+                        console.log(xhr);
+                        console.log(status);
+                        if (params && params.showLoader === true) {
+                            self.preloader.hide();
+                        }
+
+                        if (callbackFunc instanceof Function) {
+                            callbackFunc();
+                        }
+
+                    },
+                    'json');
+            }
+        },
+        displayNewNotificationArrived: function(list){
+            let self = this;
+
+            if (list && list.length) {
+                let currentRoute = mainView.router.currentRoute;
+                if (currentRoute && currentRoute.name !== 'notifications') {
+                    /*let notificationsIconEl = $$('.openNotificationsPageLink i');
+                    if (notificationsIconEl && notificationsIconEl.length) {
+                        let badge = notificationsIconEl.find('.badge');
+                        if (badge && badge.length) {
+                            let currentNotificationCount = parseInt(badge.text(),10);
+                            if (currentNotificationCount) {
+                                if (currentNotificationCount < 99) {
+                                    currentNotificationCount += list.length;
+                                }else{
+                                    currentNotificationCount = '99+';
+                                }
+                            }else{
+                                currentNotificationCount = list.length;
+                            }
+                            badge.text(currentNotificationCount);
+
+                        }else{
+                            notificationsIconEl.html('<span class="badge color-red">'+list.length+'</span>');
+                        }
+                    }*/
+                }else{
+                    let notificationList = self.virtualList.get('.notificationList');
+                    if (notificationList) {
+                        notificationList.prependItems(list);
+                    }
+                }
+
+                let notificationDetails = {
+                    subtitle: list[0].alarm,
+                    text: list[0].AssetName,
+                };
+                if (list.length > 1) {
+                    notificationDetails = {
+                        subtitle: LANGUAGE.PROMPT_MSG077+'('+list.length+')',
+                        text: '',
+                    };
+                }
+
+                self.notification.create({
+                    title: self.name,
+                    titleRightText: LANGUAGE.COM_MSG091, //now
+                    subtitle: notificationDetails.subtitle,
+                    text: notificationDetails.text,
+                    closeOnClick: true,
+                    closeButton: true,
+                    on: {
+                        click: function () {
+                            if (list.length > 1) {
+                                if (mainView.history && mainView.history.length && mainView.history.indexOf('/notifications/') !== -1) {
+                                    mainView.router.back('/notifications/',{ignoreCache: true, force: true});
+                                }else{
+                                    mainView.router.navigate('/notifications/');
+                                }
+                            }else{
+                                mainView.router.navigate('/notification/?id='+list[0].UniqueId);
+                            }
+                        },
+                    },
+                }).open();
+            }
+        },
+        setNotificationList: function(list){
+            let self = this;
+
+            let pushList = self.methods.getFromStorage('notifications');
+            let user = localStorage.ACCOUNT;
+
+            if (pushList) {
+                if (!pushList[user]) {
+                    pushList[user] = [];
+                }
+            }else{
+                pushList = {};
+                pushList[user] = [];
+            }
+
+            if (Array.isArray(list)) {
+                list = self.methods.formatNewNotifications(list);
+                for (let i = 0; i < list.length; i++) {
+                    list[i].UniqueId = self.utils.id();
+                    pushList[user].unshift(list[i]);
+                }
+
+                self.methods.displayNewNotificationArrived(list);
+            }
+            localStorage.setItem("COM.QUIKTRAK.NEW.NOTIFICATIONS", JSON.stringify(pushList));
+        },
+        deleteNotifications: function(deleteList,deleteAll){
+            let self = this;
+            let pushList = self.methods.getFromStorage('notifications');
+            let user = localStorage.ACCOUNT;
+            if (deleteList && deleteList.length) {
+                if (pushList && pushList[user] && pushList[user].length) {
+                    $.each(deleteList, function(key, val){
+                        let index = pushList[user].map(function(e) { return e.UniqueId; }).indexOf(val);
+                        pushList[user].splice(index, 1);
+                    });
+                    localStorage.setItem("COM.QUIKTRAK.NEW.NOTIFICATIONS", JSON.stringify(pushList));
+                }
+            }else if(deleteAll){
+                if (pushList && pushList[user] && pushList[user].length) {
+                    pushList[user] = [];
+                    localStorage.setItem("COM.QUIKTRAK.NEW.NOTIFICATIONS", JSON.stringify(pushList));
+                    let virtualList = self.virtualList.get('.notificationList');
+                    if (virtualList) {
+                        virtualList.deleteAllItems();
+                    }
+                }
+            }
+        },
+        formatNewNotifications: function(messageList){
+            let self = this;
+
+            let newMessageList = [];
+            let msg = null;
+            let msgTemp = null;
+            let popped = null;
+            if (Array.isArray(messageList)) {
+                for (let i = 0; i < messageList.length; i++) {
+                    msg = null;
+                    msgTemp = null;
+                    popped = null;
+                    if (messageList[i].payload) {
+                        msg = self.methods.isJsonString(messageList[i].payload);
+                        if (!msg) {
+                            msg = messageList[i].payload;
+                        }
+                    }else{
+                        msg = self.methods.isJsonString(messageList[i]);
+                        if (!msg) {
+                            msg = messageList[i];
+                        }
+                    }
+                    if (msg ) {
+                        if (msg.PositionTime) {
+                            localTime  = moment.utc(msg.PositionTime).toDate();
+                            msg.PositionTime = moment(localTime).format(window.COM_TIMEFORMAT);
+                        }
+                        if (msg.time) {
+                            localTime  = moment.utc(msg.time).toDate();
+                            msg.time = moment(localTime).format(window.COM_TIMEFORMAT);
+                        }
+                        if (msg.CreateDateTime) {
+                            localTime  = moment.utc(msg.CreateDateTime).toDate();
+                            msg.CreateDateTime = moment(localTime).format(window.COM_TIMEFORMAT);
+                        }
+                        if(msg.lat){
+                            msg.Lat = msg.lat;
+                        }
+                        if(msg.lng){
+                            msg.Lng = msg.lng;
+                        }
+                        if(msg.title){
+                            msg.alarm = msg.title;
+                        }
+                        if(msg.imei){
+                            msg.Imei = msg.imei;
+                        }
+                        if(msg.name){
+                            msg.AssetName = msg.name;
+                        }
+                        if(msg.speed){
+                            msg.Speed = msg.speed;
+                        }
+                        if(msg.direct){
+                            msg.Direction = msg.direct;
+                        }
+                        if(msg.time){
+                            msg.CreateDateTime = msg.time;
+                        }
+
+                        msgTemp = msg;
+                        popped = newMessageList.pop();
+                        if (popped) {
+                            popped = JSON.stringify(popped);
+                            msgTemp = JSON.stringify(msgTemp);
+
+                            if (popped !== msgTemp) {
+                                popped = JSON.parse(popped);
+                                newMessageList.push(popped);
+                            }
+                        }
+
+                        newMessageList.push(msg);
+                    }
+                }
+            }
+            return newMessageList;
+        },
+        formatStatusMessage: function(message){
+            let self = this;
+
+            let assetList = self.methods.getFromStorage('assetList');
+            let asset = assetList[message.Imei];
+            let assetImg = self.methods.getAssetImg(asset, {'assetEdit':true});
+            if (!message.Direct && message.Direction) {
+                message.Direct = message.Direction;
+            }
+            let deirectionCardinal = Protocol.Helper.getDirectionCardinal(message.Direct);
+
+            if (assetImg) {
+                message.AssetImg = assetImg;
+            }
+
+            message.AccColor = 'text-color-red';
+            if (message.Acc && message.Acc === 'ON') {
+                message.AccColor = 'text-color-green';
+            }
+
+            if (message.Direction) {
+                message.Direction = deirectionCardinal+'('+message.Direct+'&deg)';
+            }
+
+            if (asset && message.Mileage) {
+                message.Mileage = Protocol.Helper.getMileage(asset, message.Mileage);
+            }
+            if (asset && message.LaunchHours) {
+                message.EngineHours = Protocol.Helper.getEngineHours(asset, message.LaunchHours);
+            }
+            if (asset && message.Speed) {
+                message.Speed = Protocol.Helper.getSpeedValue(asset.Unit, message.Speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
+            }else if (asset && typeof(message.Speed) != 'undefined' ) {
+                message.Speed = message.Speed + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
+            }
+            let deviceParams = message.PARAMS ? self.methods.isJsonString(message.PARAMS) : '';
+            if (deviceParams) {
+                message.PARAMS = self.methods.isJsonString(message.PARAMS);
+            }
+
+            return message;
+        },
         parsePlaybackHystoryArr: function(arry){
             let self = this;
             let newArry = [];
@@ -1365,7 +1703,7 @@ const app = new Framework7({
                     markerData +=   '</tr>';
 
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG12+'</td>';
-                    markerData +=       '<td class="marker-data-value marker-address">'+customAddress+'</td>';
+                    markerData +=       '<td class="marker-data-value marker-address asset-address">'+customAddress+'</td>';
                     markerData +=   '</tr>';
 
                     markerData += '</table>';
@@ -1958,7 +2296,119 @@ const app = new Framework7({
             } else {
                 mainView.router.back();
             }
-        }
+        },
+        onAppResume: function(){
+            /*if (localStorage.ACCOUNT && localStorage.PASSWORD) {
+                getNewNotifications();
+                getNewData();
+            }*/
+        },
+
+        setupPush: function() {
+            let self = this;
+            push = PushNotification.init({
+                "android": {
+                    //"senderID": "264121929701"
+                },
+                "browser": {
+                    pushServiceURL: 'https://push.api.phonegap.com/v1/push'
+                },
+                "ios": {
+                    "sound": true,
+                    "vibration": true,
+                    "badge": true
+                },
+                "windows": {}
+            });
+
+            push.on('registration', function(data) {
+                console.log('registration event: ' + data.registrationId);
+
+                let oldRegId = localStorage.PUSH_DEVICE_TOKEN;
+                if (localStorage.PUSH_DEVICE_TOKEN !== data.registrationId) {
+                    // Save new registration ID
+                    localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
+                    // Post registrationId to your app server as the value has changed
+                    self.methods.refreshToken(data.registrationId);
+                }
+            });
+
+            push.on('error', function(e) {
+                //console.log("push error = " + e.message);
+                alert("push error = " + e.message);
+            });
+
+            push.on('notification', function(data) {
+                //alert( JSON.stringify(data) );
+
+                //if user using app and push notification comes
+                if (data && data.additionalData && data.additionalData.foreground) {
+                    // if application open, show popup
+                    //showMsgNotification([data.additionalData]);
+                } else if (data && data.additionalData && data.additionalData.payload) {
+                    //if user NOT using app and push notification comes
+
+                    /*App.showIndicator();
+                    window.loginTimer = setInterval(function() {
+                        if (window.loginDone) {
+                            clearInterval(loginTimer);
+                            setTimeout(function() {
+                                processClickOnPushNotification([data.additionalData.payload]);
+                                App.hideIndicator();
+                            }, 1000);
+                        }
+                    }, 1000);*/
+                }
+                if (device && device.platform && device.platform.toLowerCase() === 'ios') {
+                    push.finish(
+                        () => {
+                            console.log('processing of push data is finished');
+                        },
+                        () => {
+                            console.log(
+                                'something went wrong with push.finish for ID =',
+                                data.additionalData.notId
+                            );
+                        },
+                        data.additionalData.notId
+                    );
+                }
+            });
+            if　 (!localStorage.ACCOUNT && push) {
+                push.clearAllNotifications(
+                    () => {
+                        console.log('success');
+                    },
+                    () => {
+                        console.log('error');
+                    }
+                );
+            }
+        },
+        refreshToken: function(newDeviceToken) {
+            let self = this;
+
+            if (localStorage.PUSH_MOBILE_TOKEN && self.Data.MajorToken && self.Data.MinorToken && newDeviceToken) {
+                let data = {
+                    MajorToken: self.data.MajorToken,
+                    MinorToken: self.data.MinorToken,
+                    MobileToken: localStorage.PUSH_MOBILE_TOKEN,
+                    DeviceToken: newDeviceToken,
+                };
+                self.request.promise.post(API_URL.URL_REFRESH_TOKEN, data, 'json')
+                    .then(function (result) {
+                        if(result.data.MajorCode === '000') {
+
+                        }
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+            } else {
+                console.log('not loggined');
+            }
+        },
+
     },
     routes: routes,
     popup: {
@@ -2011,6 +2461,11 @@ function backFix(event) {
     }
 }*/
 
+if (!String.prototype.trim) {
+    String.prototype.trim = function () {
+        return this.toString().replace(/^\s+|\s+$/g, '');
+    };
+}
 
 $$('body').on('submit', '[name="login-form"]', function (e) {
     e.preventDefault();

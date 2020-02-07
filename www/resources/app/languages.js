@@ -90,6 +90,14 @@ window.LanguagePackages= {
 		"COM_MSG084": "Average Speed",
 		"COM_MSG085": "Max Speed",
 		"COM_MSG086": "Close",
+		"COM_MSG087": "Connection established",
+		"COM_MSG088": "Lost connection",
+		"COM_MSG089": "Delete",
+		"COM_MSG090": "Open",
+		"COM_MSG091": "now",
+		"COM_MSG092": "You are going to delete all notifications",
+
+
 
 
 		"PROMPT_MSG000": "Nothing found",
@@ -169,6 +177,11 @@ window.LanguagePackages= {
 		"PROMPT_MSG070": "There was no Events",
 		"PROMPT_MSG071": "This event type is hidden on map",
 		"PROMPT_MSG072": "Can't load data, try again later",
+		"PROMPT_MSG073": "Select Email(s) which should receive this playback report",
+		"PROMPT_MSG074": "Are you sure want to delete this notification?",
+		"PROMPT_MSG075": "Delete notification.",
+		"PROMPT_MSG076": "You have currently no notifications",
+		"PROMPT_MSG077": "You have new notifications",
 
 		"HOME_MSG00": "Home",
 		"HOME_MSG01": "All",
@@ -190,6 +203,24 @@ window.LanguagePackages= {
 		"LOGIN_MSG01": "Password",
 		"LOGIN_MSG02": "Sign In",
 		"LOGIN_MSG03": "Forgot Password?",
+
+		"NOTIFICATIONS_MSG00": "Notifications",
+		"NOTIFICATIONS_MSG01": "Date, Time",
+		"NOTIFICATIONS_MSG02": "Direction",
+		"NOTIFICATIONS_MSG03": "Mileage",
+		"NOTIFICATIONS_MSG04": "IMEI",
+		"NOTIFICATIONS_MSG05": "IMSI",
+		"NOTIFICATIONS_MSG06": "Ignition",
+		"NOTIFICATIONS_MSG07": "Relay",
+		"NOTIFICATIONS_MSG08": "Battery",
+		"NOTIFICATIONS_MSG09": "Power",
+		"NOTIFICATIONS_MSG10": "GPS",
+		"NOTIFICATIONS_MSG11": "GSM",
+		"NOTIFICATIONS_MSG12": "GPRS",
+		"NOTIFICATIONS_MSG13": "Engine Hours",
+		"NOTIFICATIONS_MSG14": "Name",
+		"NOTIFICATIONS_MSG15": "Charger",
+		"NOTIFICATIONS_MSG16": "Speed",
 
 		"CREDIT_RECHARGE_MSG00": "Renewal",
 
@@ -289,7 +320,7 @@ window.LanguagePackages= {
 		"REPORT_THEFT_MSG00": "Please follow the below steps when reporting your stolen asset.",
 		"REPORT_THEFT_MSG01": "1. Contact police to report the incident. You will be provided with an incident report number.",
 		"REPORT_THEFT_MSG02": "2. Login to your account to monitor the live location of your asset, you can provide the police with the exact location of your asset to speed up the recovery process.",
-		"REPORT_THEFT_MSG03": "3. Click <a href='{0}' target='_blank' class='external'>CREATE REPORT</a> to lodge report theft. This will formulate a complete report to be used for insurance, personal and/or police information.",
+		"REPORT_THEFT_MSG03": "3. Click <a href='{0}' target='_blank' class='external color-red'>CREATE REPORT</a> to lodge report theft. This will formulate a complete report to be used for insurance, personal and/or police information.",
 		"REPORT_THEFT_MSG04": "Create Report",
 
 

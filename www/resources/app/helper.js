@@ -459,6 +459,19 @@ let Protocol = {
             ret = TimeSpan(parseInt(launchHours)*1000 + parseInt(asset.InitAcconHours)*60*60*1000 + parseInt(asset._FIELD_FLOAT8)*1000).format("^hh:mm:ss");  
             return ret;
         },
+        getAlertNameByType: function(type){
+            var ret = "";
+            type ? type = parseInt(type,10) : '';
+            switch (type){
+                case 8:
+                    ret = LANGUAGE.ALARM_MSG12;    //InGeoFance
+                    break;
+                case 16:
+                    ret = LANGUAGE.ALARM_MSG13;     //OutGeoFance
+                    break;
+            }
+            return ret;
+        },
         getDirectionCardinal: function(direction){
             let ret = LANGUAGE.COM_MSG027;
             direction = parseFloat(direction);

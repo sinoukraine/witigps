@@ -134,6 +134,14 @@ var routes = [
             transition: 'f7-cover',
         },
     },
+    {
+        path: '/notifications/',
+        componentUrl: './resources/pages/notifications.html?v=1.3',
+        name: 'notifications',
+        options: {
+            transition: 'f7-cover',
+        },
+    },
 
 
 

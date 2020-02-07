@@ -18,7 +18,7 @@
                     <a @click="OpenSortingModal" href="#" class="link icon-only ">
                         <i class="f7-icons icon-header-filter"></i>
                     </a>
-                    <a href="#" class="link icon-only ">
+                    <a @click="openNotificationsPage" href="#" class="link icon-only ">
                         <i class="f7-icons icon-header-alarm"></i>
                     </a>
                 </div>
@@ -146,6 +146,14 @@
             return ret;
         },
         methods: {
+            openNotificationsPage: function(){
+                let self = this;
+
+                self.$app.methods.getNewNotifications({
+                    loadPageNotification: true,
+                    //showLoader: true,
+                });
+            },
             UpdateData: function(){
                 this.VirtualAssetListMain.update();
             },
