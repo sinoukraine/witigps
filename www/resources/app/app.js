@@ -196,7 +196,7 @@ const app = new Framework7({
                     StatusBar.styleDefault();
                 }
 
-                self.methods.setupPush();
+                //self.methods.setupPush();
                 self.methods.getPlusInfo();
 
                 document.addEventListener("backbutton", self.methods.backFix, false);
