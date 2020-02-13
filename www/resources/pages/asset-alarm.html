@@ -414,7 +414,7 @@
                         AlarmListType: data.AlarmListType,
                         ShowAlarmList: true,
                         Alarms: alarmList,
-                        IgnoreBetweenState: data && data.LiveAssetSettings && data.LiveAssetSettings.IsIgnore == 1 ? true : false,
+                        IgnoreBetweenState: data && data.LiveAssetSettings && data.LiveAssetSettings.IsIgnore === 1 ? true : false,
                         SpeedingMode: data && data.LiveAssetSettings && data.LiveAssetSettings.SpeedingMode ? data.LiveAssetSettings.SpeedingMode : 1
                     });
 
@@ -805,7 +805,7 @@
                 self.$app.dialog.progress();
                 self.$app.request.promise.post(url, data, 'json')
                     .then(function (result) {
-                        console.log(result);
+                        //console.log(result);
                         if (result.data && result.data.MajorCode === '000') {
 
                             if (result.data.MinorCode === '1006') {
@@ -814,13 +814,11 @@
                                 self.updateAlarmOptions(data);
                                 self.$app.methods.checkBalance();
 
-                                mainView.router.back();
-
-                                /*if (leftView.router.history && leftView.router.history.length && leftView.router.history[leftView.router.history.length-2].indexOf('/asset-select/multiple/asset-alarm/') != -1) {
-                                    leftView.router.back('/panel-left/', {force:true});
+                                if (mainView.router.history && mainView.router.history.length && mainView.router.history[mainView.router.history.length-2].indexOf('asset-select/?type=multiple&nextPage=asset-alarm') !== -1) {
+                                    mainView.router.back('/', {force:true});
                                 }else{
-                                    leftView.router.back();
-                                }*/
+                                    mainView.router.back();
+                                }
                             }
 
                         }else if(result.data.MajorCode === '100' && result.data.MinorCode === '1006'){
@@ -836,6 +834,7 @@
                         });
                     })
                     .catch(function (err) {
+                        console.log(err);
                         self.$app.utils.nextFrame(() => {
                             self.$app.dialog.close();
                             if (err && err.status === 404){

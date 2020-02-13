@@ -46,7 +46,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="item-link item-content panel-close">
+                            <a href="/asset-select/?type=multiple&nextPage=asset-alarm" class="item-link item-content panel-close">
                                 <div class="item-media text-color-lightgray"><i class="f7-icons icon-menu-alarms "></i></div>
                                 <div class="item-inner">
                                     <div class="item-title">{{@global.LANGUAGE.MENU_MSG03}}</div>
@@ -54,7 +54,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="item-link item-content panel-close">
+                            <a href="/reports/" class="item-link item-content panel-close">
                                 <div class="item-media text-color-lightgray"><i class="f7-icons icon-menu-reports "></i></div>
                                 <div class="item-inner">
                                     <div class="item-title">{{@global.LANGUAGE.MENU_MSG04}}</div>
@@ -143,7 +143,7 @@
                 Email: userInfo && userInfo.Email ? userInfo.Email : 'test@mail.com',
                 Remaining: userInfo && userInfo.SMSTimes ? userInfo.SMSTimes : '0',
                 SupportUrl: API_URL.URL_SUPPORT + '?' + self.$app.utils.serializeObject(paramsForSupportUrl),
-                AppVersion: self.$root.appVersion ? 'v'+self.$root.appVersion : ''
+                AppVersion: self.$root.appVersion ? 'v'+self.$root.AppDetails.appVersion : ''
                 //test: self.$app.utils.id()
             };
         },

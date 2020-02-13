@@ -30,7 +30,7 @@
                     {{AssetImg}}
                 </a>
             </div>
-            <div class="list margin-top-0">
+            <div class="list list-custom margin-top-0">
                 <ul>
                     <li>
                         <div class="item-content">
@@ -276,10 +276,7 @@
                     .then(function (result) {
                         if(result.data.MajorCode === '000') {
                             let device = self.$app.methods.setAssetList({device: data});
-                            /*if (VirtualAssetListMain){
-                                let index = VirtualAssetListMain.items.findIndex(item => item.IMEI === device.IMEI);
-                                VirtualAssetListMain.replaceItem(index, device);
-                            }*/
+
                              mainView.router.back({force: true, ignoreCache: true});
                         }else{
                             self.$app.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);

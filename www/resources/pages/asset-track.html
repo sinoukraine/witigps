@@ -96,6 +96,7 @@
                 Tabs: !!tabsFlag,
                 //Name: asset.Name,
                 IMEI: !viewAll ? asset.IMEI : '',
+                IMSI: !viewAll ? asset.IMSI : '',
                 LiveAsset: asset && asset.SolutionType.toLowerCase() !== 'protect' && asset.SolutionType.toLowerCase() !== 'loc8' || !!viewAll,
                 ViewAll: !!viewAll
             };
@@ -146,7 +147,8 @@
                 });
             },
             GetProtectUpdate: function(){
-
+                let self = this;
+                self.$app.methods.sendCommand(API_URL.SEND_COM_POS, self.IMSI);
             },
             PanoButtonUpdate: function (latlng=[]) {
                 let self = this;
@@ -184,7 +186,7 @@
                     content: content,
                     on: {
                         open: function (popup) {
-                            var panoramaOptions = {
+                            let panoramaOptions = {
                                 position: new google.maps.LatLng($target.data('lat'), $target.data('lng')),
                                 pov: {
                                     heading: 0,
@@ -195,7 +197,7 @@
                                 enableCloseButton: false,
                                 addressControl: false
                             };
-                            var panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), panoramaOptions);
+                            let panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), panoramaOptions);
 
                         },
                         closed: function(popup){
@@ -327,12 +329,10 @@
 
                 self.AssetsIMEIs = [];
                 if (!self.ViewAll){
-                    if(!POSINFOASSETLIST[self.IMEI] || !POSINFOASSETLIST[self.IMEI].posInfo || parseFloat(!POSINFOASSETLIST[self.IMEI].posInfo.lat) === 0 && parseFloat(!POSINFOASSETLIST[self.IMEI].posInfo.lng) === 0){
-                        self.$app.notification.create({
-                            title: self.$app.name,
-                            text: LANGUAGE.PROMPT_MSG042,
-                            closeOnClick: true,
-                        }).open();
+                    if(!POSINFOASSETLIST[self.IMEI] || !POSINFOASSETLIST[self.IMEI].posInfo || parseFloat(POSINFOASSETLIST[self.IMEI].posInfo.lat) === 0 && parseFloat(POSINFOASSETLIST[self.IMEI].posInfo.lng) === 0){
+                        self.$app.dialog.confirm(LANGUAGE.PROMPT_MSG081, function () {
+                            self.$app.methods.sendCommand(API_URL.SEND_COM_POS, self.IMSI);
+                        });
                         return;
                     }
                     self.AssetsIMEIs.push(self.IMEI);
@@ -381,6 +381,12 @@
             },
             pageBeforeRemove: function () {
                 AssetUpdateEvents.off('updateReceived', this.UpdateData);
+                if(this.MarkersGroup){
+                    this.MarkersGroup.clearLayers();
+                }
+                if(this.Map){
+                    this.Map.remove()
+                }
             }
 
         }

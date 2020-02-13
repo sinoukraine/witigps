@@ -67,18 +67,18 @@
                         </div>
                     </li>
                     <li>
-                        <a class="item-link smart-select smart-select-init" data-open-in="sheet" data-close-on-select="true" data-form-color-theme="green" data-sheet-push="true">
+                        <a class="item-link smart-select smart-select-init custom-smart-select" data-open-in="sheet" data-close-on-select="true" data-form-color-theme="green" data-sheet-push="true">
                             <select name="Events" multiple>
                                 {{#PlaybackFilterEventsList}}
                                 <option value="{{Value}}" data-option-icon="{{Icon}}" selected>{{Name}}</option>
                                 {{/PlaybackFilterEventsList}}
                             </select>
-                            <div class="item-content">
+                            <div class="item-content item-input">
                                 <div class="item-media text-color-lightgray">
                                     <i class="f7-icons icon-header-alarm"></i>
                                 </div>
-                                <div class="item-inner">
-                                    <div class="item-title ">{{@global.LANGUAGE.ASSET_PLAYBACK_MSG02}}</div>
+                                <div class="item-inner ">
+                                    <div class="item-title item-label">{{@global.LANGUAGE.ASSET_PLAYBACK_MSG02}}</div>
                                 </div>
                             </div>
                         </a>
@@ -112,7 +112,7 @@
                     </li>
                     {{#if ContactListShow}}
                     <li key="NotificationTo">
-                        <a class="item-link smart-select smart-select-init custom-smart-select-contact-list {{#unless ContactList}}disabled{{/unless}}" data-open-in="popup" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG002}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-page-title = "{{@global.LANGUAGE.COM_MSG077}}" data-form-color-theme="green">
+                        <a class="item-link smart-select smart-select-init custom-smart-select custom-smart-select-contact-list {{#unless ContactList}}disabled{{/unless}}" data-open-in="popup" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG002}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-page-title = "{{@global.LANGUAGE.COM_MSG077}}" data-form-color-theme="green">
                             <select name="ContactList" multiple required validate>
                                 {{#ContactList}}
                                 {{#if EMail}}
@@ -120,12 +120,12 @@
                                 {{/if}}
                                 {{/ContactList}}
                             </select>
-                            <div class="item-content">
+                            <div class="item-content item-input">
                                 <div class="item-media text-color-lightgray">
                                     <i class="f7-icons icon-live-email"></i>
                                 </div>
                                 <div class="item-inner">
-                                    <div class="item-title">{{@global.LANGUAGE.COM_MSG077}}</div>
+                                    <div class="item-title  item-label">{{@global.LANGUAGE.COM_MSG077}}</div>
                                 </div>
                             </div>
                         </a>
@@ -241,14 +241,14 @@
                 let optimizedSwitcher = page.$el.find('input[name="checkbox-optimized"]');
                 let sendByEmailEl = page.$el.find('[name="SendByEmail"]');
 
-                self.CalendarStartDateTime = app.calendar.create({
+                self.CalendarStartDateTime = self.$app.calendar.create({
                     inputEl: startDateTimeEl,
                     timePicker: true,
                     dateFormat: 'MM dd yyyy, HH::mm',
                     value: [moment().subtract(1, 'days').format('MMMM DD YYYY, HH:mm')],
                     maxDate: new Date(),
                 });
-                self.CalendarEndDateTime = app.calendar.create({
+                self.CalendarEndDateTime = self.$app.calendar.create({
                     inputEl: endDateTimeEl,
                     timePicker: true,
                     dateFormat: 'MM dd yyyy, HH::mm',
@@ -326,7 +326,13 @@
             },
 
             pageBeforeRemove: function () {
-
+                let self = this;
+                if (self.CalendarStartDateTime) {
+                    self.CalendarStartDateTime.destroy();
+                }
+                if (self.CalendarEndDateTime) {
+                    self.CalendarEndDateTime.destroy();
+                }
             }
 
         }

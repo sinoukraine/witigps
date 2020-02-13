@@ -73,7 +73,7 @@
                 </ul>
             </div>
             {{else}}
-            <div key="hide-on-search-block" class="block searchbar-hide-on-search text-align-center">{{@global.LANGUAGE.PROMPT_MSG043}}</div>
+            <div key="hide-on-search-block" class="block searchbar-hide-on-search text-align-center">{{PageHeaderDescription}}</div>
             {{/unless}}
 
             <div class="list media-list virtual-list no-chevron no-margin-top searchbar-found geofenceList" >
@@ -93,7 +93,7 @@
             let self = this;
 
             let ret = {
-
+                PageHeaderDescription: LANGUAGE.PROMPT_MSG043.format(LANGUAGE.PROMPT_MSG089)
             };
 
             return ret;

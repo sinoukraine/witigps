@@ -488,6 +488,7 @@
 
                 let searchbar = self.$app.searchbar.get('.searchbar-home');
                 searchbar.on('clear', function (searchbar, query, previousQuery) {
+
                     self.$app.methods.filterVirtualAssetList(this.virtualList, this.virtualList.$el.data('filter-type'));
                 });
 

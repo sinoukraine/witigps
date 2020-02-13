@@ -1,6 +1,7 @@
 window.COM_TIMEFORMAT = 'YYYY-MM-DD HH:mm:ss';
 window.COM_TIMEFORMAT2 = 'YYYY-MM-DDTHH:mm:ss';
 window.COM_TIMEFORMAT3 = 'DD/MM/YYYY HH:mm:ss';
+window.COM_TIMEFORMAT4 = 'YYYY-MM-DD';
 
 const API_DOMIAN1 = "https://api.m2mglobaltech.com/QuikTrak/V1/";
 const API_DOMIAN2 = "https://api.m2mglobaltech.com/Quikloc8/V1/";
@@ -34,6 +35,15 @@ API_URL.SET_ALARM_PROTECT = API_DOMIAN3 + "AlarmOptions2";
 API_URL.GET_ALERT_CONFIG = API_DOMIAN1 + "Device/GetAlertConfigure";
 API_URL.SET_ALERT_CONFIG = API_DOMIAN1 + "Device/AlertConfigureEdit";
 
+API_URL.SEND_COM_POS = API_DOMIAN3 + "Location";
+API_URL.SEND_COM_STATUS = API_DOMIAN3 + "Status";
+
+API_URL.SET_GEOLOCK = API_DOMIAN2 + "asset/GeoLock";
+API_URL.SET_IMMOBILISATION = API_DOMIAN2 + "asset/Relay";
+API_URL.SET_DOORLOCK = API_DOMIAN2 + "asset/door";
+API_URL.URL_SET_GEOLOCK_PROTECT = API_DOMIAN3 + "setGeolock";
+API_URL.URL_SET_IMMOBILISATION_PROTECT = API_DOMIAN3 + "Relay";
+
 API_URL.GET_GEOFENCE_LIST = API_DOMIAN1 + "Device/GetFenceList";
 API_URL.GEOFENCE_ADD = API_DOMIAN1 + "Device/FenceAdd";
 API_URL.GEOFENCE_EDIT = API_DOMIAN1 + "Device/FenceEdit";
@@ -59,7 +69,11 @@ API_URL.GET_PLAYBACK_ARR_OPTIMISED = "https://osrm.sinopacific.com.ua/playback/v
 API_URL.GET_ADDRESSES_FROM_ARRAY = "https://ss.sinopacific.com.ua/geocode/reverse/v1/";
 API_URL.GET_PLAYBACK_REPORT_ON_MAIL = API_DOMIAN6 + "api/v2/reports/Playback";
 
+API_URL.GET_REPORT_ALERTLIST = API_DOMIAN1 + "Report/GetAlertList";
 API_URL.GET_REPORT_TRIP = API_DOMIAN1 + "Report/GetTripReport";
+API_URL.GET_REPORT_OVERVIEW = API_DOMIAN1 + "Report/GetOverview";
+API_URL.GET_REPORT_BY_ALERT = API_DOMIAN1 + "Report/GetAlertReportData";
+
 
 //let VirtualAssetListMain = false;
 let UpdateAssetsPosInfoTimer = false;
@@ -68,6 +82,9 @@ let POSINFOASSETLIST = {};
 let StreetViewService = false;
 let push = null;
 
+Framework7.request.setup({
+    timeout: 40*1000
+});
 
 // Create another event bus
 const AssetUpdateEvents = new Framework7.Events();
@@ -82,7 +99,7 @@ $$('#app').append(compiledTemplate());
 
 // Init App
 const app = new Framework7({
-    id: 'com.sinopacific.quiktrak',
+    id: 'com.quiktrak.plus',
     name: 'QuikTrak',
     root: '#app',
     theme: Framework7.device.ios ? 'ios' : 'md',
@@ -196,7 +213,7 @@ const app = new Framework7({
                     StatusBar.styleDefault();
                 }
 
-                //self.methods.setupPush();
+                self.methods.setupPush();
                 self.methods.getPlusInfo();
 
                 document.addEventListener("backbutton", self.methods.backFix, false);
@@ -218,7 +235,8 @@ const app = new Framework7({
             return s.charAt(0).toUpperCase() + s.slice(1)
         },
         isJsonString: function(str){
-            try{let ret=JSON.parse(str);}catch(e){return false;}return ret;
+            let ret = false;
+            try{ret=JSON.parse(str);}catch(e){return false;}return ret;
         },
         findObjectByKey: function(array, key, value) {
             for (let i = 0; i < array.length; i++) {
@@ -259,6 +277,21 @@ const app = new Framework7({
             }
 
             return true;
+        },
+        sortArrayByObjProps: function(list, sortBy){
+            //sortBy.direction == 1  means asc
+            //sortBy.direction == -1 means desc
+            if(list && list.length){
+                list.sort(function(a,b){
+                    let i = 0, result = 0;
+                    while(i < sortBy.length && result === 0) {
+                        result = sortBy[i].direction*(a[ sortBy[i].prop ].toString().toUpperCase() < b[ sortBy[i].prop ].toString().toUpperCase() ? -1 : (a[ sortBy[i].prop ].toString().toUpperCase() > b[ sortBy[i].prop ].toString().toUpperCase() ? 1 : 0));
+                        i++;
+                    }
+                    return result;
+                })
+            }
+            return list;
         },
         convertTimZoneValToZZformat: function(val){
             let ret = '';
@@ -538,7 +571,7 @@ const app = new Framework7({
                             callback(result.data.Data);
                         }
                     }else{
-                        self.$app.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
+                        self.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
                         if (callback instanceof Function){
                             callback({});
                         }
@@ -548,6 +581,46 @@ const app = new Framework7({
                     console.log(err);
                     if (callback instanceof Function){
                         callback({});
+                    }
+                    if (err && err.status === 404){
+                        self.dialog.alert(LANGUAGE.PROMPT_MSG002);
+                    }else{
+                        self.dialog.alert(LANGUAGE.PROMPT_MSG003);
+                    }
+                });
+        },
+        getAlertList: function(callback){
+            var self = this;
+            self.request.promise.post(API_URL.GET_REPORT_ALERTLIST, {MajorToken: self.data.MajorToken, MinorToken: self.data.MinorToken}, 'json')
+                .then(function (result) {
+                    if(result.data.MajorCode === '000' ) {
+                        let list = result.data.Data;
+                        if (!self.methods.isObjEmpty(list)) {
+                            for (let i = 0; i < list.length; i++) {
+                                //let customName = Protocol.Helper.getAletTypeName(list[i].AlertId);
+                                list[i].CustomName = Protocol.Helper.getAletTypeName(list[i].AlertId);
+                            }
+                            list.sort(function(a,b){
+                                if(a.CustomName < b.CustomName) return -1;
+                                if(a.CustomName > b.CustomName) return 1;
+                                return 0;
+                            });
+                        }
+                        self.methods.setInStorage({name: 'alertList', data: list});
+                        if (callback instanceof Function){
+                            callback(list);
+                        }
+                    }else{
+                        self.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
+                        if (callback instanceof Function){
+                            callback([]);
+                        }
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    if (callback instanceof Function){
+                        callback([]);
                     }
                     if (err && err.status === 404){
                         self.dialog.alert(LANGUAGE.PROMPT_MSG002);
@@ -634,6 +707,12 @@ const app = new Framework7({
                             ret = JSON.parse(str);
                         }
                         break;
+                    case 'alertList':
+                        str = localStorage.getItem("COM.QUIKTRAK.NEW.ALERTLIST");
+                        if(str) {
+                            ret = JSON.parse(str);
+                        }
+                        break;
 
                    /* case 'groupList':
                         str = localStorage.getItem("COM.QUIKTRAK.NEW.GROUPLIST");
@@ -685,12 +764,7 @@ const app = new Framework7({
 
 
 
-                    case 'alertList':
-                        str = localStorage.getItem("COM.QUIKTRAK.NEW.ALERTLIST");
-                        if(str) {
-                            ret = JSON.parse(str);
-                        }
-                        break;
+
 
                     case 'scheduledReportList':
                         str = localStorage.getItem("COM.QUIKTRAK.NEW.SCHEDULEDREPORTS");
@@ -748,7 +822,9 @@ const app = new Framework7({
 
                         localStorage.setItem("COM.QUIKTRAK.NEW.EVENTSARRAY", JSON.stringify(EventsArray));
                         break;
-
+                    case 'alertList':
+                        localStorage.setItem("COM.QUIKTRAK.NEW.ALERTLIST", JSON.stringify(params.data));
+                        break;
                     /*case 'groupList':
                         localStorage.setItem("COM.QUIKTRAK.NEW.GROUPLIST", JSON.stringify(params.data));
                         break;
@@ -780,9 +856,7 @@ const app = new Framework7({
                         localStorage.setItem("COM.QUIKTRAK.NEW.SOLUTIONS", JSON.stringify(params.data));
                         break;
 
-                    case 'alertList':
-                        localStorage.setItem("COM.QUIKTRAK.NEW.ALERTLIST", JSON.stringify(params.data));
-                        break;
+
 
                     case 'scheduledReportList':
                         localStorage.setItem("COM.QUIKTRAK.NEW.SCHEDULEDREPORTS", JSON.stringify(params.data));
@@ -948,6 +1022,163 @@ const app = new Framework7({
             //console.log(ary);
             return ret;
         },
+        getGeofenceName: function(code, geofenceList){
+            let ret = '';
+            if (code && !app.methods.isObjEmpty(geofenceList)) {
+                let index = geofenceList.findIndex(obj => obj.Code == code);
+                if (index != -1) {
+                    ret = geofenceList[index].Name;
+                }
+            }
+            return ret
+        },
+        sendCommand: function(command, imsis){
+            let self = this;
+
+            if (!imsis) {
+                self.methods.customDialog({title: LANGUAGE.PROMPT_MSG083, text: LANGUAGE.PROMPT_MSG078});
+                return;
+            }
+            if (!command) {
+                self.methods.customDialog({title: LANGUAGE.PROMPT_MSG083, text: LANGUAGE.PROMPT_MSG080});
+                return;
+            }
+
+            let data = {
+                MinorToken: self.data.MinorToken,
+                appToken: self.id,
+                imsis: imsis,
+            };
+
+            /*console.log(data);
+            console.log(command);
+
+            return;*/
+
+            self.progressbar.show('custom');
+            self.request.promise.post(command, data, 'json')
+                .then(function (result) {
+                    if(result.data.MajorCode === '000') {
+                        self.methods.customNotification({title: LANGUAGE.PROMPT_MSG082});
+                        self.methods.checkBalance();
+                    }else if(result.data.MajorCode === '200' && result.data.MinorCode === '1003'){
+                        self.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
+                    }else if(result.data.MajorCode === '100' && result.data.MinorCode === '1003'){
+                        self.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
+                    }else{
+                        self.methods.customDialogNoCredit();
+                    }/*else{
+                        self.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
+                    }*/
+                })
+                .finally(function () {
+                    self.utils.nextFrame(()=>{
+                        self.progressbar.hide();
+                    });
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    if (err && err.status === 404){
+                        self.dialog.alert(LANGUAGE.PROMPT_MSG002);
+                    }else{
+                        self.dialog.alert(LANGUAGE.PROMPT_MSG003);
+                    }
+                });
+
+        },
+        setStatusNewState: function (params){
+            if (params.state === true) {
+                POSINFOASSETLIST[params.asset].StatusNew = POSINFOASSETLIST[params.asset].StatusNew | Protocol.StatusNewEnum[params.forAlarm] ;
+            }else{
+                POSINFOASSETLIST[params.asset].StatusNew = POSINFOASSETLIST[params.asset].StatusNew & ~Protocol.StatusNewEnum[params.forAlarm] ;
+            }
+        },
+        /*sendCommandStatus: function(imsis){
+            var self = this;
+
+            if (imsis) {
+                var data = {
+                    MinorToken: self.data.MinorToken,
+                    appToken: self.data.AppDetails.appId,
+                    imsis: imsis,
+                };
+
+                self.progressbar.show('custom');
+                self.request.promise.post(API_URL.SEND_COM_STATUS, data, 'json')
+                    .then(function (result) {
+                        if(result.data.MajorCode === '000') {
+                            self.methods.customNotification({title: LANGUAGE.PROMPT_MSG079});
+                            self.methods.checkBalance();
+                        }else if(result.data.MajorCode === '200' && result.data.MinorCode === '1003'){
+                            self.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
+                        }else if(result.data.MajorCode === '100' && result.data.MinorCode === '1003'){
+                            self.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
+                        }else{
+                            self.methods.customDialogNoCredit();
+                        }/!*else{
+                            self.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
+                        }*!/
+                    })
+                    .finally(function () {
+                        self.utils.nextFrame(()=>{
+                            self.progressbar.hide();
+                        });
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                        if (err && err.status === 404){
+                            self.dialog.alert(LANGUAGE.PROMPT_MSG002);
+                        }else{
+                            self.dialog.alert(LANGUAGE.PROMPT_MSG003);
+                        }
+                    });
+            }else{
+                self.methods.customDialog(LANGUAGE.PROMPT_MSG078);
+            }
+        },
+        sendCommandPosition: function(imsis){
+            var self = this;
+
+            if (imsis) {
+                var data = {
+                    MinorToken: self.data.MinorToken,
+                    appToken: self.data.AppDetails.appId,
+                    imsis: imsis,
+                };
+
+                self.progressbar.show('custom');
+                self.request.promise.post(API_URL.SEND_COM_POS, data, 'json')
+                    .then(function (result) {
+                        if(result.data.MajorCode === '000') {
+                            self.methods.customNotification({title: LANGUAGE.PROMPT_MSG079});
+                            self.methods.checkBalance();
+                        }else if(result.data.MajorCode === '200' && result.data.MinorCode === '1003'){
+                            self.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
+                        }else if(result.data.MajorCode === '100' && result.data.MinorCode === '1003'){
+                            self.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
+                        }else{
+                            self.methods.customDialogNoCredit();
+                        }/!*else{
+                            self.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
+                        }*!/
+                    })
+                    .finally(function () {
+                        self.utils.nextFrame(()=>{
+                            self.progressbar.hide();
+                        });
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                        if (err && err.status === 404){
+                            self.dialog.alert(LANGUAGE.PROMPT_MSG002);
+                        }else{
+                            self.dialog.alert(LANGUAGE.PROMPT_MSG003);
+                        }
+                    });
+            }else{
+                self.methods.customDialog(LANGUAGE.PROMPT_MSG078);
+            }
+        },*/
         getNewNotifications: function(params, callbackFunc){
             let self = this;
 
@@ -980,7 +1211,12 @@ const app = new Framework7({
                             }
 
                             if (params && params.loadPageNotification === true) {
-                                let user = localStorage.ACCOUNT;
+                                if (mainView.history && mainView.history.length && mainView.history.indexOf('/notifications/') !== -1) {
+                                    mainView.router.back('/notifications/',{ignoreCache: true, force: true});
+                                }else{
+                                    mainView.router.navigate('/notifications/');
+                                }
+                                /*let user = localStorage.ACCOUNT;
                                 let notList = self.methods.getFromStorage('notifications');
                                 if (notList && notList[user] && notList[user].length > 0 || Array.isArray(data) && data.length > 0) {
 
@@ -993,11 +1229,11 @@ const app = new Framework7({
                                 }else{
                                     self.methods.customNotification({title: LANGUAGE.PROMPT_MSG076});
 
-                                    /*let notificationsIconEl = $$('.openNotificationsPageLink i');
+                                    /!*let notificationsIconEl = $$('.openNotificationsPageLink i');
                                     if (notificationsIconEl && notificationsIconEl.length) {
                                         notificationsIconEl.empty();
-                                    }*/
-                                }
+                                    }*!/
+                                }*/
                             }
 
                         }else {
@@ -1250,6 +1486,7 @@ const app = new Framework7({
                 message.Speed = message.Speed + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
             }
             let deviceParams = message.PARAMS ? self.methods.isJsonString(message.PARAMS) : '';
+
             if (deviceParams) {
                 message.PARAMS = self.methods.isJsonString(message.PARAMS);
             }
@@ -1517,10 +1754,10 @@ const app = new Framework7({
             let self = this;
             //console.log(asset);
             let markerData = '';
-            let customAddress = LANGUAGE.COM_MSG08;
+            let customAddress = LANGUAGE.COM_MSG004;
 
             if (positionDetails) {
-                customAddress = !positionDetails.address ? LANGUAGE.COM_MSG08 : positionDetails.address;
+                customAddress = !positionDetails.customAddress ? LANGUAGE.COM_MSG004 : positionDetails.customAddress;
                 markerData += '<table cellpadding="0" cellspacing="0" border="0" class="marker-data-table">';
                 markerData +=   '<tr>';
                 markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG01+'</td>';
@@ -1529,13 +1766,15 @@ const app = new Framework7({
 
                 markerData +=   '<tr>';
                 markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG03+'</td>';
-                markerData +=       '<td class="marker-data-value">'+positionDetails.PositionTime+'</td>';
+                markerData +=       `<td class="marker-data-value">${positionDetails.PositionTimeLocal ? positionDetails.PositionTimeLocal : positionDetails.PositionTime }</td>`;
                 markerData +=   '</tr>';
+                if ( typeof positionDetails.Speed !== 'undefined') {
+                    markerData +=   '<tr>';
+                    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG05+'</td>';
+                    markerData +=       '<td class="marker-data-value">'+positionDetails.Speed+'</td>';
+                    markerData +=   '</tr>';
+                }
 
-                markerData +=   '<tr>';
-                markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG05+'</td>';
-                markerData +=       '<td class="marker-data-value">'+positionDetails.Speed+'</td>';
-                markerData +=   '</tr>';
                 if (positionDetails.Direction) {
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG10+'</td>';
@@ -1552,6 +1791,12 @@ const app = new Framework7({
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG06+'</td>';
                     markerData +=       '<td class="marker-data-value">'+positionDetails.Acc+'</td>';
+                    markerData +=   '</tr>';
+                }
+                if (positionDetails.Voltage) {
+                    markerData +=   '<tr>';
+                    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG28+'</td>';
+                    markerData +=       '<td class="marker-data-value">'+positionDetails.Voltage+'&nbsp;V</td>';
                     markerData +=   '</tr>';
                 }
                 markerData +=   '<tr>';
@@ -1595,12 +1840,12 @@ const app = new Framework7({
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG03+'</td>';
                     markerData +=       '<td class="marker-data-value">'+asset.posInfo.positionTime.format(window.COM_TIMEFORMAT)+'</td>';
                     markerData +=   '</tr>';
-                    if (assetFeaturesStatus.stopped) {
+                    /*if (assetFeaturesStatus.stopped) {
                         markerData +=   '<tr>';
                         markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG18+'</td>';
                         markerData +=       '<td class="marker-data-value">'+assetFeaturesStatus.stopped.duration+'</td>';
                         markerData +=   '</tr>';
-                    }
+                    }*/
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG04+'</td>';
                     markerData +=       '<td class="marker-data-value">'+mileage+'</td>';
@@ -1643,12 +1888,12 @@ const app = new Framework7({
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG10+'</td>';
                     markerData +=       '<td class="marker-data-value">'+deirectionCardinal+' ('+asset.posInfo.direct+'&deg;)</td>';
                     markerData +=   '</tr>';
-                    if (positionType) {
+                    /*if (positionType) {
                         markerData +=   '<tr>';
                         markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG13+'</td>';
                         markerData +=       '<td class="marker-data-value ">'+positionType+'</td>';
                         markerData +=   '</tr>';
-                    }
+                    }*/
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG11+'</td>';
                     markerData +=       '<td class="marker-data-value ">'+ Protocol.Helper.convertDMS(asset.posInfo.lat, asset.posInfo.lng) +'</td>';
@@ -1714,17 +1959,8 @@ const app = new Framework7({
         getPlaybackMarkerDataTableInfoPin: function(point, additionaDataObj = {}){
             let self = this;
             let markerData = '';
-
-            /*let beginTime = moment(point.beginTime).format(window.COM_TIMEFORMAT);
-            beginTime = moment.utc(beginTime).toDate();
-            beginTime = moment(beginTime).local().format(window.COM_TIMEFORMAT);
-            let endTime = moment(point.endTime).format(window.COM_TIMEFORMAT);
-            endTime = moment.utc(endTime).toDate();
-            endTime = moment(endTime).local().format(window.COM_TIMEFORMAT);*/
             let beginTime = moment(point.beginTime).add(self.data.UTCOFFSET,'minutes').format(window.COM_TIMEFORMAT);
             let endTime = moment(point.endTime).add(self.data.UTCOFFSET,'minutes').format(window.COM_TIMEFORMAT);
-
-
             let dateDifference = Protocol.Helper.getDifferenceBTtwoDates(point.beginTime,point.endTime);
             let duration = moment.duration(dateDifference, "milliseconds").format('d[d] h[h] m[m] s[s]');
             let fenceName = '';
@@ -1937,6 +2173,12 @@ const app = new Framework7({
         sortVirtualAssetList: function (list, sortBy, orderBy) {
             let self = this;
             let filterType = list.$el.data('filter-type');
+            if(!sortBy){
+                sortBy = list.$el.data('sort-by');
+            }
+            if(!orderBy){
+                orderBy = list.$el.data('order-by');
+            }
 
             let sortedList = self.methods.sortAssetList(list.items, sortBy, orderBy);
             list.replaceAllItems(sortedList);
@@ -2078,9 +2320,6 @@ const app = new Framework7({
         },
         formatPlaybackEventData: function(point={}, geofenceList){
             let self = this;
-            /*point.BeginTimeLocal = moment(point.beginTime).format(window.COM_TIMEFORMAT);
-            point.BeginTimeLocal = moment.utc(point.BeginTimeLocal).toDate();
-            point.BeginTimeLocal = moment(point.BeginTimeLocal).local().format(window.COM_TIMEFORMAT);*/
             point.BeginTimeLocal = moment(point.beginTime).add(self.data.UTCOFFSET,'minutes').format(window.COM_TIMEFORMAT);
 
             switch (point.eventClass){
@@ -2433,33 +2672,7 @@ const mainView = app.views.create('.view-main', {
     //stackPages: true
 });
 
-/*document.addEventListener("deviceready", onDeviceReady, false);
 
-function onDeviceReady() {
-    app.data.AppDetails.appId = BuildInfo.packageName;
-
-    //fix app images and text size
-    if (window.MobileAccessibility) {
-        window.MobileAccessibility.usePreferredTextZoom(false);
-    }
-    if (StatusBar) {
-        StatusBar.styleDefault();
-    }
-
-    document.addEventListener("backbutton", backFix, false);
-    //document.addEventListener("resume", onAppResume, false);
-    //document.addEventListener("pause", onAppPause, false);
-}
-
-function backFix(event) {
-    if (mainView.router.url === '/') {
-        app.dialog.confirm(LANGUAGE.PROMPT_MSG044, function() {
-            navigator.app.exitApp();
-        });
-    } else {
-        mainView.router.back();
-    }
-}*/
 
 if (!String.prototype.trim) {
     String.prototype.trim = function () {

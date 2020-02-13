@@ -94,8 +94,8 @@
                                                 <input type="range" name="PlaybackSpeed" min="1" max="16" step="0.2" value="1">
                                             </div>
                                             <div class="item-footer display-flex justify-content-space-between text-color-gray">
-                                                <span>{{@global.LANGUAGE.ASSET_PLAYBACK_MSG11}}</span>
                                                 <span>{{@global.LANGUAGE.ASSET_PLAYBACK_MSG12}}</span>
+                                                <span>{{@global.LANGUAGE.ASSET_PLAYBACK_MSG11}}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -275,7 +275,7 @@
                             </ul>
                         </div>
                     {{else}}
-                        <div key="summary-list" class="list no-hairlines no-margin-top">
+                        <div key="summary-list" class="list list-custom no-hairlines no-margin-top">
                             <ul>
                                 {{#SummaryList}}
                                 <li>
@@ -1179,12 +1179,12 @@
                     }
                 }
                 content +=										`</select>
-																<div class="item-content ">
+																<div class="item-content  item-input">
 																	<div class="item-media text-color-lightgray">
 																		<i class="f7-icons icon-live-email"></i>
 																	</div>
 																	<div class="item-inner">
-																		<div class="item-title">${ LANGUAGE.COM_MSG077 }</div>
+																		<div class="item-title item-label">${ LANGUAGE.COM_MSG077 }</div>
 																	</div>
 																</div>
 															</a>
@@ -1411,8 +1411,16 @@
                 if (this.RangeSliderSpeed){
                     this.RangeSliderSpeed.destroy();
                 }
+                if (this.PlaybackEventsLayerGroup){
+                    this.PlaybackEventsLayerGroup.clearLayers();
+                }
+                if (this.Map){
+                    this.Map.remove()
+                }
+
                 this.$app.sheet.close();
                 this.$app.popover.close();
+
 
 
             }

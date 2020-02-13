@@ -34,21 +34,21 @@
 
             {{#unless Shared}}
             <div class="block-title">{{@global.LANGUAGE.GEOFENCES_MSG04}}</div>
-            <div class="list no-hairline-bottom no-hairline-top no-margin-top">
+            <div class="list no-hairline-bottom no-margin-top">
                 <ul>
                     <li>
-                        <a key="key-asset-list" class="item-link smart-select smart-select-asset-list" data-open-in="popup" data-form-color-theme="green" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG02}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-page-title = "{{@global.LANGUAGE.COM_MSG065}}" >
+                        <a key="key-asset-list" class="item-link smart-select smart-select-asset-list custom-smart-select" data-open-in="popup" data-form-color-theme="green" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG002}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-page-title = "{{@global.LANGUAGE.COM_MSG065}}" >
                             <select name="Assets" multiple required validate>
                                 {{#AssetList}}
                                     <option value="{{IMEI}}" {{#if AssetSelected}}selected{{/if}}>{{Name}}</option>
                                 {{/AssetList}}
                             </select>
-                            <div class="item-content">
+                            <div class="item-content item-input">
                                 <div class="item-media text-color-lightgray">
                                     <i class="f7-icons icon-asset-name"></i>
                                 </div>
                                 <div class="item-inner">
-                                    <div class="item-title ">{{@global.LANGUAGE.GEOFENCES_MSG02}}</div>
+                                    <div class="item-title item-label ">{{@global.LANGUAGE.GEOFENCES_MSG02}}</div>
                                 </div>
                             </div>
                         </a>
@@ -102,7 +102,7 @@
                     </li>
 
                     <li >
-                        <a class="item-link smart-select smart-select-notify-list" data-open-in="popup" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG002}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-page-title = "{{@global.LANGUAGE.GEOFENCES_MSG10}}">
+                        <a class="item-link smart-select smart-select-notify-list custom-smart-select" data-open-in="popup" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG002}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-page-title = "{{@global.LANGUAGE.GEOFENCES_MSG10}}">
                             <select name="NotifyEmails" multiple  >
                                 {{#NotifyEmails}}
                                 {{#if EMail}}
@@ -110,12 +110,12 @@
                                 {{/if}}
                                 {{/NotifyEmails}}
                             </select>
-                            <div class="item-content">
+                            <div class="item-content item-input">
                                 <div class="item-media text-color-lightgray">
                                     <i class="f7-icons icon-live-email"></i>
                                 </div>
-                                <div class="item-inner">
-                                    <div class="item-title ">{{@global.LANGUAGE.GEOFENCES_MSG10}}</div>
+                                <div class="item-inner ">
+                                    <div class="item-title item-label">{{@global.LANGUAGE.GEOFENCES_MSG10}}</div>
                                 </div>
                             </div>
                         </a>

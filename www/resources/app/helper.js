@@ -545,11 +545,37 @@ let Protocol = {
             }
             return ret;
         },
+        getReportNameByType: function(type){
+            let ret = '';
+            type = ''+type;
+            switch (type) {
+                case '1':
+                    ret = LANGUAGE.REPORTS_MSG01;
+                    break; // Overview Report
+                case '2':
+                    ret = LANGUAGE.REPORTS_MSG00;
+                    break; // Stop Log
+                case '3':
+                    ret = LANGUAGE.REPORTS_MSG02;
+                    break; // Alarm report
+                case '4':
+                    ret = LANGUAGE.REPORTS_MSG03;
+                    break; // Trip report
+                case '5':
+                    ret = LANGUAGE.REPORTS_MSG04;
+                    break; // Runtime / Ignition
 
+                default:
+                    ret = LANGUAGE.REPORTS_MSG05;
+            }
+            return ret;
+        },
         getAletTypeName: function(type){
             let ret = "";
             type = ''+type;
             switch (type){
+                //case '0':           ret = LANGUAGE.REPORT_ALERT_LIST_MSG01; break; // None
+                //case '1':           ret = LANGUAGE.REPORT_ALERT_LIST_MSG02; break; // Custom
                 case '2':           ret = LANGUAGE.REPORT_ALERT_LIST_MSG03; break; // SOS Duress
                 case '4':           ret = LANGUAGE.REPORT_ALERT_LIST_MSG04; break; // Power Disconnect 
                 case '8':           ret = LANGUAGE.REPORT_ALERT_LIST_MSG05; break; // Enter Geofence
@@ -569,6 +595,40 @@ let Protocol = {
                 case '33554432':    ret = LANGUAGE.REPORT_ALERT_LIST_MSG27; break; // Harsh Accelerate
                     
             }           
+            return ret;
+        },
+        getOverviewReportOptions: function(){
+            let ret = [
+                {
+                    Value: "STATIC",
+                    Name: LANGUAGE.REPORT_ADDITIONAL_OPTIONS_MSG00,
+                },
+                {
+                    Value: "MOVE",
+                    Name: LANGUAGE.REPORT_ADDITIONAL_OPTIONS_MSG01,
+                },
+                {
+                    Value: "ACC",
+                    Name: LANGUAGE.REPORT_ADDITIONAL_OPTIONS_MSG02,
+                },
+                {
+                    Value: "ACC2",
+                    Name: LANGUAGE.REPORT_ADDITIONAL_OPTIONS_MSG03
+                },
+                {
+                    Value: "MILEAGE",
+                    Name: LANGUAGE.REPORT_ADDITIONAL_OPTIONS_MSG04,
+                },
+                {
+                    Value: "FUEL_CONSUMED",
+                    Name: LANGUAGE.REPORT_ADDITIONAL_OPTIONS_MSG05,
+                },
+                {
+                    Value: "TOTAL_MILEAGE",
+                    Name: LANGUAGE.REPORT_ADDITIONAL_OPTIONS_MSG06,
+                },
+            ];
+
             return ret;
         },
         getDaysOffWeekArray: function(){

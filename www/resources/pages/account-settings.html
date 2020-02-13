@@ -109,18 +109,18 @@
                                 </div>
                             </li>
                             <li >
-								<a class="item-link smart-select smart-select-init custom-smart-select-assets" data-open-in="popup" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG002}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-form-color-theme="green">
+								<a class="item-link smart-select smart-select-init custom-smart-select custom-smart-select-assets" data-open-in="popup" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG002}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-form-color-theme="green">
 									<select name="TimeZone" required validate >
 										{{#TimeZoneList}}
 											<option value="{{Value}}" {{#if State }}selected{{/if}}>{{Name}}</option>
 										{{/TimeZoneList}}  
 									</select>
-									<div class="item-content ">
+									<div class="item-content  item-input">
 										<div class="item-media text-color-lightgray">
 											<!-- <i class="f7-icons icon-name"></i> -->
 										</div>
 										<div class="item-inner">
-											<div class="item-title">{{@global.LANGUAGE.ACCOUNT_SETTINGS_MSG25}}</div>
+											<div class="item-title item-label">{{@global.LANGUAGE.ACCOUNT_SETTINGS_MSG25}}</div>
 										</div>
 									</div>
 								</a>

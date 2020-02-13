@@ -47,6 +47,14 @@ var routes = [
         },
     },
     {
+        path: '/asset-select/',
+        componentUrl: './resources/pages/asset-select.html?v=1.3',
+        name: 'asset-select',
+        options: {
+            transition: 'f7-cover',
+        },
+    },
+    {
         path: '/asset-alarm/',
         componentUrl: './resources/pages/asset-alarm.html?v=1.3',
         name: 'asset-alarm',
@@ -127,6 +135,22 @@ var routes = [
         },
     },
     {
+        path: '/reports/',
+        componentUrl: './resources/pages/reports.html?v=1.4',
+        name: 'reports',
+        options: {
+            transition: 'f7-cover',
+        },
+    },
+    {
+        path: '/report-generate/',
+        componentUrl: './resources/pages/report-generate.html?v=1.4',
+        name: 'report-generate',
+        options: {
+            transition: 'f7-cover',
+        },
+    },
+    {
         path: '/report-theft/',
         componentUrl: './resources/pages/report-theft.html?v=1.3',
         name: 'report-theft',
@@ -146,6 +170,30 @@ var routes = [
         path: '/notification/',
         componentUrl: './resources/pages/notification.html?v=1.3',
         name: 'notification',
+        options: {
+            transition: 'f7-cover',
+        },
+    },
+    {
+        path: '/report-alarm-log/',
+        componentUrl: './resources/pages/report-alarm-log.html?v=1.3',
+        name: 'report-alarm-log',
+        options: {
+            transition: 'f7-cover',
+        },
+    },
+    {
+        path: '/report-alarm-log-show/',
+        componentUrl: './resources/pages/report-alarm-log-show.html?v=1.3',
+        name: 'report-alarm-log-show',
+        options: {
+            transition: 'f7-cover',
+        },
+    },
+    {
+        path: '/report-map/',
+        componentUrl: './resources/pages/report-map.html?v=1.3',
+        name: 'report-map',
         options: {
             transition: 'f7-cover',
         },

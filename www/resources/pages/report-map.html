@@ -1,0 +1,178 @@
+<!--suppress JSAnnotator -->
+<template>
+<!-- Page, data-name contains page name which can be used in callbacks -->
+        <div class="page " data-name="report-map" > <!-- page-with-subnavbar -->
+        <!-- Top Navbar -->
+            <div class="navbar">
+                <div class="navbar-bg"></div>
+                <div class="navbar-inner">
+                    <div class="left">
+                        <a href="#" class="link icon-only back">
+                            <i class="if-not-ios f7-icons icon-header-arrow-back"></i>
+                            <i class="if-ios icon icon-back"></i>
+                        </a>
+                    </div>
+                    <div class="title sliding" >{{PageTitle}}</div>
+                    <div class="right">
+
+                    </div>
+                </div>
+            </div>          
+            
+            <!-- Scrollable page content-->
+            <div class="page-content" >
+
+                <div id="{{MapId}}" class="map"></div>
+
+                <div class="fab fab-left-bottom fab-custom with-borders {{#unless SVExist}}disabled{{/unless}}">
+                    <a @click="ShowStreetView" href="#" class="bg-color-darkgray elevation-hover-10" data-lat="{{Data.Lat}}" data-lng="{{Data.Lng}}">
+                        <i class="pano-preview-img"></i>
+                    </a>
+                </div>
+                <div class="fab fab-right-bottom fab-custom {{#if DisableRoute}}disabled{{/if}}">
+                    <a href="#" class="bg-color-darkgray elevation-hover-10 flex-direction-column routeButton" data-lat="{{Data.Lat}}" data-lng="{{Data.Lng}}">
+                        <i class="f7-icons icon-other-route"></i>
+                        <div class="fab-text">{{@global.LANGUAGE.ASSET_TRACK_MSG20}}</div>
+                    </a>
+                </div>
+
+
+            </div>
+        </div>
+</template>
+
+<script>
+  // script must return component object
+    return {
+        data: function () {
+            let self = this;
+            let ret = {
+                MapId: 'map-' + self.$app.utils.id()
+            };
+
+            if(self.$route.context.AlertData){
+                ret.Data = self.$route.context.AlertData;
+                ret.PageTitle = ret.Data.GeofenceName ? ret.Data.GeofenceName + ' - ' + ret.Data.AlertName : ret.Data.AlertName;
+            }
+            //console.log(ret);
+            return ret;
+        },
+        methods: {
+            initMapWithMarker: function(params={}){
+                let self = this;
+                let assetList = self.$app.methods.getFromStorage('assetList');
+                self.Map = Protocol.Helper.createMap({ target: self.MapId, latLng: [0,0], zoom: 2 });
+                self.MarkersGroup = L.markerClusterGroup({'maxClusterRadius':35,});
+                self.StreetViewService = new google.maps.StreetViewService();
+
+                if(!params.IMEI || !assetList[params.IMEI]){
+                    self.$setState({
+                        DisableRoute: true
+                    });
+                    self.$app.methods.customNotification({text: LANGUAGE.PROMPT_MSG094});
+                    return;
+                }
+                //console.log(params)
+                if (parseFloat(params.Lat) && parseFloat(params.Lng)) {
+                    let asset = self.$app.methods.getFromStorage('assetList')[params.IMEI];
+                    let point = L.marker([params.Lat,params.Lng], {icon: self.$app.methods.getMarkerIcon({asset: true, type: asset.SolutionType})});
+                    let markerData = self.$app.methods.getMarkerDataTable(false, params);
+                    point                            
+                        .bindPopup(markerData,{maxWidth:self.$root.MaxMapPopupWidth, closeButton: false})
+                        .on('popupopen', function (e) {                               
+                            if (!point.customAddress) {
+                                Protocol.Helper.getAddressByGeocoder({lat: params.Lat, lng: params.Lng},function(address){
+                                    point.customAddress = params.customAddress = address;
+                                    markerData = self.$app.methods.getMarkerDataTable(false, params);       
+                                    e.target.setPopupContent(markerData);                                        
+                                    e.popup.update();                                       
+                                }); 
+                            }                                 
+                        });
+                    point._custom_asset_imei = params.IMEI;
+                    point.addTo(self.MarkersGroup);
+                    self.MarkersGroup.addTo(self.Map);
+
+                    if (self.MarkersGroup.getBounds().isValid()) {
+                        self.Map.fitBounds(self.MarkersGroup.getBounds(),{padding:[16,16], maxZoom: 15});
+                    }
+                    self.PanoButtonUpdate([params.Lat, params.Lng]);
+                }                
+            },
+            PanoButtonUpdate: function (latlng=[]) {
+                let self = this;
+                if(!latlng.length){
+                    latlng = [self.Lat, self.Lng];
+                }
+                self.StreetViewService.getPanorama({ location: new google.maps.LatLng(latlng[0], latlng[1]), radius: 50 }, self.ProcessSVData);
+            },
+            ProcessSVData: function(data, status) {
+                this.$setState({
+                    SVExist: status === 'OK'
+                });
+            },
+            ShowStreetView: function(e) {
+                let self = this;
+                let $target = $$(e.target).closest('a');
+
+                let content = `
+                        <div class="popup" >
+                            <div class="view">
+                                <div class="page">
+                                    <div class="page-content">
+                                        <div class="fab fab-left-top fab-pano-close popup-close">
+                                            <a href="#">
+                                                <i class="f7-icons">close</i>
+                                            </a>
+                                        </div>
+                                        <div id="pano" class="pano" ></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+
+                self.DynamicMenuPopup = self.$app.popup.create({
+                    content: content,
+                    on: {
+                        open: function (popup) {
+                            let panoramaOptions = {
+                                position: new google.maps.LatLng($target.data('lat'), $target.data('lng')),
+                                pov: {
+                                    heading: 0,
+                                    pitch: 0
+                                },
+                                linksControl: false,
+                                panControl: false,
+                                enableCloseButton: false,
+                                addressControl: false
+                            };
+                            let panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'), panoramaOptions);
+
+                        },
+                        closed: function(popup){
+                            popup.$el.remove();
+                            popup.destroy();
+                        },
+                    }
+                }).open();
+            },
+            
+        },
+        on: {
+            pageInit: function (e, page) { 
+                let self = this;
+
+                self.initMapWithMarker(self.Data);
+            },
+            pageBeforeOut: function (e, page) {
+                let self = this;
+                if(self.MarkersGroup){
+                    self.MarkersGroup.clearLayers();
+                }
+                if(self.Map){
+                    self.Map.remove()
+                }
+            },   
+        }
+    };
+</script>

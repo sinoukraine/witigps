@@ -6,14 +6,17 @@
             <div class="navbar-bg"></div>
             <div class="navbar-inner">
                 <div class="left">
-                    <!--<a href="#" class="link icon-only back" >
-                        <i class="if-not-ios f7-icons icon-header-arrow-back"></i>
-                        <i class="if-ios icon icon-back"></i>
-                    </a>-->
+                    {{#if LiveAsset}}
                     <a href="/panel-left/" class="link icon-only " >
                         <i class="if-not-ios f7-icons icon-header-menu"></i>
                         <i class="if-ios icon material-icons">menu</i>
                     </a>
+                    {{else}}
+                    <a href="#" class="link icon-only back" >
+                        <i class="if-not-ios f7-icons icon-header-arrow-back"></i>
+                        <i class="if-ios icon icon-back"></i>
+                    </a>
+                    {{/if}}
                 </div>
                 <div class="title sliding">
                     {{Name}}
@@ -42,7 +45,7 @@
                 {{#if LiveAsset}}
                 <a href="/report-theft/?imei={{IMEI}}" class="link button width-100 color-white"><i class="f7-icons icon-live-report-thief margin-right"></i> {{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG07}}</a>
                 {{else}}
-                <a href="#" class="link button width-100 color-white"><i class="f7-icons icon-header-refresh margin-right"></i> {{@global.LANGUAGE.COM_MSG057}}</a>
+                <a @click="requestStatus" href="#" class="link button width-100 color-white"><i class="f7-icons icon-header-refresh margin-right"></i> {{@global.LANGUAGE.COM_MSG057}}</a>
                 {{/if}}
             </div>
         </div>
@@ -72,14 +75,14 @@
             <div class="list no-margin " >
                 <ul>
                     <li class="item-content">
-                        <div class="item-media {{#if GeolockActive}} text-color-green {{else}} text-color-lightgray {{/if}}">
+                        <div class="item-media {{#if Geolock}} text-color-green {{else}} text-color-lightgray {{/if}}">
                             <i class="f7-icons icon-live-geolock"></i>
                         </div>
                         <div class="item-inner">
                             <div class="item-title tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG004}}">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG04}}  <span class="badge color-lightblue">?</span></div>
                             <div class="item-after">
                                 <label class="toggle color-green toggle-Geolock">
-                                    <input type="checkbox" name="Geolock" {{#if GeolockActive}} checked {{/if}}>
+                                    <input type="checkbox" name="Geolock" {{#if Geolock}} checked {{/if}}>
                                     <span class="toggle-icon"></span>
                                 </label>
                             </div>
@@ -87,14 +90,14 @@
                     </li>
                     {{#if IsImmobilisationSupported}}
                     <li class="item-content">
-                        <div class="item-media {{#if ImmobilisationActive}} text-color-red {{else}} text-color-lightgray {{/if}}">
+                        <div class="item-media {{#if Immobilise}} text-color-red {{else}} text-color-lightgray {{/if}}">
                             <i class="f7-icons icon-live-immobilisation"></i>
                         </div>
                         <div class="item-inner">
                             <div class="item-title tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG005}}">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG05}}  <span class="badge color-lightblue">?</span></div>
                             <div class="item-after">
                                 <label class="toggle color-green toggle-Immobilisation">
-                                    <input type="checkbox" name="Immobilisation" {{#if ImmobilisationActive}} checked {{/if}}>
+                                    <input type="checkbox" name="Immobilise" {{#if Immobilise}} checked {{/if}}>
                                     <span class="toggle-icon"></span>
                                 </label>
                             </div>
@@ -103,14 +106,14 @@
                     {{/if}}
                     {{#if IsLockDoorSupported}}
                     <li class="item-content">
-                        <div class="item-media {{#if LockDoorActive}} text-color-red {{else}} text-color-lightgray {{/if}}">
+                        <div class="item-media {{#if LockDoor}} text-color-red {{else}} text-color-lightgray {{/if}}">
                             <i class="f7-icons icon-live-lock-door"></i>
                         </div>
                         <div class="item-inner">
                             <div class="item-title tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG006}}">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG06}}  <span class="badge color-lightblue">?</span></div>
                             <div class="item-after">
                                 <label class="toggle color-green toggle-LockDoor">
-                                    <input type="checkbox" name="LockDoor" {{#if LockDoorActive}} checked {{/if}}>
+                                    <input type="checkbox" name="LockDoor" {{#if LockDoor}} checked {{/if}}>
                                     <span class="toggle-icon"></span>
                                 </label>
                             </div>
@@ -256,9 +259,12 @@
             let asset = POSINFOASSETLIST[imei]; //self.$app.methods.getFromStorage('assetList')[imei];
             let afs = Protocol.Helper.getAssetStateInfo(asset);
 //console.log(afs);
+            //console.log(asset);
             let ret = {
                 Name: asset.Name,
                 IMEI: asset.IMEI,
+                IMSI: asset.IMSI,
+                Id: asset.Id,
                 LiveAsset: asset.SolutionType.toLowerCase() !== 'protect' && asset.SolutionType.toLowerCase() !== 'loc8',
                 Tabs: !!tabsFlag,
 
@@ -268,8 +274,8 @@
                 EngineHours: afs.mileage ? afs.engineHours.value : LANGUAGE.COM_MSG031,
                 Direction: Protocol.Helper.getDirectionCardinal(asset.posInfo.direct) + ' (' + asset.posInfo.direct + '&deg;)',
 
-                GeolockActive: afs.geolock ? afs.geolock.value : false,
-                ImmobilisationActive: afs.immob ? afs.immob.value : false,
+                Geolock: afs.geolock ? afs.geolock.value : false,
+                Immobilise: afs.immob ? afs.immob.value : false,
                 LockDoor: afs.lockdoor ? afs.lockdoor.value : false,
                 StoppedDuration: afs.stopped ? afs.stopped.duration : false,
                 Temperature: afs.temperature ? afs.temperature.value : false,
@@ -284,7 +290,7 @@
                 Coords: 'GPS: ' + Protocol.Helper.convertDMS(asset.posInfo.lat, asset.posInfo.lng),
 
                 IsImmobilisationSupported: (parseInt(asset._FIELD_INT2) & 1) > 0,
-                IsLockDoorSupported: (parseInt(asset._FIELD_INT2) & 1) > 0,
+                IsLockDoorSupported: (parseInt(asset._FIELD_INT2) & 512) > 0,
             };
 
             return ret;
@@ -335,7 +341,89 @@
                         self.$setState({Address: address})
                     });
                 }
+            },
+            requestStatus: function () {
+                let self = this;
+                self.$app.methods.sendCommand(API_URL.SEND_COM_STATUS, self.IMSI);
+            },
+            changeState: function (params){
+                let self = this;
+                if (params && params.id) {
+                    let url = API_URL.SET_GEOLOCK;
+                    if (params.name === 'Immobilise') {
+                        url = API_URL.SET_IMMOBILISATION;
+                    }else if(params.name === 'LockDoor'){
+                        url = API_URL.SET_DOORLOCK;
+                    }
+
+                    let data = {
+                        MajorToken: self.$root.MajorToken,
+                        MinorToken: self.$root.MinorToken,
+                        code: params.id,
+                    };
+                    if (params.name === 'LockDoor') {
+                        data.state = params.state ? 'lock' : 'unlock';
+                    }else{
+                        data.state = params.state ? 'on' : 'off';
+                    }
+                    self.$app.progressbar.show('custom');
+                    self.$app.request.promise.get(url, data, 'json')
+                        .then(function (result) {
+                            if (result.data && result.data.MajorCode === '000') {
+                                self.$app.methods.setStatusNewState({
+                                    asset: params.imei,
+                                    forAlarm: params.name,
+                                    state: params.state
+                                });
+                                self.$setState({ [params.name]: params.state });
+                                self.$app.methods.checkBalance();
+
+                            }else if(result.data && result.data.MajorCode === '200' && result.data.MinorCode === '1003'){
+                                params.state = !params.state;
+                                self.changeSwitcherState(params);
+                                self.$app.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
+
+                            }else if(result.data && result.data.MajorCode === '100' && result.data.MinorCode === '1003'){
+                                params.state = !params.state;
+                                self.changeSwitcherState(params);
+                                self.$app.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
+
+                            }else if(result.data && result.data.MajorCode === '100' && result.data.MinorCode === '0000'){
+                                params.state = !params.state;
+                                self.changeSwitcherState(params);
+                                self.$app.methods.customDialog({title: params.imei, text: LANGUAGE.PROMPT_MSG085});
+
+                            }else{
+                                params.state = !params.state;
+                                self.changeSwitcherState(params);
+                                self.$app.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
+                            }
+                        })
+                        .finally(function () {
+                            self.$app.utils.nextFrame(()=>{
+                                self.$app.progressbar.hide();
+                            });
+                        })
+                        .catch(function (err) {
+                            console.log(err);
+                            if (err && err.status === 404){
+                                self.$app.dialog.alert(LANGUAGE.PROMPT_MSG002);
+                            }else{
+                                self.$app.dialog.alert(LANGUAGE.PROMPT_MSG003);
+                            }
+                        });
+                }
+            },
+            changeSwitcherState: function(params){
+                let self = this;
+                if (params.name) {
+                    let input = self.$el.find('input[name='+params.name+']');
+                    if (input && input.length) {
+                        input.prop('checked', params.state);
+                    }
+                }
             }
+
         },
 
         on: {
@@ -343,6 +431,10 @@
                 let self = this;
 
                 let asset = POSINFOASSETLIST[self.IMEI];
+                let geolockEl = page.$el.find('input[name = "Geolock"]');
+                let immobiliseEl = page.$el.find('input[name = "Immobilise"]');
+                let doorlockEl = page.$el.find('input[name = "LockDoor"]');
+
                 let latlng = {
                     lat: asset.posInfo.lat,
                     lng: asset.posInfo.lng
@@ -352,7 +444,33 @@
                     self.$setState({Address: address})
                 });
 
-                //self.UpdateInterval = setInterval(self.UpdateData, 30 * 1000);
+                geolockEl.on('change', function(){
+                    self.changeState({id: self.Id, imei: self.IMEI, state: this.checked, name: this.attributes.name.value});
+                });
+                immobiliseEl.on('change', function(){
+                    if (POSINFOASSETLIST[self.IMEI]) {
+                        if ((parseInt(POSINFOASSETLIST[self.IMEI]._FIELD_INT2) & 1) > 0) { // check if asset support immobilise feature
+                            self.changeState({id: self.Id, imei: self.IMEI, state: this.checked, name: this.attributes.name.value});
+                        } else{
+                            self.changeSwitcherState({state: !this.checked, name: this.attributes.name.value});
+                            self.$app.methods.customDialog({title: POSINFOASSETLIST[self.IMEI].Name, text: LANGUAGE.PROMPT_MSG085});
+                        }
+                    }else{
+                        self.changeState({id: self.Id, imei: self.IMEI, state: this.checked, name: this.attributes.name.value});
+                    }
+                });
+                doorlockEl.on('change', function(){
+                    if (POSINFOASSETLIST[self.IMEI]) {
+                        self.changeState({id: self.Id, imei: self.IMEI, state: this.checked, name: this.attributes.name.value});
+                    }else{
+                        if ((parseInt(POSINFOASSETLIST[self.IMEI]._FIELD_INT2) & 512) > 0) { // check if asset support immobilise feature
+                            self.changeState({id: self.Id, imei: self.IMEI, state: this.checked, name: this.attributes.name.value});
+                        } else{
+                            self.changeSwitcherState({state: !this.checked, name: this.attributes.name.value});
+                            self.$app.methods.customDialog({title: POSINFOASSETLIST[self.IMEI].Name, text: LANGUAGE.PROMPT_MSG085});
+                        }
+                    }
+                });
 
                 AssetUpdateEvents.on('updateReceived', self.UpdateData);
             },
