@@ -80,7 +80,7 @@ let UpdateAssetsPosInfoTimer = false;
 let UpdateNotificationsTimer = false;
 let POSINFOASSETLIST = {};
 let StreetViewService = false;
-let push = null;
+let push;
 
 Framework7.request.setup({
     timeout: 40*1000
