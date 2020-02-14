@@ -201,7 +201,7 @@ const app = new Framework7({
 
             if(window.hasOwnProperty("cordova")){
                 if (BuildInfo){
-                    alert(JSON.stringify(BuildInfo));
+                   // alert(JSON.stringify(BuildInfo));
                     self.data.AppDetails.appId = BuildInfo.packageName;
                     if (BuildInfo.version){
                         //$$('.appVersion').text("v" + BuildInfo.version);
@@ -1095,92 +1095,6 @@ const app = new Framework7({
                 POSINFOASSETLIST[params.asset].StatusNew = POSINFOASSETLIST[params.asset].StatusNew & ~Protocol.StatusNewEnum[params.forAlarm] ;
             }
         },
-        /*sendCommandStatus: function(imsis){
-            var self = this;
-
-            if (imsis) {
-                var data = {
-                    MinorToken: self.data.MinorToken,
-                    appToken: self.data.AppDetails.appId,
-                    imsis: imsis,
-                };
-
-                self.progressbar.show('custom');
-                self.request.promise.post(API_URL.SEND_COM_STATUS, data, 'json')
-                    .then(function (result) {
-                        if(result.data.MajorCode === '000') {
-                            self.methods.customNotification({title: LANGUAGE.PROMPT_MSG079});
-                            self.methods.checkBalance();
-                        }else if(result.data.MajorCode === '200' && result.data.MinorCode === '1003'){
-                            self.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
-                        }else if(result.data.MajorCode === '100' && result.data.MinorCode === '1003'){
-                            self.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
-                        }else{
-                            self.methods.customDialogNoCredit();
-                        }/!*else{
-                            self.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
-                        }*!/
-                    })
-                    .finally(function () {
-                        self.utils.nextFrame(()=>{
-                            self.progressbar.hide();
-                        });
-                    })
-                    .catch(function (err) {
-                        console.log(err);
-                        if (err && err.status === 404){
-                            self.dialog.alert(LANGUAGE.PROMPT_MSG002);
-                        }else{
-                            self.dialog.alert(LANGUAGE.PROMPT_MSG003);
-                        }
-                    });
-            }else{
-                self.methods.customDialog(LANGUAGE.PROMPT_MSG078);
-            }
-        },
-        sendCommandPosition: function(imsis){
-            var self = this;
-
-            if (imsis) {
-                var data = {
-                    MinorToken: self.data.MinorToken,
-                    appToken: self.data.AppDetails.appId,
-                    imsis: imsis,
-                };
-
-                self.progressbar.show('custom');
-                self.request.promise.post(API_URL.SEND_COM_POS, data, 'json')
-                    .then(function (result) {
-                        if(result.data.MajorCode === '000') {
-                            self.methods.customNotification({title: LANGUAGE.PROMPT_MSG079});
-                            self.methods.checkBalance();
-                        }else if(result.data.MajorCode === '200' && result.data.MinorCode === '1003'){
-                            self.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
-                        }else if(result.data.MajorCode === '100' && result.data.MinorCode === '1003'){
-                            self.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
-                        }else{
-                            self.methods.customDialogNoCredit();
-                        }/!*else{
-                            self.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
-                        }*!/
-                    })
-                    .finally(function () {
-                        self.utils.nextFrame(()=>{
-                            self.progressbar.hide();
-                        });
-                    })
-                    .catch(function (err) {
-                        console.log(err);
-                        if (err && err.status === 404){
-                            self.dialog.alert(LANGUAGE.PROMPT_MSG002);
-                        }else{
-                            self.dialog.alert(LANGUAGE.PROMPT_MSG003);
-                        }
-                    });
-            }else{
-                self.methods.customDialog(LANGUAGE.PROMPT_MSG078);
-            }
-        },*/
         getNewNotifications: function(params, callbackFunc){
             let self = this;
 
@@ -2718,6 +2632,7 @@ const app = new Framework7({
 const mainView = app.views.create('.view-main', {
     //url: app.view.pushStateRoot ? app.view.pushStateRoot : '/',
     url: '/',
+    allowDuplicateUrls: true,
     //name: 'view-main',
     //stackPages: true
 });
