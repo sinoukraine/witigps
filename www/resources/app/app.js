@@ -2618,7 +2618,7 @@ const app = new Framework7({
 
             push.on('notification', function(data) {
                 //alert( JSON.stringify(data) );
-alert(JSON.stringify(data));
+//alert(JSON.stringify(data));
                 //if user using app and push notification comes
                 if (data && data.additionalData && data.additionalData.foreground) {
                     // if application open, show popup
@@ -2630,14 +2630,14 @@ alert(JSON.stringify(data));
                 } else if (data && data.additionalData && data.additionalData.payload) {
                     //if user NOT using app and push notification comes
 
-                    self.$app.preloader.show();
+                    self.preloader.show();
                     window.loginTimer = setInterval(function() {
                         if (window.loginDone) {
                             clearInterval(window.loginTimer);
                             setTimeout(function() {
                                 //processClickOnPushNotification([data.additionalData.payload]);
                                 mainView.router.navigate('/report-map/',{context: { AlertData: self.methods.formatNewNotifications([data.additionalData]) } });
-                                self.$app.preloader.hide();
+                                self.preloader.hide();
                             }, 1000);
                         }
                     }, 1000);
