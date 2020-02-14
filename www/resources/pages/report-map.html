@@ -65,7 +65,7 @@
                 self.MarkersGroup = L.markerClusterGroup({'maxClusterRadius':35,});
                 self.StreetViewService = new google.maps.StreetViewService();
 
-                if(!params.IMEI || !assetList[params.IMEI]){
+                if(!params.Imei || !assetList[params.Imei]){
                     self.$setState({
                         DisableRoute: true
                     });
@@ -74,7 +74,7 @@
                 }
                 //console.log(params)
                 if (parseFloat(params.Lat) && parseFloat(params.Lng)) {
-                    let asset = self.$app.methods.getFromStorage('assetList')[params.IMEI];
+                    let asset = self.$app.methods.getFromStorage('assetList')[params.Imei];
                     let point = L.marker([params.Lat,params.Lng], {icon: self.$app.methods.getMarkerIcon({asset: true, type: asset.SolutionType})});
                     let markerData = self.$app.methods.getMarkerDataTable(false, params);
                     point                            
@@ -89,7 +89,7 @@
                                 }); 
                             }                                 
                         });
-                    point._custom_asset_imei = params.IMEI;
+                    point._custom_asset_imei = params.Imei;
                     point.addTo(self.MarkersGroup);
                     self.MarkersGroup.addTo(self.Map);
 

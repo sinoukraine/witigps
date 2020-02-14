@@ -1420,6 +1420,9 @@ const app = new Framework7({
                         if(msg.imei){
                             msg.Imei = msg.imei;
                         }
+                        if(msg.IMEI){
+                            msg.Imei = msg.IMEI;
+                        }
                         if(msg.name){
                             msg.AssetName = msg.name;
                         }
@@ -2637,7 +2640,7 @@ const app = new Framework7({
                             setTimeout(function() {
                                 //processClickOnPushNotification([data.additionalData.payload]);
                                 let alertData = self.methods.formatNewNotifications([data.additionalData])[0];
-                                alert(JSON.stringify(alertData));
+                                //alert(JSON.stringify(alertData));
                                 mainView.router.navigate('/report-map/',{context: { AlertData: alertData } });
                                 self.preloader.hide();
                             }, 1000);
