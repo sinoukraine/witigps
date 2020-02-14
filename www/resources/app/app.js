@@ -2636,7 +2636,9 @@ const app = new Framework7({
                             clearInterval(window.loginTimer);
                             setTimeout(function() {
                                 //processClickOnPushNotification([data.additionalData.payload]);
-                                mainView.router.navigate('/report-map/',{context: { AlertData: self.methods.formatNewNotifications([data.additionalData])[0] } });
+                                let alertData = self.methods.formatNewNotifications([data.additionalData])[0];
+                                alert(JSON.stringify(alertData));
+                                mainView.router.navigate('/report-map/',{context: { AlertData: alertData } });
                                 self.preloader.hide();
                             }, 1000);
                         }
