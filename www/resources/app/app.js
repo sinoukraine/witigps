@@ -392,7 +392,7 @@ const app = new Framework7({
             };
             self.request.promise.get(API_URL.LOGOUT, data, 'json')
                 .then(function (result) {
-                    console.log(result);
+                    //console.log(result);
                 });
 
             self.utils.nextTick(()=>{
@@ -548,6 +548,8 @@ const app = new Framework7({
                     }
                     if (!update) {
                         self.dialog.close();
+                        console.log(assetList);
+                        console.log(LoginEvents);
                         LoginEvents.emit('signedIn', assetList);
                     }
                     if (callback instanceof Function) {
@@ -2632,7 +2634,7 @@ const app = new Framework7({
 const mainView = app.views.create('.view-main', {
     //url: app.view.pushStateRoot ? app.view.pushStateRoot : '/',
     url: '/',
-    allowDuplicateUrls: true,
+   // allowDuplicateUrls: true,
     //name: 'view-main',
     //stackPages: true
 });

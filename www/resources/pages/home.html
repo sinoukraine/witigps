@@ -467,9 +467,9 @@
                         self.$app.methods.showToast(LANGUAGE.PROMPT_MSG041);
                     });
                 });
-
+                console.log('home init');
                 LoginEvents.on('signedIn', function (items){
-                    //e.log('here');
+                    console.log('here');
                     self.$setState({
                         AssetsCount: self.$app.methods.countItemsBySolution(items),
                         LoginDone: true
