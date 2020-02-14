@@ -81,6 +81,8 @@ let UpdateNotificationsTimer = false;
 let POSINFOASSETLIST = {};
 let StreetViewService = false;
 let push;
+window.loginTimer;
+window.loginDone;
 
 Framework7.request.setup({
     timeout: 40*1000
@@ -417,8 +419,6 @@ const app = new Framework7({
             let password = $$("input[name='password']");
 
             let data = {
-                //username: account.val() ? account.val() : localStorage.ACCOUNT,
-                //password: password.val() ? password.val() : localStorage.PASSWORD,
                 account: account.val() ? account.val() : localStorage.ACCOUNT,
                 password: password.val() ? password.val() : localStorage.PASSWORD,
 
@@ -428,7 +428,7 @@ const app = new Framework7({
                 deviceType: localStorage.DEVICE_TYPE,
             };
 
-            self.dialog.progress();
+            self.dialog.progress(LANGUAGE.COM_MSG004,'red');
             self.request.promise.get(API_URL.LOGIN, data, 'json')
                 .then(function (result) {
                     if(result.data && result.data.MajorCode === '000') {
@@ -453,7 +453,6 @@ const app = new Framework7({
 
                         self.methods.setAccountSolutions(assetListObj);
 
-
                         self.data.NewImageTimestamp = new Date().getTime();
 
                         UpdateAssetsPosInfoTimer = setInterval(function(){
@@ -470,6 +469,7 @@ const app = new Framework7({
                             self.dialog.close();
                             self.dialog.alert(LANGUAGE.PROMPT_MSG001);
                             self.loginScreen.open('.login-screen');
+                            window.loginDone = 1;
                         });
                     }
                 })
@@ -482,6 +482,7 @@ const app = new Framework7({
                     }else{
                         self.dialog.alert(LANGUAGE.PROMPT_MSG003);
                     }
+                    window.loginDone = 1;
                 });
         },
         getAssetListPosInfo: function(listObj, update= false, callback = false){
@@ -529,8 +530,8 @@ const app = new Framework7({
                                 }
 
                                 assetList = self.methods.sortAssetList(assetList, 'state', 'asc');
+                                window.loginDone = 1;
 
-                                //VirtualAssetListMain.replaceAllItems(sortedList);
                             }else{
                                 for (let i = result.data.Data.length - 1; i >= 0; i--) {
                                     posData = result.data.Data[i];
@@ -554,6 +555,7 @@ const app = new Framework7({
                 })
                 .catch(function (err) {
                     console.log(err);
+                    window.loginDone = 1;
                     /*if (err && err.status === 404){
                         self.dialog.alert(LANGUAGE.PROMPT_MSG002);
                     }else{
@@ -924,11 +926,10 @@ const app = new Framework7({
                         EngineCapacity: params.list[i][index++],
                         OffroadTaxCredit: params.list[i][index++],
                         AssetType: params.list[i][index++],
-
                     };
-                    /*if (POSINFOASSETLIST && POSINFOASSETLIST[params[i][1]]) {
-                        POSINFOASSETLIST[params[i][1]].StatusNew =  ary[params[i][1]].StatusNew;
-                    }  */
+                    if (POSINFOASSETLIST && POSINFOASSETLIST[params.list[i][1]]) {
+                        POSINFOASSETLIST[params.list[i][1]].StatusNew =  ary[params.list[i][1]].StatusNew;
+                    }
                 }
                 ret = ary;
                 localStorage.setItem("COM.QUIKTRAK.NEW.ASSETLIST", JSON.stringify(ary));
@@ -1344,7 +1345,7 @@ const app = new Framework7({
                     pushList[user].unshift(list[i]);
                 }
 
-                self.methods.displayNewNotificationArrived(list);
+                //self.methods.displayNewNotificationArrived(list);
             }
             localStorage.setItem("COM.QUIKTRAK.NEW.NOTIFICATIONS", JSON.stringify(pushList));
         },
@@ -2537,10 +2538,48 @@ const app = new Framework7({
             }
         },
         onAppResume: function(){
-            /*if (localStorage.ACCOUNT && localStorage.PASSWORD) {
-                getNewNotifications();
-                getNewData();
-            }*/
+            if (localStorage.ACCOUNT && localStorage.PASSWORD) {
+                this.methods.getNewNotifications();
+                this.methods.getNewData();
+            }
+        },
+        getNewData: function(){
+            let self = this;
+
+            self.methods.getPlusInfo();
+            let data = {
+                account: localStorage.ACCOUNT,
+                password: localStorage.PASSWORD,
+
+                appKey: localStorage.PUSH_APP_KEY,
+                mobileToken: localStorage.PUSH_MOBILE_TOKEN,
+                deviceToken: localStorage.PUSH_DEVICE_TOKEN,
+                deviceType: localStorage.DEVICE_TYPE,
+            };
+
+            self.request.promise.get(API_URL.LOGIN, data, 'json')
+                .then(function (result) {
+                    if(result.data && result.data.MajorCode === '000') {
+                        self.methods.setInStorage({
+                            name: 'userInfo',
+                            data: result.data.Data.UserInfo
+                        });
+                        self.data.MinorToken = result.data.Data.MinorToken;
+                        self.data.MajorToken = result.data.Data.MajorToken;
+
+                        self.methods.setInStorage({name:'contactList', data:result.data.Data.ContactList });
+                        self.methods.setInStorage({name:'solutions', data:result.data.Data.Solutions });
+                        self.methods.setInStorage({name:'assetTypes', data:result.data.Data.AssetTypes });
+                        let assetListObj = self.methods.setAssetList({list: result.data.Data.AssetArray});
+
+                        self.utils.nextFrame(()=>{
+                            self.methods.getAssetListPosInfo(assetListObj);
+                        });
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
         },
 
         setupPush: function() {
@@ -2584,19 +2623,24 @@ const app = new Framework7({
                 if (data && data.additionalData && data.additionalData.foreground) {
                     // if application open, show popup
                     //showMsgNotification([data.additionalData]);
+
+                        /*let list = self.methods.formatNewNotifications([data.additionalData]);
+                        self.methods.displayNewNotificationArrived(list);*/
+
                 } else if (data && data.additionalData && data.additionalData.payload) {
                     //if user NOT using app and push notification comes
 
-                    /*App.showIndicator();
+                    self.$app.preloader.show();
                     window.loginTimer = setInterval(function() {
                         if (window.loginDone) {
-                            clearInterval(loginTimer);
+                            clearInterval(window.loginTimer);
                             setTimeout(function() {
-                                processClickOnPushNotification([data.additionalData.payload]);
-                                App.hideIndicator();
+                                //processClickOnPushNotification([data.additionalData.payload]);
+                                mainView.router.navigate('/report-map/',{context: { AlertData: self.methods.formatNewNotifications([data.additionalData]) } });
+                                self.$app.preloader.hide();
                             }, 1000);
                         }
-                    }, 1000);*/
+                    }, 1000);
                 }
                 if (device && device.platform && device.platform.toLowerCase() === 'ios') {
                     push.finish(

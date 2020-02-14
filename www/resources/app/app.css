@@ -414,6 +414,7 @@
 }
     .login-screen-content .logo{
         margin-top: 48px;
+        margin-bottom: 48px;
     }
         .login-screen-content .logo img{
             max-width: 320px;

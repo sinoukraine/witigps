@@ -199,7 +199,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG087": "Time Period",
 		"PROMPT_MSG088": "You have no LIVE assets",
 		"PROMPT_MSG089": "LIVE - assets activated with <b>Track</b> or <b>Watch</b> Solution Type",
-		"PROMPT_MSG090": "You have no Notifications yet",
+		"PROMPT_MSG090": "You have no Notifications",
 		"PROMPT_MSG091": "Please, specify report parameters below. Once complete report will be sent on selected email addresses",
 		"PROMPT_MSG092": "You have not created any Geofences yet.",
 		"PROMPT_MSG093": "No Alerts to select",
@@ -207,8 +207,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG095": "Report will be sent shortly, to selected email(s)",
 		"PROMPT_MSG096": "This feature under development",
 		"PROMPT_MSG097": "Select at least one asset, please.",
-
-
+		"PROMPT_MSG098": "There is no position data or they are incorrect.",
 
 
 		"HOME_MSG00": "Home",

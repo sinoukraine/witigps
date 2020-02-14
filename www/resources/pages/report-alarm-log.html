@@ -174,7 +174,14 @@
                             if(!result.data.Data || !result.data.Data.length){
                                 self.methods.customDialog({title: self.PageTitle, text: LANGUAGE.COM_MSG076});
                             }else{
-                                mainView.router.navigate('/report-alarm-log-show/?'+self.$app.utils.serializeObject(additionalData),{context: { ReportRawData: result.data.Data } });
+                                self.$app.progressbar.show('custom');
+                                self.$app.methods.getGeofenceList(function () {
+                                    self.$app.utils.nextFrame(()=>{
+                                        self.$app.progressbar.hide();
+                                    });
+                                    mainView.router.navigate('/report-alarm-log-show/?'+self.$app.utils.serializeObject(additionalData),{context: { ReportRawData: result.data.Data } });
+                                });
+
                             }
 
                         }else{

@@ -105,7 +105,7 @@
                     //List of array items
                     items: notificationsList,
                     height: 70,
-                    emptyTemplate: `<li class="item-content">${LANGUAGE.PROMPT_MSG090}</li>`,
+                    emptyTemplate: `<div class="block">${LANGUAGE.PROMPT_MSG090}</div>`,
                     // Display the each item using Template7 template parameter
                     renderItem: function (item, index) {                  
                         var ret = '';
@@ -160,7 +160,7 @@
                             if (alarmType == 'status' || alarmType == 'config' || parseFloat(lat) && parseFloat(lng)) {
                                 mainView.router.navigate('/notification/?id='+id);
                             }else{
-                                self.$app.methods.customNotification({text: LANGUAGE.PROMPT_MSG031});  
+                                self.$app.methods.customNotification({text: LANGUAGE.PROMPT_MSG098});
                             }
                         }
                     }
