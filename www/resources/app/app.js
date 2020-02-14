@@ -7,7 +7,7 @@ const API_DOMIAN1 = "https://api.m2mglobaltech.com/QuikTrak/V1/";
 const API_DOMIAN2 = "https://api.m2mglobaltech.com/Quikloc8/V1/";
 const API_DOMIAN3 = "https://api.m2mglobaltech.com/QuikProtect/V1/Client/";
 
-
+const API_DOMIAN5 = "https://ss.sinopacific.com.ua/";
 const API_DOMIAN6 = "https://nomad.sinopacific.com.ua/";
 const API_DOMIAN7 = "https://nominatim.sinopacific.com.ua/";
 const API_DOMIAN8 = "https://nominatim.openstreetmap.org/";
@@ -66,8 +66,10 @@ API_URL.CONTACT_USER_DELETE = API_DOMIAN1 + "User/Delete";
 
 API_URL.GET_PLAYBACK_ARR = API_DOMIAN1 + "Device/GetHisPosArray2";
 API_URL.GET_PLAYBACK_ARR_OPTIMISED = "https://osrm.sinopacific.com.ua/playback/v2";
-API_URL.GET_ADDRESSES_FROM_ARRAY = "https://ss.sinopacific.com.ua/geocode/reverse/v1/";
+API_URL.GET_ADDRESSES_FROM_ARRAY = API_DOMIAN5 + "geocode/reverse/v1/";
+API_URL.GET_SPEEDLIMIT = API_DOMIAN5 + "speedlimits/v1";
 API_URL.GET_PLAYBACK_REPORT_ON_MAIL = API_DOMIAN6 + "api/v2/reports/Playback";
+
 
 API_URL.GET_REPORT_ALERTLIST = API_DOMIAN1 + "Report/GetAlertList";
 API_URL.GET_REPORT_TRIP = API_DOMIAN1 + "Report/GetTripReport";
@@ -548,8 +550,6 @@ const app = new Framework7({
                     }
                     if (!update) {
                         self.dialog.close();
-                        console.log(assetList);
-                        console.log(LoginEvents);
                         LoginEvents.emit('signedIn', assetList);
                     }
                     if (callback instanceof Function) {
@@ -1690,10 +1690,24 @@ const app = new Framework7({
                 markerData +=       `<td class="marker-data-value">${positionDetails.PositionTimeLocal ? positionDetails.PositionTimeLocal : positionDetails.PositionTime }</td>`;
                 markerData +=   '</tr>';
                 if ( typeof positionDetails.Speed !== 'undefined') {
+                    if (asset && typeof asset.Unit !== "undefined" && typeof asset.posInfo.speed !== "undefined") {
+                        positionDetails.SpeedCustom = Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
+                        if (positionDetails.type && parseInt(positionDetails.type,10) === 32 && asset.MaxSpeedAlertMode === '2' && !positionDetails.SpeedLimit) {
+                            positionDetails.SpeedLimit = Protocol.Helper.getSpeedValue(asset.Unit, asset.MaxSpeed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
+                        }
+                    }
+
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG05+'</td>';
-                    markerData +=       '<td class="marker-data-value">'+positionDetails.Speed+'</td>';
+                    markerData +=       `<td class="marker-data-value">${positionDetails.SpeedCustom ? positionDetails.SpeedCustom : positionDetails.Speed}</td>`;
                     markerData +=   '</tr>';
+
+                    if (positionDetails.type && parseInt(positionDetails.type,10) === 32) {
+                        markerData +=   '<tr>';
+                        markerData +=       '<td class="marker-data-caption">'+LANGUAGE.COM_MSG099+'</td>';
+                        markerData +=       `<td class="marker-data-value">${positionDetails.SpeedLimit ? positionDetails.SpeedLimit : LANGUAGE.COM_MSG004}</td>`;
+                        markerData +=   '</tr>';
+                    }
                 }
 
                 if (positionDetails.Direction) {
@@ -1735,7 +1749,7 @@ const app = new Framework7({
                     let speed = 0;
                     let mileage = '-';
                     let launchHours = '';
-                    let positionType = Protocol.Helper.getPositionType(parseInt(asset.posInfo.positionType));
+                    //let positionType = Protocol.Helper.getPositionType(parseInt(asset.posInfo.positionType));
                     deirectionCardinal = Protocol.Helper.getDirectionCardinal(asset.posInfo.direct);
                     if (typeof asset.Unit !== "undefined" && typeof asset.posInfo.speed !== "undefined") {
                         speed = Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);

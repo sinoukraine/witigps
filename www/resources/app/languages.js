@@ -102,7 +102,7 @@ window.LanguagePackages= {
 		"COM_MSG096": "Asset",
 		"COM_MSG097": "Date",
 		"COM_MSG098": "Alert",
-
+		"COM_MSG099": "Speed Limit",
 
 
 		"PROMPT_MSG000": "Nothing found",

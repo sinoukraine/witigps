@@ -77,20 +77,43 @@
                 }
                 //console.log(params)
                 if (parseFloat(params.Lat) && parseFloat(params.Lng)) {
-                    let asset = self.$app.methods.getFromStorage('assetList')[params.Imei];
+                    let asset = POSINFOASSETLIST[params.Imei];//self.$app.methods.getFromStorage('assetList')[params.Imei];
                     let point = L.marker([params.Lat,params.Lng], {icon: self.$app.methods.getMarkerIcon({asset: true, type: asset.SolutionType})});
-                    let markerData = self.$app.methods.getMarkerDataTable(false, params);
+                    let markerData = self.$app.methods.getMarkerDataTable(asset, params);
                     point                            
                         .bindPopup(markerData,{maxWidth:self.$root.MaxMapPopupWidth, closeButton: false})
                         .on('popupopen', function (e) {                               
                             if (!point.customAddress) {
                                 Protocol.Helper.getAddressByGeocoder({lat: params.Lat, lng: params.Lng},function(address){
                                     point.customAddress = params.customAddress = address;
-                                    markerData = self.$app.methods.getMarkerDataTable(false, params);       
+                                    markerData = self.$app.methods.getMarkerDataTable(asset, params);
                                     e.target.setPopupContent(markerData);                                        
                                     e.popup.update();                                       
                                 }); 
-                            }                                 
+                            }
+                            /*if(params.type && parseInt(params.type,10) === 32 && asset.MaxSpeedAlertMode && !point.SpeedLimit){
+                                let data = {
+                                    timestamp: 1,
+                                    latitude: '',
+                                    longitude: '',
+                                };
+                                self.request.promise.get(API_URL.GET_SPEEDLIMIT, data, 'json')
+                                    .then(function (result) {
+                                        if (result.data && result.data.max) {
+                                            let speed = Protocol.Helper.getSpeedValue(asset.Unit, parseInt(result.max));
+                                            lte speedUnit = Protocol.Helper.getSpeedUnit(asset.Unit);
+
+                                            point.SpeedLimit = params.SpeedLimit = parseInt(speed) + ' '+ speedUnit;
+
+                                            markerData = self.$app.methods.getMarkerDataTable(asset, params);
+                                            e.target.setPopupContent(markerData);
+                                            e.popup.update();
+                                        }
+                                    })
+                                    .catch(function (err) {
+                                        console.log(err);
+                                    });
+                            }*/
                         });
                     point._custom_asset_imei = params.Imei;
                     point.addTo(self.MarkersGroup);
