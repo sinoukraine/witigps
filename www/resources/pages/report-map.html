@@ -52,7 +52,10 @@
 
             if(self.$route.context.AlertData){
                 ret.Data = self.$route.context.AlertData;
-                ret.PageTitle = ret.Data.GeofenceName ? ret.Data.GeofenceName + ' - ' + ret.Data.AlertName : ret.Data.AlertName;
+                if(ret.Data.IMEI){
+                    ret.Data.Imei = ret.Data.IMEI;
+                }
+                ret.PageTitle = ret.Data.GeofenceName ? ret.Data.GeofenceName + ' - ' + ret.Data.AlertName : (ret.Data.AlertName ? ret.Data.AlertName : ret.Data.alarm);
             }
             //console.log(ret);
             return ret;

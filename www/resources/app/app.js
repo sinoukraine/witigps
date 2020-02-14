@@ -201,6 +201,7 @@ const app = new Framework7({
 
             if(window.hasOwnProperty("cordova")){
                 if (BuildInfo){
+                    alert(JSON.stringify(BuildInfo));
                     self.data.AppDetails.appId = BuildInfo.packageName;
                     if (BuildInfo.version){
                         //$$('.appVersion').text("v" + BuildInfo.version);
@@ -1709,7 +1710,7 @@ const app = new Framework7({
 
             if (params && imgFor.assetList) {
                 if (params.Icon && pattern.test(params.Icon)) {
-                    assetImg = `<img class="user-img" src="${API_DOMIAN9}Attachment/images/${params.Icon}?${ self.data.NewImageTimestamp }" alt="">`;
+                    assetImg = `<img class="user-img user-img-shadow" src="${API_DOMIAN9}Attachment/images/${params.Icon}?${ self.data.NewImageTimestamp }" alt="">`;
                 }else if(params.Icon && params.Icon.substring(0,3) == pattern2){
                     assetImg = '<div class="user-img bg-color-custom display-flex justify-content-center align-items-center"><div class="text-align-center vertical-center size-28 "><i class="icon text-color-white asset-icon-'+params.Icon.replace(regex, '-').replace(regex2, '')+'"></i></div></div>';
 
@@ -1741,7 +1742,7 @@ const app = new Framework7({
                 }
             }else if (params && imgFor.assetEdit) {
                 if (params.Icon && pattern.test(params.Icon)) {
-                    assetImg = `<img class="user-img" data-name="${params.Icon}" src="${API_DOMIAN9}Attachment/images/${params.Icon+'?'+ self.data.NewImageTimestamp}" alt="">`;
+                    assetImg = `<img class="user-img user-img-shadow" data-name="${params.Icon}" src="${API_DOMIAN9}Attachment/images/${params.Icon+'?'+ self.data.NewImageTimestamp}" alt="">`;
                 }else if(params.Icon && params.Icon.substring(0,3) == pattern2){
                     assetImg = '<div class="user-img bg-color-custom display-flex justify-content-center align-items-center"><div class="text-align-center vertical-center size-75 "><i class="icon text-color-white asset-icon-'+params.Icon.replace(regex, '-').replace(regex2, '')+'"></i></div></div>';
                 }else{
