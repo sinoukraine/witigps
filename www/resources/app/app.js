@@ -93,6 +93,7 @@ Framework7.request.setup({
 // Create another event bus
 const AssetUpdateEvents = new Framework7.Events();
 const LoginEvents = new Framework7.Events();
+const NotificationEvents = new Framework7.Events();
 
 // Dom7
 const $$ = Dom7;
@@ -1126,32 +1127,15 @@ const app = new Framework7({
 
                             if (Array.isArray(data) && data.length > 0) {
                                 self.methods.setNotificationList(result.Data);
+                                if(mainView.router.currentRoute.name && mainView.router.currentRoute.name === 'notifications'){
+                                    mainView.router.refreshPage();
+                                }
+                                localStorage.NewNotificationsCounter = localStorage.NewNotificationsCounter ? parseInt(localStorage.NewNotificationsCounter,10) + data.length : data.length;
+                                NotificationEvents.emit('newNotificationsCounterChanged', localStorage.NewNotificationsCounter);
                             }
 
                             if (params && params.loadPageNotification === true) {
-                                if (mainView.history && mainView.history.length && mainView.history.indexOf('/notifications/') !== -1) {
-                                    mainView.router.back('/notifications/',{ignoreCache: true, force: true});
-                                }else{
-                                    mainView.router.navigate('/notifications/');
-                                }
-                                /*let user = localStorage.ACCOUNT;
-                                let notList = self.methods.getFromStorage('notifications');
-                                if (notList && notList[user] && notList[user].length > 0 || Array.isArray(data) && data.length > 0) {
-
-                                    if (mainView.history && mainView.history.length && mainView.history.indexOf('/notifications/') !== -1) {
-                                        mainView.router.back('/notifications/',{ignoreCache: true, force: true});
-                                    }else{
-                                        mainView.router.navigate('/notifications/');
-                                    }
-
-                                }else{
-                                    self.methods.customNotification({title: LANGUAGE.PROMPT_MSG076});
-
-                                    /!*let notificationsIconEl = $$('.openNotificationsPageLink i');
-                                    if (notificationsIconEl && notificationsIconEl.length) {
-                                        notificationsIconEl.empty();
-                                    }*!/
-                                }*/
+                                mainView.router.navigate('/notifications/');
                             }
 
                         }else {
@@ -1173,72 +1157,27 @@ const app = new Framework7({
                     'json');
             }
         },
-        displayNewNotificationArrived: function(list){
+        displayNewNotificationArrived: function(message){
             let self = this;
 
-            if (list && list.length) {
-                let currentRoute = mainView.router.currentRoute;
-                if (currentRoute && currentRoute.name !== 'notifications') {
-                    /*let notificationsIconEl = $$('.openNotificationsPageLink i');
-                    if (notificationsIconEl && notificationsIconEl.length) {
-                        let badge = notificationsIconEl.find('.badge');
-                        if (badge && badge.length) {
-                            let currentNotificationCount = parseInt(badge.text(),10);
-                            if (currentNotificationCount) {
-                                if (currentNotificationCount < 99) {
-                                    currentNotificationCount += list.length;
-                                }else{
-                                    currentNotificationCount = '99+';
-                                }
-                            }else{
-                                currentNotificationCount = list.length;
-                            }
-                            badge.text(currentNotificationCount);
-
-                        }else{
-                            notificationsIconEl.html('<span class="badge color-red">'+list.length+'</span>');
+            self.notification.create({
+                title: self.name,
+                titleRightText: LANGUAGE.COM_MSG091, //now
+                subtitle: message.alarm,
+                text: message.AssetName,
+                closeOnClick: true,
+                closeButton: true,
+                on: {
+                    click: function () {
+                        if(mainView.router.currentRoute.name && mainView.router.currentRoute.name === 'notification'){
+                            mainView.router.navigate('/notification/',{context: { AlertData: message }, reloadCurrent: true, ignoreCache: true, });
+                        }else {
+                            mainView.router.navigate('/notification/',{context: { AlertData: message } });
                         }
-                    }*/
-                }else{
-                    let notificationList = self.virtualList.get('.notificationList');
-                    if (notificationList) {
-                        notificationList.prependItems(list);
-                    }
-                }
-
-                let notificationDetails = {
-                    subtitle: list[0].alarm,
-                    text: list[0].AssetName,
-                };
-                if (list.length > 1) {
-                    notificationDetails = {
-                        subtitle: LANGUAGE.PROMPT_MSG077+'('+list.length+')',
-                        text: '',
-                    };
-                }
-
-                self.notification.create({
-                    title: self.name,
-                    titleRightText: LANGUAGE.COM_MSG091, //now
-                    subtitle: notificationDetails.subtitle,
-                    text: notificationDetails.text,
-                    closeOnClick: true,
-                    closeButton: true,
-                    on: {
-                        click: function () {
-                            if (list.length > 1) {
-                                if (mainView.history && mainView.history.length && mainView.history.indexOf('/notifications/') !== -1) {
-                                    mainView.router.back('/notifications/',{ignoreCache: true, force: true});
-                                }else{
-                                    mainView.router.navigate('/notifications/');
-                                }
-                            }else{
-                                mainView.router.navigate('/notification/?id='+list[0].UniqueId);
-                            }
-                        },
                     },
-                }).open();
-            }
+                },
+            }).open();
+
         },
         setNotificationList: function(list){
             let self = this;
@@ -1261,8 +1200,6 @@ const app = new Framework7({
                     list[i].UniqueId = self.utils.id();
                     pushList[user].unshift(list[i]);
                 }
-
-                //self.methods.displayNewNotificationArrived(list);
             }
             localStorage.setItem("COM.QUIKTRAK.NEW.NOTIFICATIONS", JSON.stringify(pushList));
         },
@@ -2551,28 +2488,25 @@ const app = new Framework7({
             });
 
             push.on('notification', function(data) {
-                //alert( JSON.stringify(data) );
-//alert(JSON.stringify(data));
                 //if user using app and push notification comes
                 if (data && data.additionalData && data.additionalData.foreground) {
                     // if application open, show popup
-                    //showMsgNotification([data.additionalData]);
-
-                        /*let list = self.methods.formatNewNotifications([data.additionalData]);
-                        self.methods.displayNewNotificationArrived(list);*/
-
+                    let alertData = self.methods.formatNewNotifications([data.additionalData])[0];
+                    self.methods.displayNewNotificationArrived(alertData);
                 } else if (data && data.additionalData && data.additionalData.payload) {
                     //if user NOT using app and push notification comes
-
                     self.preloader.show();
                     window.loginTimer = setInterval(function() {
                         if (window.loginDone) {
                             clearInterval(window.loginTimer);
                             setTimeout(function() {
-                                //processClickOnPushNotification([data.additionalData.payload]);
                                 let alertData = self.methods.formatNewNotifications([data.additionalData])[0];
-                                //alert(JSON.stringify(alertData));
-                                mainView.router.navigate('/report-map/',{context: { AlertData: alertData } });
+                                if(mainView.router.currentRoute.name && mainView.router.currentRoute.name === 'notification'){
+                                    mainView.router.navigate('/notification/',{context: { AlertData: alertData }, reloadCurrent: true, ignoreCache: true, });
+                                }else {
+                                    mainView.router.navigate('/notification/',{context: { AlertData: alertData } });
+                                }
+
                                 self.preloader.hide();
                             }, 1000);
                         }

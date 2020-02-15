@@ -247,7 +247,7 @@
 
                 virtualListEl.on('click', '.alertLink', function(){
                     let id = $$(this).data('id');
-                    mainView.router.navigate('/report-map/',{context: { AlertData: self.ReportData.find(c => c.Id === id) } });
+                    mainView.router.navigate('/notification/',{context: { AlertData: self.ReportData.find(c => c.Id === id) } });
                 });
 
                 self.$app.on('treeviewOpen', self.updateHeight);

@@ -187,7 +187,8 @@
                     });
                 });
 
-                
+                localStorage.NewNotificationsCounter = 0;
+                NotificationEvents.emit('newNotificationsCounterChanged', 0);
                 
             },
             pageAfterIn: function(e, page){                

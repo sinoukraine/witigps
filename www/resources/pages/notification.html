@@ -12,7 +12,7 @@
                             <i class="if-ios icon icon-back"></i>
                         </a>
                     </div>
-                    <div class="title sliding" title="{{NotificationData.alarm}}">{{NotificationData.alarm}}</div>
+                    <div class="title sliding">{{PageTitle}}</div>
                     <div class="right">
                         <!-- <a href="#" class="link">
                                              <i class="f7-icons icon-delete "></i>
@@ -218,32 +218,33 @@
     return {
         data: function () {
             let self = this;
-            let ret = {};
+            let ret = {
+                CustomAddress : LANGUAGE.COM_MSG004,
+                MapId : 'map-' + self.$app.utils.id(),
+            };
 
             if(self.$route.query.id){
                 let account = localStorage.ACCOUNT;
                 let notifications = self.$app.methods.getFromStorage('notifications')[account];
                 if (notifications && notifications.length) {
-                    let notification = $.grep(notifications, function(obj){return obj.UniqueId === self.$route.query.id})[0];
+                    let notification = notifications.find(c => c.UniqueId === self.$route.query.id);
 
                     if (notification) {
                         ret.NotificationData = self.$app.methods.formatStatusMessage(notification);
-
-                        ret.CustomAddress = LANGUAGE.COM_MSG004;
-                        ret.MapId = 'map-' + self.$app.utils.id();
-
-                    }else{
-                        console.log('There is no notification with such id');
+                        ret.PageTitle = ret.NotificationData.alarm;
                     }
-                }else{
-                    console.log('There is no notification list');
                 }
-            }else{
-                console.log('There is no notification id');
+            }else if(self.$route.context.AlertData){
+                ret.NotificationData = self.$route.context.AlertData;
+                if(ret.NotificationData.IMEI){
+                    ret.NotificationData.Imei = ret.NotificationData.IMEI;
+                }
+                if(ret.NotificationData.alarm === 'STATUS' || self.NotificationData.alarm === 'CONFIG'){
+                    ret.NotificationData = self.$app.methods.formatStatusMessage(ret.NotificationData);
+                }
+                ret.PageTitle = ret.NotificationData.GeofenceName ? ret.NotificationData.GeofenceName + ' - ' + ret.NotificationData.AlertName : (ret.NotificationData.AlertName ? ret.NotificationData.AlertName : ret.NotificationData.alarm);
             }
 
-
-            //console.log(ret);
             return ret;
         },
         methods: {
@@ -254,7 +255,7 @@
                 self.MarkersGroup = L.markerClusterGroup({'maxClusterRadius':35,});
                 self.StreetViewService = new google.maps.StreetViewService();
 
-                if(!params.imei || !assetList[params.imei]){
+                if(!params.Imei || !assetList[params.Imei]){
                     self.$setState({
                         DisableRoute: true
                     });
@@ -263,20 +264,43 @@
                 }
 
                 if (parseFloat(params.Lat) && parseFloat(params.Lng)) {
-                    let asset = self.$app.methods.getFromStorage('assetList')[params.Imei];
+                    let asset = POSINFOASSETLIST[params.Imei] ? POSINFOASSETLIST[params.Imei] : self.$app.methods.getFromStorage('assetList')[params.Imei];
                     let point = L.marker([params.Lat,params.Lng], {icon: self.$app.methods.getMarkerIcon({asset: true, type: asset.SolutionType})});
-                    let markerData = self.$app.methods.getMarkerDataTable(false, params);
+                    let markerData = self.$app.methods.getMarkerDataTable(asset, params);
                     point                            
                         .bindPopup(markerData,{maxWidth:self.$root.MaxMapPopupWidth, closeButton: false})
                         .on('popupopen', function (e) {                               
                             if (!point.customAddress) {
                                 Protocol.Helper.getAddressByGeocoder({lat: params.Lat, lng: params.Lng},function(address){
                                     point.customAddress = params.customAddress = address;
-                                    markerData = self.$app.methods.getMarkerDataTable(false, params);       
+                                    markerData = self.$app.methods.getMarkerDataTable(asset, params);
                                     e.target.setPopupContent(markerData);                                        
                                     e.popup.update();                                       
                                 }); 
-                            }                                 
+                            }
+                            /*if(params.type && parseInt(params.type,10) === 32 && asset.MaxSpeedAlertMode && !point.SpeedLimit){
+                                let data = {
+                                    timestamp: 1,
+                                    latitude: '',
+                                    longitude: '',
+                                };
+                                self.request.promise.get(API_URL.GET_SPEEDLIMIT, data, 'json')
+                                    .then(function (result) {
+                                        if (result.data && result.data.max) {
+                                            let speed = Protocol.Helper.getSpeedValue(asset.Unit, parseInt(result.max));
+                                            lte speedUnit = Protocol.Helper.getSpeedUnit(asset.Unit);
+
+                                            point.SpeedLimit = params.SpeedLimit = parseInt(speed) + ' '+ speedUnit;
+
+                                            markerData = self.$app.methods.getMarkerDataTable(asset, params);
+                                            e.target.setPopupContent(markerData);
+                                            e.popup.update();
+                                        }
+                                    })
+                                    .catch(function (err) {
+                                        console.log(err);
+                                    });
+                            }*/
                         });
                     point._custom_asset_imei = params.Imei;
                     point.addTo(self.MarkersGroup);
@@ -354,8 +378,7 @@
                 if (!self.NotificationData) {
                     return;
                 }
-
-                if(self.NotificationData.alarm && self.NotificationData.alarm !== 'STATUS' && self.NotificationData.alarm !== 'CONFIG' ){
+                if(self.NotificationData.alarm !== 'STATUS' && self.NotificationData.alarm !== 'CONFIG' ){
                     self.initMapWithMarker(self.NotificationData);
                 }
 

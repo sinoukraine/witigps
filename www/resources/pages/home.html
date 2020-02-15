@@ -19,7 +19,7 @@
                         <i class="f7-icons icon-header-filter"></i>
                     </a>
                     <a @click="openNotificationsPage" href="#" class="link icon-only ">
-                        <i class="f7-icons icon-header-alarm"></i>
+                        <i class="f7-icons icon-header-alarm position-relative">{{#if NotificationCount}}<span class="badge color-red">{{NotificationCount}}</span>{{/if}}</i>
                     </a>
                 </div>
             </div>
@@ -133,14 +133,15 @@
     // script must return component object
     return {
         data: function () {
+
             let ret = {
+                NotificationCount: localStorage.NewNotificationsCounter ? parseInt(localStorage.NewNotificationsCounter):0,
                 AssetsCount: {
                     All: 0,
                     Live: 0,
                     Loc8: 0,
                     Protect: 0,
                 }
-
             };
 
             return ret;
@@ -174,6 +175,8 @@
                     el: listEl,
                     items : assetList,
                     cache: false,
+                    //rowsBefore: 10,
+                    //rowsAfter: 10,
                     showFilteredItemsOnly: true,
                     searchAll: function (query, items) {
                         let filterType = this.el.data('filter-type');
@@ -475,11 +478,18 @@
                         LoginDone: true
                     });
                     self.VirtualAssetListMain.replaceAllItems(items);
+                    self.VirtualAssetListMain.scrollToItem(0);
                 });
                 LoginEvents.on('signedOut', function (){
                     self.VirtualAssetListMain.deleteAllItems();
                     self.$setState({
                         LoginDone: false
+                    })
+                });
+
+                NotificationEvents.on('newNotificationsCounterChanged', function (count) {
+                    self.$setState({
+                        NotificationCount: count
                     })
                 });
             },
@@ -497,6 +507,7 @@
                 AssetUpdateEvents.off('updateReceived', this.UpdateData);
                 LoginEvents.off('signedIn');
                 LoginEvents.off('signedOut');
+                NotificationEvents.off('newNotificationsCounterChanged');
             }
         }
     };

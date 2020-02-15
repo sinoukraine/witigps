@@ -1,7 +1,7 @@
 var routes = [
     {
         path: '/',
-        componentUrl: './resources/pages/home.html?v=1.3',
+        componentUrl: './resources/pages/home.html?v=1.4',
         name: 'home',
         options: {
             transition: 'f7-cover',
@@ -168,7 +168,7 @@ var routes = [
     },
     {
         path: '/notification/',
-        componentUrl: './resources/pages/notification.html?v=1.3',
+        componentUrl: './resources/pages/notification.html?v=1.4',
         name: 'notification',
         options: {
             transition: 'f7-cover',
@@ -186,14 +186,6 @@ var routes = [
         path: '/report-alarm-log-show/',
         componentUrl: './resources/pages/report-alarm-log-show.html?v=1.3',
         name: 'report-alarm-log-show',
-        options: {
-            transition: 'f7-cover',
-        },
-    },
-    {
-        path: '/report-map/',
-        componentUrl: './resources/pages/report-map.html?v=1.3',
-        name: 'report-map',
         options: {
             transition: 'f7-cover',
         },
