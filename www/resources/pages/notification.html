@@ -278,18 +278,17 @@
                                     e.popup.update();                                       
                                 }); 
                             }
-                            /*if(params.type && parseInt(params.type,10) === 32 && asset.MaxSpeedAlertMode && !point.SpeedLimit){
+                            if(params.type && parseInt(params.type,10) === 32 && parseInt(asset.MaxSpeedAlertMode,10) === 1 && !point.SpeedLimit){
                                 let data = {
                                     timestamp: 1,
-                                    latitude: '',
-                                    longitude: '',
+                                    latitude: params.Lat,
+                                    longitude: params.Lng,
                                 };
                                 self.request.promise.get(API_URL.GET_SPEEDLIMIT, data, 'json')
                                     .then(function (result) {
                                         if (result.data && result.data.max) {
                                             let speed = Protocol.Helper.getSpeedValue(asset.Unit, parseInt(result.max));
-                                            lte speedUnit = Protocol.Helper.getSpeedUnit(asset.Unit);
-
+                                            let speedUnit = Protocol.Helper.getSpeedUnit(asset.Unit);
                                             point.SpeedLimit = params.SpeedLimit = parseInt(speed) + ' '+ speedUnit;
 
                                             markerData = self.$app.methods.getMarkerDataTable(asset, params);
@@ -300,7 +299,7 @@
                                     .catch(function (err) {
                                         console.log(err);
                                     });
-                            }*/
+                            }
                         });
                     point._custom_asset_imei = params.Imei;
                     point.addTo(self.MarkersGroup);

@@ -1629,7 +1629,7 @@ const app = new Framework7({
                 if ( typeof positionDetails.Speed !== 'undefined') {
                     if (asset && typeof asset.Unit !== "undefined" && typeof asset.posInfo.speed !== "undefined") {
                         positionDetails.SpeedCustom = Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
-                        if (positionDetails.type && parseInt(positionDetails.type,10) === 32 && asset.MaxSpeedAlertMode === '2' && !positionDetails.SpeedLimit) {
+                        if (positionDetails.type && parseInt(positionDetails.type,10) === 32 && parseInt(asset.MaxSpeedAlertMode,10) === 2 && !positionDetails.SpeedLimit) {
                             positionDetails.SpeedLimit = Protocol.Helper.getSpeedValue(asset.Unit, asset.MaxSpeed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
                         }
                     }
