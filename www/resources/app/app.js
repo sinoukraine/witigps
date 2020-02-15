@@ -1127,11 +1127,9 @@ const app = new Framework7({
 
                             if (Array.isArray(data) && data.length > 0) {
                                 self.methods.setNotificationList(result.Data);
-                                if(mainView.router.currentRoute.name && mainView.router.currentRoute.name === 'notifications'){
-                                    mainView.router.refreshPage();
-                                }
                                 localStorage.NewNotificationsCounter = localStorage.NewNotificationsCounter ? parseInt(localStorage.NewNotificationsCounter,10) + data.length : data.length;
                                 NotificationEvents.emit('newNotificationsCounterChanged', localStorage.NewNotificationsCounter);
+                                NotificationEvents.emit('updatePage');
                             }
 
                             if (params && params.loadPageNotification === true) {

@@ -59,10 +59,10 @@
   // script must return component object
     return {
         data: function () {
-            var self = this;
-            var ret = {};
+            let self = this;
+            let ret = {};
            
-            //var MinorToken = self.$app.methods.getFromStorage('userInfo').MinorToken;   
+            //let MinorToken = self.$app.methods.getFromStorage('userInfo').MinorToken;
            
 
             return ret;
@@ -72,25 +72,25 @@
         },
         on: {
             pageInit: function (e, page) { 
-                var self = this;
+                let self = this;
                
-                var list = page.$el.find('.notificationList');
-                var user = localStorage.ACCOUNT;
-                var notifications = self.$app.methods.getFromStorage('notifications');
-                var ptrContent = page.$el.find('.ptr-content-notifications');
-                var deleteAllEl = page.$el.find('.deleteAll');
+                let list = page.$el.find('.notificationList');
+                let user = localStorage.ACCOUNT;
+                let notifications = self.$app.methods.getFromStorage('notifications');
+                let ptrContent = page.$el.find('.ptr-content-notifications');
+                let deleteAllEl = page.$el.find('.deleteAll');
 
-                var notificationsList = [];
+                let notificationsList = [];
                 if (notifications[user]) {
                     notificationsList = notifications[user];
                 }                
 
-                var virtualList = self.$app.virtualList.create({
+                self.VirtualList = self.$app.virtualList.create({
                     el: list, 
                     // search item by item
                     searchAll: function (query, items) {
-                        var found = [];
-                        for (var i = 0; i < items.length; i++) {
+                        let found = [];
+                        for (let i = 0; i < items.length; i++) {
                             query = query.toLowerCase();
                             if (items[i].alarm && items[i].alarm.toLowerCase().indexOf(query) >= 0
                                 || items[i].AssetName && items[i].AssetName.toLowerCase().indexOf(query) >= 0
@@ -108,7 +108,7 @@
                     emptyTemplate: `<div class="block">${LANGUAGE.PROMPT_MSG090}</div>`,
                     // Display the each item using Template7 template parameter
                     renderItem: function (item, index) {                  
-                        var ret = '';
+                        let ret = '';
                         //console.log(item);
                         if (typeof item == 'object') {
                             if (!item.alarm && item.title && typeof(item.title) == "string") {
@@ -147,32 +147,28 @@
                     //console.log('clicked');
 
                      if ( !$$(this).hasClass('swipeout-opened') ) {
-                        if (e.target == $$(this).find('.delete i')[0]){
-                            self.$app.swipeout.delete(this);
+                        let alarmType = $$(this).data('alarm');
+                        if (alarmType) {
+                            alarmType = alarmType.toLowerCase();
+                        }
+                        let id = $$(this).data('id');
+                        let lat = $$(this).data('lat');
+                        let lng = $$(this).data('lng');
+                        if (alarmType == 'status' || alarmType == 'config' || parseFloat(lat) && parseFloat(lng)) {
+                            mainView.router.navigate('/notification/?id='+id);
                         }else{
-                            var alarmType = $$(this).data('alarm');
-                            if (alarmType) {
-                                alarmType = alarmType.toLowerCase();
-                            }
-                            var id = $$(this).data('id');
-                            var lat = $$(this).data('lat');
-                            var lng = $$(this).data('lng');
-                            if (alarmType == 'status' || alarmType == 'config' || parseFloat(lat) && parseFloat(lng)) {
-                                mainView.router.navigate('/notification/?id='+id);
-                            }else{
-                                self.$app.methods.customNotification({text: LANGUAGE.PROMPT_MSG098});
-                            }
+                            self.$app.methods.customNotification({text: LANGUAGE.PROMPT_MSG098});
                         }
                     }
                 });
 
                 list.on('swipeout:deleted', '.swipeout', function () {                   
-                    var id = $$(this).data('id');
+                    let id = $$(this).data('id');
                     self.$app.methods.deleteNotifications([id]);                   
                 }); 
 
                 deleteAllEl.on('click', function(){
-                    var text = LANGUAGE.COM_MSG092 +'.'+' '+LANGUAGE.PROMPT_MSG050;
+                    let text = LANGUAGE.COM_MSG092 +'.'+' '+LANGUAGE.PROMPT_MSG050;
                     self.$app.dialog.confirm(text, 
                         function(){
                             self.$app.methods.deleteNotifications(false, true);                       
@@ -180,22 +176,24 @@
                     );                     
                 });
 
-                $$(ptrContent).on('ptr:refresh', function(e){
+                ptrContent.on('ptr:refresh', function(e){
                     self.$app.methods.getNewNotifications({}, function () {
                         self.$app.ptr.get('.ptr-content-notifications').done();
                         self.$app.methods.showToast(LANGUAGE.PROMPT_MSG041);
                     });
                 });
 
+
+                NotificationEvents.on('updatePage', function () {
+                    let list = self.$app.methods.getFromStorage('notifications')[user];
+                    self.VirtualList.replaceAllItems(list);
+                });
                 localStorage.NewNotificationsCounter = 0;
                 NotificationEvents.emit('newNotificationsCounterChanged', 0);
                 
             },
-            pageAfterIn: function(e, page){                
-                var notificationsIconEl = $$('.openNotificationsPageLink i');
-                if (notificationsIconEl && notificationsIconEl.length) {
-                    notificationsIconEl.empty();
-                }
+            pageBeforeRemove: function (e, page) {
+                NotificationEvents.off('updatePage');
             }
         }
     };
