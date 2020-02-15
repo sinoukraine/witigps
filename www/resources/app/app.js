@@ -1624,25 +1624,26 @@ const app = new Framework7({
                 markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG03+'</td>';
                 markerData +=       `<td class="marker-data-value">${positionDetails.PositionTimeLocal ? positionDetails.PositionTimeLocal : positionDetails.PositionTime }</td>`;
                 markerData +=   '</tr>';
+
                 if ( typeof positionDetails.Speed !== 'undefined') {
                     if (asset && typeof asset.Unit !== "undefined" && typeof asset.posInfo.speed !== "undefined") {
                         positionDetails.SpeedCustom = Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
-                        if (positionDetails.type && parseInt(positionDetails.type,10) === 32 && parseInt(asset.MaxSpeedAlertMode,10) === 2 && !positionDetails.SpeedLimit) {
-                            positionDetails.SpeedLimit = Protocol.Helper.getSpeedValue(asset.Unit, asset.MaxSpeed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
-                        }
-                    }
 
+                    }
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG05+'</td>';
                     markerData +=       `<td class="marker-data-value">${positionDetails.SpeedCustom ? positionDetails.SpeedCustom : positionDetails.Speed}</td>`;
                     markerData +=   '</tr>';
+                }
 
-                    if (positionDetails.type && parseInt(positionDetails.type,10) === 32) {
-                        markerData +=   '<tr>';
-                        markerData +=       '<td class="marker-data-caption">'+LANGUAGE.COM_MSG099+'</td>';
-                        markerData +=       `<td class="marker-data-value">${positionDetails.SpeedLimit ? positionDetails.SpeedLimit : LANGUAGE.COM_MSG004}</td>`;
-                        markerData +=   '</tr>';
-                    }
+                if (positionDetails.type && parseInt(positionDetails.type,10) === 32 && parseInt(asset.MaxSpeedAlertMode,10) === 2 && !positionDetails.SpeedLimit) {
+                    positionDetails.SpeedLimit = Protocol.Helper.getSpeedValue(asset.Unit, asset.MaxSpeed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
+                }
+                if (positionDetails.type && parseInt(positionDetails.type,10) === 32) {
+                    markerData +=   '<tr>';
+                    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.COM_MSG099+'</td>';
+                    markerData +=       `<td class="marker-data-value">${positionDetails.SpeedLimit ? positionDetails.SpeedLimit : LANGUAGE.COM_MSG004}</td>`;
+                    markerData +=   '</tr>';
                 }
 
                 if (positionDetails.Direction) {

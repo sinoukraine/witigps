@@ -239,6 +239,9 @@
                 if(ret.NotificationData.IMEI){
                     ret.NotificationData.Imei = ret.NotificationData.IMEI;
                 }
+                if(ret.NotificationData.AlertID){
+                    ret.NotificationData.type = ret.NotificationData.AlertID;
+                }
                 if(ret.NotificationData.alarm === 'STATUS' || ret.NotificationData.alarm === 'CONFIG'){
                     ret.NotificationData = self.$app.methods.formatStatusMessage(ret.NotificationData);
                 }
@@ -284,10 +287,10 @@
                                     latitude: params.Lat,
                                     longitude: params.Lng,
                                 };
-                                self.request.promise.get(API_URL.GET_SPEEDLIMIT, data, 'json')
+                                self.$app.request.promise.get(API_URL.GET_SPEEDLIMIT, data, 'json')
                                     .then(function (result) {
                                         if (result.data && result.data.max) {
-                                            let speed = Protocol.Helper.getSpeedValue(asset.Unit, parseInt(result.max));
+                                            let speed = Protocol.Helper.getSpeedValue(asset.Unit, parseInt(result.data.max));
                                             let speedUnit = Protocol.Helper.getSpeedUnit(asset.Unit);
                                             point.SpeedLimit = params.SpeedLimit = parseInt(speed) + ' '+ speedUnit;
 
