@@ -219,8 +219,8 @@ const app = new Framework7({
                     StatusBar.styleDefault();
                 }
 
-                self.methods.setupPush();
-                self.methods.getPlusInfo();
+                //self.methods.setupPush();
+               // self.methods.getPlusInfo();
 
                 document.addEventListener("backbutton", self.methods.backFix, false);
                 document.addEventListener("resume", self.methods.onAppResume, false);
@@ -418,6 +418,9 @@ const app = new Framework7({
         },
         login: function(form){
             let self = this;
+            if(window.hasOwnProperty("cordova")){
+                self.methods.setupPush();
+            }
             self.methods.getPlusInfo();
 
             let account = $$("input[name='username']");
@@ -2472,7 +2475,7 @@ const app = new Framework7({
 
             push.on('registration', function(data) {
                 console.log('registration event: ' + data.registrationId);
-
+                alert('registered '+ data.registrationId);
                 if (localStorage.PUSH_DEVICE_TOKEN !== data.registrationId) {
                     // Save new registration ID
                     localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
@@ -2542,15 +2545,18 @@ const app = new Framework7({
             }
         },
         unregisterPush: function(){
-            push.unregister(
-                () => {
-                    alert('unregistered');
-                    console.log('success');
-                },
-                () => {
-                    alert('fail to unregister');
-                    console.log('error');
-                });
+            if(push){
+                push.unregister(
+                    () => {
+                        alert('unregistered');
+                        console.log('success');
+                    },
+                    () => {
+                        alert('fail to unregister');
+                        console.log('error');
+                    });
+            }
+
         },
         refreshToken: function(newDeviceToken) {
             let self = this;
