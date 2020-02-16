@@ -2475,7 +2475,7 @@ const app = new Framework7({
 
             push.on('registration', function(data) {
                 console.log('registration event: ' + data.registrationId);
-                alert('registered '+ data.registrationId);
+               // alert('registered '+ data.registrationId);
                 if (localStorage.PUSH_DEVICE_TOKEN !== data.registrationId) {
                     // Save new registration ID
                     localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
@@ -2548,11 +2548,11 @@ const app = new Framework7({
             if(push){
                 push.unregister(
                     () => {
-                        alert('unregistered');
+                       // alert('unregistered');
                         console.log('success');
                     },
                     () => {
-                        alert('fail to unregister');
+                       // alert('fail to unregister');
                         console.log('error');
                     });
             }
