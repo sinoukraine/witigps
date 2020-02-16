@@ -368,6 +368,7 @@ const app = new Framework7({
             localStorage.clear();
             POSINFOASSETLIST = {};
 
+            self.methods.unregisterPush();
             if (notifications) {
                 localStorage.setItem("COM.QUIKTRAK.NEW.NOTIFICATIONS", JSON.stringify(notifications));
             }
@@ -2472,7 +2473,6 @@ const app = new Framework7({
             push.on('registration', function(data) {
                 console.log('registration event: ' + data.registrationId);
 
-                let oldRegId = localStorage.PUSH_DEVICE_TOKEN;
                 if (localStorage.PUSH_DEVICE_TOKEN !== data.registrationId) {
                     // Save new registration ID
                     localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
@@ -2487,30 +2487,33 @@ const app = new Framework7({
             });
 
             push.on('notification', function(data) {
-                //if user using app and push notification comes
-                if (data && data.additionalData && data.additionalData.foreground) {
-                    // if application open, show popup
-                    let alertData = self.methods.formatNewNotifications([data.additionalData])[0];
-                    self.methods.displayNewNotificationArrived(alertData);
-                } else if (data && data.additionalData && data.additionalData.payload) {
-                    //if user NOT using app and push notification comes
-                    self.preloader.show();
-                    window.loginTimer = setInterval(function() {
-                        if (window.loginDone) {
-                            clearInterval(window.loginTimer);
-                            setTimeout(function() {
-                                let alertData = self.methods.formatNewNotifications([data.additionalData])[0];
-                                if(mainView.router.currentRoute.name && mainView.router.currentRoute.name === 'notification'){
-                                    mainView.router.navigate('/notification/',{context: { AlertData: alertData }, reloadCurrent: true, ignoreCache: true, });
-                                }else {
-                                    mainView.router.navigate('/notification/',{context: { AlertData: alertData } });
-                                }
+                if (localStorage.ACCOUNT && localStorage.PASSWORD) {
+                    //if user using app and push notification comes
+                    if (data && data.additionalData && data.additionalData.foreground) {
+                        // if application open, show popup
+                        let alertData = self.methods.formatNewNotifications([data.additionalData])[0];
+                        self.methods.displayNewNotificationArrived(alertData);
+                    } else if (data && data.additionalData && data.additionalData.payload) {
+                        //if user NOT using app and push notification comes
+                        self.preloader.show();
+                        window.loginTimer = setInterval(function() {
+                            if (window.loginDone) {
+                                clearInterval(window.loginTimer);
+                                setTimeout(function() {
+                                    let alertData = self.methods.formatNewNotifications([data.additionalData])[0];
+                                    if(mainView.router.currentRoute.name && mainView.router.currentRoute.name === 'notification'){
+                                        mainView.router.navigate('/notification/',{context: { AlertData: alertData }, reloadCurrent: true, ignoreCache: true, });
+                                    }else {
+                                        mainView.router.navigate('/notification/',{context: { AlertData: alertData } });
+                                    }
 
-                                self.preloader.hide();
-                            }, 1000);
-                        }
-                    }, 1000);
+                                    self.preloader.hide();
+                                }, 1000);
+                            }
+                        }, 1000);
+                    }
                 }
+
                 if (device && device.platform && device.platform.toLowerCase() === 'ios') {
                     push.finish(
                         () => {
@@ -2526,6 +2529,7 @@ const app = new Framework7({
                     );
                 }
             });
+
             if　 (!localStorage.ACCOUNT && push) {
                 push.clearAllNotifications(
                     () => {
@@ -2536,6 +2540,17 @@ const app = new Framework7({
                     }
                 );
             }
+        },
+        unregisterPush: function(){
+            push.unregister(
+                () => {
+                    alert('unregistered');
+                    console.log('success');
+                },
+                () => {
+                    alert('fail to unregister');
+                    console.log('error');
+                });
         },
         refreshToken: function(newDeviceToken) {
             let self = this;
