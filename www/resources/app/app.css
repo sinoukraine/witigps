@@ -405,7 +405,6 @@
     font-size: 10px;
     bottom: 4px;
     right: 6px;
-    //color: white;
 }
 /*LOGIN SCREEN*/
 .login-screen-content{
@@ -428,7 +427,7 @@
     .login-screen-content .input-clear-button.password-clear-button{
         margin-right: 48px;
     }
-    .login-screen-content .password-toggle {
+    .password-toggle {
         position: absolute;
         right: 8px;
         cursor: pointer;

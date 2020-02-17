@@ -1,5 +1,12 @@
 var routes = [
     {
+        path: '/panel-left/',
+        panel: {
+            componentUrl: './resources/pages/panel-left.html?v=1.3',
+        },
+        name: 'panel-left'
+    },
+    {
         path: '/',
         componentUrl: './resources/pages/home.html?v=1.4',
         name: 'home',
@@ -8,11 +15,12 @@ var routes = [
         },
     },
     {
-        path: '/panel-left/',
-        panel: {
-            componentUrl: './resources/pages/panel-left.html?v=1.3',
+        path: '/forgot-password/',
+        componentUrl: './resources/pages/forgot-password.html?v=1.4',
+        name: 'forgot-password',
+        options: {
+            transition: 'f7-circle',
         },
-        name: 'panel-left'
     },
     {
         path: '/asset-status-live/',

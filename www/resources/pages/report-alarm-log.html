@@ -172,7 +172,7 @@
                         //console.log(result);
                         if(result.data.MajorCode === '000') {
                             if(!result.data.Data || !result.data.Data.length){
-                                self.methods.customDialog({title: self.PageTitle, text: LANGUAGE.COM_MSG076});
+                                self.$app.methods.customDialog({title: self.PageTitle, text: LANGUAGE.COM_MSG076});
                             }else{
                                 self.$app.progressbar.show('custom');
                                 self.$app.methods.getGeofenceList(function () {

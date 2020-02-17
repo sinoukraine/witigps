@@ -178,6 +178,7 @@
                     //rowsBefore: 10,
                     //rowsAfter: 10,
                     showFilteredItemsOnly: true,
+                    emptyTemplate: `<li class="block">${LANGUAGE.COM_MSG040}</li>`,
                     searchAll: function (query, items) {
                         let filterType = this.el.data('filter-type');
                         let filteredListIndexes = self.$app.methods.filterAssetList(items, filterType);
@@ -351,7 +352,7 @@
                         }
                         return ret;
                     },
-                    //emptyTemplate: `<li class="item-content">${LANGUAGE.COM_MSG040}</li>`
+
                 });
 
                 AssetUpdateEvents.on('updateReceived', self.UpdateData);

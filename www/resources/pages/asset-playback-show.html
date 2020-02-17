@@ -460,7 +460,7 @@
                 mapSettingsObg && mapSettingsObg.showGeofences ? self.showGeofences(self.Map) : '';
             },
             isGeofencesShowed: function(){
-                return !!this.Geofences.length; //simplified this.data.Geofences.length ? true : false;
+                return this.Geofences ? !!this.Geofences.length : false; //simplified this.data.Geofences.length ? true : false;
             },
             showGeofences: function(map) {
                 let self = this;

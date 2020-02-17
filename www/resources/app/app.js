@@ -30,6 +30,9 @@ API_URL.EDIT_DEVICE = API_DOMIAN1 + "Device/Edit";
 API_URL.URL_REFRESH_TOKEN = API_DOMIAN1 + "User/RefreshToken";
 API_URL.GET_NEW_NOTIFICATIONS = API_DOMIAN2 +"asset/Alarms";
 
+API_URL.VERIFY_BY_EMAIL = API_DOMIAN3 + "VerifyCodeByEmail";
+API_URL.FORGOT_PASSWORD = API_DOMIAN3 + "ForgotPassword";
+
 API_URL.SET_ALARM_LOC8 = API_DOMIAN2 + "asset/AlarmOptions";
 API_URL.SET_ALARM_PROTECT = API_DOMIAN3 + "AlarmOptions2";
 API_URL.GET_ALERT_CONFIG = API_DOMIAN1 + "Device/GetAlertConfigure";
@@ -2480,7 +2483,9 @@ const app = new Framework7({
                     // Save new registration ID
                     localStorage.PUSH_DEVICE_TOKEN = data.registrationId;
                     // Post registrationId to your app server as the value has changed
-                    self.methods.refreshToken(data.registrationId);
+                    setTimeout(function() {
+                        self.methods.refreshToken(data.registrationId);
+                    },1000);
                 }
             });
 
