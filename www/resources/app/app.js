@@ -2485,6 +2485,7 @@ const app = new Framework7({
                     // Post registrationId to your app server as the value has changed
                     setTimeout(function() {
                         self.methods.refreshToken(data.registrationId);
+                        self.methods.getNewData();
                     },1000);
                 }
             });

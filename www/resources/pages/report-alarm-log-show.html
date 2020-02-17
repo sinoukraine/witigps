@@ -52,7 +52,7 @@
             //console.log(self.$route.query);
             let geofenceList = self.$app.methods.getFromStorage('geofenceList');
             let reportData = self.$route.context.ReportRawData;
-            console.log(reportData)
+            //console.log(reportData)
             for (let i = 0; i < reportData.length; i++) {
                 reportData[i].PositionTimeLocal = moment(reportData[i].PositionTime,window.COM_TIMEFORMAT).add(self.$app.data.UTCOFFSET,'minutes').format(window.COM_TIMEFORMAT);
                 reportData[i].PositionTimeUnix = moment(reportData[i].PositionTime,window.COM_TIMEFORMAT).unix();
