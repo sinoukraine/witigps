@@ -2566,7 +2566,7 @@ const app = new Framework7({
         refreshToken: function(newDeviceToken) {
             let self = this;
 
-            if (localStorage.PUSH_MOBILE_TOKEN && self.Data.MajorToken && self.Data.MinorToken && newDeviceToken) {
+            if (localStorage.PUSH_MOBILE_TOKEN && self.data.MajorToken && self.data.MinorToken && newDeviceToken) {
                 let data = {
                     MajorToken: self.data.MajorToken,
                     MinorToken: self.data.MinorToken,
