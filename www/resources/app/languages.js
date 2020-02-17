@@ -208,6 +208,12 @@ window.LanguagePackages= {
 		"PROMPT_MSG096": "This feature under development",
 		"PROMPT_MSG097": "Select at least one asset, please.",
 		"PROMPT_MSG098": "There is no position data or they are incorrect.",
+		"PROMPT_MSG099": "Camera API not supported",
+		"PROMPT_MSG100": "Error",
+		"PROMPT_MSG101": "Error taking picture",
+
+
+
 
 
 		"HOME_MSG00": "Home",

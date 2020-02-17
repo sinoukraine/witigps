@@ -1440,7 +1440,7 @@ const app = new Framework7({
             self.progressbar.show();
             self.request.promise.post(API_URL.GET_BALANCE, data, 'json')
                 .then(function (result) {
-                    console.log(result);
+                    //console.log(result);
                     if (result.data && result.data.MajorCode === '000') {
                         let userInfo = self.methods.getFromStorage('userInfo');
                         userInfo.SMSTimes = result.data.Data.SMSTimes;

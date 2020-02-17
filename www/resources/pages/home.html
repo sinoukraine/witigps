@@ -362,7 +362,7 @@
                     if (!POSINFOASSETLIST[IMEI] || !POSINFOASSETLIST[IMEI].SolutionType || POSINFOASSETLIST[IMEI].SolutionType.toLowerCase() !== "track" && POSINFOASSETLIST[IMEI].SolutionType.toLowerCase() !== "watch" ){
                         mainView.router.navigate('/asset-protect/?imei='+IMEI);
                     }else{
-                        mainView.router.navigate('/asset-status-live/?tabs=true&imei='+IMEI);
+                        mainView.router.navigate('/asset-status/?tabs=true&imei='+IMEI);
                     }
                 });
                 self.$app.utils.nextFrame(()=>{

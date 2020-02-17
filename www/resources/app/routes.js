@@ -23,9 +23,9 @@ var routes = [
         },
     },
     {
-        path: '/asset-status-live/',
-        componentUrl: './resources/pages/asset-status-live.html?v=1.4',
-        name: 'asset-status-live',
+        path: '/asset-status/',
+        componentUrl: './resources/pages/asset-status.html?v=1.4',
+        name: 'asset-status',
         options: {
             transition: 'f7-cover',
         },

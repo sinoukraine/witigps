@@ -311,6 +311,7 @@
                             onClick: function () {
                                 //app.dialog.alert('Button1 clicked');
                                // $$('#AssetImageInput').click();
+                                self.getImageFromDevice(1);
                             }
                         },
                         {
@@ -359,9 +360,40 @@
                     ]
                 }).open();
             },
+            getImageFromDevice: function(source=1){
+                let self = this;
+                if (!navigator.camera) {
+                    self.$app.methods.customDialog({title:LANGUAGE.PROMPT_MSG100, text: LANGUAGE.PROMPT_MSG099});
+                    return;
+                }
+                let options = {
+                    quality: 50,
+                    destinationType: Camera.DestinationType.DATA_URL,
+                    sourceType: source, // 0:Photo Library, 1=Camera, 2=Saved Album
+                    encodingType: 0 // 0=JPG 1=PNG
+                };
+
+                navigator.camera.getPicture(
+                    function(imgData) {
+                        /*mainView.router.load({
+                            url: 'resources/templates/asset.edit.photo.html',
+                            context: {
+                                imgSrc: "data:image/jpeg;base64," + imgData
+                            }
+                        });*/
+                        self.loadEditImageModal("data:image/jpeg;base64," + imgData);
+
+                    },
+                    function() {
+                        self.$app.methods.customDialog({title:LANGUAGE.PROMPT_MSG100, text: LANGUAGE.PROMPT_MSG101});
+                        //alert('Error taking picture', 'Error');
+                    },
+                    options);
+            },
+
             previewFile: function(file){
                 let self = this;
-                self.$app.progressbar.show('gray');
+                self.$app.progressbar.show('custom');
 
                 let reader  = new FileReader();
 
