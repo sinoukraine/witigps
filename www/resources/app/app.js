@@ -1629,7 +1629,7 @@ const app = new Framework7({
 
                 markerData +=   '<tr>';
                 markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG03+'</td>';
-                markerData +=       `<td class="marker-data-value">${positionDetails.PositionTimeLocal ? positionDetails.PositionTimeLocal : positionDetails.PositionTime }</td>`;
+                markerData +=       `<td class="marker-data-value">${positionDetails.PositionTimeLocal ? positionDetails.PositionTimeLocal : (positionDetails.PositionTime) ? positionDetails.PositionTime : (positionDetails.CreateDateTime) ? positionDetails.CreateDateTime : positionDetails.time}</td>`;
                 markerData +=   '</tr>';
 
                 if ( typeof positionDetails.Speed !== 'undefined') {

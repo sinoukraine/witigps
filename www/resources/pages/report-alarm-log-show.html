@@ -52,6 +52,7 @@
             //console.log(self.$route.query);
             let geofenceList = self.$app.methods.getFromStorage('geofenceList');
             let reportData = self.$route.context.ReportRawData;
+            console.log(reportData)
             for (let i = 0; i < reportData.length; i++) {
                 reportData[i].PositionTimeLocal = moment(reportData[i].PositionTime,window.COM_TIMEFORMAT).add(self.$app.data.UTCOFFSET,'minutes').format(window.COM_TIMEFORMAT);
                 reportData[i].PositionTimeUnix = moment(reportData[i].PositionTime,window.COM_TIMEFORMAT).unix();
@@ -59,7 +60,7 @@
                 reportData[i].Id = self.$app.utils.id();
                 reportData[i].AlertName = Protocol.Helper.getAletTypeName(reportData[i].AlertID);
                 if (reportData[i].AlertID === 8 || reportData[i].AlertID === 16) {
-                    reportData[i].GeofenceName = geofenceList[reportData[i].AlertID] ? geofenceList[reportData[i].AlertID].Name : LANGUAGE.COM_MSG094;
+                    reportData[i].GeofenceName = geofenceList[reportData[i].AlertCode] ? geofenceList[reportData[i].AlertCode].Name : LANGUAGE.COM_MSG094;
                 }
             }
 

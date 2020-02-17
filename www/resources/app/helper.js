@@ -459,9 +459,9 @@ let Protocol = {
             ret = TimeSpan(parseInt(launchHours)*1000 + parseInt(asset.InitAcconHours)*60*60*1000 + parseInt(asset._FIELD_FLOAT8)*1000).format("^hh:mm:ss");  
             return ret;
         },
-        getAlertNameByType: function(type){
+        getAlertNameByType: function(type=0){
             var ret = "";
-            type ? type = parseInt(type,10) : '';
+            type = parseInt(type,10);
             switch (type){
                 case 8:
                     ret = LANGUAGE.ALARM_MSG12;    //InGeoFance

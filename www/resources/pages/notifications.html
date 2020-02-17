@@ -118,14 +118,14 @@
                             }else{
                                 item.alarm = 'Alarm';
                             }
-                            let isGeofence = Protocol.Helper.getAlertNameByType(item.type);
+                            let alertName = Protocol.Helper.getAlertNameByType(item.type);
 
                             ret = `<li class="swipeout" data-id="${ item.UniqueId }" data-alarm="${ item.alarm }" data-lat="${ item.Lat }" data-lng="${ item.Lng }" data-touch-move-stop-propagation="false">` +
                                     '<div class="swipeout-content">' +
                                         '<a href="#" class="item-link item-content ">' +
                                             '<div class="item-inner">' +
                                                 '<div class="item-title-row">' +
-                                                    `<div class="item-title text-color-red size-14">${ isGeofence ? isGeofence + ' - ' + item.alarm : item.alarm }</div>` +
+                                                    `<div class="item-title text-color-red size-14">${ alertName ? alertName + ' - ' + item.alarm : item.alarm }</div>` +
                                                     `<div class="item-after text-color-gray">${ item.CreateDateTime ? item.CreateDateTime : item.time }</div>` +
                                                 '</div>' +
                                                 `<div class="item-subtitle text-color-black size-16">${ item.AssetName ? item.AssetName : item.name }</div>` +
