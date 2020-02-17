@@ -2420,7 +2420,7 @@ const app = new Framework7({
                 this.methods.getNewData();
             }
         },
-        getNewData: function(){
+        getNewData: function(noPosInfoUpdate = false){
             let self = this;
 
             self.methods.getPlusInfo();
@@ -2449,9 +2449,11 @@ const app = new Framework7({
                         self.methods.setInStorage({name:'assetTypes', data:result.data.Data.AssetTypes });
                         let assetListObj = self.methods.setAssetList({list: result.data.Data.AssetArray});
 
-                        self.utils.nextFrame(()=>{
-                            self.methods.getAssetListPosInfo(assetListObj);
-                        });
+                        if(!noPosInfoUpdate){
+                            self.utils.nextFrame(()=>{
+                                self.methods.getAssetListPosInfo(assetListObj);
+                            });
+                        }
                     }
                 })
                 .catch(function (err) {
@@ -2485,7 +2487,7 @@ const app = new Framework7({
                     // Post registrationId to your app server as the value has changed
                     setTimeout(function() {
                         self.methods.refreshToken(data.registrationId);
-                        self.methods.getNewData();
+                        self.methods.getNewData(true);
                     },1000);
                 }
             });
