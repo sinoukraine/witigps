@@ -13,13 +13,6 @@ const API_DOMIAN7 = "https://nominatim.sinopacific.com.ua/";
 const API_DOMIAN8 = "https://nominatim.openstreetmap.org/";
 const API_DOMIAN9 = "https://upload.quiktrak.co/";
 
-
-//let API_DOMIAN1 = "https://api.m2mglobaltech.com/QuikProtect/V1/Client/";
-//let API_DOMIAN2 = "https://api.m2mglobaltech.com/QuikTrak/V1/";
-//let API_DOMIAN3 = "https://quiktrak.co/webapp/QuikProtect/Api2/";
-//let API_DOMIAN4 = "https://api.m2mglobaltech.com/Quikloc8/V1/";
-//let API_DOMIAN5 = "https://api.m2mglobaltech.com/Common/V1/Activation/";
-//let API_DOMIAN6 = "https://nomad.sinopacific.com.ua/";
 const API_URL = {};
 
 API_URL.LOGIN = API_DOMIAN2 + "user/Auth2";
@@ -44,8 +37,8 @@ API_URL.SEND_COM_STATUS = API_DOMIAN3 + "Status";
 API_URL.SET_GEOLOCK = API_DOMIAN2 + "asset/GeoLock";
 API_URL.SET_IMMOBILISATION = API_DOMIAN2 + "asset/Relay";
 API_URL.SET_DOORLOCK = API_DOMIAN2 + "asset/door";
-API_URL.URL_SET_GEOLOCK_PROTECT = API_DOMIAN3 + "setGeolock";
-API_URL.URL_SET_IMMOBILISATION_PROTECT = API_DOMIAN3 + "Relay";
+/*API_URL.URL_SET_GEOLOCK_PROTECT = API_DOMIAN3 + "setGeolock";
+API_URL.URL_SET_IMMOBILISATION_PROTECT = API_DOMIAN3 + "Relay";*/
 
 API_URL.GET_GEOFENCE_LIST = API_DOMIAN1 + "Device/GetFenceList";
 API_URL.GEOFENCE_ADD = API_DOMIAN1 + "Device/FenceAdd";
@@ -57,6 +50,7 @@ API_URL.URL_ROUTE_IOS = "maps://maps.apple.com/maps?daddr={0},{1}";
 API_URL.URL_SUPPORT = "https://support.quiktrak.eu/";
 API_URL.URL_REPORT_THEFT = "https://forms.quiktrak.com.au/report-theft/";
 API_URL.URL_UPGRADE = "https://app.quikprotect.co/activation2/";
+API_URL.REFERRAL_PROGRAM = "https://forms.quiktrak.com.au/referral-program/";
 
 API_URL.GET_BALANCE = API_DOMIAN3 + "Balance";
 API_URL.EDIT_ACCOUNT = API_DOMIAN3 + "AccountEdit";
@@ -1634,8 +1628,7 @@ const app = new Framework7({
 
                 if ( typeof positionDetails.Speed !== 'undefined') {
                     if (asset && typeof asset.Unit !== "undefined" && typeof asset.posInfo.speed !== "undefined") {
-                        positionDetails.SpeedCustom = Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
-
+                        positionDetails.SpeedCustom = Protocol.Helper.getSpeedValue(asset.Unit, positionDetails.Speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
                     }
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG05+'</td>';

@@ -111,9 +111,10 @@
                         </label>
                     </li>
                     {{#if ContactListShow}}
+                    <li class="item-divider">{{@global.LANGUAGE.PROMPT_MSG102}}</li>
                     <li key="NotificationTo">
                         <a class="item-link smart-select smart-select-init custom-smart-select custom-smart-select-contact-list {{#unless ContactList}}disabled{{/unless}}" data-open-in="popup" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG002}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-page-title = "{{@global.LANGUAGE.COM_MSG077}}" data-form-color-theme="green">
-                            <select name="ContactList" multiple required validate>
+                            <select name="ContactList" multiple validate {{#unless CustomEmail}}required{{/unless}}>
                                 {{#ContactList}}
                                 {{#if EMail}}
                                 <option value="{{Code}}" data-display-as="{{EMail}}">{{FullName}}({{EMail}})</option>
@@ -133,6 +134,16 @@
                     {{#unless ContactList}}
                         <li class="text-color-red block-footer">{{@global.LANGUAGE.PROMPT_MSG068}}</li>
                     {{/unless}}
+                    <li class="item-divider">{{@global.LANGUAGE.PROMPT_MSG103}}</li>
+                    <li class="item-content item-input ">
+                        <div class="item-media text-color-lightgray"><i class="f7-icons icon-live-email "></i></div>
+                        <div class="item-inner">
+                            <div class="item-title item-floating-label item-label">{{@global.LANGUAGE.COM_MSG101}}</div>
+                            <div class="item-input-wrap ">
+                                <input type="email" name="CustomEmail" value="" maxlength="200" validate {{#if CustomEmail}}required{{/if}}>
+                            </div>
+                        </div>
+                    </li>
                     {{/if}}
 
                 </ul>
@@ -262,6 +273,15 @@
                     });
                 });
 
+                page.$el.on('input', 'input[name="CustomEmail"]', function () {
+                    self.$setState({
+                        CustomEmail: !!this.value
+                    },()=>{
+                        $$(this).change();
+                        page.$el.find('[name="ContactList"]').change();
+                    });
+                });
+
                 form.on('submit', function(e) {
                     e.preventDefault();
                     let contactListEl = page.$el.find('[name="ContactList"]');
@@ -275,6 +295,9 @@
                             for (let i = contactCodes.length - 1; i >= 0; i--) {
                                 recipients.push(self.ContactList.find(x => x.Code === contactCodes[i]).EMail);
                             }
+                        }
+                        if(self.CustomEmail){
+                            recipients.push(page.$el.find('input[name="CustomEmail"]').val());
                         }
 
                         let offsetZZformat = self.$app.methods.convertTimZoneValToZZformat(userInfo.TimeZone);

@@ -103,7 +103,9 @@ window.LanguagePackages= {
 		"COM_MSG097": "Date",
 		"COM_MSG098": "Alert",
 		"COM_MSG099": "Speed Limit",
-
+		"COM_MSG100": "Refer a Friend",
+		"COM_MSG101": "Custom Email",
+		"COM_MSG102": "Mins",
 
 		"PROMPT_MSG000": "Nothing found",
 		"PROMPT_MSG001": "The login(email) or password you entered is incorrect.",
@@ -211,9 +213,12 @@ window.LanguagePackages= {
 		"PROMPT_MSG099": "Camera API not supported",
 		"PROMPT_MSG100": "Error",
 		"PROMPT_MSG101": "Error taking picture",
-
-
-
+		"PROMPT_MSG102": "Select Email address from Contact List",
+		"PROMPT_MSG103": "Or enter custom Email address",
+		"PROMPT_MSG104": "Referral Program",
+		"PROMPT_MSG105": "Earn $20.00 for each unit purchased. Click <a href='{0}' target='_blank' class='external color-red'>HERE</a> to find out more.",
+		"PROMPT_MSG106": "Only numbers, please!",
+		"PROMPT_MSG107": "This report under development",
 
 
 		"HOME_MSG00": "Home",
@@ -475,6 +480,8 @@ window.LanguagePackages= {
 		"REPORTS_MSG06": "Geofences",
 		"REPORTS_MSG07": "Alerts",
 		"REPORTS_MSG08": "Report Options",
+		"REPORTS_MSG09": "Movement",
+		"REPORTS_MSG10": "Stationary",
 
 		"REPORT_ALERT_LIST_MSG01": "None",
 		"REPORT_ALERT_LIST_MSG02": "Custom",

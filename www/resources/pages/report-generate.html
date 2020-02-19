@@ -72,29 +72,6 @@
                             </div>
                         </li>
 
-                        <li>
-                            <a class="item-link smart-select smart-select-init custom-smart-select custom-smart-select-contact-list {{#unless ContactList}}disabled{{/unless}}" data-open-in="popup" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG002}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-page-title = "{{@global.LANGUAGE.COM_MSG077}}" data-form-color-theme="green">
-                                <select name="ContactList" multiple required validate>
-                                    {{#ContactList}}
-                                    {{#if EMail}}
-                                    <option value="{{EMail}}" data-display-as="{{EMail}}">{{FullName}}({{EMail}})</option>
-                                    {{/if}}
-                                    {{/ContactList}}
-                                </select>
-                                <div class="item-content item-input">
-                                    <div class="item-media text-color-lightgray">
-                                        <i class="f7-icons icon-live-email"></i>
-                                    </div>
-                                    <div class="item-inner">
-                                        <div class="item-title item-label">{{@global.LANGUAGE.COM_MSG077}}</div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        {{#unless ContactList}}
-                        <li class="text-color-red block-footer">{{@global.LANGUAGE.PROMPT_MSG068}}</li>
-                        {{/unless}}
-
                         {{#js_if "this.ReportType == '1'"}}
                             {{#if GeofenceListShow}}
                             <li key="key-geofence-list">
@@ -185,6 +162,89 @@
                             </li>
                             {{/if}}
                         {{/js_if}}
+
+                        {{#js_if "this.ReportType == '2'"}}
+                        <li class="item-content item-input ">
+                            <label class="item-media checkbox color-green">
+                                <input type="checkbox" name="MovementState" {{#if MovementState}}checked{{/if}}><i class="icon-checkbox"></i>
+                            </label>
+                            <div class="item-inner">
+                                <div class="item-title item-floating-label item-label">{{@global.LANGUAGE.REPORTS_MSG09}}({{@global.LANGUAGE.COM_MSG102}})</div>
+                                <div class="item-input-wrap ">
+                                    <input type="tel" name="Movement" value="2" maxlength="20" data-error-message="{{@global.LANGUAGE.PROMPT_MSG106}}" pattern="[0-9]*" validate {{#if MovementState}}required{{/if}}>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="item-content item-input ">
+                            <label class="item-media checkbox color-green">
+                                <input type="checkbox" name="StationaryState" {{#if StationaryState}}checked{{/if}}><i class="icon-checkbox"></i>
+                            </label>
+                            <div class="item-inner">
+                                <div class="item-title item-floating-label item-label">{{@global.LANGUAGE.REPORTS_MSG10}}({{@global.LANGUAGE.COM_MSG102}})</div>
+                                <div class="item-input-wrap ">
+                                    <input type="tel" name="Stationary" value="2" maxlength="20" data-error-message="{{@global.LANGUAGE.PROMPT_MSG106}}" pattern="[0-9]*" validate {{#if StationaryState}}required{{/if}}>
+                                </div>
+                            </div>
+                        </li>
+                        {{/js_if}}
+                        {{#js_if "this.ReportType == '5'"}}
+                        <li class="item-content item-input ">
+                            <label class="item-media checkbox color-green">
+                                <input type="checkbox" name="IgnitionOnState" {{#if IgnitionOnState}}checked{{/if}}><i class="icon-checkbox"></i>
+                            </label>
+                            <div class="item-inner">
+                                <div class="item-title item-floating-label item-label">{{@global.LANGUAGE.COM_MSG049}}({{@global.LANGUAGE.COM_MSG102}})</div>
+                                <div class="item-input-wrap ">
+                                    <input type="tel" name="IgnitionOn" value="5" maxlength="20" data-error-message="{{@global.LANGUAGE.PROMPT_MSG106}}" pattern="[0-9]*" validate {{#if IgnitionOnState}}required{{/if}}>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="item-content item-input ">
+                            <label class="item-media checkbox color-green">
+                                <input type="checkbox" name="IgnitionOffState" {{#if IgnitionOffState}}checked{{/if}}><i class="icon-checkbox"></i>
+                            </label>
+                            <div class="item-inner">
+                                <div class="item-title item-floating-label item-label">{{@global.LANGUAGE.COM_MSG050}}({{@global.LANGUAGE.COM_MSG102}})</div>
+                                <div class="item-input-wrap ">
+                                    <input type="tel" name="IgnitionOff" value="5" maxlength="20" data-error-message="{{@global.LANGUAGE.PROMPT_MSG106}}" pattern="[0-9]*" validate {{#if IgnitionOffState}}required{{/if}}>
+                                </div>
+                            </div>
+                        </li>
+                        {{/js_if}}
+
+                        <li class="item-divider">{{@global.LANGUAGE.PROMPT_MSG102}}</li>
+                        <li>
+                            <a class="item-link smart-select smart-select-init custom-smart-select custom-smart-select-contact-list {{#unless ContactList}}disabled{{/unless}}" data-open-in="popup" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG002}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-page-title = "{{@global.LANGUAGE.COM_MSG077}}" data-form-color-theme="green">
+                                <select name="ContactList" multiple validate {{#unless CustomEmail}}required{{/unless}}>
+                                {{#ContactList}}
+                                {{#if EMail}}
+                                <option value="{{EMail}}" data-display-as="{{EMail}}">{{FullName}}({{EMail}})</option>
+                                {{/if}}
+                                {{/ContactList}}
+                                </select>
+                                <div class="item-content item-input">
+                                    <div class="item-media text-color-lightgray">
+                                        <i class="f7-icons icon-live-email"></i>
+                                    </div>
+                                    <div class="item-inner">
+                                        <div class="item-title item-label">{{@global.LANGUAGE.COM_MSG077}}</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        {{#unless ContactList}}
+                        <li class="text-color-red block-footer">{{@global.LANGUAGE.PROMPT_MSG068}}</li>
+                        {{/unless}}
+                        <li class="item-divider">{{@global.LANGUAGE.PROMPT_MSG103}}</li>
+                        <li class="item-content item-input ">
+                            <div class="item-media text-color-lightgray"><i class="f7-icons icon-live-email "></i></div>
+                            <div class="item-inner">
+                                <div class="item-title item-floating-label item-label">{{@global.LANGUAGE.COM_MSG101}}</div>
+                                <div class="item-input-wrap ">
+                                    <input type="email" name="CustomEmail" value="" maxlength="200" validate {{#if CustomEmail}}required{{/if}}>
+                                </div>
+                            </div>
+                        </li>
                     </ul>
                 </div>
 
@@ -232,6 +292,9 @@
                 AssetList: assetList,
                 ContactList: contactList,
                 OverviewOptionsList: overviewOptionsList,
+
+                StationaryState: true,
+                IgnitionOffState: true,
             };
 
             return ret;
@@ -305,6 +368,7 @@
                 let endDateTimeEl = page.$el.find('[name="EndDateTime"]');
                 let assetsEl = page.$el.find('[name = "Assets"]');
                 let contactsEl = page.$el.find('[name = "ContactList"]');
+                let customEmailEl = page.$el.find('[name = "CustomEmail"]');
                 let form = page.$el.find('[name = "GenerateReportForm"]');
 
                 self.CalendarStartDateTime = self.$app.calendar.create({
@@ -325,6 +389,21 @@
                 self.$app.methods.getGeofenceList(self.initGeofencesSelect);
                 self.$app.methods.getAlertList(self.initAlertsSelect);
 
+                customEmailEl.on('input', function () {
+                    self.$setState({
+                        CustomEmail: !!this.value
+                    },()=>{
+                        $$(this).change();
+                        page.$el.find('[name="ContactList"]').change();
+                    });
+                });
+
+                page.$el.on('change', '[name="MovementState"], [name="StationaryState"], [name="IgnitionOnState"], [name="IgnitionOffState"]', function () {
+                    self.$setState({
+                        [this.name]: this.checked
+                    })
+                });
+
                 form.on('submit', function(e) {
                     e.preventDefault();
                     let alertsEl = page.$el.find('[name = "AlertList"]');
@@ -340,20 +419,28 @@
                         Emails: contactsEl.val(),
                         Export: 'PDF'
                     };
-
+                    if(self.CustomEmail){
+                        data.Emails.push(customEmailEl.val());
+                    }
                     let url = API_URL.GET_REPORT_OVERVIEW;
                     switch (self.ReportType) {
                         case '1':
                             data.Alerts = alertsEl.val();
-                            data.GetGeofenceCodes = overviewOptionsEl.val();
-                            data.Features = geofencesEl.val();
+                            data.GetGeofenceCodes = geofencesEl.val();
+                            data.Features = overviewOptionsEl.val();
                             break;
                     }
-                    console.log(data);
-                    self.generateReport(data,url);
+                    if(self.ReportType === '1'){
+                        self.generateReport(data,url);
+                    }else{
+                        self.$app.methods.customDialog({title: self.PageTitle, text: LANGUAGE.PROMPT_MSG107});
+                    }
+
                     return false;
                 });
-
+                if(self.ReportType !== '1'){
+                    self.$app.methods.customDialog({title: self.PageTitle, text: LANGUAGE.PROMPT_MSG107});
+                }
             },
             pageBeforeRemove: function () {
                 let self = this;

@@ -27,9 +27,9 @@
         <div class="toolbar tabbar toolbar-top">
             <div class="toolbar-inner">
                 <a @click="FilterAssetList" href="#tab1" data-type="all" class="tab-link flex-direction-row tab-link-active">{{@global.LANGUAGE.HOME_MSG01}}<span class="badge color-custom margin-left-quarter">{{AssetsCount.All}}</span></a>
-                <a @click="FilterAssetList" href="#tab2" data-type="live" class="tab-link flex-direction-row">Live<span class="badge color-custom margin-left-quarter">{{AssetsCount.Live}}</span></a>
-                <a @click="FilterAssetList" href="#tab3" data-type="loc8" class="tab-link flex-direction-row">Loc8<span class="badge color-custom margin-left-quarter">{{AssetsCount.Loc8}}</span></a>
-                <a @click="FilterAssetList" href="#tab4" data-type="protect" class="tab-link flex-direction-row">Protect<span class="badge color-custom margin-left-quarter">{{AssetsCount.Protect}}</span></a>
+                <a @click="FilterAssetList" href="#tab2" data-type="live" class="tab-link flex-direction-row">Live<span class="badge color-track margin-left-quarter">{{AssetsCount.Live}}</span></a>
+                <a @click="FilterAssetList" href="#tab3" data-type="loc8" class="tab-link flex-direction-row">Loc8<span class="badge color-loc8 margin-left-quarter">{{AssetsCount.Loc8}}</span></a>
+                <a @click="FilterAssetList" href="#tab4" data-type="protect" class="tab-link flex-direction-row">Protect<span class="badge color-protect margin-left-quarter">{{AssetsCount.Protect}}</span></a>
             </div>
         </div>
         <form class="searchbar searchbar-init searchbar-home " data-search-container=".assetList" data-search-item="li" data-search-in=".item-title" >
@@ -471,9 +471,8 @@
                         self.$app.methods.showToast(LANGUAGE.PROMPT_MSG041);
                     });
                 });
-               // console.log('home init');
+
                 LoginEvents.on('signedIn', function (items){
-                    //console.log('here');
                     self.$setState({
                         AssetsCount: self.$app.methods.countItemsBySolution(items),
                         LoginDone: true
@@ -499,7 +498,6 @@
 
                 let searchbar = self.$app.searchbar.get('.searchbar-home');
                 searchbar.on('clear', function (searchbar, query, previousQuery) {
-
                     self.$app.methods.filterVirtualAssetList(this.virtualList, this.virtualList.$el.data('filter-type'));
                 });
 

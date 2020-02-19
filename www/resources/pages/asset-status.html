@@ -80,7 +80,7 @@
                             <i class="f7-icons icon-live-geolock"></i>
                         </div>
                         <div class="item-inner">
-                            <div class="item-title tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG004}}">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG04}}  <span class="badge color-lightblue">?</span></div>
+                            <div class="item-title tooltip-init" data-trigger="click" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG004}}">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG04}}  <span class="badge color-lightblue">?</span></div>
                             <div class="item-after">
                                 <label class="toggle color-green toggle-Geolock">
                                     <input type="checkbox" name="Geolock" {{#if Geolock}} checked {{/if}}>
@@ -95,7 +95,7 @@
                             <i class="f7-icons icon-live-immobilisation"></i>
                         </div>
                         <div class="item-inner">
-                            <div class="item-title tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG005}}">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG05}}  <span class="badge color-lightblue">?</span></div>
+                            <div class="item-title tooltip-init" data-trigger="click" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG005}}">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG05}}  <span class="badge color-lightblue">?</span></div>
                             <div class="item-after">
                                 <label class="toggle color-green toggle-Immobilisation">
                                     <input type="checkbox" name="Immobilise" {{#if Immobilise}} checked {{/if}}>
@@ -111,7 +111,7 @@
                             <i class="f7-icons icon-live-lock-door"></i>
                         </div>
                         <div class="item-inner">
-                            <div class="item-title tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG006}}">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG06}}  <span class="badge color-lightblue">?</span></div>
+                            <div class="item-title tooltip-init" data-trigger="click" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG006}}">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG06}}  <span class="badge color-lightblue">?</span></div>
                             <div class="item-after">
                                 <label class="toggle color-green toggle-LockDoor">
                                     <input type="checkbox" name="LockDoor" {{#if LockDoor}} checked {{/if}}>
@@ -141,7 +141,7 @@
                         </div>
                     </li>
                     {{#if Acc}}
-                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG007}}">
+                    <li class="item-content col-50 tooltip-init" data-trigger="click" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG007}}">
                         <div class="item-media {{#js_if 'this.Acc === "ON" '}} text-color-green {{else}} text-color-red {{/js_if}}">
                             <i class="f7-icons icon-status-acc2"></i>
                         </div>
@@ -152,7 +152,7 @@
                     {{/if Acc}}
 
                     {{#if Acc2}}
-                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG008}}">
+                    <li class="item-content col-50 tooltip-init" data-trigger="click" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG008}}">
                         <div class="item-media text-color-lightgray ">
                             <i class="f7-icons icon-live-input"></i>
                         </div>
@@ -162,7 +162,7 @@
                     </li>
                     {{/if Acc2}}
                     {{#if Fuel}}
-                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG016}}">
+                    <li class="item-content col-50 tooltip-init" data-trigger="click" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG016}}">
                         <div class="item-media text-color-lightgray ">
                             <i class="f7-icons icon-live-fuel"></i>
                         </div>
@@ -172,7 +172,7 @@
                     </li>
                     {{/if Fuel}}
                     {{#if Voltage}}
-                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG011}}">
+                    <li class="item-content col-50 tooltip-init" data-trigger="click" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG011}}">
                         <div class="item-media text-color-lightgray ">
                             <i class="f7-icons icon-live-voltag"></i>
                         </div>
@@ -182,7 +182,7 @@
                     </li>
                     {{/if Voltage}}
                     {{#if Battery}}
-                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG010}}">
+                    <li class="item-content col-50 tooltip-init" data-trigger="click" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG010}}">
                         <div class="item-media text-color-lightgray ">
                             <i class="f7-icons icon-live-battery"></i>
                         </div>
@@ -192,7 +192,7 @@
                     </li>
                     {{/if Battery}}
                     {{#if Heartrate}}
-                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG018}}">
+                    <li class="item-content col-50 tooltip-init" data-trigger="click" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG018}}">
                         <div class="item-media text-color-lightgray ">
                             <i class="f7-icons icon-live-hearth"></i>
                         </div>
@@ -202,7 +202,7 @@
                     </li>
                     {{/if Heartrate}}
                     {{#if Temperature}}
-                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG019}}">
+                    <li class="item-content col-50 tooltip-init" data-trigger="click" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG019}}">
                         <div class="item-media text-color-lightgray ">
                             <i class="f7-icons icon-live-temperature"></i>
                         </div>
@@ -212,7 +212,7 @@
                     </li>
                     {{/if Temperature}}
                     {{#if Direction}}
-                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG015}}<br>{{Direction}}">
+                    <li class="item-content col-50 tooltip-init" data-trigger="click" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG015}}<br>{{Direction}}">
                         <div class="item-media text-color-lightgray ">
                             <i class="f7-icons icon-live-direction"></i>
                         </div>
@@ -222,7 +222,7 @@
                     </li>
                     {{/if Direction}}
                     {{#if EngineHours}}
-                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG020}}">
+                    <li class="item-content col-50 tooltip-init" data-trigger="click" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG020}}">
                         <div class="item-media text-color-lightgray ">
                             <i class="f7-icons icon-live-engine-hours"></i>
                         </div>
@@ -232,7 +232,7 @@
                     </li>
                     {{/if EngineHours}}
                     {{#if StoppedDuration}}
-                    <li class="item-content col-50 tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG021}}">
+                    <li class="item-content col-50 tooltip-init" data-trigger="click" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG021}}">
                         <div class="item-media text-color-lightgray ">
                             <i class="f7-icons icon-live-duration"></i>
                         </div>

@@ -76,7 +76,7 @@
             <div key="hide-on-search-block" class="block searchbar-hide-on-search text-align-center">{{PageHeaderDescription}}</div>
             {{/unless}}
 
-            <div class="list media-list virtual-list no-chevron no-margin-top searchbar-found geofenceList" >
+            <div class="list media-list virtual-list no-chevron no-margin-top no-hairline-bottom searchbar-found geofenceList" >
                 <!-- keep it empty -->
             </div>
 
@@ -176,7 +176,7 @@
                 let self = this;
                 self.$tick().then(() => {
                     self.Searchbar = self.$app.searchbar.create({
-                        el: self.$el.find('.searchbar-geofences'),
+                        el: $$(self.$app.navbar.getElByPage(self.$el)).find('.searchbar-geofences'),
                         searchContainer: self.$el.find('.geofenceList'),
                         searchIn: '.item-title',
                     });

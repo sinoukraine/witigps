@@ -19,7 +19,7 @@ var routes = [
         componentUrl: './resources/pages/forgot-password.html?v=1.4',
         name: 'forgot-password',
         options: {
-            transition: 'f7-circle',
+            transition: 'f7-cover-v',
         },
     },
     {
