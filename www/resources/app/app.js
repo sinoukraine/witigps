@@ -175,6 +175,7 @@ const app = new Framework7({
                 appId: '',
                 appleId: '1079168431',
                 appVersion: '',
+                supportPhone: 1300885461,
             },
             UTCOFFSET: moment().utcOffset(),
             AccountSolutionArray: [],
