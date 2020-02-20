@@ -547,6 +547,7 @@ const app = new Framework7({
                                         POSINFOASSETLIST[imei].initPosInfo(posData);
                                     }
                                 }
+
                                 AssetUpdateEvents.emit('updateReceived');
                             }
                         }
@@ -1288,6 +1289,10 @@ const app = new Framework7({
                         }
                         if(msg.time){
                             msg.CreateDateTime = msg.time;
+                        }
+
+                        if(msg.type && msg.type === 1024){
+                            this.methods.getNewData();
                         }
 
                         msgTemp = msg;
