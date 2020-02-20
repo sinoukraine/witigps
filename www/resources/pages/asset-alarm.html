@@ -43,7 +43,7 @@
         <form name="AssetAlarmForm" class="page-content">
             <input type="submit" id="submit-form-alarm" class="display-none" />
 
-            {{#if ShowAdditionalBlocks}}
+            {{#if ShowIgnoreBetweenBlock}}
             <div key="IgnoreBetween" class="list no-hairline-bottom no-hairline-top no-margin-top">
                 <ul>
                     <li class="item-content">
@@ -297,8 +297,8 @@
                     title: LANGUAGE.ASSET_ALARM_MSG26,
                 },
                 IMEI: IMEI,
-                Name: index == -1 ? assetList[IMEI].Name : LANGUAGE.ASSET_ALARM_MSG00,
-                MaxSpeed: index == -1 ? assetList[IMEI].MaxSpeed : 80,
+                Name: index === -1 ? assetList[IMEI].Name : LANGUAGE.ASSET_ALARM_MSG00,
+                MaxSpeed: index === -1 ? assetList[IMEI].MaxSpeed : 80,
 
                 ShowAdditionalBlocks: false,
                 IgnoreBetweenState: false,
@@ -320,11 +320,12 @@
                 }
 
                 let imeiArr = self.IMEI.split(',');
+                let assetList = self.$app.methods.getFromStorage('assetList');
 
                 if (imeiArr.length > 1) {
                     let AlarmListType = 3;
                     switch (self.$route.query.solution){
-                        case 'track': case 'watch':
+                        case 'track': case 'watch': case 'boat_watch':
                             AlarmListType = 2;
                             break;
 
@@ -335,30 +336,29 @@
 
                     self.loadAlarmList({
                         AlarmListType: AlarmListType,
+                        AssetType: assetList[imeiArr[0]] ? assetList[imeiArr[0]].AssetType : '',
                         AlarmOptions: 0,
                     });
                 }else{
-                    let assetList = self.$app.methods.getFromStorage('assetList');
+
                     let asset = assetList[self.$route.query.imei];
 
                     if (asset) {
                         if (asset.SolutionType && asset.SolutionType.toLowerCase() === 'track' ||
-                            asset.SolutionType && asset.SolutionType.toLowerCase() === 'watch')
+                            asset.SolutionType && asset.SolutionType.toLowerCase() === 'watch' ||
+                            asset.SolutionType && asset.SolutionType.toLowerCase() === 'boat_watch')
                         {
-                            //let userInfo = self.$app.methods.getFromStorage('userInfo');
                             let data = {
                                 MajorToken: self.$app.data.MajorToken,
                                 MinorToken: self.$app.data.MinorToken,
                                 IMEI: self.$route.query.imei
                             };
-                            //self.$app.preloader.show();
                             self.$app.request.promise.post(API_URL.GET_ALERT_CONFIG, data, 'json')
                                 .then(function (result) {
-                                    //self.$app.preloader.hide();
-
                                     if (result.data && result.data.MajorCode === '000') {
                                         self.loadAlarmList({
                                             AlarmListType: 2, //live
+                                            AssetType: asset.AssetType,
                                             AlarmOptions: result.data.Data.AlertTypes,
 
                                             LiveAssetSettings: result.data.Data,
@@ -366,12 +366,12 @@
                                     } else {
                                         self.loadAlarmList({
                                             AlarmListType: 2,    //live
+                                            AssetType: asset.AssetType,
                                             AlarmOptions: asset.AlarmOptions,
                                         });
                                     }
                                 })
                                 .catch(function (err) {
-                                    //self.$app.preloader.hide();
                                     console.log(err);
                                     if (err && err.status === 404){
                                         self.$app.dialog.alert(LANGUAGE.PROMPT_MSG002);
@@ -384,12 +384,14 @@
                         }else if(asset.SolutionType && asset.SolutionType.toLowerCase() === 'loc8'){
                             self.loadAlarmList({
                                 AlarmListType: 3,
+                                AssetType: asset.AssetType,
                                 AlarmOptions: asset.AlarmOptions,
 
                             });
                         }else{
                             self.loadAlarmList({
                                 AlarmListType: 1,     //protect
+                                AssetType: asset.AssetType,
                                 AlarmOptions: asset.AlarmOptions,
                             });
                         }
@@ -402,7 +404,7 @@
                 let self = this;
 
                 if (data && data.AlarmListType) {
-                    let alarmList = self.getAlarmListByType(data.AlarmListType);
+                    let alarmList = self.getAlarmListByType(data.AlarmListType, data.AssetType);
 
                     for (let i = alarmList.length - 1; i >= 0; i--) {
                         if (data.AlarmOptions & alarmList[i].val) {
@@ -414,7 +416,7 @@
                         AlarmListType: data.AlarmListType,
                         ShowAlarmList: true,
                         Alarms: alarmList,
-                        IgnoreBetweenState: data && data.LiveAssetSettings && data.LiveAssetSettings.IsIgnore === 1 ? true : false,
+                        IgnoreBetweenState: !!(data && data.LiveAssetSettings && data.LiveAssetSettings.IsIgnore === 1),
                         SpeedingMode: data && data.LiveAssetSettings && data.LiveAssetSettings.SpeedingMode ? data.LiveAssetSettings.SpeedingMode : 1
                     });
 
@@ -427,7 +429,8 @@
                         }
 
                         self.$setState({
-                            ShowAdditionalBlocks: true,
+                            ShowAdditionalBlocks: data.AssetType && data.AssetType.toLowerCase() !== 'boat' && data.AssetType.toLowerCase() !== 'jetski',
+                            ShowIgnoreBetweenBlock: true,
                             OverspeedState: !(data.AlarmOptions & 32),
                             OfflineState: !(data.AlarmOptions & 67108864),
                         });
@@ -584,7 +587,7 @@
                         change: function () {
                             for (let i = checkboxes.length - 1; i >= 0; i--) {
                                 checkboxes[i].checked = this.checked;
-                                if (checkboxes[i].value == '32' || checkboxes[i].value == '67108864') {
+                                if (checkboxes[i].value === '32' || checkboxes[i].value === '67108864') {
                                     $$(checkboxes[i]).change();
                                 }
                             }
@@ -599,194 +602,288 @@
                     }
                 }
             },
-            getAlarmListByType: function(type){
+            getAlarmListByType: function(type, assetType){
                 let self = this;
                 let ret = [];
                 if (type) {
                     type = parseInt(type, 10);
+                    assetType ? assetType = assetType.toLowerCase() : '';
                     switch (type){
                         case 2:     //live
-                            ret = [
-                                {
-                                    state: true,
-                                    val: 65536,
-                                    title: LANGUAGE.ASSET_ALARM_MSG10, //accOff
-                                },
-                                {
-                                    state: true,
-                                    val: 32768,
-                                    title: LANGUAGE.ASSET_ALARM_MSG11, //accOn
-                                },
-                                {
-                                    state: true,
-                                    val: 1048576,
-                                    title: LANGUAGE.ASSET_ALARM_MSG20, //custom2LowAlarm
-                                },
-                                {
-                                    state: true,
-                                    val: 131072,
-                                    title: LANGUAGE.ASSET_ALARM_MSG22, //customAlarm
-                                },
-                                {
-                                    state: true,
-                                    val: 1024,
-                                    title: LANGUAGE.ASSET_ALARM_MSG05, //geolock
-                                },
-                                {
-                                    state: true,
-                                    val: 8,
-                                    title: LANGUAGE.ASSET_ALARM_MSG12, //geofenceIn
-                                },
-                                {
-                                    state: true,
-                                    val: 16,
-                                    title: LANGUAGE.ASSET_ALARM_MSG13, //geofenceOut
-                                },
-                                {
-                                    state: true,
-                                    val: 128,
-                                    title: LANGUAGE.ASSET_ALARM_MSG27, //illegalIgnition
-                                },
-                                {
-                                    state: true,
-                                    val: 512,
-                                    title: LANGUAGE.ASSET_ALARM_MSG17, //lowBattery
-                                },
-                                {
-                                    state: true,
-                                    val: 4,
-                                    title: LANGUAGE.ASSET_ALARM_MSG18, //mainBatteryFail
-                                },
-                                {
-                                    state: true,
-                                    val: 2,
-                                    title: LANGUAGE.ASSET_ALARM_MSG19, //sosAlarm
-                                },
-                                /* {
-                                     state: true,
-                                     val: 32,
-                                     title: LANGUAGE.ASSET_ALARM_MSG23, //speeding
-                                 },*/
-                                {
-                                    state: true,
-                                    val: 256,
-                                    title: LANGUAGE.ASSET_ALARM_MSG07, //tilt
-                                },
-                                {
-                                    state: true,
-                                    val: 33554432,
-                                    title: LANGUAGE.ASSET_ALARM_MSG28, //harshAcc
-                                },
-                                {
-                                    state: true,
-                                    val: 2097152,
-                                    title: LANGUAGE.ASSET_ALARM_MSG29, //harshBrk
-                                },
-                            ];
+                            if(assetType === 'boat' || assetType === 'jetski'){
+                                ret = [
+                                    {
+                                        state: true,
+                                        val: 131072,
+                                        title: LANGUAGE.ASSET_ALARM_MSG02, //customAlarm
+                                    },
+                                    {
+                                        state: true,
+                                        val: 512,
+                                        title: LANGUAGE.ASSET_ALARM_MSG17, //lowBattery
+                                    },
+                                    {
+                                        state: true,
+                                        val: 65536,
+                                        title: LANGUAGE.ASSET_ALARM_MSG10, //accOff
+                                    },
+                                    {
+                                        state: true,
+                                        val: 32768,
+                                        title: LANGUAGE.ASSET_ALARM_MSG11, //accOn
+                                    },
+                                    {
+                                        state: true,
+                                        val: 4,
+                                        title: LANGUAGE.ASSET_ALARM_MSG03, //Shore Power Disconnect
+                                    },
+                                    {
+                                        state: true,
+                                        val: 524288,
+                                        title: LANGUAGE.ASSET_ALARM_MSG37, //Outboard Engine Removal
+                                    },
+                                    {
+                                        state: true,
+                                        val: 1024,
+                                        title: LANGUAGE.ASSET_ALARM_MSG05, //geolock
+                                    },
+                                    {
+                                        state: true,
+                                        val: 8,
+                                        title: LANGUAGE.ASSET_ALARM_MSG12, //geofenceIn
+                                    },
+                                    {
+                                        state: true,
+                                        val: 16,
+                                        title: LANGUAGE.ASSET_ALARM_MSG13, //geofenceOut
+                                    },
+                                ]
+                            }else{
+                                ret = [
+                                    {
+                                        state: true,
+                                        val: 65536,
+                                        title: LANGUAGE.ASSET_ALARM_MSG10, //accOff
+                                    },
+                                    {
+                                        state: true,
+                                        val: 32768,
+                                        title: LANGUAGE.ASSET_ALARM_MSG11, //accOn
+                                    },
+                                    {
+                                        state: true,
+                                        val: 1048576,
+                                        title: LANGUAGE.ASSET_ALARM_MSG20, //custom2LowAlarm
+                                    },
+                                    {
+                                        state: true,
+                                        val: 131072,
+                                        title: LANGUAGE.ASSET_ALARM_MSG22, //customAlarm
+                                    },
+                                    {
+                                        state: true,
+                                        val: 1024,
+                                        title: LANGUAGE.ASSET_ALARM_MSG05, //geolock
+                                    },
+                                    {
+                                        state: true,
+                                        val: 8,
+                                        title: LANGUAGE.ASSET_ALARM_MSG12, //geofenceIn
+                                    },
+                                    {
+                                        state: true,
+                                        val: 16,
+                                        title: LANGUAGE.ASSET_ALARM_MSG13, //geofenceOut
+                                    },
+                                    {
+                                        state: true,
+                                        val: 128,
+                                        title: LANGUAGE.ASSET_ALARM_MSG27, //illegalIgnition
+                                    },
+                                    {
+                                        state: true,
+                                        val: 512,
+                                        title: LANGUAGE.ASSET_ALARM_MSG17, //lowBattery
+                                    },
+                                    {
+                                        state: true,
+                                        val: 4,
+                                        title: LANGUAGE.ASSET_ALARM_MSG18, //mainBatteryFail
+                                    },
+                                    {
+                                        state: true,
+                                        val: 2,
+                                        title: LANGUAGE.ASSET_ALARM_MSG19, //sosAlarm
+                                    },
+                                    {
+                                        state: true,
+                                        val: 256,
+                                        title: LANGUAGE.ASSET_ALARM_MSG07, //tilt
+                                    },
+                                    {
+                                        state: true,
+                                        val: 33554432,
+                                        title: LANGUAGE.ASSET_ALARM_MSG28, //harshAcc
+                                    },
+                                    {
+                                        state: true,
+                                        val: 2097152,
+                                        title: LANGUAGE.ASSET_ALARM_MSG29, //harshBrk
+                                    },
+                                ];
+                            }
 
                             break;
 
                         case 3:     // loc8
-                            ret = [
-                                {
-                                    state: true,
-                                    val: 131072,
-                                    title: LANGUAGE.ASSET_ALARM_MSG25, //input
-                                },
-                                {
-                                    state: true,
-                                    val: 1024,
-                                    title: LANGUAGE.ASSET_ALARM_MSG05, //geolock
-                                },
-                                {
-                                    state: true,
-                                    val: 256,
-                                    title: LANGUAGE.ASSET_ALARM_MSG07, //tilt
-                                },
-                                {
-                                    state: true,
-                                    val: 65536,
-                                    title: LANGUAGE.ASSET_ALARM_MSG10, //accOff
-                                },
-                                {
-                                    state: true,
-                                    val: 32768,
-                                    title: LANGUAGE.ASSET_ALARM_MSG11, //accOn
-                                },
-                                {
-                                    state: true,
-                                    val: 16384,
-                                    title: LANGUAGE.ASSET_ALARM_MSG08, //impact
-                                },
-                                {
-                                    state: true,
-                                    val: 512,
-                                    title: LANGUAGE.ASSET_ALARM_MSG17, //lowBattery
-                                },
-                                {
-                                    state: true,
-                                    val: 4,
-                                    title: LANGUAGE.ASSET_ALARM_MSG09, //power
-                                },
-                                {
-                                    state: true,
-                                    val: 262144,
-                                    title: LANGUAGE.ASSET_ALARM_MSG34, //positive input on
-                                },
-                                {
-                                    state: true,
-                                    val: 1048576,
-                                    title: LANGUAGE.ASSET_ALARM_MSG35, //positive input off
-                                },
+                            if(assetType === 'boat' || assetType === 'jetski'){
+                                ret = [
+                                    {
+                                        state: true,
+                                        val: 131072,
+                                        title: LANGUAGE.ASSET_ALARM_MSG02, //customAlarm
+                                    },
+                                    {
+                                        state: true,
+                                        val: 32768,
+                                        title: LANGUAGE.ASSET_ALARM_MSG11, //accOn
+                                    },
+                                    {
+                                        state: true,
+                                        val: 4,
+                                        title: LANGUAGE.ASSET_ALARM_MSG03, //Shore Power Disconnect
+                                    },
+                                    {
+                                        state: true,
+                                        val: 1024,
+                                        title: LANGUAGE.ASSET_ALARM_MSG05, //geolock
+                                    },
+                                ]
+                            }else{
+                                ret = [
+                                    {
+                                        state: true,
+                                        val: 131072,
+                                        title: LANGUAGE.ASSET_ALARM_MSG25, //input
+                                    },
+                                    {
+                                        state: true,
+                                        val: 1024,
+                                        title: LANGUAGE.ASSET_ALARM_MSG05, //geolock
+                                    },
+                                    {
+                                        state: true,
+                                        val: 256,
+                                        title: LANGUAGE.ASSET_ALARM_MSG07, //tilt
+                                    },
+                                    {
+                                        state: true,
+                                        val: 65536,
+                                        title: LANGUAGE.ASSET_ALARM_MSG10, //accOff
+                                    },
+                                    {
+                                        state: true,
+                                        val: 32768,
+                                        title: LANGUAGE.ASSET_ALARM_MSG11, //accOn
+                                    },
+                                    {
+                                        state: true,
+                                        val: 16384,
+                                        title: LANGUAGE.ASSET_ALARM_MSG08, //impact
+                                    },
+                                    {
+                                        state: true,
+                                        val: 512,
+                                        title: LANGUAGE.ASSET_ALARM_MSG17, //lowBattery
+                                    },
+                                    {
+                                        state: true,
+                                        val: 4,
+                                        title: LANGUAGE.ASSET_ALARM_MSG09, //power
+                                    },
+                                    {
+                                        state: true,
+                                        val: 262144,
+                                        title: LANGUAGE.ASSET_ALARM_MSG34, //positive input on
+                                    },
+                                    {
+                                        state: true,
+                                        val: 1048576,
+                                        title: LANGUAGE.ASSET_ALARM_MSG35, //positive input off
+                                    },
+                                ];
+                            }
 
-
-
-                            ];
                             break;
 
                         default:    //protect
-                            ret = [
-                                {
-                                    state: true,
-                                    val: 131072,
-                                    title: LANGUAGE.ASSET_ALARM_MSG25, //input
-                                },
-                                {
-                                    state: true,
-                                    val: 1024,
-                                    title: LANGUAGE.ASSET_ALARM_MSG05, //geolock
-                                },
-                                {
-                                    state: true,
-                                    val: 256,
-                                    title: LANGUAGE.ASSET_ALARM_MSG07, //tilt
-                                },
-                                {
-                                    state: true,
-                                    val: 65536,
-                                    title: LANGUAGE.ASSET_ALARM_MSG10, //accOff
-                                },
-                                {
-                                    state: true,
-                                    val: 32768,
-                                    title: LANGUAGE.ASSET_ALARM_MSG11, //accOn
-                                },
-                                {
-                                    state: true,
-                                    val: 16384,
-                                    title: LANGUAGE.ASSET_ALARM_MSG08, //impact
-                                },
-                                {
-                                    state: true,
-                                    val: 512,
-                                    title: LANGUAGE.ASSET_ALARM_MSG17, //lowBattery
-                                },
-                                {
-                                    state: true,
-                                    val: 4,
-                                    title: LANGUAGE.ASSET_ALARM_MSG09, //power
-                                },
-                            ]
+                            if(assetType === 'boat' || assetType === 'jetski'){
+                                ret = [
+                                    {
+                                        state: true,
+                                        val: 131072,
+                                        title: LANGUAGE.ASSET_ALARM_MSG02, //customAlarm
+                                    },
+                                    {
+                                        state: true,
+                                        val: 32768,
+                                        title: LANGUAGE.ASSET_ALARM_MSG11, //accOn
+                                    },
+                                    {
+                                        state: true,
+                                        val: 4,
+                                        title: LANGUAGE.ASSET_ALARM_MSG03, //Shore Power Disconnect
+                                    },
+                                    {
+                                        state: true,
+                                        val: 1024,
+                                        title: LANGUAGE.ASSET_ALARM_MSG05, //geolock
+                                    },
+                                ]
+                            }else{
+                                ret = [
+                                    {
+                                        state: true,
+                                        val: 131072,
+                                        title: LANGUAGE.ASSET_ALARM_MSG25, //input
+                                    },
+                                    {
+                                        state: true,
+                                        val: 1024,
+                                        title: LANGUAGE.ASSET_ALARM_MSG05, //geolock
+                                    },
+                                    {
+                                        state: true,
+                                        val: 256,
+                                        title: LANGUAGE.ASSET_ALARM_MSG07, //tilt
+                                    },
+                                    {
+                                        state: true,
+                                        val: 65536,
+                                        title: LANGUAGE.ASSET_ALARM_MSG10, //accOff
+                                    },
+                                    {
+                                        state: true,
+                                        val: 32768,
+                                        title: LANGUAGE.ASSET_ALARM_MSG11, //accOn
+                                    },
+                                    {
+                                        state: true,
+                                        val: 16384,
+                                        title: LANGUAGE.ASSET_ALARM_MSG08, //impact
+                                    },
+                                    {
+                                        state: true,
+                                        val: 512,
+                                        title: LANGUAGE.ASSET_ALARM_MSG17, //lowBattery
+                                    },
+                                    {
+                                        state: true,
+                                        val: 4,
+                                        title: LANGUAGE.ASSET_ALARM_MSG09, //power
+                                    },
+                                ];
+                            }
 
                     }
                 }
@@ -802,7 +899,7 @@
             saveAlarmOptions: function(data, url){
                 let self = this;
 
-                self.$app.dialog.progress();
+                self.$app.dialog.progress(LANGUAGE.COM_MSG004,'red');
                 self.$app.request.promise.post(url, data, 'json')
                     .then(function (result) {
                         //console.log(result);
@@ -994,7 +1091,7 @@
                             data.DateFrom = moment(page.$el.find('[name="PickerStart"]').val(), 'HH:mm').utc().format('HH:mm');
                             data.DateTo = moment(page.$el.find('[name="PickerEnd"]').val(), 'HH:mm').utc().format('HH:mm');
 
-                            if (!(data.AlertTypes & 32)) {
+                            if (!(data.AlertTypes & 32) && page.$el.find('input[name="overspeed-type"]:checked').val()) {
                                 data.SpeedingMode = parseInt(page.$el.find('input[name="overspeed-type"]:checked').val(),10);
                                 if (data.SpeedingMode === 2) {
                                     data.MaxSpeed = self.MaxSpeed;

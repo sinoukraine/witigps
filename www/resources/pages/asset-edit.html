@@ -302,15 +302,13 @@
                             //text: LANGUAGE.COM_MSG074,
                             text: `<div class="action_button_wrapper">
                                     <div class="action_button_block action_button_media text-color-lightgray">
-                                        <i class="f7-icons icon-takep-hoto size-18"></i>
+                                        <i class="f7-icons icon-takep-hoto size-20"></i>
                                     </div>
                                     <div class="action_button_block action_button_text">
                                         ${ LANGUAGE.COM_MSG074 }
                                     </div>
                                 </div>`,
                             onClick: function () {
-                                //app.dialog.alert('Button1 clicked');
-                               // $$('#AssetImageInput').click();
                                 self.getImageFromDevice(1);
                             }
                         },
@@ -318,14 +316,13 @@
                             //text: LANGUAGE.PROMPT_MSG025,
                             text: `<div class="action_button_wrapper">
                                     <div class="action_button_block action_button_media text-color-lightgray">
-                                        <i class="f7-icons icon-upload-file size-18"></i>
+                                        <i class="f7-icons icon-upload-file size-20"></i>
                                     </div>
                                     <div class="action_button_block action_button_text">
                                         ${ LANGUAGE.PROMPT_MSG025 }
                                     </div>
                                 </div>`,
                             onClick: function () {
-                                //app.dialog.alert('Button1 clicked');
                                 $$('#AssetImageInput').click();
                             }
                         },
@@ -334,7 +331,7 @@
                             //text: LANGUAGE.PROMPT_MSG026,
                             text: `<div class="action_button_wrapper">
                                     <div class="action_button_block action_button_media text-color-lightgray">
-                                        <i class="f7-icons icon-upload-icon size-18"></i>
+                                        <i class="f7-icons icon-upload-icon size-20"></i>
                                     </div>
                                     <div class="action_button_block action_button_text">
                                         ${ LANGUAGE.PROMPT_MSG026 }
@@ -375,14 +372,7 @@
 
                 navigator.camera.getPicture(
                     function(imgData) {
-                        /*mainView.router.load({
-                            url: 'resources/templates/asset.edit.photo.html',
-                            context: {
-                                imgSrc: "data:image/jpeg;base64," + imgData
-                            }
-                        });*/
                         self.loadEditImageModal("data:image/jpeg;base64," + imgData);
-
                     },
                     function() {
                         self.$app.methods.customDialog({title:LANGUAGE.PROMPT_MSG100, text: LANGUAGE.PROMPT_MSG101});

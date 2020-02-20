@@ -136,6 +136,15 @@
                                                     <li class="item-divider">${ LANGUAGE.COM_MSG095 }</li>
                                                     <li>
                                                         <label class="item-radio color-green item-content popover-close" >
+                                                            <input type="radio" name="radio-group-by" value="alert" ${ self.GroupBy === 'alert' ? 'checked' : '' } />
+                                                            <i class="icon icon-radio"></i>
+                                                            <div class="item-inner">
+                                                                <div class="item-title">${ LANGUAGE.COM_MSG098 }</div>
+                                                            </div>
+                                                        </label>
+                                                    </li>
+                                                    <li>
+                                                        <label class="item-radio color-green item-content popover-close" >
                                                             <input type="radio" name="radio-group-by" value="asset" ${ self.GroupBy === 'asset' ? 'checked' : '' } />
                                                             <i class="icon icon-radio"></i>
                                                             <div class="item-inner">
@@ -152,21 +161,13 @@
                                                             </div>
                                                         </label>
                                                     </li>
-                                                    <li>
-                                                        <label class="item-radio color-green item-content popover-close" >
-                                                            <input type="radio" name="radio-group-by" value="alert" ${ self.GroupBy === 'alert' ? 'checked' : '' } />
-                                                            <i class="icon icon-radio"></i>
-                                                            <div class="item-inner">
-                                                                <div class="item-title">${ LANGUAGE.COM_MSG098 }</div>
-                                                            </div>
-                                                        </label>
-                                                    </li>
+
                                                 </ul>
                                             </div>
                                         </div>
                                     </div>`;
                 self.$app.popover.create({
-                    backdrop: false,
+                    backdrop: true,
                     closeByOutsideClick: true,
                     targetEl: e.target,
                     content: content,

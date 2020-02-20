@@ -354,6 +354,7 @@ window.LanguagePackages= {
 		"ASSET_ALARM_MSG34": "Positive Input On",
 		"ASSET_ALARM_MSG35": "Positive Input Off",
 		"ASSET_ALARM_MSG36": "Other Alarm",
+		"ASSET_ALARM_MSG37": "Outboard Engine Removal",
 
 		"GEOFENCES_MSG00": "Circle",
 		"GEOFENCES_MSG01": "Polygon",
