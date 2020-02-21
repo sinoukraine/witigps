@@ -349,8 +349,9 @@ let Protocol = {
 
 
     Helper: {
-        getSpeedValue: function (speedUnit, speed) {
+        getSpeedValue: function (speedUnit, speed=0) {
             let ret = 0;
+            speed = parseFloat(speed);
             switch (speedUnit) {
                 case "KT":
                     ret = parseFloat(speed  * 0.53995680345572);
@@ -363,8 +364,6 @@ let Protocol = {
                     break;
                 case "MPH":
                     ret = parseFloat(speed * 0.621371192);
-                    break;
-                default:
                     break;
             }
             return Math.round(ret);
@@ -383,8 +382,6 @@ let Protocol = {
                     break;
                 case "MPH":
                     ret = parseFloat(speed / 0.621371192);
-                    break;
-                default:
                     break;
             }
             return Math.round(ret);

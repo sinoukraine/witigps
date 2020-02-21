@@ -242,9 +242,9 @@
                 if(ret.NotificationData.AlertID){
                     ret.NotificationData.type = ret.NotificationData.AlertID;
                 }
-                if(ret.NotificationData.alarm === 'STATUS' || ret.NotificationData.alarm === 'CONFIG'){
+                //if(ret.NotificationData.alarm === 'STATUS' || ret.NotificationData.alarm === 'CONFIG'){
                     ret.NotificationData = self.$app.methods.formatStatusMessage(ret.NotificationData);
-                }
+                //}
                 ret.PageTitle = ret.NotificationData.GeofenceName ? ret.NotificationData.GeofenceName + ' - ' + ret.NotificationData.AlertName : (ret.NotificationData.AlertName ? ret.NotificationData.AlertName : ret.NotificationData.alarm);
             }
 
