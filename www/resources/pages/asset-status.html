@@ -259,8 +259,7 @@
             let tabsFlag = self.$route.query.tabs;
             let asset = POSINFOASSETLIST[imei]; //self.$app.methods.getFromStorage('assetList')[imei];
             let afs = Protocol.Helper.getAssetStateInfo(asset);
-//console.log(afs);
-            //console.log(asset);
+
             let ret = {
                 Name: asset.Name,
                 IMEI: asset.IMEI,
@@ -311,8 +310,8 @@
                     EngineHours: afs.mileage ? afs.engineHours.value : LANGUAGE.COM_MSG031,
                     Direction: Protocol.Helper.getDirectionCardinal(asset.posInfo.direct) + ' (' + asset.posInfo.direct + '&deg;)',
 
-                    GeolockActive: afs.geolock ? afs.geolock.value : false,
-                    ImmobilisationActive: afs.immob ? afs.immob.value : false,
+                    Geolock: afs.geolock ? afs.geolock.value : false,
+                    Immobilise: afs.immob ? afs.immob.value : false,
                     LockDoor: afs.lockdoor ? afs.lockdoor.value : false,
                     StoppedDuration: afs.stopped ? afs.stopped.duration : false,
                     Temperature: afs.temperature ? afs.temperature.value : false,
@@ -328,11 +327,7 @@
 
                     IsImmobilisationSupported: (parseInt(asset._FIELD_INT2) & 1) > 0,
                     IsLockDoorSupported: (parseInt(asset._FIELD_INT2) & 1) > 0,
-                }, ()=>{
-                    console.log('eeee')
                 });
-
-                console.log(afs.geolock)
 
                 if ( !asset.lastQueryPosinfo ||
                     Math.floor(asset.posInfo.lat * 10000) / 10000 !== asset.lastQueryPosinfo.lat ||

@@ -1291,8 +1291,8 @@ const app = new Framework7({
                             msg.CreateDateTime = msg.time;
                         }
 
-                        if(msg.type && msg.type === 1024){
-                            this.methods.getNewData();
+                        if(msg.type && parseInt(msg.type) === 1024){
+                            self.methods.getNewData(false, true);
                         }
 
                         msgTemp = msg;
@@ -2419,7 +2419,7 @@ const app = new Framework7({
                 this.methods.getNewData();
             }
         },
-        getNewData: function(noPosInfoUpdate = false){
+        getNewData: function(noPosInfoUpdate = false, emitDataUpdated = false){
             let self = this;
 
             self.methods.getPlusInfo();
@@ -2452,6 +2452,9 @@ const app = new Framework7({
                             self.utils.nextFrame(()=>{
                                 self.methods.getAssetListPosInfo(assetListObj);
                             });
+                        }
+                        if(emitDataUpdated){
+                            AssetUpdateEvents.on('updateReceived');
                         }
                     }
                 })
