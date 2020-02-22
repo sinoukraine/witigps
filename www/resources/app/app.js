@@ -1633,15 +1633,6 @@ const app = new Framework7({
                 markerData +=       `<td class="marker-data-value">${positionDetails.PositionTimeLocal ? positionDetails.PositionTimeLocal : (positionDetails.PositionTime) ? positionDetails.PositionTime : (positionDetails.CreateDateTime) ? positionDetails.CreateDateTime : positionDetails.time}</td>`;
                 markerData +=   '</tr>';
 
-                /*if ( typeof positionDetails.Speed !== 'undefined') {
-                    if (asset && typeof asset.Unit !== "undefined" && typeof asset.posInfo.speed !== "undefined" && typeof positionDetails.Speed === "number" ) {
-                        positionDetails.SpeedCustom = Protocol.Helper.getSpeedValue(asset.Unit, positionDetails.Speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
-                    }
-                    markerData +=   '<tr>';
-                    markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG05+'</td>';
-                    markerData +=       `<td class="marker-data-value">${positionDetails.SpeedCustom ? positionDetails.SpeedCustom : positionDetails.Speed}</td>`;
-                    markerData +=   '</tr>';
-                }*/
                 if(typeof positionDetails.Speed !== 'undefined'){
                     markerData +=   '<tr>';
                     markerData +=       '<td class="marker-data-caption">'+LANGUAGE.ASSET_TRACK_MSG05+'</td>';
