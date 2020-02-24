@@ -297,7 +297,7 @@
                 self.$app.popover.create({
                     backdrop: false,
                     closeByOutsideClick: true,
-                    targetEl: e.target,
+                    targetEl: $$(e.target).closest('a'),
                     content: content,
                     on: {
                         opened: function(popover){
