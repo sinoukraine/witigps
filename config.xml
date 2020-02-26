@@ -41,7 +41,7 @@
     <!-- <preference name="android-maxSdkVersion" value="27" /> -->
     <preference name="android-targetSdkVersion" value="28" />
     <preference name="multiDexEnabled" value="true" />     
-    <preference name="deployment-target" value="12.4.5" />
+    <preference name="deployment-target" value="10.2" />
     <preference name="StatusBarOverlaysWebView" value="false" />
     <preference name="StatusBarStyle" value="blacktranslucent" />
     <preference name="phonegap-version" value="cli-9.0.0" />
