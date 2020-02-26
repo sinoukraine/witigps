@@ -42,6 +42,9 @@
         <!-- Scrollable page content-->
         <form name="AssetAlarmForm" class="page-content">
             <input type="submit" id="submit-form-alarm" class="display-none" />
+            {{#if ProtectAsset}}
+            <div class="block-title tooltip-init text-transform-uppercase text-color-red" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG108}}">{{@global.LANGUAGE.PROMPT_MSG109}} <span class="badge color-lightblue">?</span></div>
+            {{/if}}
 
             {{#if ShowIgnoreBetweenBlock}}
             <div key="IgnoreBetween" class="list no-hairline-bottom no-hairline-top no-margin-top">
@@ -417,7 +420,8 @@
                         ShowAlarmList: true,
                         Alarms: alarmList,
                         IgnoreBetweenState: !!(data && data.LiveAssetSettings && data.LiveAssetSettings.IsIgnore === 1),
-                        SpeedingMode: data && data.LiveAssetSettings && data.LiveAssetSettings.SpeedingMode ? data.LiveAssetSettings.SpeedingMode : 1
+                        SpeedingMode: data && data.LiveAssetSettings && data.LiveAssetSettings.SpeedingMode ? data.LiveAssetSettings.SpeedingMode : 1,
+                        ProtectAsset: data.AlarmListType === 1
                     });
 
                     if (data.AlarmListType === 2) {

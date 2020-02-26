@@ -219,7 +219,8 @@ window.LanguagePackages= {
 		"PROMPT_MSG105": "Earn $20.00 for each unit purchased. Click <a href='{0}' target='_blank' class='external color-red'>HERE</a> to find out more.",
 		"PROMPT_MSG106": "Only numbers, please!",
 		"PROMPT_MSG107": "This report under development",
-
+		"PROMPT_MSG108": "Alarm activation and notifications utilise credits. Ignition On and Off alarms may drain credits rapidly",
+		"PROMPT_MSG109": "Important Alarm Notice",
 
 		"HOME_MSG00": "Home",
 		"HOME_MSG01": "All",
@@ -341,7 +342,7 @@ window.LanguagePackages= {
 		"ASSET_ALARM_MSG21": "Custom2 Alarm",
 		"ASSET_ALARM_MSG22": "Negative Input",
 		"ASSET_ALARM_MSG23": "Speed Alert",
-		"ASSET_ALARM_MSG24": "Turn On/Off all",
+		"ASSET_ALARM_MSG24": "Toggle All",
 		"ASSET_ALARM_MSG25": "Alarm Input",
 		"ASSET_ALARM_MSG26": "Select / Unselect All",
 		"ASSET_ALARM_MSG27": "Intrusion Alert",

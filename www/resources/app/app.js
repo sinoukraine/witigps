@@ -202,10 +202,8 @@ const app = new Framework7({
 
             if(window.hasOwnProperty("cordova")){
                 if (BuildInfo){
-                   // alert(JSON.stringify(BuildInfo));
                     self.data.AppDetails.appId = BuildInfo.packageName;
                     if (BuildInfo.version){
-                        //$$('.appVersion').text("v" + BuildInfo.version);
                         self.data.AppDetails.appVersion = BuildInfo.version;
                     }
                 }
@@ -2662,7 +2660,22 @@ $$('body').on('click', '.routeButton', function(){
                 window.open(href, '_blank');
             }
         }
-
     }
 });
 
+$$('body').on('change', '.leaflet-control-layers-selector', function(){
+    let customOverlay = $$(this).parent().find('.customOverlay');
+    if(!customOverlay.length){
+        return;
+    }
+
+    let type = customOverlay.data('type');
+    let mapSettingsObg = app.methods.getFromStorage('mapSettings');
+    if(customOverlay.hasClass('mapSwitcherWrapper')){
+        mapSettingsObg['map'] = type;
+    }else{
+        mapSettingsObg[type] = this.checked;
+    }
+
+    app.methods.setInStorage({name: 'mapSettings', data: mapSettingsObg});
+});

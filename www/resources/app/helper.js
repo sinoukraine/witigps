@@ -977,25 +977,35 @@ let Protocol = {
                     {start: 16, end: 22, interval: 0.005},                   
                 ]
             });
-                
-            //let map = L.map(option.target, { zoomControl: false, center: option.latLng, zoom: option.zoom, layers: [googleStreets] });
+            let mapSettingsObg = app.methods.getFromStorage('mapSettings');
+
+            let layersToShow = [];
+            if(mapSettingsObg.map){
+                if(mapSettingsObg.map === 'google') layersToShow.push(googleStreets);
+                if(mapSettingsObg.map === 'satellite') layersToShow.push(googleSatelitte);
+                if(mapSettingsObg.map === 'openstreet') layersToShow.push(osm);
+            }
+            if(!layersToShow.length) layersToShow.push(googleStreets);
+            if(mapSettingsObg.seamark) layersToShow.push(layerSeaMark);
+            if(mapSettingsObg.grid) layersToShow.push(layerGrid2);
+
             let map = L.map(option.target, {
                 zoomControl: false,
                 center: option.latLng,
                 zoom: option.zoom,
                 fullscreenControl: true,
                 drawControl: option.drawControl ? option.drawControl : false,
-                layers: [googleStreets] });
+                layers: layersToShow });
 
             let layers = {
-                "<span class='mapSwitcherWrapper googleSwitcherWrapper'><img class='layer-icon' src='resources/images/googleRoad.png' alt='' /> <p>Map</p></span>": googleStreets,
-                "<span class='mapSwitcherWrapper satelliteSwitcherWrapper'><img class='layer-icon' src='resources/images/googleSatellite.png' alt='' />  <p>Satellite</p></span>": googleSatelitte,
-                "<span class='mapSwitcherWrapper openstreetSwitcherWrapper'><img class='layer-icon' src='resources/images/openStreet.png' alt='' /> <p>OpenStreet</p></span>": osm,
+                "<span class='mapSwitcherWrapper customOverlay googleSwitcherWrapper' data-type='google'><img class='layer-icon' src='resources/images/googleRoad.png' alt='' /> <p>Map</p></span>": googleStreets,
+                "<span class='mapSwitcherWrapper customOverlay satelliteSwitcherWrapper' data-type='satellite'><img class='layer-icon' src='resources/images/googleSatellite.png' alt='' />  <p>Satellite</p></span>": googleSatelitte,
+                "<span class='mapSwitcherWrapper customOverlay openstreetSwitcherWrapper' data-type='openstreet'><img class='layer-icon' src='resources/images/openStreet.png' alt='' /> <p>OpenStreet</p></span>": osm,
             };
 
             let mapOverlays = {
-                '<i class="icon-checkbox"></i>SeaMarks': layerSeaMark,
-                '<i class="icon-checkbox"></i>Grid': layerGrid2,
+                '<i class="icon-checkbox customOverlay" data-type="seamark"></i>SeaMarks': layerSeaMark,
+                '<i class="icon-checkbox customOverlay" data-type="grid"></i>Grid': layerGrid2,
             };
 
             L.control.layers(layers, mapOverlays).addTo(map);               
