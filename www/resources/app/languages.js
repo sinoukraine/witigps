@@ -110,7 +110,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG000": "Nothing found",
 		"PROMPT_MSG001": "The login(email) or password you entered is incorrect.",
 		"PROMPT_MSG002": "Method not found",
-		"PROMPT_MSG003": "Something not good. Try again later",
+		"PROMPT_MSG003": "An issue has been detected, please try again later or contact our support team",
 		"PROMPT_MSG004": "Geolock - green icon, when Geolock is turned on, grey icon when Geolock turned off.",
 		"PROMPT_MSG005": "Remote immobilisation - OFF is inactive, ON is active.",
 		"PROMPT_MSG006": "Lock Doors - red icon, when doors are locked, grey icon when doors are unlocked",
