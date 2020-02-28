@@ -2400,15 +2400,6 @@ const app = new Framework7({
 
             }).open();
         },
-        backFix: function (event) {
-            if (mainView.router.url === '/') {
-                app.dialog.confirm(LANGUAGE.PROMPT_MSG044, function() {
-                    navigator.app.exitApp();
-                });
-            } else {
-                mainView.router.back();
-            }
-        },
         onAppResume: function(){
             if (localStorage.ACCOUNT && localStorage.PASSWORD) {
                 this.methods.getNewNotifications();
@@ -2655,6 +2646,16 @@ const app = new Framework7({
                     e.preventDefault();
                     return false;
                 }
+
+                if (currentView && currentView.router && currentView.router.url === '/') {
+                    f7.dialog.confirm(LANGUAGE.PROMPT_MSG044, function() {
+                        if(navigator){
+                            navigator.app.exitApp();
+                        }
+                    });
+                    e.preventDefault();
+                    return false;
+                }
             }, false);
         },
         /*
@@ -2741,8 +2742,7 @@ if (!String.prototype.trim) {
 
 $$('body').on('submit', '[name="login-form"]', function (e) {
     e.preventDefault();
-    //preLogin();
-   // app.methods.hideKeyboard();
+    app.methods.hideKeyboard();
     app.methods.login(this);
     return false;
 });
