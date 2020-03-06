@@ -32,7 +32,7 @@
                             <a key="key-asset-list" class="item-link smart-select smart-select-init custom-smart-select smart-select-asset-list" data-open-in="popup" data-form-color-theme="green" data-searchbar="true" data-searchbar-placeholder="{{@global.LANGUAGE.COM_MSG002}}" data-append-searchbar-not-found="{{@global.LANGUAGE.PROMPT_MSG000}}" data-page-title = "{{@global.LANGUAGE.COM_MSG065}}" >
                                 <select name="Assets" multiple required validate>
                                     {{#AssetList}}
-                                    <option value="{{IMEI}}" selected>{{Name}}</option>
+                                    <option value="{{IMEI}}" data-id="{{Id}}" selected>{{Name}}</option>
                                     {{/AssetList}}
                                 </select>
                                 <div class="item-content item-input">
@@ -164,7 +164,7 @@
                         {{/js_if}}
 
                         {{#js_if "this.ReportType == '2'"}}
-                        <li class="item-content item-input ">
+                        <!--<li class="item-content item-input ">
                             <label class="item-media checkbox color-green">
                                 <input type="checkbox" name="MovementState" {{#if MovementState}}checked{{/if}}><i class="icon-checkbox"></i>
                             </label>
@@ -174,8 +174,8 @@
                                     <input type="tel" name="Movement" value="2" maxlength="20" data-error-message="{{@global.LANGUAGE.PROMPT_MSG106}}" pattern="[0-9]*" validate {{#if MovementState}}required{{/if}}>
                                 </div>
                             </div>
-                        </li>
-                        <li class="item-content item-input ">
+                        </li>-->
+                        <!--<li class="item-content item-input ">
                             <label class="item-media checkbox color-green">
                                 <input type="checkbox" name="StationaryState" {{#if StationaryState}}checked{{/if}}><i class="icon-checkbox"></i>
                             </label>
@@ -183,6 +183,17 @@
                                 <div class="item-title item-floating-label item-label">{{@global.LANGUAGE.REPORTS_MSG10}}({{@global.LANGUAGE.COM_MSG102}})</div>
                                 <div class="item-input-wrap ">
                                     <input type="tel" name="Stationary" value="2" maxlength="20" data-error-message="{{@global.LANGUAGE.PROMPT_MSG106}}" pattern="[0-9]*" validate {{#if StationaryState}}required{{/if}}>
+                                </div>
+                            </div>
+                        </li>-->
+                        <li class="item-content item-input ">
+                            <div class="item-media text-color-lightgray">
+                                <i class="f7-icons icon-live-hint"></i>
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title item-floating-label item-label">{{@global.LANGUAGE.REPORTS_MSG10}}({{@global.LANGUAGE.COM_MSG102}})</div>
+                                <div class="item-input-wrap ">
+                                    <input type="tel" name="Stationary" value="2" maxlength="20" data-error-message="{{@global.LANGUAGE.PROMPT_MSG106}}" pattern="[0-9]*" validate required>
                                 </div>
                             </div>
                         </li>
@@ -193,18 +204,19 @@
                                 <input type="checkbox" name="IgnitionOnState" {{#if IgnitionOnState}}checked{{/if}}><i class="icon-checkbox"></i>
                             </label>
                             <div class="item-inner">
-                                <div class="item-title item-floating-label item-label">{{@global.LANGUAGE.COM_MSG049}}({{@global.LANGUAGE.COM_MSG102}})</div>
+                                <div class="item-title item-floating-label item-label">{{@global.LANGUAGE.ASSET_ALARM_MSG11}}({{@global.LANGUAGE.COM_MSG102}})</div>
                                 <div class="item-input-wrap ">
                                     <input type="tel" name="IgnitionOn" value="5" maxlength="20" data-error-message="{{@global.LANGUAGE.PROMPT_MSG106}}" pattern="[0-9]*" validate {{#if IgnitionOnState}}required{{/if}}>
                                 </div>
                             </div>
                         </li>
+
                         <li class="item-content item-input ">
                             <label class="item-media checkbox color-green">
                                 <input type="checkbox" name="IgnitionOffState" {{#if IgnitionOffState}}checked{{/if}}><i class="icon-checkbox"></i>
                             </label>
                             <div class="item-inner">
-                                <div class="item-title item-floating-label item-label">{{@global.LANGUAGE.COM_MSG050}}({{@global.LANGUAGE.COM_MSG102}})</div>
+                                <div class="item-title item-floating-label item-label">{{@global.LANGUAGE.ASSET_ALARM_MSG10}}({{@global.LANGUAGE.COM_MSG102}})</div>
                                 <div class="item-input-wrap ">
                                     <input type="tel" name="IgnitionOff" value="5" maxlength="20" data-error-message="{{@global.LANGUAGE.PROMPT_MSG106}}" pattern="[0-9]*" validate {{#if IgnitionOffState}}required{{/if}}>
                                 </div>
@@ -294,7 +306,7 @@
                 OverviewOptionsList: overviewOptionsList,
 
                 StationaryState: true,
-                IgnitionOffState: true,
+                IgnitionOnState: true,
             };
 
             return ret;
@@ -306,6 +318,7 @@
                 self.$app.preloader.show();
                 self.$app.request.promise.post(url, data, 'json')
                     .then(function (result) {
+                        console.log(result.data);
                         if(result.data.MajorCode === '000' && result.data.Data.Success) {
                             self.$app.methods.customNotification({title: self.PageTitle, text: LANGUAGE.PROMPT_MSG095});
                             mainView.router.back();
@@ -409,6 +422,13 @@
                     let alertsEl = page.$el.find('[name = "AlertList"]');
                     let overviewOptionsEl = page.$el.find('[name = "OverviewOptionsList"]');
                     let geofencesEl = page.$el.find('[name = "GeofenceList"]');
+                    let stationaryEl = page.$el.find('[name = "Stationary"]');
+                    let ignitionOnEl = page.$el.find('[name = "IgnitionOn"]');
+                    let ignitionOffEl = page.$el.find('[name = "IgnitionOff"]');
+
+
+
+
 
                     let data = {
                         MinorToken: self.$app.data.MinorToken,
@@ -424,21 +444,78 @@
                     }
                     let url = API_URL.GET_REPORT_OVERVIEW;
                     switch (self.ReportType) {
-                        case '1':
+                        case '1':   //OVERVIEW
                             data.Alerts = alertsEl.val();
                             data.GetGeofenceCodes = geofencesEl.val();
                             data.Features = overviewOptionsEl.val();
                             break;
+
+                        case '2':   //STOP log
+                            url = API_URL.GET_REPORT_BY_EVENT;
+                            data.DateFrom = data.From;
+                            data.DateTo = data.To;
+                            data.EventClass = '4';
+                            data.EventTypes = '0';
+                            data.EventDurations=[stationaryEl.val()];
+                            break;
+
+                        case '3':   //ALARM report
+                            url = API_URL.GET_REPORT_BY_ALERT;
+                            data.DateFrom = data.From;
+                            data.DateTo = data.To;
+                            data.AlertIds = alertsEl.val();
+
+                            data.AsIds = [];// assetsEl.val();
+                            assetsEl.find('option').each((i, el)=>{
+                                if (el.selected) {
+                                    data.AsIds.push(el.getAttribute('data-id'));
+                                }
+                            });
+                            break;
+
+                        case '4':   //TRIP report
+                            url = API_URL.GET_REPORT_TRIP;
+                            data.DateFrom = data.From;
+                            data.DateTo = data.To;
+                            break;
+
+                        case '5':   //RUNTIME / IGNITION
+                            url = API_URL.GET_REPORT_BY_EVENT;
+                            data.DateFrom = data.From;
+                            data.DateTo = data.To;
+                            data.EventClass = '2';
+                            data.EventTypes = [];
+                            data.EventDurations=[];
+
+                            if(self.IgnitionOffState){
+                                data.EventTypes.push(0);
+                                data.EventDurations.push(ignitionOffEl.val());
+                            }
+                            if(self.IgnitionOnState){
+                                data.EventTypes.push(1);
+                                data.EventDurations.push(ignitionOnEl.val());
+                            }
+
+                            break;
+
                     }
-                    if(self.ReportType === '1'){
-                        self.generateReport(data,url);
-                    }else{
+                    //if(self.ReportType === '1' || self.ReportType === '2' || self.ReportType === '3' || self.ReportType === '4' || self.ReportType === '5'){
+                        //self.generateReport(data, url);
+                    /*}else{
                         self.$app.methods.customDialog({title: self.PageTitle, text: LANGUAGE.PROMPT_MSG107});
+                    }*/
+                    if (self.ReportType === '4'){
+                        self.$app.methods.customDialog({title: self.PageTitle, text: LANGUAGE.PROMPT_MSG107});
+                    }else{
+                        self.generateReport(data, url);
                     }
 
                     return false;
                 });
-                if(self.ReportType !== '1'){
+                /*if(self.ReportType !== '1' && self.ReportType !== '2' && self.ReportType !== '3' && self.ReportType !== '4' && self.ReportType !== '5'){
+                    self.$app.methods.customDialog({title: self.PageTitle, text: LANGUAGE.PROMPT_MSG107});
+                }*/
+                if (self.ReportType === '4'){
                     self.$app.methods.customDialog({title: self.PageTitle, text: LANGUAGE.PROMPT_MSG107});
                 }
             },

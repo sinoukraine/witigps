@@ -365,6 +365,7 @@
                         mainView.router.navigate('/asset-status/?tabs=true&imei='+IMEI);
                     }
                 });
+
                 self.$app.utils.nextFrame(()=>{
                     if(!self.$app.methods.isObjEmpty(assetList)){
                         LoginEvents.emit('signedIn', assetList);

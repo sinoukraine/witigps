@@ -72,6 +72,7 @@ API_URL.GET_REPORT_ALERTLIST = API_DOMIAN1 + "Report/GetAlertList";
 API_URL.GET_REPORT_TRIP = API_DOMIAN1 + "Report/GetTripReport";
 API_URL.GET_REPORT_OVERVIEW = API_DOMIAN1 + "Report/GetOverview";
 API_URL.GET_REPORT_BY_ALERT = API_DOMIAN1 + "Report/GetAlertReportData";
+API_URL.GET_REPORT_BY_EVENT = API_DOMIAN1 + "Report/GetEventReport";
 
 
 //let VirtualAssetListMain = false;
@@ -2622,11 +2623,11 @@ const app = new Framework7({
                     e.preventDefault();
                     return false;
                 }
-                if ($('.login-screen.modal-in').length) {
+               /* if ($('.login-screen.modal-in').length) {
                     f7.loginScreen.close('.login-screen.modal-in');
                     e.preventDefault();
                     return false;
-                }
+                }*/
 
                 if($('.searchbar-enabled').length){
                     f7.searchbar.disable();
