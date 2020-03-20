@@ -49,7 +49,7 @@ API_URL.URL_ROUTE = "https://www.google.com/maps/dir/?api=1&destination={0},{1}"
 API_URL.URL_ROUTE_IOS = "maps://maps.apple.com/maps?daddr={0},{1}";
 API_URL.URL_SUPPORT = "https://support.quiktrak.eu/";
 API_URL.URL_REPORT_THEFT = "https://forms.quiktrak.com.au/report-theft/";
-API_URL.URL_UPGRADE = "https://app.quikprotect.co/activation2/";
+API_URL.URL_UPGRADE = "https://activation.witi.quiktrak.eu/";
 API_URL.REFERRAL_PROGRAM = "https://forms.quiktrak.com.au/referral-program/";
 
 API_URL.GET_BALANCE = API_DOMIAN3 + "Balance";
@@ -185,7 +185,7 @@ const app = new Framework7({
     },
     on: {
         routerAjaxStart: function () {
-            this.progressbar.show('custom');
+            this.progressbar.show('gray');
         },
         routerAjaxComplete: function () {
             this.progressbar.hide();
@@ -1061,7 +1061,7 @@ const app = new Framework7({
 
             return;*/
 
-            self.progressbar.show('custom');
+            self.progressbar.show('gray');
             self.request.promise.post(command, data, 'json')
                 .then(function (result) {
                     if(result.data.MajorCode === '000') {
@@ -1436,7 +1436,7 @@ const app = new Framework7({
                 MajorToken: self.data.MajorToken,
                 MinorToken: self.data.MinorToken,
             };
-            self.progressbar.show();
+            self.progressbar.show('gray');
             self.request.promise.post(API_URL.GET_BALANCE, data, 'json')
                 .then(function (result) {
                     //console.log(result);

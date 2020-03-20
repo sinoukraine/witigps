@@ -164,7 +164,7 @@
                 }
 
 
-                self.$app.progressbar.show('custom');
+                self.$app.progressbar.show('gray');
                 self.$app.request.promise.get(url, data, 'json')
                     .then(function (result) {
                         if (result.data && result.data.MajorCode === '000') {

@@ -174,7 +174,7 @@
                             if(!result.data.Data || !result.data.Data.length){
                                 self.$app.methods.customDialog({title: self.PageTitle, text: LANGUAGE.COM_MSG076});
                             }else{
-                                self.$app.progressbar.show('custom');
+                                self.$app.progressbar.show('gray');
                                 self.$app.methods.getGeofenceList(function () {
                                     self.$app.utils.nextFrame(()=>{
                                         self.$app.progressbar.hide();

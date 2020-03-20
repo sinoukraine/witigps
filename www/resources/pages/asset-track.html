@@ -140,7 +140,7 @@
             GetLiveUpdate: function () {
                 let self = this;
                 let assetList = self.$app.methods.getFromStorage('assetList');
-                self.$app.progressbar.show('custom');
+                self.$app.progressbar.show('gray');
                 self.$app.methods.getAssetListPosInfo(assetList, true, function () {
                     self.$app.progressbar.hide();
                     self.$app.methods.showToast(LANGUAGE.PROMPT_MSG041);

@@ -464,7 +464,7 @@
 
                 page.$el.find('.ptr-content').on('ptr:refresh', function (e) {
                     let assetList = self.$app.methods.getFromStorage('assetList');
-                    self.$app.progressbar.show('custom');
+                    self.$app.progressbar.show('gray');
                     //console.log(assetList)
                     self.$app.methods.getAssetListPosInfo(assetList, true, function () {
                         self.$app.ptr.done();

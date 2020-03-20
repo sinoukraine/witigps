@@ -336,7 +336,7 @@
                             From: moment.utc(self.CalendarStartDateTime.getValue()[0]).format(window.COM_TIMEFORMAT2),
                             To: moment.utc(self.CalendarEndDateTime.getValue()[0]).format(window.COM_TIMEFORMAT2),
                         };
-                        self.$app.progressbar.show('custom');
+                        self.$app.progressbar.show('gray');
                         self.$app.methods.getGeofenceList(function () {
                             self.$app.progressbar.hide();
                             self.getPlaybackData(data, optimizedSwitcher.is(':checked'), eventsEl.val());
