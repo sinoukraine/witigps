@@ -26,10 +26,10 @@
         </div>
         <div class="toolbar tabbar toolbar-top">
             <div class="toolbar-inner">
-                <a @click="FilterAssetList" href="#tab1" data-type="all" class="tab-link flex-direction-row tab-link-active">{{@global.LANGUAGE.HOME_MSG01}}<span class="badge color-custom margin-left-quarter">{{AssetsCount.All}}</span></a>
-                <a @click="FilterAssetList" href="#tab2" data-type="live" class="tab-link flex-direction-row">Live<span class="badge color-track margin-left-quarter">{{AssetsCount.Live}}</span></a>
-                <a @click="FilterAssetList" href="#tab3" data-type="loc8" class="tab-link flex-direction-row">Loc8<span class="badge color-loc8 margin-left-quarter">{{AssetsCount.Loc8}}</span></a>
-                <a @click="FilterAssetList" href="#tab4" data-type="protect" class="tab-link flex-direction-row">Protect<span class="badge color-protect margin-left-quarter">{{AssetsCount.Protect}}</span></a>
+                <a @click="FilterAssetList" href="#tab1" data-type="all" class="tab-link flex-direction-row tab-link-active">{{@global.LANGUAGE.HOME_MSG01}}<span class="badge color-white text-color-custom margin-left-quarter">{{AssetsCount.All}}</span></a>
+                <a @click="FilterAssetList" href="#tab2" data-type="live" class="tab-link flex-direction-row">Live<span class="badge color-white text-color-custom margin-left-quarter">{{AssetsCount.Live}}</span></a>
+                <!--<a @click="FilterAssetList" href="#tab3" data-type="loc8" class="tab-link flex-direction-row">Loc8<span class="badge color-white text-color-custom margin-left-quarter">{{AssetsCount.Loc8}}</span></a>-->
+                <a @click="FilterAssetList" href="#tab4" data-type="protect" class="tab-link flex-direction-row">Protect<span class="badge color-white text-color-custom margin-left-quarter">{{AssetsCount.Protect}}</span></a>
             </div>
         </div>
         <form class="searchbar searchbar-init searchbar-home " data-search-container=".assetList" data-search-item="li" data-search-in=".item-title" >
@@ -44,7 +44,7 @@
         </form>
 
         <div class="fab fab-right-bottom fab-custom fab-viewall ">
-            <a href="/asset-track/?all=true" class="bg-color-darkgray elevation-hover-10 flex-direction-column">
+            <a href="/asset-track/?all=true" class="bg-color-custom-2 elevation-hover-10 flex-direction-column">
                 <i class="f7-icons icon-other-view-password"></i>
                 <div class="fab-text">{{@global.LANGUAGE.HOME_MSG02}}</div>
             </a>

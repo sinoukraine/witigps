@@ -279,7 +279,7 @@
             let overviewOptionsList = Protocol.Helper.getOverviewReportOptions();
 
             for (const key of keys) {
-                if(assetListObj[key].SolutionType.toLowerCase() !== 'protect'){
+                if(assetListObj[key].SolutionType.toLowerCase() !== 'protect' && assetListObj[key].SolutionType.toLowerCase() !== 'witiprotect'){
                     assetList.push(assetListObj[key]);
                 }
             }
@@ -499,25 +499,20 @@
                             break;
 
                     }
-                    //if(self.ReportType === '1' || self.ReportType === '2' || self.ReportType === '3' || self.ReportType === '4' || self.ReportType === '5'){
-                        //self.generateReport(data, url);
-                    /*}else{
-                        self.$app.methods.customDialog({title: self.PageTitle, text: LANGUAGE.PROMPT_MSG107});
-                    }*/
-                    if (self.ReportType === '4'){
+
+                    self.generateReport(data, url);
+                    /*if (self.ReportType === '4'){
                         self.$app.methods.customDialog({title: self.PageTitle, text: LANGUAGE.PROMPT_MSG107});
                     }else{
                         self.generateReport(data, url);
-                    }
+                    }*/
 
                     return false;
                 });
-                /*if(self.ReportType !== '1' && self.ReportType !== '2' && self.ReportType !== '3' && self.ReportType !== '4' && self.ReportType !== '5'){
+
+                /*if (self.ReportType === '4'){
                     self.$app.methods.customDialog({title: self.PageTitle, text: LANGUAGE.PROMPT_MSG107});
                 }*/
-                if (self.ReportType === '4'){
-                    self.$app.methods.customDialog({title: self.PageTitle, text: LANGUAGE.PROMPT_MSG107});
-                }
             },
             pageBeforeRemove: function () {
                 let self = this;

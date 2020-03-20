@@ -48,12 +48,12 @@
                         <div id="{{MapId}}" class="map "></div>
 
                         <div class="fab fab-left-bottom fab-custom with-borders {{#unless SVExist}}disabled{{/unless}}">
-                            <a @click="ShowStreetView" href="#" class="bg-color-darkgray elevation-hover-10" data-lat="{{Lat}}" data-lng="{{Lng}}">
+                            <a @click="ShowStreetView" href="#" class="bg-color-custom-2 elevation-hover-10" data-lat="{{Lat}}" data-lng="{{Lng}}">
                                 <i class="pano-preview-img"></i>
                             </a>
                         </div>
                         <div class="fab fab-right-bottom fab-custom ">
-                            <a href="#" class="bg-color-darkgray elevation-hover-10 flex-direction-column routeButton" data-lat="{{Lat}}" data-lng="{{Lng}}">
+                            <a href="#" class="bg-color-custom-2 elevation-hover-10 flex-direction-column routeButton" data-lat="{{Lat}}" data-lng="{{Lng}}">
                                 <i class="f7-icons icon-other-route"></i>
                                 <div class="fab-text">{{@global.LANGUAGE.ASSET_TRACK_MSG20}}</div>
                             </a>

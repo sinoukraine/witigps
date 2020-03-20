@@ -102,8 +102,8 @@ $$('#app').append(compiledTemplate());
 
 // Init App
 const app = new Framework7({
-    id: 'com.quiktrak.plus',
-    name: 'QuikTrak',
+    id: 'com.sinopacific.witigps',
+    name: 'WiTi GPS',
     root: '#app',
     theme: Framework7.device.ios ? 'ios' : 'md',
     view: {
@@ -170,9 +170,9 @@ const app = new Framework7({
                 },
             },
             AppDetails: {
-                name: 'QuikTrak-app',
-                code: 23,
-                supportCode: 3,
+                name: 'WiTiGPS-app',
+                code: 40,
+                supportCode: 41,
                 appId: '',
                 appleId: '1499798246',
                 appVersion: '',
@@ -349,8 +349,8 @@ const app = new Framework7({
                 if (!localStorage.PUSH_DEVICE_TOKEN)
                     localStorage.PUSH_DEVICE_TOKEN = uid;
                 //localStorage.PUSH_DEVICE_TOKEN = "75ba1639-92ae-0c4c-d423-4fad1e48a49d"
-                localStorage.PUSH_APPID_ID = 'android.app.quiktrak.eu.quiktrak.new';
-                localStorage.DEVICE_TYPE = "android.app.quiktrak.eu.quiktrak.new";
+                localStorage.PUSH_APPID_ID = 'android.app.quiktrak.eu.witigps';
+                localStorage.DEVICE_TYPE = "android.app.quiktrak.eu.witigps";
             }
         },
         clearUserInfo: function(){
@@ -1532,7 +1532,7 @@ const app = new Framework7({
                     case 'loc8':
                         ret = Protocol.MarkerIcon[2];
                         break;
-                    case 'protect':
+                    case 'protect': case 'witiprotect':
                         ret = Protocol.MarkerIcon[3];
                         break;
                 }
@@ -1689,7 +1689,7 @@ const app = new Framework7({
                     let mileage = '-';
                     let launchHours = '';
                     //let positionType = Protocol.Helper.getPositionType(parseInt(asset.posInfo.positionType));
-                    deirectionCardinal = Protocol.Helper.getDirectionCardinal(asset.posInfo.direct);
+                    let deirectionCardinal = Protocol.Helper.getDirectionCardinal(asset.posInfo.direct);
                     if (typeof asset.Unit !== "undefined" && typeof asset.posInfo.speed !== "undefined") {
                         speed = Protocol.Helper.getSpeedValue(asset.Unit, asset.posInfo.speed) + ' ' + Protocol.Helper.getSpeedUnit(asset.Unit);
                     }
@@ -2127,7 +2127,20 @@ const app = new Framework7({
             let itemIndexToShow = [];
             if (list && list.length) {
                 switch (filterType){
-                    case 'protect': case 'loc8':
+                    case 'protect':
+                        for (let i = list.length - 1; i >= 0; i--) {
+                            if ( !list[i].SolutionType ){
+                                continue;
+                            }
+                            if ( list[i].SolutionType.toLowerCase().indexOf('protect') >= 0 ||
+                                list[i].SolutionType.toLowerCase().indexOf('witiprotect') >= 0 )
+                            {
+                                itemIndexToShow.push(i);
+                            }
+                        }
+                        break;
+
+                    case 'loc8':
                         for (let i = list.length - 1; i >= 0; i--) {
                             if (list[i].SolutionType && list[i].SolutionType.toLowerCase().indexOf(filterType) >= 0)
                             {
@@ -2316,6 +2329,7 @@ const app = new Framework7({
                     let type = items[i].SolutionType ? items[i].SolutionType.toLowerCase() : '';
                     switch (type){
                         case 'protect':
+                        case 'witiprotect':
                             ret.Protect++;
                             break;
 
@@ -2623,7 +2637,7 @@ const app = new Framework7({
                     e.preventDefault();
                     return false;
                 }
-               /* if ($('.login-screen.modal-in').length) {
+                /*if ($('.login-screen.modal-in').length) {
                     f7.loginScreen.close('.login-screen.modal-in');
                     e.preventDefault();
                     return false;

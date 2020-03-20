@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="toolbar toolbar-bottom ">
-            <div class="toolbar-inner ">
+            <div class="toolbar-inner bg-color-custom-2">
                 <a href="/asset-upgrade/?imei={{IMEI}}" class="link button width-100 color-white"><i class="f7-icons icon-upgrade-to-live margin-right"></i>{{@global.LANGUAGE.ASSET_PROTECT_MSG01}}</a>
             </div>
         </div>
@@ -70,7 +70,21 @@
                         </div>
                     </div>
                 </li>
-                {{#IsImmobilisationSupported}}
+
+                <li class="item-content">
+                    <div class="item-media text-color-lightgray">
+                        <i class="f7-icons icon-protect-immobilisation3"></i>
+                    </div>
+                    <div class="item-inner">
+                        <div class="item-title">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG08}}</div>
+                        <div class="item-after min-width-122 row ">
+                            <button @click="changeState('Witi', false)" class="button button-fill color-custom col {{#unless Witi}} disabled {{/unless}}">{{@global.LANGUAGE.COM_MSG050}}</button>
+                            <button @click="changeState('Witi', true)" class="button button-fill color-custom col {{#if Witi}} disabled {{/if}}">{{@global.LANGUAGE.COM_MSG049}}</button>
+                        </div>
+                    </div>
+                </li>
+
+                <!--{{#IsImmobilisationSupported}}
                 <li class="item-content">
                     <div class="item-media text-color-lightgray">
                         <i class="f7-icons icon-protect-immobilisation3"></i>
@@ -83,7 +97,9 @@
                         </div>
                     </div>
                 </li>
-                {{/if}}
+                {{/if}}-->
+
+
                 <li class="item-content">
                     <div class="item-media text-color-lightgray">
                         <i class="f7-icons icon-header-alarm"></i>
@@ -123,60 +139,16 @@
 
                 Geolock: afs && afs.geolock ? afs.geolock.value : false,
                 Immobilise: afs && afs.immob ? afs.immob.value : false,
+                Witi: afs.lockdoor ? afs.lockdoor.value : false,
 
                 IsImmobilisationSupported: (parseInt(asset._FIELD_INT2) & 1) > 0,
+                IsWitiSupported: (parseInt(asset._FIELD_INT2) & 512) > 0,
             };
         },
         methods: {
             changeState: function (alarm, state) {
                 let self = this;
-                /*let data = {
-                    MajorToken: self.$root.MajorToken,
-                    MinorToken: self.$root.MinorToken,
-                    imei: self.IMEI,
-                    state: state ? 'on' : 'off'
-                };
-                let url = API_URL.URL_SET_GEOLOCK_PROTECT;
-                if(alarm === 'Immobilise'){
-                    url = API_URL.URL_SET_IMMOBILISATION_PROTECT;
-                }
 
-                self.$app.progressbar.show('custom');
-                self.$app.request.promise.get(url, data, 'json')
-                    .then(function (result) {
-                        if (result.data.MajorCode === '000') {
-                            if (result.data.MinorCode === '1006') {
-                                self.methods.customDialogNoCredit();
-                            } else {
-                                self.$app.methods.setStatusNewState({
-                                    asset: self.IMEI,
-                                    forAlarm: alarm,
-                                    state: state
-                                });
-                                self.$setState({ [alarm]: state });
-                                self.$app.methods.checkBalance();
-                            }
-                        } else if (result.data.MajorCode === '100' && result.data.MinorCode === '1006') {
-                            self.$app.methods.customDialogNoCredit();
-                        } else if (result.data.MajorCode === '200' && result.data.Data && result.data.Data.ERROR === 'NOT_SUPPORT') {
-                            self.$app.methods.customDialog({text: LANGUAGE.PROMPT_MSG084});
-                        } else {
-                            self.$app.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
-                        }
-                    })
-                    .finally(function () {
-                        self.$app.utils.nextFrame(()=>{
-                            self.$app.progressbar.hide();
-                        });
-                    })
-                    .catch(function (err) {
-                        console.log(err);
-                        if (err && err.status === 404){
-                            self.$app.dialog.alert(LANGUAGE.PROMPT_MSG002);
-                        }else{
-                            self.$app.dialog.alert(LANGUAGE.PROMPT_MSG003);
-                        }
-                    });*/
                 let data = {
                     MajorToken: self.$root.MajorToken,
                     MinorToken: self.$root.MinorToken,
@@ -186,7 +158,11 @@
                 let url = API_URL.SET_GEOLOCK;
                 if(alarm === 'Immobilise'){
                     url = API_URL.SET_IMMOBILISATION;
+                }else if(alarm === 'Witi'){
+                    url = API_URL.SET_DOORLOCK;
+                    data.state = state ? 'lock' : 'unlock';
                 }
+
 
                 self.$app.progressbar.show('custom');
                 self.$app.request.promise.get(url, data, 'json')

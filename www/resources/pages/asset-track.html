@@ -45,7 +45,7 @@
         {{/if}}
         {{#unless ViewAll}}
         <div class="fab fab-left-bottom fab-custom with-borders {{#unless SVExist}}disabled{{/unless}}">
-            <a @click="ShowStreetView" href="#" class="bg-color-darkgray elevation-hover-10" data-lat="{{Lat}}" data-lng="{{Lng}}">
+            <a @click="ShowStreetView" href="#" class="bg-color-custom-2 elevation-hover-10" data-lat="{{Lat}}" data-lng="{{Lng}}">
                 <i class="pano-preview-img"></i>
             </a>
         </div>
@@ -53,7 +53,7 @@
 
         {{#unless ViewAll}}
         <div class="fab fab-right-bottom fab-custom ">
-            <a href="#" class="bg-color-darkgray elevation-hover-10 flex-direction-column routeButton" data-lat="{{Lat}}" data-lng="{{Lng}}">
+            <a href="#" class="bg-color-custom-2 elevation-hover-10 flex-direction-column routeButton" data-lat="{{Lat}}" data-lng="{{Lng}}">
                 <i class="f7-icons icon-other-route"></i>
                 <div class="fab-text">{{@global.LANGUAGE.ASSET_TRACK_MSG20}}</div>
             </a>
@@ -61,7 +61,7 @@
         {{/unless}}
         {{#unless LiveAsset}}
         <div class="fab fab-right-bottom2 fab-custom ">
-            <a @click="GetProtectUpdate" href="#" class="bg-color-darkgray elevation-hover-10 flex-direction-column">
+            <a @click="GetProtectUpdate" href="#" class="bg-color-custom-2 elevation-hover-10 flex-direction-column">
                 <i class="f7-icons icon-header-refresh"></i>
                 <div class="fab-text">{{@global.LANGUAGE.COM_MSG057}}</div>
             </a>
@@ -97,7 +97,7 @@
                 //Name: asset.Name,
                 IMEI: !viewAll ? asset.IMEI : '',
                 IMSI: !viewAll ? asset.IMSI : '',
-                LiveAsset: asset && asset.SolutionType.toLowerCase() !== 'protect' && asset.SolutionType.toLowerCase() !== 'loc8' || !!viewAll,
+                LiveAsset: asset && asset.SolutionType.toLowerCase() !== 'protect' && asset.SolutionType.toLowerCase() !== 'loc8' && asset.SolutionType.toLowerCase() !== 'witiprotect' || !!viewAll,
                 ViewAll: !!viewAll
             };
 

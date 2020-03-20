@@ -65,14 +65,14 @@
                                 </div>
                             </a>
                         </li>
-                        <li>
+                        <!--<li>
                             <a href="/reports/" class="item-link item-content panel-close">
                                 <div class="item-media text-color-lightgray"><i class="f7-icons icon-menu-reports "></i></div>
                                 <div class="item-inner">
                                     <div class="item-title">{{@global.LANGUAGE.MENU_MSG04}}</div>
                                 </div>
                             </a>
-                        </li>
+                        </li>-->
                         <li>
                             <a href="/contact-list/" class="item-link item-content panel-close">
                                 <div class="item-media text-color-lightgray"><i class="f7-icons icon-contacts "></i></div>
@@ -160,11 +160,11 @@
                 ToolbarAdditionaClass: '',
                 DealerName: self.$app.name,
             };
-            if (userInfo.CountryCode && userInfo.CountryCode.toLowerCase() === 'aus') {
+            /*if (userInfo.CountryCode && userInfo.CountryCode.toLowerCase() === 'aus') {
                 ret.ToolbarAdditionaClass = 'toolbar-size-3';
                 ret.ShowButtonCall = true;
                 ret.ShowButtonReferFriend = true;
-            }
+            }*/
 
             return ret;
         },

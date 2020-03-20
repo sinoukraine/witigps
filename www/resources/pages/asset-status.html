@@ -41,7 +41,7 @@
         </div>
         {{/if}}
         <div class="toolbar toolbar-bottom ">
-            <div class="toolbar-inner ">
+            <div class="toolbar-inner bg-color-custom-2">
                 {{#if LiveAsset}}
                 <a href="/report-theft/?imei={{IMEI}}" class="link button width-100 color-white"><i class="f7-icons icon-live-report-thief margin-right"></i> {{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG07}}</a>
                 {{else}}
@@ -88,7 +88,21 @@
                             </div>
                         </div>
                     </li>
-                    {{#if IsImmobilisationSupported}}
+                    <li class="item-content">
+                        <div class="item-media {{#if LockDoor}} text-color-red {{else}} text-color-lightgray {{/if}}">
+                            <i class="f7-icons icon-live-immobilisation"></i>
+                        </div>
+                        <div class="item-inner">
+                            <div class="item-title tooltip-init" data-trigger="click" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG110}}">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG08}}  <span class="badge color-lightblue">?</span></div>
+                            <div class="item-after">
+                                <label class="toggle color-green toggle-LockDoor">
+                                    <input type="checkbox" name="LockDoor" {{#if LockDoor}} checked {{/if}}>
+                                    <span class="toggle-icon"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </li>
+                    <!--{{#if IsImmobilisationSupported}}
                     <li class="item-content">
                         <div class="item-media {{#if Immobilise}} text-color-red {{else}} text-color-lightgray {{/if}}">
                             <i class="f7-icons icon-live-immobilisation"></i>
@@ -119,7 +133,7 @@
                             </div>
                         </div>
                     </li>
-                    {{/if}}
+                    {{/if}}-->
                 </ul>
             </div>
             {{/if}}
@@ -264,7 +278,7 @@
                 IMEI: asset.IMEI,
                 IMSI: asset.IMSI,
                 Id: asset.Id,
-                LiveAsset: asset.SolutionType.toLowerCase() !== 'protect' && asset.SolutionType.toLowerCase() !== 'loc8',
+                LiveAsset: asset.SolutionType.toLowerCase() !== 'protect' && asset.SolutionType.toLowerCase() !== 'loc8' && asset.SolutionType.toLowerCase() !== 'witiprotect',
                 Tabs: !!tabsFlag,
 
                 PositionTime: asset.posInfo.positionTime ? asset.posInfo.positionTime.format(window.COM_TIMEFORMAT) : LANGUAGE.COM_MSG031,

@@ -140,7 +140,7 @@
             let newAssetlist = [];
             const keys = Object.keys(assetListObj);
             for (const key of keys) {
-                if(assetListObj[key].SolutionType.toLowerCase() !== 'protect'){
+                if(assetListObj[key].SolutionType.toLowerCase() !== 'protect' && assetListObj[key].SolutionType.toLowerCase() !== 'witiprotect'){
                     newAssetlist.push(assetListObj[key]);
                 }
             }

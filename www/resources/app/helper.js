@@ -677,6 +677,9 @@ let Protocol = {
                     case 'protect':
                         ret = 'icon-live-protect2';
                         break;
+                    case 'witiprotect':
+                        ret = 'icon-live-protect2';
+                        break;
                     case 'loc8':
                         ret = 'icon-live-loc82';
                         break;
