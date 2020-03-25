@@ -47,6 +47,16 @@
     <preference name="phonegap-version" value="cli-9.0.0" />
     <!-- <preference name="Fullscreen" value="true" /> -->
 
+    <platform name="ios">
+        <preference name="WKWebViewOnly" value="true" />
+
+        <feature name="CDVWKWebViewEngine">
+            <param name="ios-package" value="CDVWKWebViewEngine" />
+        </feature>
+
+        <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
+    </platform>
+
     <preference name="android-build-tool" value="gradle" />
     <!-- <plugin name="phonegap-plugin-push" source="npm" spec="2.1.2"> -->
     <plugin name="phonegap-plugin-push" source="npm" spec="2.3.0">
@@ -69,7 +79,9 @@
     <plugin name="cordova-plugin-camera" source="npm" spec="4.0.3"  />
     <plugin spec="https://github.com/phonegap/phonegap-mobile-accessibility.git" source="git" />
     <plugin name="cordova-launch-review" source="npm" spec="3.1.1" />
-    <plugin name="cordova-plugin-inappbrowser" source="npm" spec="3.0.0"  />
+    <plugin name="cordova-plugin-inappbrowser" source="npm" spec="3.2.0"  />
+    <plugin name="cordova-plugin-wkwebview-engine" source="npm" spec="1.2.1"  />
+    
     <!-- <plugin name="cordova-plugin-crosswalk-webview-v3" source="npm" spec="3.0.2"  /> -->
 
     
