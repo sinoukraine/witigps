@@ -1149,9 +1149,9 @@ let Protocol = {
                     if(asset.haveFeature("Acc2")){
                         ret.acc2 = {};
                         if((Protocol.PositionStatus.ACC2 & asset.posInfo.status) > 0){
-                            ret.acc2.value = 'ON';
+                            ret.acc2.value = LANGUAGE.COM_MSG105;
                         }else{
-                            ret.acc2.value = 'OFF';
+                            ret.acc2.value = LANGUAGE.COM_MSG106;
                         }
                     }
                     if(asset.haveFeature("Battery")){

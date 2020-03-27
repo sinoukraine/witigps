@@ -106,6 +106,10 @@ window.LanguagePackages= {
 		"COM_MSG100": "Refer a Friend",
 		"COM_MSG101": "Custom Email",
 		"COM_MSG102": "Mins",
+		"COM_MSG103": "Arm",
+		"COM_MSG104": "Disarm",
+		"COM_MSG105": "Armed",
+		"COM_MSG106": "Disarmed",
 
 		"PROMPT_MSG000": "Nothing found",
 		"PROMPT_MSG001": "The login(email) or password you entered is incorrect.",
@@ -320,7 +324,7 @@ window.LanguagePackages= {
 		"CONTACT_LIST_MSG03": "Edit Contact",
 		"CONTACT_LIST_MSG04": "Add New Contact",
 
-		"ASSET_ALARM_MSG00": "Alarm",
+		"ASSET_ALARM_MSG00": "Alarm ",
 		"ASSET_ALARM_MSG01": "",
 		"ASSET_ALARM_MSG02": "Bilge Alarm (to stop boat sinking)",
 		"ASSET_ALARM_MSG03": "Shore Power Disconnect",
@@ -384,7 +388,8 @@ window.LanguagePackages= {
 		"ASSET_STATUS_LIVE_MSG05": "Immobilisation",
 		"ASSET_STATUS_LIVE_MSG06": "Lock Door",
 		"ASSET_STATUS_LIVE_MSG07": "Report Theft",
-		"ASSET_STATUS_LIVE_MSG08": "WiTi Arm / Disarm",
+		"ASSET_STATUS_LIVE_MSG08": "WiTi",
+		"ASSET_STATUS_LIVE_MSG09": "",
 
 		"REPORT_THEFT_MSG00": "Please follow the below steps when reporting your stolen asset.",
 		"REPORT_THEFT_MSG01": "1. Contact police to report the incident. You will be provided with an incident report number.",
@@ -478,6 +483,7 @@ window.LanguagePackages= {
 
 		"ASSET_PROTECT_MSG00": "Position",
 		"ASSET_PROTECT_MSG01": "Upgrade to Live",
+		"ASSET_PROTECT_MSG02": "Alarm Settings",
 
 		"ALARM_LOG_MSG00": "Alarm Log",
 
