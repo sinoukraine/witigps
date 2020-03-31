@@ -360,6 +360,7 @@ const app = new Framework7({
             let mobileToken = localStorage.PUSH_MOBILE_TOKEN;
             let notifications = self.methods.getFromStorage('notifications');
             let mapSettings = self.methods.getFromStorage('mapSettings');
+            let elemRc = localStorage.elemRc;
 
             localStorage.clear();
             POSINFOASSETLIST = {};
@@ -377,7 +378,9 @@ const app = new Framework7({
             if (mobileToken) {
                 localStorage.PUSH_MOBILE_TOKEN = mobileToken;
             }
-
+            if(elemRc){
+                localStorage.elemRc = elemRc;
+            }
             if (UpdateAssetsPosInfoTimer) {
                 clearInterval(UpdateAssetsPosInfoTimer);
             }
@@ -436,6 +439,9 @@ const app = new Framework7({
             self.request.promise.get(API_URL.LOGIN, data, 'json')
                 .then(function (result) {
                     if(result.data && result.data.MajorCode === '000') {
+                        if (result.data.Data.elemRc) {
+                            localStorage.elemRc = 1;
+                        }
                         if(account.val()) {
                             localStorage.ACCOUNT = account.val().trim().toLowerCase();
                             localStorage.PASSWORD = password.val();

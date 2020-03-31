@@ -15,9 +15,11 @@
                         <a href="tel:{{SupportPhone}}" target="_blank" class="button button-fill color-custom margin-horizontal external"><i class="f7-icons icon-menu-call vertical-align-middle size-18 margin-right-half"></i>{{DealerName}}</a>
                     </div>
                     {{/if}}
+                    {{#if ShowPayment}}
                     <div class="bg-color-lightgray width-100 overflow-hidden">
                         <a href="/recharge-credits/" class="link text-color-black ">{{@global.LANGUAGE.COM_MSG003}}: {{Remaining}}</a>
                     </div>
+                    {{/if}}
                 </div>
             </div>
             <div class="page-content">
@@ -81,7 +83,7 @@
                                 </div>
                             </a>
                         </li>
-
+                        {{#if ShowPayment}}
                         <li>
                             <a href="/recharge-credits/" class="item-link item-content panel-close">
                                 <div class="item-media text-color-lightgray"><i class="f7-icons icon-menu-credits "></i></div>
@@ -90,6 +92,7 @@
                                 </div>
                             </a>
                         </li>
+                        {{/if}}
                         <li>
                             <a href="{{SupportUrl}}" target="_blank" class="item-link item-content panel-close external">
                                 <div class="item-media text-color-lightgray"><i class="f7-icons icon-menu-support "></i></div>
@@ -159,12 +162,17 @@
                 AppVersion: self.$root.AppDetails.appVersion ? 'v'+self.$root.AppDetails.appVersion : '',
                 ToolbarAdditionaClass: '',
                 DealerName: self.$app.name,
+                ShowPayment: true,
             };
             /*if (userInfo.CountryCode && userInfo.CountryCode.toLowerCase() === 'aus') {
                 ret.ToolbarAdditionaClass = 'toolbar-size-3';
                 ret.ShowButtonCall = true;
                 ret.ShowButtonReferFriend = true;
             }*/
+            if(self.$app.device.ios && !localStorage.elemRc){
+                ret.ShowPayment = false;
+                ret.ToolbarAdditionaClass += ' toolbar-size-4';
+            }
 
             return ret;
         },
