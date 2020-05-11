@@ -257,13 +257,13 @@
                                                         <i data-id="satellite-state-${ item.IMEI }" class="f7-icons size-16 margin-left-half icon-live-satellite ${ afs.GPS.state }"></i>
                                                     </div>
                                                     <div class="text-align-right">
-                                                        <i id="immob-state-${ item.IMEI }" class="f7-icons size-16 margin-left-half icon-live-immobilisation ${ afs.lockdoor.state }"></i>
+                                                        <!--<i id="immob-state-${ item.IMEI }" class="f7-icons size-16 margin-left-half icon-live-immobilisation ${ afs.lockdoor.state }"></i>-->
                                                         <i id="geolock-state-${ item.IMEI }" class="f7-icons size-16 margin-left-half icon-live-geolock ${ afs.geolock.state }"></i>
                                                     </div>`;
                             }else{
                                 ret +=`             <div class="text-align-right">
                                                         <i data-id="solutiontype-${ item.IMEI }" class="f7-icons size-16 margin-left-half ${ solutiontypeIcon } text-color-blue"></i>
-                                                        <i id="immob-state-${ item.IMEI }" class="f7-icons size-16 margin-left-half icon-live-immobilisation ${ afs.lockdoor.state }"></i>
+                                                        <!--<i id="lockdoor-state-${ item.IMEI }" class="f7-icons size-16 margin-left-half icon-live-immobilisation ${ afs.lockdoor.state }"></i>-->
                                                         <i id="geolock-state-${ item.IMEI }" class="f7-icons size-16 margin-left-half icon-live-geolock ${ afs.geolock.state }"></i>
                                                     </div>`;
                             }

@@ -395,6 +395,9 @@
 .list li:last-child .custom-smart-select .item-inner:after{
     display: none;
 }
+.dialog .list ul{
+    background: transparent;
+}
 
 .user-img{
     width: 60px;

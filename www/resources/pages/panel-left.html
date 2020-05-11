@@ -124,6 +124,7 @@
             let self = this;
 
             let userInfo = self.$app.methods.getFromStorage('userInfo');
+            let additionalFlags = self.$app.methods.getFromStorage('additionalFlags');
 
             let paramsForSupportUrl = {
                 service: self.$root.AppDetails.supportCode,
@@ -169,7 +170,7 @@
                 ret.ShowButtonCall = true;
                 ret.ShowButtonReferFriend = true;
             }*/
-            if(self.$app.device.ios && !localStorage.elemRc){
+            if(self.$app.device.ios && !additionalFlags.elemRc){
                 ret.ShowPayment = false;
                 ret.ToolbarAdditionaClass += ' toolbar-size-4';
             }

@@ -110,6 +110,7 @@ window.LanguagePackages= {
 		"COM_MSG104": "Disarm",
 		"COM_MSG105": "Armed",
 		"COM_MSG106": "Disarmed",
+		"COM_MSG107": "Later",
 
 		"PROMPT_MSG000": "Nothing found",
 		"PROMPT_MSG001": "The login(email) or password you entered is incorrect.",
@@ -226,6 +227,9 @@ window.LanguagePackages= {
 		"PROMPT_MSG108": "Alarm activation and notifications utilise credits. Ignition On and Off alarms may drain credits rapidly",
 		"PROMPT_MSG109": "Important Alarm Notice",
 		"PROMPT_MSG110": "Remotely Arm / Disarm your WiTi alarm.",
+		"PROMPT_MSG111": "Please wait when previous report request will be finished",
+		"PROMPT_MSG112": "Thanks for using our app. Please take a moment to rate it, and give us feedback so we can improve it for you.",
+		"PROMPT_MSG113": "Do not show again",
 
 
 		"HOME_MSG00": "Home",
