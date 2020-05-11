@@ -333,6 +333,7 @@ const app = new Framework7({
             return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
         },
         getPlusInfo: function () {
+            let self = this;
             let uid = this.methods.guid();
             if (window.device) {
                 if (!localStorage.PUSH_MOBILE_TOKEN) {
@@ -340,7 +341,7 @@ const app = new Framework7({
                 }
                 localStorage.PUSH_APP_KEY = BuildInfo.packageName;
                 localStorage.PUSH_APPID_ID = BuildInfo.packageName;
-                localStorage.DEVICE_TYPE = device.platform;
+                localStorage.DEVICE_TYPE = self.device.ios ? 'iOS' : 'android';
             } else {
                 if (!localStorage.PUSH_MOBILE_TOKEN)
                     localStorage.PUSH_MOBILE_TOKEN = uid;
@@ -350,7 +351,7 @@ const app = new Framework7({
                     localStorage.PUSH_DEVICE_TOKEN = uid;
                 //localStorage.PUSH_DEVICE_TOKEN = "75ba1639-92ae-0c4c-d423-4fad1e48a49d"
                 localStorage.PUSH_APPID_ID = 'android.app.quiktrak.eu.witigps';
-                localStorage.DEVICE_TYPE = "android.app.quiktrak.eu.witigps";
+                localStorage.DEVICE_TYPE = self.device.ios ? 'iOS' : 'android';
             }
         },
         clearUserInfo: function(){
@@ -365,7 +366,7 @@ const app = new Framework7({
             localStorage.clear();
             POSINFOASSETLIST = {};
 
-            self.methods.unregisterPush();
+            //self.methods.unregisterPush();
             if (notifications) {
                 localStorage.setItem("COM.QUIKTRAK.NEW.NOTIFICATIONS", JSON.stringify(notifications));
             }
