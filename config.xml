@@ -86,7 +86,9 @@
 
     <plugin name="uk.co.workingedge.phonegap.plugin.istablet" source="npm" spec="1.2.0"  />
     <plugin name="cordova-plugin-screen-orientation" source="npm" spec="3.0.2"  />
-    <plugin name="uk.co.workingedge.phonegap.plugin.launchnavigator" source="npm" spec="5.0.4"  />
+    <plugin name="uk.co.workingedge.phonegap.plugin.launchnavigator" source="npm" spec="5.0.4">
+		<variable name="GOOGLE_API_KEY_FOR_ANDROID" value="" />
+    </plugin>
 
     
     
