@@ -317,12 +317,20 @@
             let asset = self.$app.methods.getFromStorage('assetList')[imei];
             let playbackFilterEventsList = self.$app.methods.getPlaybackFilterEventsList();
             let selectedEvents = self.$route.query.events ? self.$route.query.events.split(',') : [];
+            let userInfo = self.$app.methods.getFromStorage('userInfo');
 
             let optimisedState = self.$route.query.optimisedState;
             let historyArray = self.$app.methods.getFromStorage('historyArray');
             let geofenceList = self.$app.methods.getFromStorage('geofenceList');
 
             let contactList = self.$app.methods.getFromStorage('contactList');
+            contactList.push({
+                EMail: userInfo.Email,
+                FirstName: userInfo.FirstName,
+                SubName: userInfo.SurName,
+                Code: self.$app.data.MajorToken,
+                CustomerCode: self.$app.data.MinorToken,
+            });
             if(contactList && contactList.length){
                 contactList = self.$app.methods.sortContactList(contactList);
             }

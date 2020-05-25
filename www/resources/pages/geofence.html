@@ -489,6 +489,14 @@
                 let NotifyListSSEl = page.$el.find('.smart-select-notify-list');
 
                 let contactList = self.$app.methods.getFromStorage('contactList');
+                let userInfo = self.$app.methods.getFromStorage('userInfo');
+                contactList.push({
+                    EMail: userInfo.Email,
+                    FirstName: userInfo.FirstName,
+                    SubName: userInfo.SurName,
+                    Code: self.$app.data.MajorToken,
+                    CustomerCode: self.$app.data.MinorToken,
+                });
                 contactList = self.$app.methods.sortContactList(contactList);
 
                 let drawControl = new L.Control.Draw({

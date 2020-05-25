@@ -167,7 +167,15 @@
             let imei = decodeURIComponent(self.$route.query.imei);
             let asset = self.$app.methods.getFromStorage('assetList')[imei];
             let playbackFilterEventsList = self.$app.methods.getPlaybackFilterEventsList();
+            let userInfo = self.$app.methods.getFromStorage('userInfo');
             let contactList = self.$app.methods.getFromStorage('contactList');
+            contactList.push({
+                EMail: userInfo.Email,
+                FirstName: userInfo.FirstName,
+                SubName: userInfo.SurName,
+                Code: self.$app.data.MajorToken,
+                CustomerCode: self.$app.data.MinorToken,
+            });
             contactList = self.$app.methods.sortContactList(contactList);
 
             let ret = {
