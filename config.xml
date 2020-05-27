@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget 
   version="1.0.1"
-  android-versionCode="8"
-  ios-CFBundleVersion="8"
+  android-versionCode="10"
+  ios-CFBundleVersion="10"
   id="com.sinopacific.witigps"
   xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android" defaultlocale="en-US" >
     <name>WiTi GPS</name>
@@ -82,8 +82,6 @@
     <plugin name="cordova-plugin-inappbrowser" source="npm" spec="3.2.0"  />
     <!-- <plugin name="cordova-plugin-wkwebview-engine" source="npm" spec="1.2.1"  /> -->
     
-    <!-- <plugin name="cordova-plugin-crosswalk-webview-v3" source="npm" spec="3.0.2"  /> -->
-
     <plugin name="uk.co.workingedge.phonegap.plugin.istablet" source="npm" spec="1.2.0"  />
     <plugin name="cordova-plugin-screen-orientation" source="npm" spec="3.0.2"  />
     <plugin name="uk.co.workingedge.phonegap.plugin.launchnavigator" source="npm" spec="5.0.4">
