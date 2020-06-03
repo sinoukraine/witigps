@@ -902,7 +902,7 @@
             },
             saveAlarmOptions: function(data, url){
                 let self = this;
-
+                console.log(data)
                 self.$app.dialog.progress(LANGUAGE.COM_MSG004,'red');
                 self.$app.request.promise.post(url, data, 'json')
                     .then(function (result) {
@@ -1071,8 +1071,20 @@
                         MinorToken: self.$app.data.MinorToken,
                         MajorToken: self.$app.data.MajorToken,
                         imeis: self.IMEI,
-                        alarmOptions: 0,
+                        //alarmOptions: 0,
+                        alarmOptions: 37060994,
                     };
+                    /*
+                    this alarms are turned off always
+                    65536
+                    32768
+                    1048576
+                    128
+                    2
+                    256
+                    33554432
+                    2097152
+                    262144*/
 
                     for (let i = checkboxes.length - 1; i >= 0; i--) {
                         if (!checkboxes[i].checked) {
