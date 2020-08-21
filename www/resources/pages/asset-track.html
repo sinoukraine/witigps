@@ -98,7 +98,8 @@
                 IMEI: !viewAll ? asset.IMEI : '',
                 IMSI: !viewAll ? asset.IMSI : '',
                 LiveAsset: asset && asset.SolutionType.toLowerCase() !== 'protect' && asset.SolutionType.toLowerCase() !== 'loc8' && asset.SolutionType.toLowerCase() !== 'witiprotect' || !!viewAll,
-                ViewAll: !!viewAll
+                ViewAll: !!viewAll,
+                MarkersIds: {},
             };
 
             return ret;
@@ -110,7 +111,7 @@
                 for (let i = 0; i < self.AssetsIMEIs.length; i++) {
                     let asset = POSINFOASSETLIST[self.AssetsIMEIs[i]];
                     if (asset && asset.posInfo && parseFloat(asset.posInfo.lat) !== 0 && parseFloat(asset.posInfo.lng) !== 0){
-                        let marker =  self.MarkersGroup.getLayer(asset.markerId);
+                        let marker =  self.MarkersGroup.getLayer(self.MarkersIds[self.AssetsIMEIs[i]]);
                         if (marker) {
                             marker.setLatLng([asset.posInfo.lat, asset.posInfo.lng]).setPopupContent(self.$app.methods.getMarkerDataTable(asset));
                             let popup = marker.getPopup();
@@ -358,7 +359,8 @@
                                 }
                             });
                         marker.addTo(self.MarkersGroup);
-                        asset.markerId = self.MarkersGroup.getLayerId(marker);
+                        //asset.markerId = self.MarkersGroup.getLayerId(marker);
+                        self.MarkersIds[self.AssetsIMEIs[i]] = self.MarkersGroup.getLayerId(marker);
                     }
                 }
 

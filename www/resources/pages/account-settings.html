@@ -26,28 +26,28 @@
         </div>
 
         <div class="toolbar tabbar toolbar-top">
-            <div class="toolbar-inner">              
+            <div class="toolbar-inner">
                 <a href="#user-profile" class="tab-link tab-link-active">
                     {{@global.LANGUAGE.ACCOUNT_SETTINGS_MSG00}}
                 </a>
                 <a href="#user-password" class="tab-link">
                     {{@global.LANGUAGE.ACCOUNT_SETTINGS_MSG01}}
-                </a>              
+                </a>
             </div>
         </div>
 
         <!--<div class="bottom-section-wrapper bottom-section-button-wrapper bg-color-white">
             <div class="row">
-                <label for="{{CurrentFormButtonSubmit}}" class="col button button-fill color-green elevation-2" tabindex="0">{{@global.LANGUAGE.COM_MSG06}}</label>                    
+                <label for="{{CurrentFormButtonSubmit}}" class="col button button-fill color-green elevation-2" tabindex="0">{{@global.LANGUAGE.COM_MSG06}}</label>
             </div>
         </div> -->
-        
+
         <div class="tabs-animated-wrap">
             <div class="tabs">
                 <form name="user-profile-form" class="page-content tab tab-active" id="user-profile">
-                    <input type="submit" id="submit-form-user" class="display-none" />            
+                    <input type="submit" id="submit-form-user" class="display-none" />
                     <div class="list no-margin-top no-hairline-bottom">
-                        <ul> 
+                        <ul>
                             <li class="item-content item-input ">
                                 <div class="item-media text-color-lightgray"><i class="f7-icons icon-live-name "></i></div>
                                 <div class="item-inner">
@@ -56,7 +56,7 @@
                                         <input type="text" name="FirstName" value="{{FirstName}}" maxlength="200" required validate>
                                     </div>
                                 </div>
-                            </li>    
+                            </li>
                             <li class="item-content item-input ">
                                 <div class="item-media text-color-lightgray"><!-- <i class="f7-icons icon-profile-name "></i> --></div>
                                 <div class="item-inner">
@@ -84,12 +84,12 @@
                                     </div>
                                 </div>
                             </li>
-                           
-                        </ul>                        
+
+                        </ul>
                     </div>
                     <div class="list no-hairline-bottom">
                         <ul>
-                        	
+
                             <li class="item-content item-input ">
                                 <div class="item-media text-color-lightgray"><i class="f7-icons icon-live-address "></i></div>
                                 <div class="item-inner">
@@ -113,7 +113,7 @@
 									<select name="TimeZone" required validate >
 										{{#TimeZoneList}}
 											<option value="{{Value}}" {{#if State }}selected{{/if}}>{{Name}}</option>
-										{{/TimeZoneList}}  
+										{{/TimeZoneList}}
 									</select>
 									<div class="item-content  item-input">
 										<div class="item-media text-color-lightgray">
@@ -160,7 +160,7 @@
                     <input type="submit" id="submit-form-password" class="display-none" />
                     <div class="block-title tooltip-init" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG052}}">{{@global.LANGUAGE.ACCOUNT_SETTINGS_MSG26}} <span class="badge color-lightblue">?</span></div>
                     <div class="list no-margin-top no-hairline-bottom ">
-                        <ul>                            
+                        <ul>
                             <li class="item-content item-input ">
                                 <div class="item-media text-color-lightgray"><i class="f7-icons icon-live-password "></i></div>
                                 <div class="item-inner">
@@ -169,7 +169,7 @@
                                         <input type="password" value="" name = "oldpwd" placeholder="******" maxlength="200" required validate>
                                     </div>
                                 </div>
-                            </li>    
+                            </li>
                             <li class="item-content item-input ">
                                 <div class="item-media text-color-lightgray"><!-- <i class="f7-icons icon-profile-name "></i> --></div>
                                 <div class="item-inner">
@@ -188,28 +188,28 @@
                                     </div>
                                 </div>
                             </li>
-                        </ul>                        
+                        </ul>
                     </div>
                 </form>
 
 
             </div>
         </div>
-            
+
     </div>
 
 
-        
+
 </template>
 
 
 <script>
   // script must return component object
-    return { 
+    return {
         data: function () {
             var self = this;
 
-            var ret = {};            
+            var ret = {};
 
             ret = self.$app.methods.getFromStorage('userInfo');
             ret.TimeZoneList = Protocol.Helper.getTimezoneList(ret.TimeZone);
@@ -218,7 +218,7 @@
             return ret;
         },
 
-        methods: { 
+        methods: {
             saveUserDetails: function(data){
                 var self = this;
 
@@ -279,13 +279,13 @@
         },
 
         on: {
-            pageInit: function (e, page) { 
-                var self = this;   
+            pageInit: function (e, page) {
+                var self = this;
                 var profileForm = page.$pageEl.find('[name = "user-profile-form"]');
                 var passwordForm = page.$pageEl.find('[name = "user-password-form"]');
                 var tabs = page.$pageEl.find('.tab');
 
-                tabs.on('tab:show', function(){                   
+                tabs.on('tab:show', function(){
                     if (this.name === 'user-password-form') {
                         self.$setState({
                             CurrentFormButtonSubmit: 'submit-form-password'
@@ -306,15 +306,15 @@
                         FirstName: page.$el.find('input[name="FirstName"]').val(),
                         SurName: page.$el.find('input[name="SurName"]').val(),
                         Mobile: page.$el.find('input[name="Mobile"]').val(),
-                        Email: page.$el.find('input[name="Email"]').val(),                                                
+                        Email: page.$el.find('input[name="Email"]').val(),
                         Address0: page.$el.find('input[name="Address0"]').val(),
                         Address1: page.$el.find('input[name="Address1"]').val(),
-                        Address2: page.$el.find('input[name="Address2"]').val(),            
+                        Address2: page.$el.find('input[name="Address2"]').val(),
                         Address3: page.$el.find('input[name="Address3"]').val(),
                         Address4: page.$el.find('input[name="Address4"]').val(),
-                        TimeZone: page.$el.find('[name="TimeZone"]').val(),  
-                                                                  
-                    }; 
+                        TimeZone: page.$el.find('[name="TimeZone"]').val(),
+
+                    };
                    // console.log(data);
                     self.saveUserDetails(data);
 
@@ -322,13 +322,13 @@
                 });
 
                 passwordForm.on('submit', function (e) {
-                    e.preventDefault();  
-                    var userInfo = self.$app.methods.getFromStorage('userInfo');
+                    e.preventDefault();
+
                     var data = {
-                        MinorToken: userInfo.MinorToken,
+                        MinorToken: self.$app.data.MinorToken,
                         oldpwd: page.$el.find('input[name="oldpwd"]').val(),
                         newpwd: page.$el.find('input[name="newpwd"]').val(),
-                    }; 
+                    };
                     var confirmpwd = page.$el.find('input[name="confirmpwd"]').val();
 
                     if (data.newpwd.length < 6) {
@@ -344,9 +344,8 @@
 
                     return false;
                 });
-                
-            },   
+
+            },
         }
     };
 </script>
-    
