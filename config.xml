@@ -33,13 +33,23 @@
   	      <application android:usesCleartextTraffic="true" />
   	  </edit-config>
   	</platform>
+  	<platform name="ios">
+        <preference name="WKWebViewOnly" value="true" />
+        <feature name="CDVWKWebViewEngine">
+            <param name="ios-package" value="CDVWKWebViewEngine" />
+        </feature>
+        <preference name="CordovaWebViewEngine" value="CDVWKWebViewEngine" />
+        <edit-config target="ITSAppUsesNonExemptEncryption" file="*-Info.plist" mode="merge">
+          <false/>
+        </edit-config>   
+    </platform>
 
     <preference name="loadUrlTimeoutValue" value="700000" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="Orientation" value="default" />
     <preference name="android-minSdkVersion" value="19" />
     <!-- <preference name="android-maxSdkVersion" value="27" /> -->
-    <preference name="android-targetSdkVersion" value="28" />
+    <preference name="android-targetSdkVersion" value="29" />
     <preference name="multiDexEnabled" value="true" />     
     <preference name="deployment-target" value="10.2" />
     <preference name="StatusBarOverlaysWebView" value="false" />
@@ -79,7 +89,9 @@
     <plugin name="cordova-plugin-camera" source="npm" spec="4.0.3"  />
     <plugin spec="https://github.com/phonegap/phonegap-mobile-accessibility.git" source="git" />
     <plugin name="cordova-launch-review" source="npm" spec="3.1.1" />
-    <plugin name="cordova-plugin-inappbrowser" source="npm" spec="3.2.0"  />
+    <plugin name="cordova-plugin-inappbrowser" source="npm" spec="4.0.0"  />
+    <plugin name="cordova-plugin-wkwebview-engine" spec="~1.2.1" />
+    <plugin name="cordova-plugin-wkwebview-file-xhr" spec="~2.1.4"/>
     <!-- <plugin name="cordova-plugin-wkwebview-engine" source="npm" spec="1.2.1"  /> -->
     
     <plugin name="uk.co.workingedge.phonegap.plugin.istablet" source="npm" spec="1.2.0"  />
@@ -100,9 +112,7 @@
     <edit-config target="NSPhotoLibraryAddUsageDescription" file="*-Info.plist" mode="merge">
         <string>Need photo library access to save pictures there</string>
     </edit-config>
-    <config-file platform="ios" target="*-Info.plist" parent="ITSAppUsesNonExemptEncryption">
-        <false/>
-    </config-file>  
+   
 
 
     <platform name="android">
