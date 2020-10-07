@@ -1,6 +1,6 @@
 window.LanguagePackages= {
 	"zh":{
-		
+
 	},
 	"en":{
 		"COM_MSG000": "Submit",
@@ -230,6 +230,12 @@ window.LanguagePackages= {
 		"PROMPT_MSG111": "Please wait when previous report request will be finished",
 		"PROMPT_MSG112": "Thanks for using our app. Please take a moment to rate it, and give us feedback so we can improve it for you.",
 		"PROMPT_MSG113": "Do not show again",
+
+		"PROMPT_MSG121": "Low credit warning.",
+		"PROMPT_MSG122": "You must recharge to continue to receive alarms for assets with Protect solution.",
+		"PROMPT_MSG123": "Recharge now?",
+		"PROMPT_MSG124": "All alarms for assets with Protect solution type are disabled",
+		"PROMPT_MSG125": "To renew alarms you must recharge and re enable alarms",
 
 
 		"HOME_MSG00": "Home",
@@ -543,13 +549,13 @@ window.LanguagePackages= {
 
 	},
 	"ua":{
-		
+
 	},
 	"ru":{
-		
+
 	},
 	"es":{
-		
+
 	}
 };
 var lang = navigator.browserLanguage ? navigator.browserLanguage.toLowerCase() : navigator.language.toLowerCase();
@@ -561,17 +567,17 @@ else if(lang.indexOf("es") >= 0) {
 }
 else if(lang.indexOf("zh") >= 0) {
 	lang = "en";
-}	
+}
 else if(lang.indexOf("ua") >= 0 || lang.indexOf("uk") >= 0) {
 	//lang = "ua";
-	lang = "en";	
+	lang = "en";
 }
 else if(lang.indexOf("ru") >= 0) {
 	//lang = "ru";
-	lang = "en";	
-}	
+	lang = "en";
+}
 else {
-	lang = "en";		
+	lang = "en";
 }
 window.LANGUAGE = LanguagePackages[lang];
 if(!Template7.global)

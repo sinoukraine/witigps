@@ -188,7 +188,9 @@ const app = new Framework7({
             this.progressbar.show('gray');
         },
         routerAjaxComplete: function () {
-            this.progressbar.hide();
+            this.utils.nextTick(()=>{
+                this.progressbar.hide();
+            });
         },
         connection: function(isOnline){
             let self = this;
@@ -475,6 +477,10 @@ const app = new Framework7({
                         UpdateAssetsPosInfoTimer = setInterval(function(){
                             self.methods.getAssetListPosInfo(assetListObj, 1);  // '1' - means update
                         }, 30*1000);
+
+                        setTimeout(function () {
+                            self.methods.checkIsLowBalance(result.data.Data.UserInfo.SMSTimes);
+                        }, 1000)
 
                         self.utils.nextFrame(()=>{
                             self.methods.getAssetListPosInfo(assetListObj);
@@ -1491,6 +1497,10 @@ const app = new Framework7({
 
                         if (alert) {
                             self.methods.customDialog({text: LANGUAGE.COM_MSG003+': '+result.data.Data.SMSTimes});
+                        }else{
+                            setTimeout(function () {
+                                self.methods.checkIsLowBalance(result.data.Data.SMSTimes);
+                            }, 1000)
                         }
                     }
                     self.progressbar.hide();
@@ -1505,6 +1515,44 @@ const app = new Framework7({
                     }
                 });
         },
+        checkIsLowBalance(credits){
+            if (credits > 6) {
+                return;
+            }
+
+            let self = this;
+            let modalTex = `
+            <div class="custom-modal-title text-color-red">${ LANGUAGE.PROMPT_MSG121 }</div>
+            <div class="custom-modal-text">${ LANGUAGE.PROMPT_MSG122 }</div>
+            <div class="custom-modal-text">${ LANGUAGE.PROMPT_MSG123 }</div>
+            <div class="custom-modal-text">${ LANGUAGE.COM_MSG003 }: <span class="text-color-red font-weight-bold">${credits}</span></div>
+            `;
+            if(credits < 2){
+                modalTex = `
+                <div class="custom-modal-title text-color-red">${ LANGUAGE.PROMPT_MSG124 }</div>
+                <div class="custom-modal-text">${ LANGUAGE.PROMPT_MSG125 }</div>
+                <div class="custom-modal-text">${ LANGUAGE.PROMPT_MSG123 }</div>                
+            `;
+            }
+
+
+
+            self.dialog.create({
+                title: `<div class="custom-modal-logo-wrapper"><img class="custom-modal-logo" src="${ self.data.logoBlack }" alt=""/></div>`,
+                text: modalTex,
+                buttons: [
+                    {
+                        text: LANGUAGE.COM_MSG068,
+                    },
+                    {
+                        text: LANGUAGE.COM_MSG067,
+                        onClick: function () {
+                            mainView.router.navigate('/recharge-credits/');
+                        }
+                    },
+                ]
+            }).open();
+        },
         getPlaybackFilterEventsList: function(){
             return [
                 {
@@ -1514,7 +1562,7 @@ const app = new Framework7({
                     Icon: 'icon-live-acc text-color-green f7-icons',
                     IconColor: 'text-color-green',
                     /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-green display-flex align-items-center justify-content-center'>
-                                    <i class='f7-icons size-16 line-height-icon-fix icon-live-acc '></i> 
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-live-acc '></i>
                                 </div>`,*/
                 },
                 {
@@ -1524,7 +1572,7 @@ const app = new Framework7({
                     Icon: 'icon-live-stopped text-color-gray f7-icons',
                     IconColor: 'text-color-gray',
                     /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-gray display-flex align-items-center justify-content-center'>
-                                    <i class='f7-icons size-16 line-height-icon-fix icon-live-stopped '></i> 
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-live-stopped '></i>
                                 </div>`,*/
                 },
                 {
@@ -1534,7 +1582,7 @@ const app = new Framework7({
                     Icon: 'icon-menu-geofence text-color-green f7-icons',
                     IconColor: 'text-color-green',
                     /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-green display-flex align-items-center justify-content-center'>
-                                    <i class='f7-icons size-16 line-height-icon-fix icon-menu-geofence '></i> 
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-menu-geofence '></i>
                                 </div>`,*/
                 },
                 {
@@ -1544,7 +1592,7 @@ const app = new Framework7({
                     Icon: 'icon-menu-geofence text-color-red f7-icons',
                     IconColor: 'text-color-red',
                     /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-red display-flex align-items-center justify-content-center'>
-                                    <i class='f7-icons size-16 line-height-icon-fix icon-menu-geofence '></i> 
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-menu-geofence '></i>
                                 </div>`,*/
                 },
                 {
@@ -1554,7 +1602,7 @@ const app = new Framework7({
                     Icon: 'icon-header-alarm text-color-red f7-icons',
                     IconColor: 'text-color-red',
                     /*IconHTML:   `<div class='icon-container text-align-center text-color-white bg-color-red display-flex align-items-center justify-content-center'>
-                                    <i class='f7-icons size-16 line-height-icon-fix icon-header-alarm '></i> 
+                                    <i class='f7-icons size-16 line-height-icon-fix icon-header-alarm '></i>
                                 </div>`,*/
                 },
             ];
@@ -2432,7 +2480,7 @@ const app = new Framework7({
                         text: LANGUAGE.COM_MSG055,
                         //bold: true,
                         onClick: function () {
-                            mainView.router.navigate('/credit-recharge/');
+                            mainView.router.navigate('/recharge-credits/');
                         }
                     },
                 ]
