@@ -478,9 +478,12 @@ const app = new Framework7({
                             self.methods.getAssetListPosInfo(assetListObj, 1);  // '1' - means update
                         }, 30*1000);
 
-                        setTimeout(function () {
-                            self.methods.checkIsLowBalance(result.data.Data.UserInfo.SMSTimes);
-                        }, 1000)
+                        if(self.data.AccountSolutionArray.indexOf('protect') > -1 || self.data.AccountSolutionArray.indexOf('witiprotect') > -1){
+                            setTimeout(function () {
+                                self.methods.checkIsLowBalance(result.data.Data.UserInfo.SMSTimes);
+                            }, 1000)
+                        }
+
 
                         self.utils.nextFrame(()=>{
                             self.methods.getAssetListPosInfo(assetListObj);
