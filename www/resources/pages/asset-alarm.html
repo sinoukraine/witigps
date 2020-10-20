@@ -289,6 +289,7 @@
             let index = IMEI.indexOf(',');
             let tabsFlag = self.$route.query.tabs;
 
+
             let ret = {
                 Tabs: !!tabsFlag,
                 AlarmListType: 3,
@@ -302,6 +303,7 @@
                 IMEI: IMEI,
                 Name: index === -1 ? assetList[IMEI].Name : LANGUAGE.ASSET_ALARM_MSG00,
                 MaxSpeed: index === -1 ? assetList[IMEI].MaxSpeed : 80,
+                isNegativeInputSupported: index === -1 ? (parseInt(assetList[IMEI]._FIELD_INT2) & Protocol.FeaturesEnum.NegativeInput) > 0 : (parseInt(assetList[IMEI.split(',')[0]]._FIELD_INT2) & Protocol.FeaturesEnum.NegativeInput) > 0,
 
                 ShowAdditionalBlocks: false,
                 IgnoreBetweenState: false,
@@ -310,7 +312,7 @@
                 DaysOfWeek: [],
                 DaysOfWeekSelect: false,
             };
-            //console.log(ret);
+
             return ret;
         },
         methods: {
@@ -891,7 +893,19 @@
 
                     }
                 }
+
                 if (ret.length) {
+                    if(this.isNegativeInputSupported){
+                        ret.push({
+                            state: true,
+                            val: 1048576,
+                            title: LANGUAGE.ASSET_ALARM_MSG39, //witi disarmed
+                        },{
+                            state: true,
+                            val: 262144,
+                            title: LANGUAGE.ASSET_ALARM_MSG38, //witi armed
+                        })
+                    }
                     ret.sort(function(a,b){
                         if(a.title < b.title) return -1;
                         if(a.title > b.title) return 1;

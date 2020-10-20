@@ -309,7 +309,7 @@
                     Coords: 'GPS: ' + Protocol.Helper.convertDMS(asset.posInfo.lat, asset.posInfo.lng),
 
                     IsImmobilisationSupported: (parseInt(asset._FIELD_INT2) & 1) > 0,
-                    IsLockDoorSupported: (parseInt(asset._FIELD_INT2) & 1) > 0,
+                    IsLockDoorSupported: (parseInt(asset._FIELD_INT2) & 512) > 0,
                 });
 
                 if ( !asset.lastQueryPosinfo ||

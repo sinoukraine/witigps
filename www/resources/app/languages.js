@@ -377,6 +377,8 @@ window.LanguagePackages= {
 		"ASSET_ALARM_MSG35": "PTO Input Off",
 		"ASSET_ALARM_MSG36": "Other Alarm",
 		"ASSET_ALARM_MSG37": "Outboard Engine Removal",
+		"ASSET_ALARM_MSG38": "WiTi Armed",
+		"ASSET_ALARM_MSG39": "WiTi Disarmed",
 
 		"GEOFENCES_MSG00": "Circle",
 		"GEOFENCES_MSG01": "Polygon",

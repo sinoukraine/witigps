@@ -80,7 +80,7 @@ let Protocol = {
             iconAnchor:   [16, 31], // point of the icon which will correspond to marker's location
             popupAnchor:  [0, -32] // point from which the popup should open relative to the iconAnchor
         }),
-        
+
     ],
     TrackingInterval: [
         {
@@ -94,7 +94,7 @@ let Protocol = {
                     cost: 0.00 + ' ' + LANGUAGE.ASSET_TRACKING_INTERVAL_MSG03,  //month
                     button: '',
                     payPlanCode: '',
-                },                    
+                },
             },
             '2':{
                 AUS: {
@@ -107,7 +107,7 @@ let Protocol = {
                     button: '',
                     payPlanCode: '',
                 },
-            },      
+            },
             intervalDisplayed: '12'+' '+LANGUAGE.ASSET_TRACKING_INTERVAL_MSG10,
             interval: 720,
         },
@@ -116,75 +116,75 @@ let Protocol = {
                 AUS: {
                     cost: 8.00 + ' ' + LANGUAGE.ASSET_TRACKING_INTERVAL_MSG03,
                     button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MT2SUYZ35R7GL',
-                    payPlanCode: '2WHU48K4XUFSS'                   
+                    payPlanCode: '2WHU48K4XUFSS'
                 },
                 OTHER: {
                     cost: 2.00 + ' ' + LANGUAGE.ASSET_TRACKING_INTERVAL_MSG03,
                     button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=2WHU48K4XUFSS',
-                    payPlanCode: '2WHU48K4XUFSS'                    
+                    payPlanCode: '2WHU48K4XUFSS'
                 },
             },
             '2':{
                 AUS: {
                     cost: 96.00 +' '+LANGUAGE.ASSET_TRACKING_INTERVAL_MSG12,
-                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LQYYAZFFYW9D6',                    
+                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LQYYAZFFYW9D6',
                     payPlanCode: 'L9S33552S62Q6'
                 },
                 OTHER: {
                     cost: 20.00 +' '+LANGUAGE.ASSET_TRACKING_INTERVAL_MSG12,
-                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L9S33552S62Q6',                   
+                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L9S33552S62Q6',
                     payPlanCode: 'L9S33552S62Q6'
                 },
-                
-            },      
+
+            },
             intervalDisplayed: '6'+' '+LANGUAGE.ASSET_TRACKING_INTERVAL_MSG10,
             interval: 360,
-        },  
-        {       
+        },
+        {
             '1':{
                 AUS: {
                     cost: 12.00 + ' ' + LANGUAGE.ASSET_TRACKING_INTERVAL_MSG03,
-                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZPUNBTBMQU594',                    
+                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZPUNBTBMQU594',
                     payPlanCode: 'FHWEQYJU4J7PG'
                 },
                 OTHER: {
                     cost: 5.00 + ' ' + LANGUAGE.ASSET_TRACKING_INTERVAL_MSG03,
-                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FHWEQYJU4J7PG',                    
+                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FHWEQYJU4J7PG',
                     payPlanCode: 'FHWEQYJU4J7PG'
                 },
             },
             '2':{
                 AUS: {
                     cost: 144.00 + ' ' + LANGUAGE.ASSET_TRACKING_INTERVAL_MSG12,
-                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W7ZNFJ976H7CL',                    
+                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W7ZNFJ976H7CL',
                     payPlanCode: 'KHH32FAY82TTC'
                 },
                 OTHER: {
                     cost: 50.00 + ' ' + LANGUAGE.ASSET_TRACKING_INTERVAL_MSG12,
-                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KHH32FAY82TTC',                    
+                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KHH32FAY82TTC',
                     payPlanCode: 'KHH32FAY82TTC'
                 },
             },
             intervalDisplayed: '1'+' '+LANGUAGE.ASSET_TRACKING_INTERVAL_MSG09,
-            interval: 60,        
-        },  
+            interval: 60,
+        },
         {
             '1':{
                 AUS: {
                     cost: 16.50 + ' ' + LANGUAGE.ASSET_TRACKING_INTERVAL_MSG03,
-                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VMDPGMUUAFTFC',                   
+                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VMDPGMUUAFTFC',
                     payPlanCode: 'S52J34JS89MTU'
                 },
                 OTHER: {
                     cost: 10.00 + ' ' + LANGUAGE.ASSET_TRACKING_INTERVAL_MSG03,
-                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=S52J34JS89MTU',                    
+                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=S52J34JS89MTU',
                     payPlanCode: 'S52J34JS89MTU'
                 },
             },
             '2':{
                 AUS: {
                     cost: 198.00 + ' ' + LANGUAGE.ASSET_TRACKING_INTERVAL_MSG12,
-                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BDR3HC6Z4AX9U',                    
+                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BDR3HC6Z4AX9U',
                     payPlanCode: '8ZRAGALKV27D2'
                 },
                 OTHER: {
@@ -192,38 +192,38 @@ let Protocol = {
                     button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=8ZRAGALKV27D2',
                     payPlanCode: '8ZRAGALKV27D2'
                 },
-            },      
+            },
             intervalDisplayed: '30'+' '+LANGUAGE.ASSET_TRACKING_INTERVAL_MSG07,
-            interval: 30,        
+            interval: 30,
         },
         {
             '1':{
                 AUS: {
                     cost: 19.00 + ' ' + LANGUAGE.ASSET_TRACKING_INTERVAL_MSG03,
-                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LB6GD39K98M6U',                    
+                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=LB6GD39K98M6U',
                     payPlanCode: 'W4LJDLLA4DNHU'
                 },
                 OTHER: {
                     cost: 20.00 + ' ' + LANGUAGE.ASSET_TRACKING_INTERVAL_MSG03,
-                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W4LJDLLA4DNHU',                    
+                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W4LJDLLA4DNHU',
                     payPlanCode: 'W4LJDLLA4DNHU'
                 },
             },
             '2':{
                 AUS: {
                     cost: 228.00 + ' ' + LANGUAGE.ASSET_TRACKING_INTERVAL_MSG12,
-                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3HDP3UANR3KBQ',                    
+                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3HDP3UANR3KBQ',
                     payPlanCode: 'W7N6LKCNNLT6S'
                 },
                 OTHER: {
                     cost: 200.00 + ' ' + LANGUAGE.ASSET_TRACKING_INTERVAL_MSG12,
-                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W7N6LKCNNLT6S',                    
+                    button: 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W7N6LKCNNLT6S',
                     payPlanCode: 'W7N6LKCNNLT6S'
                 },
 
-            },      
+            },
             intervalDisplayed: '1'+' '+LANGUAGE.ASSET_TRACKING_INTERVAL_MSG11,
-            interval: 1,        
+            interval: 1,
         },
     ],
     PositionTypes: {
@@ -326,6 +326,11 @@ let Protocol = {
         "Geolock" : 1,
         "Immobilise": 2,
         "LockDoor": 4,
+    },
+    FeaturesEnum: {
+      Immobilisation: 1,
+      NegativeInput: 256,
+      LockDoor: 512,
     },
     CustomerTypes: {
         Agent: 2,
@@ -448,12 +453,12 @@ let Protocol = {
         },
         getMileage: function(asset, mileage){
             let ret = 0;
-            ret = (Protocol.Helper.getMileageValue(asset.Unit, mileage) + parseInt(asset.InitMileage) + parseInt(asset._FIELD_FLOAT7)) + '&nbsp;' + Protocol.Helper.getMileageUnit(asset.Unit);     
+            ret = (Protocol.Helper.getMileageValue(asset.Unit, mileage) + parseInt(asset.InitMileage) + parseInt(asset._FIELD_FLOAT7)) + '&nbsp;' + Protocol.Helper.getMileageUnit(asset.Unit);
             return ret;
         },
         getEngineHours: function(asset, launchHours){
             let ret = 0;
-            ret = TimeSpan(parseInt(launchHours)*1000 + parseInt(asset.InitAcconHours)*60*60*1000 + parseInt(asset._FIELD_FLOAT8)*1000).format("^hh:mm:ss");  
+            ret = TimeSpan(parseInt(launchHours)*1000 + parseInt(asset.InitAcconHours)*60*60*1000 + parseInt(asset._FIELD_FLOAT8)*1000).format("^hh:mm:ss");
             return ret;
         },
         getAlertNameByType: function(type=0){
@@ -526,7 +531,7 @@ let Protocol = {
                     break;
             }
             return ret;
-           
+
         },
         getEventTypeName: function(eventClass, eventType){
             let ret = '';
@@ -574,24 +579,24 @@ let Protocol = {
                 //case '0':           ret = LANGUAGE.REPORT_ALERT_LIST_MSG01; break; // None
                 //case '1':           ret = LANGUAGE.REPORT_ALERT_LIST_MSG02; break; // Custom
                 case '2':           ret = LANGUAGE.REPORT_ALERT_LIST_MSG03; break; // SOS Duress
-                case '4':           ret = LANGUAGE.REPORT_ALERT_LIST_MSG04; break; // Power Disconnect 
+                case '4':           ret = LANGUAGE.REPORT_ALERT_LIST_MSG04; break; // Power Disconnect
                 case '8':           ret = LANGUAGE.REPORT_ALERT_LIST_MSG05; break; // Enter Geofence
-                case '16':          ret = LANGUAGE.REPORT_ALERT_LIST_MSG06; break; // Leave Geofence 
-                case '32':          ret = LANGUAGE.REPORT_ALERT_LIST_MSG07; break; // Speed Alert 
-                case '128':         ret = LANGUAGE.REPORT_ALERT_LIST_MSG09; break; // Intrusion Alert   
+                case '16':          ret = LANGUAGE.REPORT_ALERT_LIST_MSG06; break; // Leave Geofence
+                case '32':          ret = LANGUAGE.REPORT_ALERT_LIST_MSG07; break; // Speed Alert
+                case '128':         ret = LANGUAGE.REPORT_ALERT_LIST_MSG09; break; // Intrusion Alert
                 case '256':         ret = LANGUAGE.REPORT_ALERT_LIST_MSG10; break; // Tilt / Shock
                 case '512':         ret = LANGUAGE.REPORT_ALERT_LIST_MSG11; break; // Low Battery
                 case '1024':        ret = LANGUAGE.REPORT_ALERT_LIST_MSG12; break; // Geolock Alert
                 case '16384':       ret = LANGUAGE.REPORT_ALERT_LIST_MSG16; break; // Impact / Crash
                 case '32768':       ret = LANGUAGE.REPORT_ALERT_LIST_MSG17; break; // Ignition On
-                case '65536':       ret = LANGUAGE.REPORT_ALERT_LIST_MSG18; break; // Ignition Off 
+                case '65536':       ret = LANGUAGE.REPORT_ALERT_LIST_MSG18; break; // Ignition Off
                 case '131072':      ret = LANGUAGE.REPORT_ALERT_LIST_MSG19; break; // Positive Input
                 case '1048576':     ret = LANGUAGE.REPORT_ALERT_LIST_MSG22; break; // Negative Input
                 case '2097152':     ret = LANGUAGE.REPORT_ALERT_LIST_MSG23; break; // Harsh Bracking
                 case '16777216':    ret = LANGUAGE.REPORT_ALERT_LIST_MSG26; break; // Fatigue Driving
                 case '33554432':    ret = LANGUAGE.REPORT_ALERT_LIST_MSG27; break; // Harsh Accelerate
-                    
-            }           
+
+            }
             return ret;
         },
         getOverviewReportOptions: function(){
@@ -667,13 +672,13 @@ let Protocol = {
                 },
             ]
         },
-        
+
 
         getSolutionTypeIcon: function(type){
             let ret = "icon-live-no-plan";
             if (type) {
                 type = type.toLowerCase();
-                switch (type){  
+                switch (type){
                     case 'protect':
                         ret = 'icon-live-protect2';
                         break;
@@ -690,7 +695,7 @@ let Protocol = {
                         ret = 'icon-live-watch2';
                         break;
                 }
-            }                
+            }
             return ret;
         },
         getDifferenceBTtwoDates: function(date1, date2){
@@ -706,23 +711,23 @@ let Protocol = {
             }
             return ret;
         },
-        getGeoImmobState: function(val){            
+        getGeoImmobState: function(val){
             let ret = {
                 Geolock: false,
                 Immobilise: false,
                 LockDoor: false,
             };
             if (val) {
-                if ((parseInt(val,10) & 1) > 0) {        
-                    ret.Geolock = true; 
+                if ((parseInt(val,10) & 1) > 0) {
+                    ret.Geolock = true;
                 }
-                if ((parseInt(val,10) & 2) > 0) {        
-                    ret.Immobilise = true; 
+                if ((parseInt(val,10) & 2) > 0) {
+                    ret.Immobilise = true;
                 }
-                if ((parseInt(val,10) & 4) > 0) {        
-                    ret.LockDoor = true; 
+                if ((parseInt(val,10) & 4) > 0) {
+                    ret.LockDoor = true;
                 }
-            }            
+            }
             return ret;
         },
         getGoefenceAlarmTypes: function(val){
@@ -736,15 +741,15 @@ let Protocol = {
                     Val: 8,
                     State: false,
                     Name: LANGUAGE.COM_MSG028,
-                },                
+                },
             ];
             if (val) {
                 for (let i = ret.length - 1; i >= 0; i--) {
-                    if ( parseInt(val,10) & ret[i].Val) {        
-                        ret[i].State = true; 
+                    if ( parseInt(val,10) & ret[i].Val) {
+                        ret[i].State = true;
                     }
-                }                
-            }            
+                }
+            }
             return ret;
         },
         getGeofenceTypes: function(val){
@@ -758,7 +763,7 @@ let Protocol = {
                     Val: 2,
                     State: false,
                     Name: LANGUAGE.GEOFENCES_MSG01,
-                },                
+                },
             ];
             return ret;
         },
@@ -791,42 +796,42 @@ let Protocol = {
         getTimezoneList: function(selected){
             let ret = [
                 { Value: -12,   Name: '(GMT -12:00) Eniwetok,Kwajalein' },
-                { Value: -11,   Name: '(GMT -12:00) Eniwetok,Kwajalein' }, 
-                { Value: -10,   Name: '(GMT -10:00) Hawaii' },  
-                { Value: -9,    Name: '(GMT -09:00) Alaska' },  
-                { Value: -8,    Name: '(GMT -08:00) Pacific Time (US &  Canada),Tijuana' },  
-                { Value: -7,    Name: '(GMT -07:00) Mountain Time (US & Canada), Arizona' },  
-                { Value: -6,    Name: '(GMT -06:00) Central Time (US &  Canada), Mexico City' },  
-                { Value: -5,    Name: '(GMT -05:00) Eastern Time (US &  Canada), Bogota, Lima, Quito' },  
-                { Value: -4,    Name: '(GMT -04:00) Atlantic Time (Canada),Caracas, La Paz' },  
-                { Value: -3.5,  Name: '(GMT -03:30) Newfoundland' },  
-                { Value: -3,    Name: '(GMT -03:00) Brassila, Buenos Aires, Georgetown, Falkland Is' },  
-                { Value: -2,    Name: '(GMT -02:00) Mid-Atlantic,Ascension Is., St. Helena' },  
-                { Value: -1,    Name: '(GMT -01:00) Azores,Cape Verde Islands' },  
-                { Value: 0,     Name: '(GMT) Casablanca,Dublin,Edinburgh, London, Lisbon, Monrovia' },  
-                { Value: 1,     Name: '(GMT +01:00) Amsterdam, Berlin, Brussels, Madrid, Paris, Rome' },  
-                { Value: 2,     Name: '(GMT +02:00) Cairo, Helsinki, Kaliningrad, South Africa' },  
-                { Value: 3,     Name: '(GMT +03:00) Baghdad, Riyadh, Moscow, Nairobi' },  
-                { Value: 3.5,   Name: '(GMT +03:30) Tehran' },  
-                { Value: 4,     Name: '(GMT +04:00) Abu Dhabi, Baku, Muscat, Tbilisi' },  
-                { Value: 4.5,   Name: '(GMT +04:30) Kabul' },  
-                { Value: 5,     Name: '(GMT +05:00) Ekaterinburg, Islamabad, Karachi, Tashkent' },  
-                { Value: 5.5,   Name: '(GMT +05:30) Bombay, Calcutta, Madras, New Delhi' },  
-                { Value: 5.75,  Name: '(GMT +05:45) Katmandu' },  
-                { Value: 6,     Name: '(GMT +06:00) Almaty, Colombo, Dhaka, Novosibirsk' },  
-                { Value: 6.5,   Name: '(GMT +06:30) Rangoon' },  
-                { Value: 7,     Name: '(GMT +07:00) Bangkok, Hanoi, Jakarta' },  
-                { Value: 8,     Name: '(GMT +08:00) Beijing, Hong Kong, Perth, Singapore, Taipei' },  
-                { Value: 9,     Name: '(GMT +09:00) Osaka, Sapporo, Seoul, Tokyo, Yakutsk' },  
-                { Value: 9.5,   Name: '(GMT +09:30) Adelaide, Darwin' },  
-                { Value: 10,    Name: '(GMT +10:00) Canberra, Guam, Melbourne, Sydney, Vladivostok' },  
-                { Value: 10,    Name: '(GMT +10:00) Brisbane' },  
-                { Value: 10.5,  Name: '(GMT +10:30) Adelaide, Darwin(daylight savings)' },  
-                { Value: 11,    Name: '(GMT +11:00) Magadan, New Caledonia, Solomon Islands' },  
-                { Value: 12,    Name: '(GMT +12:00) Auckland, Wellington, Fiji, Marshall Island' },                
+                { Value: -11,   Name: '(GMT -12:00) Eniwetok,Kwajalein' },
+                { Value: -10,   Name: '(GMT -10:00) Hawaii' },
+                { Value: -9,    Name: '(GMT -09:00) Alaska' },
+                { Value: -8,    Name: '(GMT -08:00) Pacific Time (US &  Canada),Tijuana' },
+                { Value: -7,    Name: '(GMT -07:00) Mountain Time (US & Canada), Arizona' },
+                { Value: -6,    Name: '(GMT -06:00) Central Time (US &  Canada), Mexico City' },
+                { Value: -5,    Name: '(GMT -05:00) Eastern Time (US &  Canada), Bogota, Lima, Quito' },
+                { Value: -4,    Name: '(GMT -04:00) Atlantic Time (Canada),Caracas, La Paz' },
+                { Value: -3.5,  Name: '(GMT -03:30) Newfoundland' },
+                { Value: -3,    Name: '(GMT -03:00) Brassila, Buenos Aires, Georgetown, Falkland Is' },
+                { Value: -2,    Name: '(GMT -02:00) Mid-Atlantic,Ascension Is., St. Helena' },
+                { Value: -1,    Name: '(GMT -01:00) Azores,Cape Verde Islands' },
+                { Value: 0,     Name: '(GMT) Casablanca,Dublin,Edinburgh, London, Lisbon, Monrovia' },
+                { Value: 1,     Name: '(GMT +01:00) Amsterdam, Berlin, Brussels, Madrid, Paris, Rome' },
+                { Value: 2,     Name: '(GMT +02:00) Cairo, Helsinki, Kaliningrad, South Africa' },
+                { Value: 3,     Name: '(GMT +03:00) Baghdad, Riyadh, Moscow, Nairobi' },
+                { Value: 3.5,   Name: '(GMT +03:30) Tehran' },
+                { Value: 4,     Name: '(GMT +04:00) Abu Dhabi, Baku, Muscat, Tbilisi' },
+                { Value: 4.5,   Name: '(GMT +04:30) Kabul' },
+                { Value: 5,     Name: '(GMT +05:00) Ekaterinburg, Islamabad, Karachi, Tashkent' },
+                { Value: 5.5,   Name: '(GMT +05:30) Bombay, Calcutta, Madras, New Delhi' },
+                { Value: 5.75,  Name: '(GMT +05:45) Katmandu' },
+                { Value: 6,     Name: '(GMT +06:00) Almaty, Colombo, Dhaka, Novosibirsk' },
+                { Value: 6.5,   Name: '(GMT +06:30) Rangoon' },
+                { Value: 7,     Name: '(GMT +07:00) Bangkok, Hanoi, Jakarta' },
+                { Value: 8,     Name: '(GMT +08:00) Beijing, Hong Kong, Perth, Singapore, Taipei' },
+                { Value: 9,     Name: '(GMT +09:00) Osaka, Sapporo, Seoul, Tokyo, Yakutsk' },
+                { Value: 9.5,   Name: '(GMT +09:30) Adelaide, Darwin' },
+                { Value: 10,    Name: '(GMT +10:00) Canberra, Guam, Melbourne, Sydney, Vladivostok' },
+                { Value: 10,    Name: '(GMT +10:00) Brisbane' },
+                { Value: 10.5,  Name: '(GMT +10:30) Adelaide, Darwin(daylight savings)' },
+                { Value: 11,    Name: '(GMT +11:00) Magadan, New Caledonia, Solomon Islands' },
+                { Value: 12,    Name: '(GMT +12:00) Auckland, Wellington, Fiji, Marshall Island' },
             ];
-            if (selected) { 
-                ret[ret.findIndex( el => el.Value == selected)].State = true; 
+            if (selected) {
+                ret[ret.findIndex( el => el.Value == selected)].State = true;
             }
 
             return ret;
@@ -851,53 +856,53 @@ let Protocol = {
         getGeofenceAlertType: function(val){
             let ret = '';
             if (val) {
-                if ((parseInt(val) & 8) > 0) {        
+                if ((parseInt(val) & 8) > 0) {
                     ret += LANGUAGE.COM_MSG028 + ', ';
                 }
-                if ((parseInt(val) & 16) > 0) {        
+                if ((parseInt(val) & 16) > 0) {
                     ret += LANGUAGE.COM_MSG029 + ', ';
-                }                
-            } 
+                }
+            }
             if (ret) {
                 ret = ret.slice(0, -2);
             }else{
                 ret = LANGUAGE.COM_MSG030;
             }
-            return ret; 
+            return ret;
         },
         getAddressByGeocoder: function(latlng,replyFunc, additionalData){
             let coords = LANGUAGE.COM_MSG037 + ': ' + latlng.lat + ', ' + LANGUAGE.COM_MSG038 + ': ' + latlng.lng;
             $.ajax({
-                   type: "GET",                    
+                   type: "GET",
                     url: API_DOMIAN7+`reverse.php?format=json&zoom=18&addressdetails=1&lat=${latlng.lat}&lon=${latlng.lng}`,
                dataType: "json",
-                  async: true, 
+                  async: true,
                   cache: false,
-                success: function (result) {                     
-                    if (result.display_name) {                        
+                success: function (result) {
+                    if (result.display_name) {
                         replyFunc(result.display_name, additionalData);
                     }else{
                         replyFunc(coords, additionalData);
                     }
                 },
-                error: function(XMLHttpRequest, textStatus, errorThrown){ 
+                error: function(XMLHttpRequest, textStatus, errorThrown){
                     $.ajax({
                            type: "GET",
                             url: API_DOMIAN8+`reverse?format=json&zoom=18&addressdetails=1&lat=${latlng.lat}&lon=${latlng.lng}`,
                        dataType: "json",
-                          async: true, 
+                          async: true,
                           cache: false,
-                        success: function (result) { 
-                            if (result.display_name) {                        
+                        success: function (result) {
+                            if (result.display_name) {
                                 replyFunc(result.display_name, additionalData);
                             }else{
                                 replyFunc(coords, additionalData);
                             }
                         },
-                        error: function(XMLHttpRequest, textStatus, errorThrown){                            
+                        error: function(XMLHttpRequest, textStatus, errorThrown){
                             replyFunc(coords, additionalData);
                         }
-                    }); 
+                    });
                 }
             });
         },
@@ -906,60 +911,60 @@ let Protocol = {
             let res = null;
             $.ajax({
                    type: "GET",
-                    url: url,                
+                    url: url,
                dataType: "json",
-                  async: true, 
+                  async: true,
                   cache: false,
-                success: function (result) {                     
+                success: function (result) {
                     if (result.length > 0) {
-                        if (result[0].lat && result[0].lon) { 
-                            res = new L.LatLng(result[0].lat, result[0].lon);                       
+                        if (result[0].lat && result[0].lon) {
+                            res = new L.LatLng(result[0].lat, result[0].lon);
                             replyFunc(res);
                         }else{
                             replyFunc(res);
                         }
                     }else{
                         replyFunc(res);
-                    } 
+                    }
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown){
                     url = API_DOMIAN7+`?format=json&polygon=1&addressdetails=1&q=${address}`;
                             $.ajax({
                            type: "GET",
-                            url: url,                
+                            url: url,
                        dataType: "json",
-                          async: true, 
+                          async: true,
                           cache: false,
-                        success: function (result) {                     
+                        success: function (result) {
                             if (result.length > 0) {
-                                if (result[0].lat && result[0].lon) { 
-                                    res = new L.LatLng(result[0].lat, result[0].lon);                       
+                                if (result[0].lat && result[0].lon) {
+                                    res = new L.LatLng(result[0].lat, result[0].lon);
                                     replyFunc(res);
                                 }else{
                                     replyFunc(res);
                                 }
                             }else{
                                 replyFunc(res);
-                            }   
+                            }
                         },
-                        error: function(XMLHttpRequest, textStatus, errorThrown){ 
+                        error: function(XMLHttpRequest, textStatus, errorThrown){
                             replyFunc(res);
                         }
                     });
                 }
             });
-        },    
+        },
         createMap: function(option){
             let osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { name: 'osm', attribution: '' });
             let googleStreets = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'+'&hl='+lang,{
                 maxZoom: 22,
                 subdomains:['mt0','mt1','mt2','mt3']
-            });           
+            });
             let googleSatelitte = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}'+'&hl='+lang,{
                 maxZoom: 22,
                 subdomains:['mt0','mt1','mt2','mt3']
-            });     
-            
+            });
+
             let layerSeaMark = L.tileLayer( "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png", { numZoomLevels: 18, isBaseLayer:false, displayOutsideMaxExtent:true });
 
             let layerGrid2 = L.latlngGraticule({
@@ -974,10 +979,10 @@ let Protocol = {
                     {start: 5, end: 6, interval: 5},
                     {start: 7, end: 8, interval: 1},
                     {start: 9, end: 10, interval: 0.25},
-                    {start: 11, end: 12, interval: 0.1},                 
+                    {start: 11, end: 12, interval: 0.1},
                     {start: 13, end: 13, interval: 0.025},
                     {start: 14, end: 15, interval: 0.01},
-                    {start: 16, end: 22, interval: 0.005},                   
+                    {start: 16, end: 22, interval: 0.005},
                 ]
             });
             let mapSettingsObg = app.methods.getFromStorage('mapSettings');
@@ -1011,7 +1016,7 @@ let Protocol = {
                 '<i class="icon-checkbox customOverlay" data-type="grid"></i>Grid': layerGrid2,
             };
 
-            L.control.layers(layers, mapOverlays).addTo(map);               
+            L.control.layers(layers, mapOverlays).addTo(map);
 
             return map;
         },
@@ -1293,13 +1298,13 @@ Protocol.Common = JClass({
         this.posInfo = {};
     },
     initDeviceInfo: function (arg) {
-                             
+
         this.Id = arg.Id;
         this.IMEI = arg.IMEI;
         this.Name = arg.Name;
         this.TagName = arg.TagName;
         this.Icon = arg.Icon;
-        this.Unit = arg.Unit; 
+        this.Unit = arg.Unit;
         this.InitMileage = arg.InitMileage;
         this.InitAcconHours = arg.InitAcconHours;
         this.State = arg.State;
@@ -1369,7 +1374,7 @@ Protocol.Common = JClass({
         this.StockNumber = arg.StockNumber;
         this.MaxSpeed = arg.MaxSpeed;
         this.MaxSpeedAlertMode = arg.MaxSpeedAlertMode;*/
-    
+
     },
     initDeviceInfoEx:function(){},
     initPosInfo: function (ary) {
@@ -1416,7 +1421,7 @@ Protocol.Common = JClass({
         posInfo.originalStatus = ary[22];
         this.initPosInfoEx(ary, posInfo);
         this.posInfo = posInfo;
-        
+
         return posInfo;
     },
     initPosInfoEx:function(){},
@@ -1483,8 +1488,8 @@ Protocol.Common = JClass({
         return event;
     },
     initEventInfoEx: function(){},
-    haveFeature: function(feature){        
-        return (Protocol.ProductFeatures[feature] & this.PRDTFeatures) > 0;        
+    haveFeature: function(feature){
+        return (Protocol.ProductFeatures[feature] & this.PRDTFeatures) > 0;
     },
     getStaticTimeSpan: function(){
         let ret = "";
