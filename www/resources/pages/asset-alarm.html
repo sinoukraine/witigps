@@ -330,11 +330,11 @@
                 if (imeiArr.length > 1) {
                     let AlarmListType = 3;
                     switch (self.$route.query.solution){
-                        case 'track': case 'watch': case 'boat_watch':
+                        case 'track': case 'watch': case 'boat_watch': case 'wititrack':
                             AlarmListType = 2;
                             break;
 
-                        case 'protect': case 'witiprotect':
+                        case 'protect': case 'witiprotect': case 'qprotect':
                             AlarmListType = 1;
                             break;
                     }
@@ -351,7 +351,8 @@
                     if (asset) {
                         if (asset.SolutionType && asset.SolutionType.toLowerCase() === 'track' ||
                             asset.SolutionType && asset.SolutionType.toLowerCase() === 'watch' ||
-                            asset.SolutionType && asset.SolutionType.toLowerCase() === 'boat_watch')
+                            asset.SolutionType && asset.SolutionType.toLowerCase() === 'boat_watch' ||
+                            asset.SolutionType && asset.SolutionType.toLowerCase() === 'wititrack')
                         {
                             let data = {
                                 MajorToken: self.$app.data.MajorToken,

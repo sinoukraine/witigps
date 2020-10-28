@@ -685,6 +685,9 @@ let Protocol = {
                     case 'witiprotect':
                         ret = 'icon-live-protect2';
                         break;
+                    case 'qprotect':
+                        ret = 'icon-live-protect2';
+                        break;
                     case 'loc8':
                         ret = 'icon-live-loc82';
                         break;
@@ -693,6 +696,9 @@ let Protocol = {
                         break;
                     case 'watch':
                         ret = 'icon-live-watch2';
+                        break;
+                    case 'wititrack':
+                        ret = 'icon-live-track2';
                         break;
                 }
             }

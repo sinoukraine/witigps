@@ -478,7 +478,7 @@ const app = new Framework7({
                             self.methods.getAssetListPosInfo(assetListObj, 1);  // '1' - means update
                         }, 30*1000);
 
-                        if(self.data.AccountSolutionArray.indexOf('protect') > -1 || self.data.AccountSolutionArray.indexOf('witiprotect') > -1){
+                        if(self.data.AccountSolutionArray.indexOf('protect') > -1 || self.data.AccountSolutionArray.indexOf('witiprotect') > -1 || self.data.AccountSolutionArray.indexOf('qprotect') > -1){
                             setTimeout(function () {
                                 self.methods.checkIsLowBalance(result.data.Data.UserInfo.SMSTimes);
                             }, 1000)
@@ -1618,7 +1618,7 @@ const app = new Framework7({
             }
             if(params.asset){
                 switch (params.type) {
-                    case 'track':
+                    case 'track': case 'wititrack':
                         ret = Protocol.MarkerIcon[0];
                         break;
                     case 'watch':
@@ -1627,7 +1627,7 @@ const app = new Framework7({
                     case 'loc8':
                         ret = Protocol.MarkerIcon[2];
                         break;
-                    case 'protect': case 'witiprotect':
+                    case 'protect': case 'witiprotect': case 'qprotect':
                         ret = Protocol.MarkerIcon[3];
                         break;
                 }
@@ -2228,7 +2228,8 @@ const app = new Framework7({
                                 continue;
                             }
                             if ( list[i].SolutionType.toLowerCase().indexOf('protect') >= 0 ||
-                                list[i].SolutionType.toLowerCase().indexOf('witiprotect') >= 0 )
+                                list[i].SolutionType.toLowerCase().indexOf('witiprotect') >= 0 ||
+                                list[i].SolutionType.toLowerCase().indexOf('qprotect') >= 0 )
                             {
                                 itemIndexToShow.push(i);
                             }
@@ -2250,7 +2251,8 @@ const app = new Framework7({
                                 continue;
                             }
                             if ( list[i].SolutionType.toLowerCase().indexOf('track') >= 0 ||
-                                 list[i].SolutionType.toLowerCase().indexOf('watch') >= 0 )
+                                 list[i].SolutionType.toLowerCase().indexOf('watch') >= 0 ||
+                                 list[i].SolutionType.toLowerCase().indexOf('wititrack') >= 0 )
                             {
                                 itemIndexToShow.push(i);
                             }
@@ -2423,8 +2425,7 @@ const app = new Framework7({
                 for (let i = 0; i < items.length; i++) {
                     let type = items[i].SolutionType ? items[i].SolutionType.toLowerCase() : '';
                     switch (type){
-                        case 'protect':
-                        case 'witiprotect':
+                        case 'protect': case 'witiprotect': case 'qprotect':
                             ret.Protect++;
                             break;
 
@@ -2432,7 +2433,7 @@ const app = new Framework7({
                             ret.Loc8++;
                             break;
 
-                        case 'track': case 'watch':
+                        case 'track': case 'watch': case 'wititrack':
                             ret.Live++;
                             break;
                     }

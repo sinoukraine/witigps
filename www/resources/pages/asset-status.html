@@ -248,7 +248,7 @@
                 IMEI: asset.IMEI,
                 IMSI: asset.IMSI,
                 Id: asset.Id,
-                LiveAsset: asset.SolutionType.toLowerCase() !== 'protect' && asset.SolutionType.toLowerCase() !== 'loc8' && asset.SolutionType.toLowerCase() !== 'witiprotect',
+                LiveAsset: asset.SolutionType.toLowerCase() !== 'protect' && asset.SolutionType.toLowerCase() !== 'loc8' && asset.SolutionType.toLowerCase() !== 'witiprotect' && asset.SolutionType.toLowerCase() !== 'qprotect',
                 Tabs: !!tabsFlag,
 
                 PositionTime: asset.posInfo.positionTime ? asset.posInfo.positionTime.format(window.COM_TIMEFORMAT) : LANGUAGE.COM_MSG031,
