@@ -326,6 +326,7 @@
                             DateFrom: moment.utc(self.CalendarStartDateTime.getValue()[0]).format(window.COM_TIMEFORMAT2),
                             DateTo: moment.utc(self.CalendarEndDateTime.getValue()[0]).format(window.COM_TIMEFORMAT2),
                             extension: "pdf", // pdf, xlsx, json, html
+                            Logo: self.$app.data.logoExternal,
                             MajorToken: self.$root.MajorToken,
                             MinorToken: self.$root.MinorToken,
                             Recipients: recipients,

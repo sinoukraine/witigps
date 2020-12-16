@@ -253,6 +253,7 @@ window.LanguagePackages= {
 		"MENU_MSG08": "QuikTrak",
 		"MENU_MSG09": "Refer a Friend",
 		"MENU_MSG10": "Contacts",
+		"MENU_MSG11": "User Guide",
 
 		"LOGIN_MSG00": "Login Name / Email",
 		"LOGIN_MSG01": "Password",

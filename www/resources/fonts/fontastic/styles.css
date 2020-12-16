@@ -2,11 +2,11 @@
 
 @font-face {
   font-family: "quiktrak-new";
-  src:url("fonts/quiktrak-new.eot?v=1.1");
-  src:url("fonts/quiktrak-new.eot?v=1.1#iefix") format("embedded-opentype"),
-    url("fonts/quiktrak-new.woff?v=1.1") format("woff"),
-    url("fonts/quiktrak-new.ttf?v=1.1") format("truetype"),
-    url("fonts/quiktrak-new.svg?v=1.1#quiktrak-new") format("svg");
+  src:url("fonts/quiktrak-new.eot");
+  src:url("fonts/quiktrak-new.eot?#iefix") format("embedded-opentype"),
+    url("fonts/quiktrak-new.woff") format("woff"),
+    url("fonts/quiktrak-new.ttf") format("truetype"),
+    url("fonts/quiktrak-new.svg#quiktrak-new") format("svg");
   font-weight: normal;
   font-style: normal;
 
@@ -364,4 +364,28 @@
 }
 .icon-report-trip:before {
   content: "\e00e";
+}
+.icon-menu-manual:before {
+  content: "\e00f";
+}
+.icon-boat-icon:before {
+  content: "\e010";
+}
+.icon-acc:before {
+  content: "\e011";
+}
+.icon-other-add:before {
+  content: "\e012";
+}
+.icon-other-remove:before {
+  content: "\e013";
+}
+.icon-locimmob:before {
+  content: "\e014";
+}
+.icon-rating:before {
+  content: "\e015";
+}
+.icon-braking:before {
+  content: "\e016";
 }

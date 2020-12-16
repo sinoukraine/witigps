@@ -303,7 +303,7 @@
                 IMEI: IMEI,
                 Name: index === -1 ? assetList[IMEI].Name : LANGUAGE.ASSET_ALARM_MSG00,
                 MaxSpeed: index === -1 ? assetList[IMEI].MaxSpeed : 80,
-                isNegativeInputSupported: index === -1 ? (parseInt(assetList[IMEI]._FIELD_INT2) & Protocol.FeaturesEnum.NegativeInput) > 0 : (parseInt(assetList[IMEI.split(',')[0]]._FIELD_INT2) & Protocol.FeaturesEnum.NegativeInput) > 0,
+                isPositiveInputSupported: index === -1 ? (parseInt(assetList[IMEI]._FIELD_INT2) & Protocol.FeaturesEnum.PositiveInput) > 0 : (parseInt(assetList[IMEI.split(',')[0]]._FIELD_INT2) & Protocol.FeaturesEnum.PositiveInput) > 0,
 
                 ShowAdditionalBlocks: false,
                 IgnoreBetweenState: false,
@@ -896,7 +896,7 @@
                 }
 
                 if (ret.length) {
-                    if(this.isNegativeInputSupported){
+                    if(this.isPositiveInputSupported){
                         ret.push({
                             state: true,
                             val: 1048576,

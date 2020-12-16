@@ -12,6 +12,7 @@ const API_DOMIAN6 = "https://nomad.sinopacific.com.ua/";
 const API_DOMIAN7 = "https://nominatim.sinopacific.com.ua/";
 const API_DOMIAN8 = "https://nominatim.openstreetmap.org/";
 const API_DOMIAN9 = "https://upload.quiktrak.co/";
+const API_DOMIAN10 = "https://m2mdata03.sinopacific.com.ua/";
 
 const API_URL = {};
 
@@ -51,6 +52,7 @@ API_URL.URL_SUPPORT = "https://support.quiktrak.eu/";
 API_URL.URL_REPORT_THEFT = "https://forms.quiktrak.com.au/report-theft/";
 API_URL.URL_UPGRADE = "https://activation.witi.quiktrak.eu/";
 API_URL.REFERRAL_PROGRAM = "https://forms.quiktrak.com.au/referral-program/";
+API_URL.URL_USER_GUIDE = "https://activation.witi.quiktrak.eu/pdf/witigps-app.pdf";
 
 API_URL.GET_BALANCE = API_DOMIAN3 + "Balance";
 API_URL.EDIT_ACCOUNT = API_DOMIAN3 + "AccountEdit";
@@ -65,7 +67,8 @@ API_URL.GET_PLAYBACK_ARR = API_DOMIAN1 + "Device/GetHisPosArray2";
 API_URL.GET_PLAYBACK_ARR_OPTIMISED = "https://osrm.sinopacific.com.ua/playback/v2";
 API_URL.GET_ADDRESSES_FROM_ARRAY = API_DOMIAN5 + "geocode/reverse/v1/";
 API_URL.GET_SPEEDLIMIT = API_DOMIAN5 + "speedlimits/v1";
-API_URL.GET_PLAYBACK_REPORT_ON_MAIL = API_DOMIAN6 + "api/v2/reports/Playback";
+//API_URL.GET_PLAYBACK_REPORT_ON_MAIL = API_DOMIAN6 + "api/v2/reports/Playback";
+API_URL.GET_PLAYBACK_REPORT_ON_MAIL = API_DOMIAN10 + "api/v2/reports/Playback";
 
 
 API_URL.GET_REPORT_ALERTLIST = API_DOMIAN1 + "Report/GetAlertList";
@@ -127,6 +130,7 @@ const app = new Framework7({
             logo: 'resources/images/logo.svg',
             logoBlack: 'resources/images/logo-black.svg',
             logoModal: 'resources/images/logo-black.svg',
+            logoExternal: 'https://helper.quiktrak.com.au/logo/witigps/logo.png',
             MaxMapPopupWidth: maxPopupWidth,
             PolygonCustomization: {
                 color: '#AA5959',
@@ -305,6 +309,7 @@ const app = new Framework7({
         },
         convertTimZoneValToZZformat: function(val){
             let ret = '';
+            val = parseFloat(val);
             val >= 0 ? ret='+' : ret='-';
             if (val < 10 && val >= 0 ||
                 val < 0 && val > -10){

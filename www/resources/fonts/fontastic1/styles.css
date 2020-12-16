@@ -2,11 +2,11 @@
 
 @font-face {
   font-family: "quiktrak-new";
-  src:url("fonts/quiktrak-new.eot");
-  src:url("fonts/quiktrak-new.eot?#iefix") format("embedded-opentype"),
-    url("fonts/quiktrak-new.woff") format("woff"),
-    url("fonts/quiktrak-new.ttf") format("truetype"),
-    url("fonts/quiktrak-new.svg#quiktrak-new") format("svg");
+  src:url("fonts/quiktrak-new.eot?v=1.1");
+  src:url("fonts/quiktrak-new.eot?v=1.1#iefix") format("embedded-opentype"),
+    url("fonts/quiktrak-new.woff?v=1.1") format("woff"),
+    url("fonts/quiktrak-new.ttf?v=1.1") format("truetype"),
+    url("fonts/quiktrak-new.svg?v=1.1#quiktrak-new") format("svg");
   font-weight: normal;
   font-style: normal;
 
@@ -227,9 +227,6 @@
 .icon-menu-credits:before {
   content: "\23";
 }
-.icon-menu-geofence:before {
-  content: "\24";
-}
 .icon-menu-home:before {
   content: "\25";
 }
@@ -322,4 +319,49 @@
 }
 .icon-status-voltage2:before {
   content: "\e003";
+}
+.icon-asset-name:before {
+  content: "\4e";
+}
+.icon-search:before {
+  content: "\36";
+}
+.icon-contacts:before {
+  content: "\3d";
+}
+.icon-upgrade-to-live:before {
+  content: "\e004";
+}
+.icon-takep-hoto:before {
+  content: "\e006";
+}
+.icon-upload-file:before {
+  content: "\e007";
+}
+.icon-upload-icon:before {
+  content: "\e008";
+}
+.icon-close:before {
+  content: "\e005";
+}
+.icon-menu-geofence2:before {
+  content: "\24";
+}
+.icon-menu-geofence:before {
+  content: "\e009";
+}
+.icon-report-alarm:before {
+  content: "\e00a";
+}
+.icon-report-overview:before {
+  content: "\e00b";
+}
+.icon-report-runtime:before {
+  content: "\e00c";
+}
+.icon-report-stoplog:before {
+  content: "\e00d";
+}
+.icon-report-trip:before {
+  content: "\e00e";
 }

@@ -94,7 +94,15 @@
                         </li>
                         {{/if}}
                         <li>
-                            <a href="{{SupportUrl}}" target="_blank" class="item-link item-content panel-close external">
+                            <a href="{{UserGuideURL}}" target="_system" class="item-link item-content panel-close external">
+                                <div class="item-media text-color-lightgray"><i class="f7-icons icon-menu-manual "></i></div>
+                                <div class="item-inner">
+                                    <div class="item-title">{{@global.LANGUAGE.MENU_MSG11}}</div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{SupportUrl}}" target="_system" class="item-link item-content panel-close external">
                                 <div class="item-media text-color-lightgray"><i class="f7-icons icon-menu-support "></i></div>
                                 <div class="item-inner">
                                     <div class="item-title">{{@global.LANGUAGE.MENU_MSG06}}</div>
@@ -160,6 +168,7 @@
                 Remaining: userInfo && userInfo.SMSTimes ? userInfo.SMSTimes : '0',
                 SupportUrl: API_URL.URL_SUPPORT + '?' + self.$app.utils.serializeObject(paramsForSupportUrl),
                 SupportPhone: self.$root.AppDetails.supportPhone,
+                UserGuideURL: API_URL.URL_USER_GUIDE,
                 AppVersion: self.$root.AppDetails.appVersion ? 'v'+self.$root.AppDetails.appVersion : '',
                 ToolbarAdditionaClass: '',
                 DealerName: self.$app.name,
