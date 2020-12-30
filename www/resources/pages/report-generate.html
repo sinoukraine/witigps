@@ -260,7 +260,7 @@
                     </ul>
                 </div>
 
-                
+
             </form>
         </div>
 </template>
@@ -280,7 +280,7 @@
 
             for (const key of keys) {
                 if(assetListObj[key].SolutionType.toLowerCase() !== 'protect' && assetListObj[key].SolutionType.toLowerCase() !== 'witiprotect'){
-                    assetList.push(assetListObj[key]);
+                    assetList.push(assetListObj[key] && assetListObj[key].SolutionType.toLowerCase() !== 'witiqprotect');
                 }
             }
             assetList.sort(function(a, b) {
@@ -373,9 +373,9 @@
 
 
         },
-       
+
         on: {
-            pageInit: function (e, page) { 
+            pageInit: function (e, page) {
                 let self = this;
                 let startDateTimeEl = page.$el.find('[name="StartDateTime"]');
                 let endDateTimeEl = page.$el.find('[name="EndDateTime"]');

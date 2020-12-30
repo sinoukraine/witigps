@@ -474,7 +474,7 @@
                 let keys = Object.keys(assetListObj);
                 let assetList = [];
                 for (const key of keys) {
-                    if(assetListObj[key].SolutionType.toLowerCase() !== 'protect' && assetListObj[key].SolutionType.toLowerCase() !== 'witiprotect'){
+                    if(assetListObj[key].SolutionType.toLowerCase() !== 'protect' && assetListObj[key].SolutionType.toLowerCase() !== 'witiprotect' && assetListObj[key].SolutionType.toLowerCase() !== 'witiqprotect'){
                         assetList.push(assetListObj[key]);
                     }
                 }

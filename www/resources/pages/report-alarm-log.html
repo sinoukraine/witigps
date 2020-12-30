@@ -125,7 +125,7 @@
                         </li>
                     </ul>
                 </div>
-                
+
             </form>
         </div>
 </template>
@@ -140,7 +140,7 @@
             let newAssetlist = [];
             const keys = Object.keys(assetListObj);
             for (const key of keys) {
-                if(assetListObj[key].SolutionType.toLowerCase() !== 'protect' && assetListObj[key].SolutionType.toLowerCase() !== 'witiprotect'){
+                if(assetListObj[key].SolutionType.toLowerCase() !== 'protect' && assetListObj[key].SolutionType.toLowerCase() !== 'witiprotect' && assetListObj[key].SolutionType.toLowerCase() !== 'witiqprotect'){
                     newAssetlist.push(assetListObj[key]);
                 }
             }
@@ -160,7 +160,7 @@
 
             };
 
-            
+
             return ret;
         },
         methods: {
@@ -210,7 +210,7 @@
             },
         },
         on: {
-            pageInit: function (e, page) { 
+            pageInit: function (e, page) {
                 let self = this;
                 let toggleAllEl = page.$el.find('.toggle-all-assets');
                 let assetListEl = page.$el.find('.alarmLogAssetListSelect');
@@ -238,9 +238,9 @@
                     let index = $$(this).closest('li').data('index');
                     if (self.Type === 'multiple') {
                         self.VirtualAssetList.items[index].Selected = !!this.checked;
-                    }else{                        
+                    }else{
                         for (let i = self.VirtualAssetList.items.length - 1; i >= 0; i--) {
-                            self.VirtualAssetList.items[i].Selected = false;  
+                            self.VirtualAssetList.items[i].Selected = false;
                         }
                         self.VirtualAssetList.items[index].Selected = true;
                     }
@@ -266,7 +266,7 @@
                     self.submitForm(data, additionalData);
                     return false;
                 });
-                
+
             },
             pageBeforeRemove: function () {
                 let self = this;

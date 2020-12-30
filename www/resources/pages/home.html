@@ -230,7 +230,7 @@
                                     <a href="#" class="item-link item-content asset" data-imei="${item.IMEI}">
                                         <div class="item-media">
                                             ${ assetImg }`;
-                            if(solutiontype.toLowerCase() !== 'protect' && solutiontype.toLowerCase() !== 'witiprotect' && solutiontype.toLowerCase() !== 'loc8' && solutiontype.toLowerCase() !== 'qprotect' ){
+                            if(solutiontype.toLowerCase() !== 'protect' && solutiontype.toLowerCase() !== 'witiprotect' && solutiontype.toLowerCase() !== 'loc8' && solutiontype.toLowerCase() !== 'qprotect' && solutiontype.toLowerCase() !== 'witiqprotect' ){
                                 ret +=`     <i class="icon-status-fix ${ afs.status.state }"></i>`;
                             }
                                 ret +=` </div>
@@ -238,7 +238,7 @@
                                             <div class="item-title-row height-60 align-items-center">
                                                 <div class="item-title">
                                                     ${ item.Name }`;
-                            if(solutiontype.toLowerCase() !== 'protect' && solutiontype.toLowerCase() !== 'witiprotect' && solutiontype.toLowerCase() !== 'loc8' && solutiontype.toLowerCase() !== 'qprotect'){
+                            if(solutiontype.toLowerCase() !== 'protect' && solutiontype.toLowerCase() !== 'witiprotect' && solutiontype.toLowerCase() !== 'loc8' && solutiontype.toLowerCase() !== 'qprotect' && solutiontype.toLowerCase() !== 'witiqprotect'){
                                 ret +=`             <div class="item-footer ${ afs.status.state }">
                                                         ${ afs.status.value }
                                                     </div>`;
@@ -250,7 +250,7 @@
 
                             ret +=`             </div>
                                                 <div class="item-after flex-direction-column align-content-flex-end">`;
-                            if(solutiontype.toLowerCase() !== 'protect' && solutiontype.toLowerCase() !== 'witiprotect' && solutiontype.toLowerCase() !== 'loc8'&& solutiontype.toLowerCase() !== 'qprotect'){
+                            if(solutiontype.toLowerCase() !== 'protect' && solutiontype.toLowerCase() !== 'witiprotect' && solutiontype.toLowerCase() !== 'loc8' && solutiontype.toLowerCase() !== 'qprotect' && solutiontype.toLowerCase() !== 'witiqprotect'){
                                 ret +=`            <div class="text-align-right">
                                                         <i data-id="solutiontype-${ item.IMEI }" class="f7-icons size-16 margin-left-half ${ solutiontypeIcon } text-color-blue"></i>
                                                         <i data-id="signal-state-${ item.IMEI }" class="f7-icons size-16 margin-left-half icon-live-signal ${ afs.GSM.state }"></i>

@@ -97,7 +97,7 @@
                 //Name: asset.Name,
                 IMEI: !viewAll ? asset.IMEI : '',
                 IMSI: !viewAll ? asset.IMSI : '',
-                LiveAsset: asset && asset.SolutionType.toLowerCase() !== 'protect' && asset.SolutionType.toLowerCase() !== 'loc8' && asset.SolutionType.toLowerCase() !== 'witiprotect' && asset.SolutionType.toLowerCase() !== 'qprotect' || !!viewAll,
+                LiveAsset: asset && asset.SolutionType.toLowerCase() !== 'protect' && asset.SolutionType.toLowerCase() !== 'loc8' && asset.SolutionType.toLowerCase() !== 'witiprotect' && asset.SolutionType.toLowerCase() !== 'qprotect' && asset.SolutionType.toLowerCase() !== 'witiqprotect' || !!viewAll,
                 ViewAll: !!viewAll,
                 MarkersIds: {},
             };
