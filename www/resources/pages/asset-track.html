@@ -101,6 +101,9 @@
                 ViewAll: !!viewAll,
                 MarkersIds: {},
             };
+            if(!ret.LiveAsset){
+                ret.PageTitle = LANGUAGE.ASSET_TRACK_MSG29;
+            }
 
             return ret;
         },

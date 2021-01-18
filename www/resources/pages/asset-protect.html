@@ -18,16 +18,21 @@
                     <a href="/asset-edit/?imei={{IMEI}}" class="link icon-only ">
                         <i class="f7-icons icon-header-edit"></i>
                     </a>
+                    {{#if ShowPayment}}
+                    <a href="/asset-upgrade/?imei={{IMEI}}" class="link icon-only ">
+                        <i class="f7-icons icon-upgrade-to-live"></i>
+                    </a>
+                    {{/if}}
                 </div>
             </div>
         </div>
-        {{#if ShowPayment}}
+
         <div class="toolbar toolbar-bottom">
-            <div class="toolbar-inner bg-color-custom-2 ">
-                <a href="/asset-upgrade/?imei={{IMEI}}" class="link button width-100 color-white "><i class="f7-icons icon-upgrade-to-live margin-right"></i>{{@global.LANGUAGE.ASSET_PROTECT_MSG01}}</a>
+            <div class="toolbar-inner bg-color-green ">
+                <a @click="onSubmitAlarmSettings" href="#" class="link button width-100 color-white "><i class="f7-icons icon-header-apply margin-right"></i>{{@global.LANGUAGE.COM_MSG108}}</a>
             </div>
         </div>
-        {{/if}}
+
 
         <div class="page-content">
             <div class="block asset-image-big-wrapper text-align-center">
@@ -36,8 +41,9 @@
                 </a>
             </div>
 
-            <div class="list no-hairlines no-chevron " >
-                <li class="item-content">
+            <div class="list no-chevron " >
+                <ul>
+               <!-- <li class="item-content">
                     <div class="item-media text-color-lightgray">
                         <i class="f7-icons icon-protect-status3"></i>
                     </div>
@@ -47,13 +53,13 @@
                             <a href="/asset-status/?imei={{IMEI}}" class=" width-100 button button-fill color-custom">{{@global.LANGUAGE.COM_MSG048}}</a>
                         </div>
                     </div>
-                </li>
+                </li>-->
                 <li class="item-content">
                     <div class="item-media text-color-lightgray">
                         <i class="f7-icons icon-protect-position3"></i>
                     </div>
                     <div class="item-inner">
-                        <div class="item-title">{{@global.LANGUAGE.ASSET_PROTECT_MSG00}}</div>
+                        <div class="item-title tooltip-init " data-tooltip="{{@global.LANGUAGE.PROMPT_MSG126}}">{{@global.LANGUAGE.ASSET_PROTECT_MSG00}} <span class="badge color-lightblue">?</span></div>
                         <div class="item-after min-width-122">
                             <a  href="/asset-track/?imei={{IMEI}}" class=" width-100 button button-fill color-custom">{{@global.LANGUAGE.COM_MSG048}}</a>
                         </div>
@@ -64,7 +70,7 @@
                         <i class="f7-icons icon-protect-geolock3"></i>
                     </div>
                     <div class="item-inner">
-                        <div class="item-title">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG04}}</div>
+                        <div class="item-title tooltip-init " data-tooltip="{{@global.LANGUAGE.PROMPT_MSG127}}">{{@global.LANGUAGE.ASSET_STATUS_LIVE_MSG04}} <span class="badge color-lightblue">?</span></div>
                         <div class="item-after min-width-122 row ">
                             <button @click="changeState" data-name="Geolock" data-state="false" class="button button-fill color-custom col {{#unless Geolock}} disabled {{/unless}}">{{@global.LANGUAGE.COM_MSG050}}</button>
                             <button @click="changeState" data-name="Geolock" data-state="true" class="button button-fill color-custom col {{#if Geolock}} disabled {{/if}}">{{@global.LANGUAGE.COM_MSG049}}</button>
@@ -91,17 +97,44 @@
 
 
 
-                <li class="item-content">
+                <!--<li class="item-content">
                     <div class="item-media text-color-lightgray">
                         <i class="f7-icons icon-header-alarm"></i>
                     </div>
                     <div class="item-inner">
-                        <div class="item-title">{{@global.LANGUAGE.ASSET_PROTECT_MSG02}}</div>
-                        <div class="item-after min-width-122">
-                            <a href="/asset-alarm/?imei={{IMEI}}" class=" width-100 button button-fill color-custom">{{@global.LANGUAGE.COM_MSG048}}</a>
+                        <div class="item-title tooltip-init " data-tooltip="{{@global.LANGUAGE.PROMPT_MSG128}}">{{@global.LANGUAGE.ASSET_PROTECT_MSG02}} <span class="badge color-lightblue">?</span></div>
+                        <div class="item-after min-width-122 row">
+                            &lt;!&ndash;<a href="/asset-alarm/?imei={{IMEI}}" class=" width-100 button button-fill color-custom">{{@global.LANGUAGE.COM_MSG048}}</a>&ndash;&gt;
+                            <button @click="changeStateAlarms" data-name="alarms" data-state="false" class="button button-fill color-custom col">{{@global.LANGUAGE.COM_MSG050}}</button>
+                            <button @click="changeStateAlarms" data-name="alarms" data-state="true" class="button button-fill color-custom col ">{{@global.LANGUAGE.COM_MSG049}}</button>
                         </div>
                     </div>
-                </li>
+                </li>-->
+                </ul>
+            </div>
+
+            <div class="block-title text-transform-uppercase">{{@global.LANGUAGE.ASSET_PROTECT_MSG02}}</div>
+            <div class="block-title tooltip-init text-transform-uppercase text-color-red no-margin-top" data-tooltip="{{@global.LANGUAGE.PROMPT_MSG108}}">{{@global.LANGUAGE.PROMPT_MSG109}} <span class="badge color-lightblue">?</span></div>
+
+            <div key="AlarmList" class="list no-hairline-bottom no-margin-top">
+                <ul>
+                    {{#each Alarms}}
+                    <li>
+                        <label class="item-checkbox item-content color-green">
+                            <input type="checkbox" name="checkbox-alarm" value="{{this.val}}" {{#if this.state}}checked="checked"{{/if}}/>
+                            <i class="icon icon-checkbox"></i>
+                            <div class="item-inner">
+                                <div class="item-title" >
+                                    {{this.title}}
+                                    {{#if this.hint}}
+                                    <span class="badge color-lightblue tooltip-init" data-tooltip="{{this.hint}}">?</span>
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </label>
+                    </li>
+                    {{/each}}
+                </ul>
             </div>
 
         </div>
@@ -136,6 +169,11 @@
 
                 IsImmobilisationSupported: (parseInt(asset._FIELD_INT2) & 1) > 0,
                 IsLockDoorSupported: (parseInt(asset._FIELD_INT2) & 512) > 0,
+
+                isPositiveInputSupported: (parseInt(asset._FIELD_INT2) & Protocol.FeaturesEnum.PositiveInput) > 0,
+                AlarmListType: 1,
+                Alarms: [],
+                AlarmOptions: asset.AlarmOptions
 
             };
 
@@ -210,14 +248,189 @@
                             self.$app.dialog.alert(LANGUAGE.PROMPT_MSG003);
                         }
                     });
-            }
+            },
+            /*changeStateAlarms: function (e) {
+                let $el = $$(e.target);
+                let alarm = $el.data('name');
+                let state = JSON.parse($el.data('state'));
+            },*/
+
+            getAlarmOptions: function(){
+                let self = this;
+
+                if (!self.$route.query || !self.$route.query.imei ) {
+                    console.log('There is no params or imei param');
+                    return;
+                }
+
+                self.loadAlarmList({
+                    AlarmListType: this.AlarmListType,
+                    AlarmOptions: this.AlarmOptions,
+                });
+
+            },
+            loadAlarmList: function(data){
+                if (data && data.AlarmListType) {
+                    let alarmList = this.getAlarmListByType();
+
+                    for (let i = alarmList.length - 1; i >= 0; i--) {
+                        if (data.AlarmOptions & alarmList[i].val) {
+                            alarmList[i].state = false;
+                        }
+                    }
+
+                    this.$setState({
+                        AlarmListType: data.AlarmListType,
+                        Alarms: alarmList,
+                    });
+                }
+            },
+            getAlarmListByType: function(){
+                let ret = [
+                    {
+                        state: true,
+                        val: 131072,
+                        title: LANGUAGE.ASSET_ALARM_MSG25, //negative input,  witi alarm
+                        hint: LANGUAGE.ASSET_ALARM_MSG42,
+                    },
+                    {
+                        state: true,
+                        val: 1024,
+                        title: LANGUAGE.ASSET_ALARM_MSG05, //geolock
+                    },
+                    {
+                        state: true,
+                        val: 512,
+                        title: LANGUAGE.ASSET_ALARM_MSG17, //lowBattery
+                        hint: LANGUAGE.ASSET_ALARM_MSG40,
+                    },
+                    {
+                        state: true,
+                        val: 4,
+                        title: LANGUAGE.ASSET_ALARM_MSG09, //power
+                        hint: LANGUAGE.ASSET_ALARM_MSG41,
+                    },
+                ];
+                if (ret.length) {
+                    if(this.isPositiveInputSupported){
+                        ret.push({
+                            state: true,
+                            val: 1048576,
+                            title: LANGUAGE.ASSET_ALARM_MSG39, //witi disarmed
+                        },{
+                            state: true,
+                            val: 262144,
+                            title: LANGUAGE.ASSET_ALARM_MSG38, //witi armed
+                        })
+                    }
+                    ret.sort(function(a,b){
+                        if(a.title < b.title) return -1;
+                        if(a.title > b.title) return 1;
+                        return 0;
+                    });
+                }
+                return ret;
+            },
+            onSubmitAlarmSettings: function(){
+
+                let checkboxes = this.$el.find('[name = "checkbox-alarm"]');
+console.log(checkboxes)
+                let url = API_URL.SET_ALARM_PROTECT;
+
+                let data = {
+                    MinorToken: this.$app.data.MinorToken,
+                    MajorToken: this.$app.data.MajorToken,
+                    imeis: this.IMEI,
+                    //alarmOptions: 0,
+                    alarmOptions: 37060994,
+                };
+                /*
+                this alarms are turned off always
+                65536
+                32768
+                1048576
+                128
+                2
+                256
+                33554432
+                2097152
+                262144*/
+
+                for (let i = checkboxes.length - 1; i >= 0; i--) {
+                    if (!checkboxes[i].checked) {
+                        data.alarmOptions += parseInt(checkboxes[i].value, 10);
+                    }
+                }
+
+                this.saveAlarmOptions(data, url);
+            },
+            saveAlarmOptions: function(data, url){
+                let self = this;
+                console.log(data)
+                self.$app.dialog.progress(LANGUAGE.COM_MSG004,'red');
+                self.$app.request.promise.post(url, data, 'json')
+                  .then(function (result) {
+                      //console.log(result);
+                      if (result.data && result.data.MajorCode === '000') {
+
+                          if (result.data.MinorCode === '1006') {
+                              self.$app.methods.customDialogNoCredit();
+                          }else{
+                              self.updateAlarmOptions(data);
+                              self.$app.methods.checkBalance();
+
+
+                              mainView.router.back();
+
+                          }
+
+                      }else if(result.data.MajorCode === '100' && result.data.MinorCode === '1006'){
+                          self.$app.methods.customDialogNoCredit();
+                      }else if(result.data.MajorCode === '100' && result.data.MinorCode === '1003'){
+                          self.$app.methods.customDialog({title: LANGUAGE.PROMPT_MSG039, text: LANGUAGE.PROMPT_MSG040});
+                      }else{
+                          self.$app.dialog.alert(LANGUAGE.PROMPT_MSG023 + `<br>MajorCode: ${result.data.MajorCode}<br>MinorCode: ${result.data.MinorCode}<br>${result.data.Data}`);
+                          self.$app.methods.checkBalance();
+                      }
+                      self.$app.utils.nextFrame(() => {
+                          self.$app.dialog.close();
+                      });
+                  })
+                  .catch(function (err) {
+                      console.log(err);
+                      self.$app.utils.nextFrame(() => {
+                          self.$app.dialog.close();
+                          if (err && err.status === 404){
+                              self.$app.dialog.alert(LANGUAGE.PROMPT_MSG002);
+                          }else{
+                              self.$app.dialog.alert(LANGUAGE.PROMPT_MSG003);
+                          }
+                      });
+                  });
+            },
+            updateAlarmOptions: function(params){
+                let self = this;
+                let IMEIList = params.imeis.split(',');
+                let assetList = self.$app.methods.getFromStorage('assetList');
+
+                if (IMEIList.length) {
+                    $.each(IMEIList, function(index, value){
+                        assetList[value].AlarmOptions = params.alarmOptions;
+                        if (params.SpeedingMode === 2) {
+                            assetList[value].MaxSpeed = params.MaxSpeed;
+                        }
+                    });
+                }
+
+                self.$app.methods.setAssetList({objects: assetList});
+            },
         },
 
         on: {
             pageInit: function (e, page) {
                 let self = this;
 
-
+                self.getAlarmOptions();
 
             },
             pageAfterIn:function(){

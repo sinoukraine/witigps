@@ -111,6 +111,7 @@ window.LanguagePackages= {
 		"COM_MSG105": "Armed",
 		"COM_MSG106": "Disarmed",
 		"COM_MSG107": "Later",
+		"COM_MSG108": "Save",
 
 		"PROMPT_MSG000": "Nothing found",
 		"PROMPT_MSG001": "The login(email) or password you entered is incorrect.",
@@ -236,6 +237,9 @@ window.LanguagePackages= {
 		"PROMPT_MSG123": "Recharge now?",
 		"PROMPT_MSG124": "All alarms for assets with Protect solution type are disabled",
 		"PROMPT_MSG125": "To renew alarms you must recharge and re enable alarms",
+		"PROMPT_MSG126": "This will show the last updated location, to receive a live location select the UPDATE icon on the map page",
+		"PROMPT_MSG127": "Selecting this ON will put a 300m arch around your asset, when the asset leaves this are it will trigger the alert",
+		"PROMPT_MSG128": "This will allow you to turn notifications ON and OFF for each of the below alarms",
 
 
 		"HOME_MSG00": "Home",
@@ -380,6 +384,9 @@ window.LanguagePackages= {
 		"ASSET_ALARM_MSG37": "Outboard Engine Removal",
 		"ASSET_ALARM_MSG38": "WiTi Armed",
 		"ASSET_ALARM_MSG39": "WiTi Disarmed",
+		"ASSET_ALARM_MSG40": "This will notify you when the power to the GPS unit is at or below 11.5V",
+		"ASSET_ALARM_MSG41": "This will notify you when the power to the GPS unit is removed",
+		"ASSET_ALARM_MSG42": "This will notify you when the WiTi alarm has been triggered",
 
 		"GEOFENCES_MSG00": "Circle",
 		"GEOFENCES_MSG01": "Polygon",
@@ -467,6 +474,7 @@ window.LanguagePackages= {
 		"ASSET_TRACK_MSG26": "Ignore Time",
 		"ASSET_TRACK_MSG27": "Ignore on",
 		"ASSET_TRACK_MSG28": "Voltage",
+		"ASSET_TRACK_MSG29": "Last Update Location",
 
 
 		"ASSET_EDIT_MSG00": "Edit",
