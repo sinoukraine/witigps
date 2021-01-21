@@ -32,7 +32,13 @@
                 <a @click="onSubmitAlarmSettings" href="#" class="link button width-100 color-white "><i class="f7-icons icon-header-apply margin-right"></i>{{@global.LANGUAGE.COM_MSG108}}</a>
             </div>
         </div>
-
+       <!-- {{#if ShowPayment}}
+        <div class="toolbar toolbar-bottom">
+            <div class="toolbar-inner bg-color-custom-2 ">
+                <a href="/asset-upgrade/?imei={{IMEI}}" class="link button width-100 color-white "><i class="f7-icons icon-upgrade-to-live margin-right"></i>{{@global.LANGUAGE.ASSET_PROTECT_MSG01}}</a>
+            </div>
+        </div>
+        {{/if}}-->
 
         <div class="page-content">
             <div class="block asset-image-big-wrapper text-align-center">
@@ -136,6 +142,13 @@
                     {{/each}}
                 </ul>
             </div>
+
+            <!--<div class="block">
+                <div class="row">
+                    <a @click="onSubmitAlarmSettings" href="#" class="link button button-fill color-green col"><i class="f7-icons icon-header-apply margin-right"></i>{{@global.LANGUAGE.COM_MSG108}}</a>
+                </div>
+            </div>-->
+
 
         </div>
 

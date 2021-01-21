@@ -225,7 +225,7 @@ window.LanguagePackages= {
 		"PROMPT_MSG105": "Earn $20.00 for each unit purchased. Click <a href='{0}' target='_blank' class='external color-red'>HERE</a> to find out more.",
 		"PROMPT_MSG106": "Only numbers, please!",
 		"PROMPT_MSG107": "This report under development",
-		"PROMPT_MSG108": "Alarm activation and notifications utilise credits. Ignition On and Off alarms may drain credits rapidly",
+		"PROMPT_MSG108": "Alarm activation and notifications utilise credits.",
 		"PROMPT_MSG109": "Important Alarm Notice",
 		"PROMPT_MSG110": "Remotely Arm / Disarm your WiTi alarm.",
 		"PROMPT_MSG111": "Please wait when previous report request will be finished",
